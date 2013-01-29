@@ -8,7 +8,11 @@
  * @copyright  (c) 2011 HappyNinjas Ltd
  */
 
-class Authorize extends \OAuth2\Client\Token
+namespace OAuth2\Client\Token;
+
+use InvalidArgumentException;
+
+class Authorize extends AbstractToken
 {
     /**
      * @var  string  code
@@ -29,13 +33,9 @@ class Authorize extends \OAuth2\Client\Token
     public function __construct(array $options)
     {
         if ( ! isset($options['code'])) {
-
-            throw new Exception('Required option not passed: code');
-
+            throw new InvalidArgumentException('Required option not passed: code');
         } elseif ( ! isset($options['redirect_uri'])) {
-
-            throw new Exception('Required option not passed: redirect_uri');
-
+            throw new InvalidArgumentException('Required option not passed: redirect_uri');
         }
 
         $this->code = $options['code'];

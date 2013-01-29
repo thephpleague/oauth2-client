@@ -3,6 +3,8 @@
 namespace OAuth2\Client;
 
 use Guzzle\Service\Client as GuzzleClient;
+use OAuth2\Client\Token\Access as AccessToken;
+use OAuth2\Client\Token\Authorize as AuthorizeToken;
 
 class IDPException extends \Exception
 {
@@ -110,12 +112,12 @@ abstract class IDP {
         setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
-            'client_id'         => $this->clientId,
-            'redirect_uri'      => $this->redirectUri,
-            'state'             => $state,
-            'scope'             => is_array($this->scope) ? implode($this->scopeSeperator, $this->scope) : $this->scope,
-            'response_type'     => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt'   => 'force' // - google force-recheck
+            'client_id'       => $this->clientId,
+            'redirect_uri'    => $this->redirectUri,
+            'state'           => $state,
+            'scope'           => is_array($this->scope) ? implode($this->scopeSeperator, $this->scope) : $this->scope,
+            'response_type'   => isset($options['response_type']) ? $options['response_type'] : 'code',
+            'approval_prompt' => 'force' // - google force-recheck
         );
 
         header('Location: ' . $this->urlAuthorize().'?'.http_build_query($params));
@@ -124,7 +126,7 @@ abstract class IDP {
 
     public function getAccessToken($code = NULL, $options = array())
     {
-        if ($code === NULL) {
+        if (is_null($code)) {
             throw new \BadMethodCallException('Missing authorization code');
         }
 
@@ -135,58 +137,40 @@ abstract class IDP {
         );
 
         switch ($params['grant_type']) {
-
             case 'authorization_code':
                 $params['code'] = $code;
                 $params['redirect_uri'] = isset($options['redirectUri']) ? $options['redirectUri'] : $this->redirectUri;
-            break;
-
+                break;
             case 'refresh_token':
                 $params['refresh_token'] = $code;
-            break;
-
+                break;
         }
 
         try {
-
             switch ($this->method) {
-
                 case 'get':
-
                     $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($params));
                     $request = $client->send();
                     $response = $request->getBody();
-
                     break;
-
                 case 'post':
-
                     $client = new GuzzleClient($this->urlAccessToken());
                     $request = $client->post(null, null, $params)->send();
                     $response = $request->getBody();
-
                     break;
-
             }
-
-        }
-
-        catch (\Guzzle\Http\Exception\BadResponseException $e)
-        {
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $raw_response = explode("\n", $e->getResponse());
             $response = end($raw_response);
         }
 
         switch ($this->responseType) {
-
             case 'json':
                 $result = json_decode($response, true);
-            break;
-
+                break;
             case 'string':
                 parse_str($response, $result);
-            break;
-
+                break;
         }
 
         if (isset($result['error']) && ! empty($result['error'])) {
@@ -196,19 +180,17 @@ abstract class IDP {
         }
 
         switch ($params['grant_type']) {
-
             case 'authorization_code':
-                return \OAuth2\Client\Token::factory('access', $result);
-            break;
+                return new AccessToken($result);
 
-            case 'refresh_token':
-                return \OAuth2\Client\Token::factory('refresh', $result);
-            break;
-
+            // TODO: implement refresh_token
+            // case 'refresh_token':
+            //     return new RefreshToken($result);
+            // break;
         }
     }
 
-    public function getUserDetails(\OAuth2\Client\Token\Access $token)
+    public function getUserDetails(AccessToken $token)
     {
         $url = $this->urlUserDetails($token);
 

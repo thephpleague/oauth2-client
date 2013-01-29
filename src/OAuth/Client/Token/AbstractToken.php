@@ -2,9 +2,10 @@
 
 namespace OAuth2\Client;
 
-abstract class Token
-{
+use InvalidArgumentException;
 
+abstract class AbstractToken
+{
     /**
      * Create a new token object.
      *
@@ -14,22 +15,12 @@ abstract class Token
      */
     public static function factory($name = 'access', array $options = null)
     {
-        include_once 'Token/'.ucfirst(strtolower($name)).'.php';
-
-        $class = 'OAuth2\Client\Token\\'.ucfirst($name);
+        $class = 'OAuth2\\Client\\Token\\'.ucfirst($name);
+        if ( ! class_exists($name)) {
+            throw new InvalidArgumentException('Invalide token type: '.$name);
+        }
 
         return new $class($options);
-    }
-
-    /**
-     * Return the value of any protected class variable.
-     *
-     * @param   string  variable name
-     * @return  mixed
-     */
-    public function __get($key)
-    {
-        return $this->$key;
     }
 
     /**
@@ -43,4 +34,10 @@ abstract class Token
         return isset($this->$key);
     }
 
-} // End Token
+    /**
+     * Return the token string.
+     *
+     * @return string
+     */
+    public function __toString();
+}

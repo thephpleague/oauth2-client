@@ -2,16 +2,17 @@
 
 namespace OAuth2\Client;
 
+use InvalidArgumentException;
+
 class Provider
 {
     private function __constuct() {}
 
     public static function factory($name, array $options = null)
     {
+        $name = 'OAuth2\\Client\\Provider\\'.ucfirst($name);
         if ( ! class_exists($name)) {
-
-            throw new OAuth2\Client\Exception('There is no identity provider called: '.$name);
-
+            throw new InvalidArgumentException('There is no identity provider called: '.$name);
         }
 
         return new $name($options);

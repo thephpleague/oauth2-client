@@ -1,7 +1,4 @@
 <?php
-
-namespace OAuth2\Client\Token;
-
 /**
  * OAuth2 Token
  *
@@ -11,27 +8,31 @@ namespace OAuth2\Client\Token;
  * @copyright  (c) 2011 HappyNinjas Ltd
  */
 
-class Access extends \OAuth2\Client\Token
+namespace OAuth2\Client\Token;
+
+use InvalidArgumentException;
+
+class Access extends AbstractToken
 {
     /**
      * @var  string  accessToken
      */
-    protected $accessToken;
+    public $accessToken;
 
     /**
      * @var  int  expires
      */
-    protected $expires;
+    public $expires;
 
     /**
      * @var  string  refreshToken
      */
-    protected $refreshToken;
+    public $refreshToken;
 
     /**
      * @var  string  uid
      */
-    protected $uid;
+    public $uid;
 
     /**
      * Sets the token, expiry, etc values.
@@ -42,7 +43,7 @@ class Access extends \OAuth2\Client\Token
     public function __construct(array $options = null)
     {
         if ( ! isset($options['access_token'])) {
-            throw new \BadMethodCallException('Required option not passed: access_token'.PHP_EOL.print_r($options, true));
+            throw new InvalidArgumentException('Required option not passed: access_token'.PHP_EOL.print_r($options, true));
         }
 
         $this->accessToken = $options['access_token'];
