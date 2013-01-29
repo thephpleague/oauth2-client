@@ -1,0 +1,48 @@
+{
+    "name": "lncd/oauth2-client",
+    "description": "OAuth 2.0 Client Library",
+    "version": "0.0.1",
+    "homepage": "https://github.com/lncd/OAuth2-Client",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.3.0",
+        "guzzle/guzzle": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/lncd/OAuth2-Client"
+        }
+    ],
+    "keywords": [
+        "oauth",
+        "oauth2",
+        "authorization",
+        "authentication",
+    ],
+    "authors": [
+        {
+            "name": "Alex Bilbie",
+            "email": "hello@alexbilbie.com",
+            "homepage": "http://www.alexbilbie.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Dan Horrigan",
+            "email": "me@dandoescode.com",
+            "homepage": "http://www.dandoescode.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "OAuth2\\Client": "src/"
+        }
+    },
+    "suggest": {
+        "lncd/oauth2-facebook": "Adds support for Facebook as an IDP"
+    }
+}
