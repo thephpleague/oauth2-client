@@ -1,7 +1,8 @@
 <?php
 
 namespace OAuth2\Client\Provider;
+use OAuth2\Client;
 
-class UniLincoln implements OAuth2\Client\IdentityProvider {
+class UniLincoln extends Client\IdentityProvider {
 
 }
