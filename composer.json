@@ -43,7 +43,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "OAuth2\\Client": "src/"
+            "OAuth2": "src/"
         }
     }
 }
