@@ -22,6 +22,10 @@
         "oauth2",
         "authorization",
         "authentication",
+        "idp",
+        "identity",
+        "sso",
+        "single sign on"
     ],
     "authors": [
         {
@@ -41,8 +45,5 @@
         "psr-0": {
             "OAuth2\\Client": "src/"
         }
-    },
-    "suggest": {
-        "lncd/oauth2-facebook": "Adds support for Facebook as an IDP"
     }
 }
