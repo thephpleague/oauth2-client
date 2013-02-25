@@ -6,7 +6,7 @@ use Guzzle\Service\Client as GuzzleClient;
 use OAuth2\Client\Token\Access as AccessToken;
 use OAuth2\Client\Token\Authorize as AuthorizeToken;
 
-abstract class IdentityProvder {
+abstract class IdentityProvider {
 
     public $clientId = '';
 
