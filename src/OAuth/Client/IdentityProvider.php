@@ -6,70 +6,7 @@ use Guzzle\Service\Client as GuzzleClient;
 use OAuth2\Client\Token\Access as AccessToken;
 use OAuth2\Client\Token\Authorize as AuthorizeToken;
 
-class IDPException extends \Exception
-{
-    protected $result;
-
-    public function __construct($result)
-    {
-        $this->result = $result;
-
-        $code = isset($result['code']) ? $result['code'] : 0;
-
-        if (isset($result['error'])) {
-
-            // OAuth 2.0 Draft 10 style
-            $message = $result['error'];
-
-        } elseif (isset($result['message'])) {
-
-            // cURL style
-            $message = $result['message'];
-
-        } else {
-
-            $message = 'Unknown Error.';
-
-        }
-
-        parent::__construct($message['message'], $message['code']);
-    }
-
-    public function getType()
-    {
-        if (isset($this->result['error'])) {
-
-            $message = $this->result['error'];
-
-            if (is_string($message)) {
-                // OAuth 2.0 Draft 10 style
-                return $message;
-            }
-        }
-
-        return 'Exception';
-    }
-
-    /**
-     * To make debugging easier.
-     *
-     * @returns
-     *   The string representation of the error.
-     */
-    public function __toString()
-    {
-        $str = $this->getType() . ': ';
-
-        if ($this->code != 0) {
-            $str .= $this->code . ': ';
-        }
-
-        return $str . $this->message;
-    }
-
-}
-
-abstract class IDP {
+abstract class IdentityProvder {
 
     public $clientId = '';
 
@@ -108,7 +45,7 @@ abstract class IDP {
 
     public function authorize($options = array())
     {
-        $state = md5(uniqid(rand(), TRUE));
+        $state = md5(uniqid(rand(), true));
         setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
@@ -124,7 +61,7 @@ abstract class IDP {
         exit;
     }
 
-    public function getAccessToken($code = NULL, $options = array())
+    public function getAccessToken($code = null, $options = array())
     {
         if (is_null($code)) {
             throw new \BadMethodCallException('Missing authorization code');
@@ -195,17 +132,17 @@ abstract class IDP {
         $url = $this->urlUserDetails($token);
 
         try {
+
             $client = new GuzzleClient($url);
             $request = $client->get()->send();
             $response = $request->getBody();
-
             return $this->userDetails(json_decode($response), $token);
-        }
 
-        catch (\Guzzle\Http\Exception\BadResponseException $e)
-        {
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+
             $raw_response = explode("\n", $e->getResponse());
             throw new \OAuth2\Client\IDPException(end($raw_response));
+
         }
     }
 
