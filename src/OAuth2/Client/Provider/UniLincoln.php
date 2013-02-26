@@ -1,9 +1,8 @@
 <?php
 
 namespace OAuth2\Client\Provider;
-use OAuth2\Client;
 
-class UniLincoln extends Client\IdentityProvider {
+class UniLincoln extends IdentityProvider {
 
     public $scopes = array('public');
 
