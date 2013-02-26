@@ -20,7 +20,7 @@ class Blooie extends IdentityProvider
         return 'https://graph.facebook.com/me?access_token='.$token;
     }
 
-    public function getUserInfo($response, \OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, \OAuth2\Client\Token\AccessToken $token)
     {
         return array(
             'uid' => $response->id,
