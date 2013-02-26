@@ -8,7 +8,7 @@ class Provider
 {
     private function __constuct() {}
 
-    public static function factory($name, array $options = null)
+    public static function factory($name, array $options = array())
     {
         $name = 'OAuth2\\Client\\Provider\\'.ucfirst($name);
         if ( ! class_exists($name)) {

@@ -3,7 +3,7 @@
 namespace OAuth2\Client;
 
 use Guzzle\Service\Client as GuzzleClient;
-use OAuth2\Client\Token\Access as AccessToken;
+use OAuth2\Client\Token\AccessToken as AccessToken;
 use OAuth2\Client\Token\Authorize as AuthorizeToken;
 
 abstract class IdentityProvider {
@@ -26,7 +26,7 @@ abstract class IdentityProvider {
 
     public $responseType = 'json';
 
-    public function __construct($options)
+    public function __construct($options = array())
     {
         foreach ($options as $option => $value) {
             if (isset($this->{$option})) {
@@ -39,9 +39,9 @@ abstract class IdentityProvider {
 
     abstract public function urlAccessToken();
 
-    abstract public function urlUserDetails(\OAuth2\Client\Token\Access $token);
+    abstract public function urlUserDetails(\OAuth2\Client\Token\AccessToken $token);
 
-    abstract public function userDetails($response, \OAuth2\Client\Token\Access $token);
+    abstract public function userDetails($response, \OAuth2\Client\Token\AccessToken $token);
 
     public function authorize($options = array())
     {
@@ -49,11 +49,11 @@ abstract class IdentityProvider {
         setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
-            'client_id'       => $this->clientId,
-            'redirect_uri'    => $this->redirectUri,
-            'state'           => $state,
-            'scope'           => is_array($this->scope) ? implode($this->scopeSeperator, $this->scope) : $this->scope,
-            'response_type'   => isset($options['response_type']) ? $options['response_type'] : 'code',
+            'client_id' => $this->clientId,
+            'redirect_uri' => $this->redirectUri,
+            'state' => $state,
+            'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
+            'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'force' // - google force-recheck
         );
 
@@ -61,38 +61,37 @@ abstract class IdentityProvider {
         exit;
     }
 
-    public function getAccessToken($code = null, $options = array())
+    public function getAccessToken($grant = 'authorization_code', $params = array())
     {
-        if (is_null($code)) {
-            throw new \BadMethodCallException('Missing authorization code');
+        if (is_string($grant)) {
+            $grant = 'OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
+            if ( ! class_exists($grant)) {
+                throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
+            }
+            $grant = new $grant;
+        } elseif ( ! $grant instanceof Grant\GrantInterface) {
+            throw new \InvalidArgumentException($grant.' is not an instance of \OAuth2\Client\Grant\GrantInterface');
         }
 
-        $params = array(
+        $defaultParams = array(
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
-            'grant_type'    => isset($options['grantType']) ? $options['grantType'] : 'authorization_code',
+            'redirect_uri'  => $this->redirectUri,
+            'grant_type'    => $grant,
         );
 
-        switch ($params['grant_type']) {
-            case 'authorization_code':
-                $params['code'] = $code;
-                $params['redirect_uri'] = isset($options['redirectUri']) ? $options['redirectUri'] : $this->redirectUri;
-                break;
-            case 'refresh_token':
-                $params['refresh_token'] = $code;
-                break;
-        }
+        $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
         try {
             switch ($this->method) {
                 case 'get':
-                    $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($params));
+                    $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($requestParams));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
                 case 'post':
                     $client = new GuzzleClient($this->urlAccessToken());
-                    $request = $client->post(null, null, $params)->send();
+                    $request = $client->post(null, null, $requestParams)->send();
                     $response = $request->getBody();
                     break;
             }
@@ -111,20 +110,10 @@ abstract class IdentityProvider {
         }
 
         if (isset($result['error']) && ! empty($result['error'])) {
-
-            throw new \OAuth2\Client\IDPException($result);
-
+            throw new \OAuth2\Client\Exception\IDPException($result);
         }
 
-        switch ($params['grant_type']) {
-            case 'authorization_code':
-                return new AccessToken($result);
-
-            // TODO: implement refresh_token
-            // case 'refresh_token':
-            //     return new RefreshToken($result);
-            // break;
-        }
+        return $grant->handleResponse($result);
     }
 
     public function getUserDetails(AccessToken $token)
@@ -141,7 +130,7 @@ abstract class IdentityProvider {
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
 
             $raw_response = explode("\n", $e->getResponse());
-            throw new \OAuth2\Client\IDPException(end($raw_response));
+            throw new \OAuth2\Client\Exception\IDPException(end($raw_response));
 
         }
     }
