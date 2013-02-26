@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth2\Client;
+namespace OAuth2\Client\Provider;
 
 use Guzzle\Service\Client as GuzzleClient;
 use OAuth2\Client\Token\AccessToken as AccessToken;
