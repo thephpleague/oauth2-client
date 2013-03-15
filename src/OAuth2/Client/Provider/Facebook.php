@@ -23,6 +23,8 @@ class Facebook extends IdentityProvider
 
     public function userDetails($response, \OAuth2\Client\Token\AccessToken $token)
     {
+        $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->access_token, 1);
+
         return array(
             'uid' => $response->id,
             'nickname' => $response->username,
@@ -32,7 +34,7 @@ class Facebook extends IdentityProvider
             'email' => isset($response->email) ? $response->email : null,
             'location' => isset($response->hometown->name) ? $response->hometown->name : null,
             'description' => isset($response->bio) ? $response->bio : null,
-            'image' => 'https://graph.facebook.com/me/picture?type=normal&access_token='.$token->access_token,
+            'image' => $imageHeaders['Location'],
             'urls' => array(
               'Facebook' => $response->link,
             ),
