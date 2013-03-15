@@ -5,6 +5,7 @@ namespace OAuth2\Client\Provider;
 use Guzzle\Service\Client as GuzzleClient;
 use OAuth2\Client\Token\AccessToken as AccessToken;
 use OAuth2\Client\Token\Authorize as AuthorizeToken;
+use OAuth2\Client\Exception\IDPException as IDPException;
 
 abstract class IdentityProvider {
 
@@ -110,7 +111,7 @@ abstract class IdentityProvider {
         }
 
         if (isset($result['error']) && ! empty($result['error'])) {
-            throw new \OAuth2\Client\Exception\IDPException($result);
+            throw new IDPException($result);
         }
 
         return $grant->handleResponse($result);
@@ -130,7 +131,7 @@ abstract class IdentityProvider {
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
 
             $raw_response = explode("\n", $e->getResponse());
-            throw new \OAuth2\Client\Exception\IDPException(end($raw_response));
+            throw new IDPException(end($raw_response));
 
         }
     }
