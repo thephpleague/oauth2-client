@@ -23,7 +23,7 @@ class Facebook extends IdentityProvider
 
     public function userDetails($response, \OAuth2\Client\Token\AccessToken $token)
     {
-        $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->access_token, 1);
+        $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken, 1);
 
         return array(
             'uid' => $response->id,
