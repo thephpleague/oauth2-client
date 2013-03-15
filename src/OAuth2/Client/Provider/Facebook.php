@@ -4,6 +4,7 @@ namespace OAuth2\Client\Provider;
 class Facebook extends IdentityProvider
 {
     public $scope = array('offline_access', 'email', 'read_stream');
+    public $responseType = 'string';
 
     public function urlAuthorize()
     {
