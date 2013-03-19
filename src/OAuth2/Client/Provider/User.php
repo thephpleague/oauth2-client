@@ -31,5 +31,10 @@ class User implements \IteratorAggregate {
         }
     }
 
+    public function getIterator()
+    {
+        return new ArrayIterator($this);
+    }
+
 }
 
