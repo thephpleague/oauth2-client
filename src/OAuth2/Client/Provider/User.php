@@ -2,7 +2,7 @@
 
 namespace OAuth2\Client\Provider;
 
-class User {
+class User implements \IteratorAggregate {
 
     protected $uid = null;
     protected $nickname = null;
