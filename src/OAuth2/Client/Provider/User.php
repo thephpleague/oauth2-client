@@ -4,16 +4,16 @@ namespace OAuth2\Client\Provider;
 
 class User implements \IteratorAggregate {
 
-    protected $uid = null;
-    protected $nickname = null;
-    protected $name = null;
-    protected $firstName = null;
-    protected $lastName = null;
-    protected $email = null;
-    protected $location = null;
-    protected $description = null;
-    protected $imageUrl = null;
-    protected $urls = null;
+    public $uid = null;
+    public $nickname = null;
+    public $name = null;
+    public $firstName = null;
+    public $lastName = null;
+    public $email = null;
+    public $location = null;
+    public $description = null;
+    public $imageUrl = null;
+    public $urls = null;
 
     public function __set($name, $value)
     {
