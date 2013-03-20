@@ -1,15 +1,8 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-/**
- * GitHub OAuth2 Provider
- *
- * @package    CodeIgniter/OAuth2
- * @category   Provider
- * @author     Phil Sturgeon
- * @copyright  (c) 2012 HappyNinjas Ltd
- * @license    http://philsturgeon.co.uk/code/dbad-license
- */
+<?php
 
-class OAuth2_Provider_Github extends OAuth2\Client\IDP
+namespace OAuth2\Client\Provider;
+
+class Github extends IdentityProvider
 {
     public function urlAuthorize()
     {
@@ -21,23 +14,23 @@ class OAuth2_Provider_Github extends OAuth2\Client\IDP
         return 'https://github.com/login/oauth/access_token';
     }
 
-    public function getUserInfo(Oauth\Token\Access $token)
+    public function urlUserDetails(\OAuth2\Client\Token\AccessToken $token)
     {
-        $url = 'https://api.github.com/user?'.http_build_query(array(
-            'access_token' => $token->access_token,
-        ));
+        return 'https://api.github.com/user?access_token='.$token;
+    }
 
-        $user = json_decode(file_get_contents($url));
-
-        return array(
-            'uid' => $user->id,
-            'nickname' => $user->login,
-            'name' => $user->name,
-            'email' => $user->email,
-            'urls' => array(
-              'GitHub' => 'http://github.com/'.$user->login,
-              'Blog' => $user->blog,
-            ),
+    public function userDetails($response, \OAuth2\Client\Token\AccessToken $token)
+    {
+        $user = new User;
+        $user->uid = $response->id;
+        $user->nickname = $response->login;
+        $user->name = $response->name;
+        $user->email = isset($response->email) ? $response->email : null;
+        $user->urls = array(
+            'GitHub' => 'http://github.com/'.$user->login,
+            'Blog' => $user->blog,
         );
+
+        return $user;
     }
 }
