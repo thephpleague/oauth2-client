@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" stopOnError="false" stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false" bootstrap="tests/Bootstrap.php">
+	<testsuites>
+		<testsuite name="OAuth Client">
+			<directory suffix="Test.php">tests</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<blacklist>
+			<directory suffix=".php">PEAR_INSTALL_DIR</directory>
+			<directory suffix=".php">PHP_LIBDIR</directory>
+			<directory suffix=".php">vendor/composer</directory>
+			<directory suffix=".php">vendor/phpunit</directory>
+			<directory suffix=".php">tests</directory>
+		</blacklist>
+	</filter>
+	<logging>
+		<log type="coverage-html" target="coverage" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
+		<log type="coverage-text" target="php://stdout" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
+		<log type="coverage-clover" target="logs/clover.xml"/>
+		<log type="junit" target="logs/junit.xml" logIncompleteSkipped="false"/>
+	</logging>
+</phpunit>

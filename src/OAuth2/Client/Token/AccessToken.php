@@ -1,18 +1,9 @@
 <?php
-/**
- * OAuth2 Token
- *
- * @package    OAuth2
- * @category   Token
- * @author     Phil Sturgeon
- * @copyright  (c) 2011 HappyNinjas Ltd
- */
 
 namespace OAuth2\Client\Token;
-
 use InvalidArgumentException;
 
-class Access extends AbstractToken
+class AccessToken
 {
     /**
      * @var  string  accessToken
@@ -43,7 +34,8 @@ class Access extends AbstractToken
     public function __construct(array $options = null)
     {
         if ( ! isset($options['access_token'])) {
-            throw new InvalidArgumentException('Required option not passed: access_token'.PHP_EOL.print_r($options, true));
+            throw new \InvalidArgumentException('Required option not passed: access_token'
+                                                 . PHP_EOL.print_r($options, true));
         }
 
         $this->accessToken = $options['access_token'];
@@ -77,4 +69,14 @@ class Access extends AbstractToken
         return (string) $this->accessToken;
     }
 
+    /**
+     * Return a boolean if the property is set
+     *
+     * @param   string  variable name
+     * @return  bool
+     */
+    public function __isset($key)
+    {
+        return isset($this->$key);
+    }
 }
