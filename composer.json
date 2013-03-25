@@ -1,7 +1,7 @@
 {
     "name": "lncd/oauth2-client",
     "description": "OAuth 2.0 Client Library",
-    "version": "0.0.1",
+    "version": "0.1",
     "homepage": "https://github.com/lncd/OAuth2-Client",
     "license": "MIT",
     "require": {
@@ -33,12 +33,6 @@
             "name": "Alex Bilbie",
             "email": "hello@alexbilbie.com",
             "homepage": "http://www.alexbilbie.com",
-            "role": "Developer"
-        },
-        {
-            "name": "Dan Horrigan",
-            "email": "me@dandoescode.com",
-            "homepage": "http://www.dandoescode.com",
             "role": "Developer"
         }
     ],
