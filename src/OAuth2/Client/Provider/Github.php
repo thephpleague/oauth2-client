@@ -4,6 +4,8 @@ namespace OAuth2\Client\Provider;
 
 class Github extends IdentityProvider
 {
+    public $responseType = 'string';
+
     public function urlAuthorize()
     {
         return 'https://github.com/login/oauth/authorize';
