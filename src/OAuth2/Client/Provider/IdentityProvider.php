@@ -55,7 +55,7 @@ abstract class IdentityProvider {
             'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'force' // - google force-recheck
+            'approval_prompt' => isset($options['approval_prompt']) ? $options['approval_prompt'] : 'force' // - google force-recheck
         );
 
         header('Location: ' . $this->urlAuthorize().'?'.http_build_query($params));
