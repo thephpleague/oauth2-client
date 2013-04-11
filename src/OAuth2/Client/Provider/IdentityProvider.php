@@ -97,8 +97,7 @@ abstract class IdentityProvider {
                     break;
             }
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $raw_response = explode("\n", $e->getResponse());
-            $response = end($raw_response);
+            $response = (string)$e->getResponse()->getBody();
         }
 
         switch ($this->responseType) {
