@@ -70,7 +70,7 @@ abstract class IdentityProvider {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
-        } elseif ( ! $grant instanceof Grant\GrantInterface) {
+        } elseif ( ! $grant instanceof \OAuth2\Client\Grant\GrantInterface) {
             throw new \InvalidArgumentException($grant.' is not an instance of \OAuth2\Client\Grant\GrantInterface');
         }
 
