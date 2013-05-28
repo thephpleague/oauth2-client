@@ -1,6 +1,7 @@
 <?php
 
-namespace OAuth2\Client\Token;
+namespace League\OAuth2\Client\Token;
+
 use InvalidArgumentException;
 
 class AccessToken

@@ -1,7 +1,8 @@
 <?php
 
-namespace OAuth2\Client\Grant;
-use OAuth2\Client\Token\AccessToken as AccessToken;
+namespace League\OAuth2\Client\Grant;
+
+use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
 class Authorizationcode implements GrantInterface {
 

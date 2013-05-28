@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth2\Client\Provider;
+namespace League\OAuth2\Client\Provider;
 
 class User implements \IteratorAggregate {
 
