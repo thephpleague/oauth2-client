@@ -1,11 +1,11 @@
 <?php
 
-namespace OAuth2\Client\Provider;
+namespace League\OAuth2\Client\Provider;
 
 use Guzzle\Service\Client as GuzzleClient;
-use OAuth2\Client\Token\AccessToken as AccessToken;
-use OAuth2\Client\Token\Authorize as AuthorizeToken;
-use OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
+use League\OAuth2\Client\Exception\IDPException as IDPException;
 
 abstract class IdentityProvider {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth2\Client\Grant;
+namespace League\OAuth2\Client\Grant;
 
 interface GrantInterface {
 
