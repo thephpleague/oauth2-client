@@ -16,12 +16,12 @@ class Github extends IdentityProvider
         return 'https://github.com/login/oauth/access_token';
     }
 
-    public function urlUserDetails(\OAuth2\Client\Token\AccessToken $token)
+    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
         return 'https://api.github.com/user?access_token='.$token;
     }
 
-    public function userDetails($response, \OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $user = new User;
         $user->uid = $response->id;
