@@ -17,7 +17,7 @@ class Github extends IdentityProvider
         return 'https://github.com/login/oauth/access_token';
     }
 
-    public function userDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function getUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
         $userDetails = $this->getDataFromURL('https://api.github.com/user?access_token='.$token);
         $userEmails = $this->getDataFromURL('https://api.github.com/user/emails?access_token='.$token);

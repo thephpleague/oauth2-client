@@ -17,13 +17,10 @@ class Facebook extends IdentityProvider
         return 'https://graph.facebook.com/oauth/access_token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function getUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://graph.facebook.com/me?access_token='.$token;
-    }
+        $this->getDataFromURL('https://graph.facebook.com/me?access_token='.$token);
 
-    public function userDetails(\League\OAuth2\Client\Token\AccessToken $token)
-    {
         $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken, 1);
 
         $user = new User;

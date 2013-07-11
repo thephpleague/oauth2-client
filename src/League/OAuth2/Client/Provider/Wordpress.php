@@ -17,16 +17,23 @@ class Wordpress extends IdentityProvider
         return 'https://public-api.wordpress.com/oauth2/token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
-    {
-        return 'https://public-api.wordpress.com/rest/v1/me?pretty=1&access_token='.$token;
-        // In the header: 'authorization: Bearer YOUR_API_TOKEN'
-        // 'Authorization: Bearer ' . $access_key
-        // If denied... It will be redirected: ?error=access_denied
-    }
+    // 'Authorization: Bearer ' . $access_key
+    // If denied... It will be redirected: ?error=access_denied
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function getUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return $response;
+        $userDetails = $this->getDataFromURL('https://public-api.wordpress.com/rest/v1/me?pretty=1&access_token='.$token, array('Authorization' => 'Bearer '.$token));
+
+        $displayName = explode(' ', $userDetails->displayname, 2);
+
+        $user = new User;
+        $user->uid = $userDetails->ID;
+        $user->nickname = $userDetails->username;
+        $user->firstName = $displayName[0];
+        $user->lastName = $displayName[1];
+        $user->email = isset($userDetails->email) ? $userDetails->email : null;
+        $user->imageUrl = $userDetails->avatar_URL;
+
+        return $user;
     }
 }
