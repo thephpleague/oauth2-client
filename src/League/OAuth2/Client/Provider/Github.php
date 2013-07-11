@@ -22,12 +22,15 @@ class Github extends IdentityProvider
         $userDetails = $this->getDataFromURL('https://api.github.com/user?access_token='.$token);
         $userEmails = $this->getDataFromURL('https://api.github.com/user/emails?access_token='.$token);
         $userFirstEmail = $userEmails[0];
+        
+        var_dump($userEmails);
+        echo $userFirstEmail;
 
         $user = new User;
         $user->uid = $userDetails->id;
         $user->nickname = $userDetails->login;
         $user->name = $userDetails->name;
-        $user->email = isset($userFirstEmail->email) ? $userFirstEmail->email : null;
+        $user->email = isset($userFirstEmail) ? $userFirstEmail : null;
         $user->urls = array(
             'GitHub' => 'http://github.com/'.$userDetails->login,
             'Blog' => $userDetails->blog,
