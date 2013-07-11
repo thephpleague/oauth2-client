@@ -19,7 +19,7 @@ class Facebook extends IdentityProvider
 
     public function getUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        $this->getDataFromURL('https://graph.facebook.com/me?access_token='.$token);
+        $response = $this->getDataFromURL('https://graph.facebook.com/me?access_token='.$token);
 
         $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken, 1);
 

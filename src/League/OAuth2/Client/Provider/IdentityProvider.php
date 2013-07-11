@@ -63,13 +63,13 @@ abstract class IdentityProvider {
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
         if (is_string($grant)) {
-            $grant = 'OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
+            $grant = '\\League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
             if ( ! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
         } elseif ( ! $grant instanceof Grant\GrantInterface) {
-            throw new \InvalidArgumentException($grant.' is not an instance of \OAuth2\Client\Grant\GrantInterface');
+            throw new \InvalidArgumentException($grant.' is not an instance of \League\OAuth2\Client\Grant\GrantInterface');
         }
 
         $defaultParams = array(
