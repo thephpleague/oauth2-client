@@ -2,29 +2,23 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Facebook extends IdentityProvider
+class Twitter extends IdentityProvider
 {
-    public $scopes = array('offline_access', 'email', 'read_stream');
     public $responseType = 'string';
 
     public function urlAuthorize()
     {
-        return 'https://www.facebook.com/dialog/oauth';
+        return 'https://api.twitter.com/oauth/authorize';
     }
 
     public function urlAccessToken()
     {
-        return 'https://graph.facebook.com/oauth/access_token';
-    }
-
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
-    {
-        return 'https://graph.facebook.com/me?access_token='.$token;
+        return 'https://api.twitter.com/oauth/request_token';
     }
 
     public function userDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken, 1);
+        $this->getDataFromURL('https://api.twitter.com/1.1/users/show.json?screen_name=&');
 
         $user = new User;
         $user->uid = $response->id;
@@ -37,7 +31,7 @@ class Facebook extends IdentityProvider
         $user->description = isset($response->bio) ? $response->bio : null;
         $user->imageUrl = $imageHeaders['Location'];
         $user->urls = array(
-            'Facebook' => $response->link,
+            'Yahoo' => $response->link,
         );
 
         return $user;
