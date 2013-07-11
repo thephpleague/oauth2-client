@@ -40,9 +40,7 @@ abstract class IdentityProvider {
 
     abstract public function urlAccessToken();
 
-    abstract public function urlUserDetails(\OAuth2\Client\Token\AccessToken $token);
-
-    abstract public function userDetails($response, \OAuth2\Client\Token\AccessToken $token);
+    abstract public function getUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
 
     public function authorize($options = array())
     {
