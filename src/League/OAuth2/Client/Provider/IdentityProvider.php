@@ -21,6 +21,10 @@ abstract class IdentityProvider {
 
     public $scopes = array();
 
+    public $authorizeParams = array();
+
+    public $accessTokenParams = array();
+
     public $method = 'post';
 
     public $scopeSeperator = ',';
@@ -40,9 +44,7 @@ abstract class IdentityProvider {
 
     abstract public function urlAccessToken();
 
-    abstract public function urlUserDetails(\OAuth2\Client\Token\AccessToken $token);
-
-    abstract public function userDetails($response, \OAuth2\Client\Token\AccessToken $token);
+    abstract public function getUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
 
     public function authorize($options = array())
     {
@@ -58,6 +60,8 @@ abstract class IdentityProvider {
             'approval_prompt' => 'force' // - google force-recheck
         );
 
+        $params = array_merge($params, $this->authorizeParams);
+
         header('Location: ' . $this->urlAuthorize().'?'.http_build_query($params));
         exit;
     }
@@ -65,13 +69,13 @@ abstract class IdentityProvider {
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
         if (is_string($grant)) {
-            $grant = 'OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
+            $grant = '\\League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
             if ( ! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
         } elseif ( ! $grant instanceof Grant\GrantInterface) {
-            throw new \InvalidArgumentException($grant.' is not an instance of \OAuth2\Client\Grant\GrantInterface');
+            throw new \InvalidArgumentException($grant.' is not an instance of \League\OAuth2\Client\Grant\GrantInterface');
         }
 
         $defaultParams = array(
@@ -80,6 +84,8 @@ abstract class IdentityProvider {
             'redirect_uri'  => $this->redirectUri,
             'grant_type'    => $grant,
         );
+
+        $defaultParams = array_merge($defaultParams, $this->accessTokenParams);
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
@@ -117,16 +123,17 @@ abstract class IdentityProvider {
         return $grant->handleResponse($result);
     }
 
-    public function getUserDetails(AccessToken $token)
+    public function getDataFromURL($url, $headers = array())
     {
-        $url = $this->urlUserDetails($token);
+        $headersFilter = array_filter($headers);
 
         try {
 
             $client = new GuzzleClient($url);
             $request = $client->get()->send();
+            if (!empty($headersFilter)) {$client->setDefaultOption('headers', $headers);}
             $response = $request->getBody();
-            return $this->userDetails(json_decode($response), $token);
+            return json_decode($response);
 
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
 
