@@ -13,6 +13,7 @@ class User implements \IteratorAggregate {
     public $location = null;
     public $description = null;
     public $imageUrl = null;
+    public $gender = null;
     public $urls = null;
 
     public function __set($name, $value)

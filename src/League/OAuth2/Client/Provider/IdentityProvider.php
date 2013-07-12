@@ -21,6 +21,10 @@ abstract class IdentityProvider {
 
     public $scopes = array();
 
+    public $authorizeParams = array();
+
+    public $accessTokenParams = array();
+
     public $method = 'post';
 
     public $scopeSeperator = ',';
@@ -56,6 +60,8 @@ abstract class IdentityProvider {
             'approval_prompt' => 'force' // - google force-recheck
         );
 
+        $params = array_merge($params, $this->authorizeParams);
+
         header('Location: ' . $this->urlAuthorize().'?'.http_build_query($params));
         exit;
     }
@@ -78,6 +84,8 @@ abstract class IdentityProvider {
             'redirect_uri'  => $this->redirectUri,
             'grant_type'    => $grant,
         );
+
+        $defaultParams = array_merge($defaultParams, $this->accessTokenParams);
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
