@@ -4,8 +4,6 @@ namespace League\OAuth2\Client\Provider;
 
 class Wordpress extends IdentityProvider
 {
-    public $scopes = array('offline_access', 'email', 'read_stream');
-    public $responseType = 'string';
 
     public function urlAuthorize()
     {
