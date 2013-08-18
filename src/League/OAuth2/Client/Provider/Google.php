@@ -21,12 +21,12 @@ class Google extends IdentityProvider
         return 'https://accounts.google.com/o/oauth2/token';
     }
 
-    public function urlUserDetails(\OAuth2\Client\Token\AccessToken $token)
+    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
         return 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token;
     }
 
-    public function userDetails($response, \OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $response = (array) $response;
         $user = new User;
