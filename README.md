@@ -13,7 +13,7 @@ The library requires PHP 5.3+ and is PSR-0 compatible.
 ## Usage
 
 ```php
-$provider = new \OAuth2\Client\Provider\<provider name>(array(
+$provider = new League\OAuth2\Client\Provider\<provider name>(array(
     'clientId'  =>  'XXXXXXXX',
     'clientSecret'  =>  'XXXXXXXX',
     'redirectUri'   =>  'http://your-registered-redirect-uri/'
@@ -61,5 +61,6 @@ if ( ! isset($_GET['code'])) {
 | **Facebook** | string | string | string | string | string | string | string | string | string   | array (Facebook) |
 | **Github**   | string | string | string | null | null | string | null | null | null | array (Github, [personal])|
 | **Google** | string | string | string | string | string | string | null | null | string | null |
+| **Instagram** | string | string | string | null | null | null | null | string | string | null |
 
 **Notes**: Providers which return URLs sometimes include additional URLs if the user has provided them. These have been wrapped in []
