@@ -5,6 +5,8 @@ This library makes it stupidly simple to integrate your application with OAuth 2
 * Facebook
 * Github
 * Google
+* Instagram
+* LinkedIn
 
 Adding support for other providers is trivial.
 
@@ -62,5 +64,6 @@ if ( ! isset($_GET['code'])) {
 | **Github**   | string | string | string | null | null | string | null | null | null | array (Github, [personal])|
 | **Google** | string | string | string | string | string | string | null | null | string | null |
 | **Instagram** | string | string | string | null | null | null | null | string | string | null |
+| **LinkedIn** | string | null | string | null | null | string | string | string | string | string |
 
 **Notes**: Providers which return URLs sometimes include additional URLs if the user has provided them. These have been wrapped in []
