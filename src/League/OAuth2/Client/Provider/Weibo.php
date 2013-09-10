@@ -4,9 +4,10 @@ namespace League\OAuth2\Client\Provider;
 
 class Weibo extends IdentityProvider {
 
-	//scope in weibo require admin approval
+	//scope in weibo require manual approval
 	//public $scopes = array('email');
-	public $responseType = 'string';
+
+	public $responseType = 'json';
 
 	public function urlAuthorize()
 	{
@@ -19,21 +20,26 @@ class Weibo extends IdentityProvider {
 	}
 
 	public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)	{
-		return 'https://api.weibo.com/2/users/show.json?access_token='.$token->access_token.'&uid='.$token->uid;
+		return 'https://api.weibo.com/2/users/show.json?access_token='.$token->accessToken.'&uid='.$token->uid;
 	}
 
 	public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
 	{
 		$user = new User;
-		$user->uid= $response->id;
-		$user->nickname = $response->screen_name;
-		$user->name = isset($response->name) ? $response->name : null;
+		$user->uid = $response->id;
+		//domain = profile_url, idstr = (string)id
+		$user->nickname = isset($response->domain) ? $response->domain : $response->idstr;
+		//screen_name = name
+		$user->name = isset($response->screen_name) ? $response->screen_name : null; 
 		$user->location = isset($response->location) ? $response->location : null;
-		$user->image = isset($response->profile_image_url) ? $response->profile_image_url : null;
+		//smaller version at profile_image_url
+		$user->imageUrl = isset($response->avatar_large) ? $response->avatar_large : null;
 		$user->description = isset($response->description) ? $response->description : null;
 		
 		$user->urls = array(
-			'Weibo' => $response->profile_url,
+			//weibo url defaults to user id, but redirect to custom uri when set
+			'Weibo' => isset($response->profile_url) ? 'http://weibo.com/'.$response->profile_url : 'http://weibo.com/'.$response->idstr,
+			//labelled as blog address
 			'Blog' => $response->url,
 		);
 		
