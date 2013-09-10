@@ -8,6 +8,10 @@ class IDPException extends \Exception
 
     public function __construct($result)
     {
+        //result can sometime be a json string
+        if(is_string($result))
+            $result = json_decode($result);
+
         $this->result = $result;
 
         $code = isset($result['code']) ? $result['code'] : 0;
@@ -28,7 +32,8 @@ class IDPException extends \Exception
 
         }
 
-        parent::__construct($message['message'], $message['code']);
+        //we should output $message (string) and $code (int) for exception
+        parent::__construct($message, $code);
     }
 
     public function getType()
