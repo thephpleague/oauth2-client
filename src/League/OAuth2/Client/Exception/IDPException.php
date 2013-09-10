@@ -28,7 +28,8 @@ class IDPException extends \Exception
 
         }
 
-        parent::__construct($message['message'], $message['code']);
+        //we should output $message (string) and $code (int) for exception
+        parent::__construct($message, $code);
     }
 
     public function getType()
