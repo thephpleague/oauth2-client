@@ -8,6 +8,7 @@ This library makes it stupidly simple to integrate your application with OAuth 2
 * Instagram
 * LinkedIn
 * Microsoft
+* Sina Weibo
 
 Adding support for other providers is trivial.
 
@@ -67,5 +68,6 @@ if ( ! isset($_GET['code'])) {
 | **Instagram** | string | string | string | null | null | null | null | string | string | null |
 | **LinkedIn** | string | null | string | null | null | string | string | string | string | string |
 | **Microsoft** | string | null | string | string | string | string | null | null | string | string |
+| **Sina Weibo** | string | string | string | null | null | null | string | string | string | array (Weibo, Blog) |
 
 **Notes**: Providers which return URLs sometimes include additional URLs if the user has provided them. These have been wrapped in []
