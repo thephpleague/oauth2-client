@@ -20,6 +20,7 @@ class Weibo extends IdentityProvider {
 	}
 
 	public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)	{
+		//either uid or screen_name is required (even when access token is present)
 		return 'https://api.weibo.com/2/users/show.json?access_token='.$token->accessToken.'&uid='.$token->uid;
 	}
 
