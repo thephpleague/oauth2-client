@@ -27,20 +27,20 @@ class Weibo extends IdentityProvider {
 	{
 		$user = new User;
 		$user->uid = $response->id;
-		//domain = profile_url, idstr = (string)id
+		//username can be: 1) domain (= profile_url), 2) idstr (= id, but return as string)
 		$user->nickname = isset($response->domain) ? $response->domain : $response->idstr;
-		//screen_name = name
+		//screen_name is display name (= name, there are no username/nickname field)
 		$user->name = isset($response->screen_name) ? $response->screen_name : null; 
 		$user->location = isset($response->location) ? $response->location : null;
-		//smaller version at profile_image_url
-		$user->imageUrl = isset($response->avatar_large) ? $response->avatar_large : null;
+		//profile_image_url is 50x50, avatar_large is 180x180 (unit:px)
+		$user->imageUrl = isset($response->avatar_large) ? $response->avatar_large : $response->profile_image_url;
 		$user->description = isset($response->description) ? $response->description : null;
 		
 		$user->urls = array(
 			//weibo url defaults to user id, but redirect to custom uri when set
 			'Weibo' => isset($response->profile_url) ? 'http://weibo.com/'.$response->profile_url : 'http://weibo.com/'.$response->idstr,
-			//labelled as blog address
-			'Blog' => $response->url,
+			//custom input, labelled as blog address
+			'Blog' => isset($response->url) ? $response->url : null,
 		);
 		
 		return $user;
