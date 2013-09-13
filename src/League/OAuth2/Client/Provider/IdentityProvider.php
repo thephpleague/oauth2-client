@@ -44,7 +44,7 @@ abstract class IdentityProvider {
 
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
 
-    public function authorize($options = array())
+    public function getAuthorizationUri($options = array())
     {
         $state = md5(uniqid(rand(), true));
         setcookie($this->name.'_authorize_state', $state);
@@ -58,7 +58,12 @@ abstract class IdentityProvider {
             'approval_prompt' => 'force' // - google force-recheck
         );
 
-        header('Location: ' . $this->urlAuthorize().'?'.http_build_query($params));
+        return $this->urlAuthorize().'?'.http_build_query($params);
+    }
+
+    public function authorize($options = array())
+    {
+        header('Location: ' . $this->getAuthorizeUri($options));
         exit;
     }
 
