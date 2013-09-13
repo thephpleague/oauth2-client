@@ -46,7 +46,7 @@ abstract class IdentityProvider {
 
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
 
-    public function getAuthorizationUri($options = array())
+    public function getAuthorizationUrl($options = array())
     {
         $state = md5(uniqid(rand(), true));
         setcookie($this->name.'_authorize_state', $state);
@@ -65,7 +65,7 @@ abstract class IdentityProvider {
 
     public function authorize($options = array())
     {
-        header('Location: ' . $this->getAuthorizeUri($options));
+        header('Location: ' . $this->getAuthorizeUrl($options));
         exit;
     }
 
