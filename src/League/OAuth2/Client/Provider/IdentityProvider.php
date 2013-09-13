@@ -65,7 +65,7 @@ abstract class IdentityProvider {
 
     public function authorize($options = array())
     {
-        header('Location: ' . $this->getAuthorizeUrl($options));
+        header('Location: ' . $this->getAuthorizationUrl($options));
         exit;
     }
 
