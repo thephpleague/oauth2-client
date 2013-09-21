@@ -28,14 +28,13 @@ class Google extends IdentityProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $response = (array) $response;
         $user = new User;
-        $user->uid = $response['id'];
-        $user->name = $response['name'];
-        $user->first_name = $response['given_name'];
-        $user->last_name = $response['family_name'];
-        $user->email = $response['email'];
-        $user->image = (isset($response['picture'])) ? $response['picture'] : null;
+        $user->uid = $response->id;
+        $user->name = isset($response->name) && $response->name ? $response->name : null;
+        $user->first_name = isset($response->given_name) && $response->given_name ? $response->given_name : null;
+        $user->last_name = isset($response->family_name) && $response->family_name ? $response->family_name : null;
+        $user->email = isset($response->email) && $response->email ? $response->email : null;
+        $user->imageUrl = isset($response->picture) && $response->picture ? $response->picture : null;
         return $user;
     }
 
@@ -51,6 +50,6 @@ class Google extends IdentityProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return array($response->given_name, $response->family_name);
+        return isset($response->name) && $response->name ? $response->name : null;
     }
 }
