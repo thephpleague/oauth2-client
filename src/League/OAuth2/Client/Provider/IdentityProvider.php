@@ -27,6 +27,8 @@ abstract class IdentityProvider {
 
     public $responseType = 'json';
 
+    protected $cachedUserDetailsResponse;
+
     public function __construct($options = array())
     {
         foreach ($options as $option => $value) {
@@ -44,7 +46,7 @@ abstract class IdentityProvider {
 
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
 
-    public function authorize($options = array())
+    public function getAuthorizationUrl($options = array())
     {
         $state = md5(uniqid(rand(), true));
         setcookie($this->name.'_authorize_state', $state);
@@ -58,7 +60,12 @@ abstract class IdentityProvider {
             'approval_prompt' => 'force' // - google force-recheck
         );
 
-        header('Location: ' . $this->urlAuthorize().'?'.http_build_query($params));
+        return $this->urlAuthorize().'?'.http_build_query($params);
+    }
+
+    public function authorize($options = array())
+    {
+        header('Location: ' . $this->getAuthorizationUrl($options));
         exit;
     }
 
@@ -117,23 +124,56 @@ abstract class IdentityProvider {
         return $grant->handleResponse($result);
     }
 
-    public function getUserDetails(AccessToken $token)
+    public function getUserDetails(AccessToken $token, $force = false)
     {
-        $url = $this->urlUserDetails($token);
+        $response = $this->fetchUserDetails($token);
 
-        try {
+        return $this->userDetails(json_decode($response), $token);
+    }
 
-            $client = new GuzzleClient($url);
-            $request = $client->get()->send();
-            $response = $request->getBody();
-            return $this->userDetails(json_decode($response), $token);
+    public function getUserUid(AccessToken $token, $force = false)
+    {
+        $response = $this->fetchUserDetails($token, $force);
 
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+        return $this->userUid(json_decode($response), $token);
+    }
 
-            $raw_response = explode("\n", $e->getResponse());
-            throw new IDPException(end($raw_response));
+    public function getUserEmail(AccessToken $token, $force = false)
+    {
+        $response = $this->fetchUserDetails($token, $force);
 
+        return $this->userEmail(json_decode($response), $token);
+    }
+
+    public function getUserScreenName(AccessToken $token, $force = false)
+    {
+        $response = $this->fetchUserDetails($token, $force);
+
+        return $this->userScreenName(json_decode($response), $token);
+    }
+
+    protected function fetchUserDetails(AccessToken $token, $force = false)
+    {
+        if ( ! $this->cachedUserDetailsResponse || $force == true) {
+
+            $url = $this->urlUserDetails($token);
+
+            try {
+
+                $client = new GuzzleClient($url);
+                $request = $client->get()->send();
+                $response = $request->getBody();
+                $this->cachedUserDetailsResponse = $response;
+
+            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+
+                $raw_response = explode("\n", $e->getResponse());
+                throw new IDPException(end($raw_response));
+
+            }
         }
+
+        return $this->cachedUserDetailsResponse;
     }
 
 }

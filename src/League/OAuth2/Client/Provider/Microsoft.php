@@ -38,4 +38,19 @@ class Microsoft extends IdentityProvider
 
         return $user;
     }
+
+    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        return $response->id;
+    }
+
+    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        return isset($response->emails->preferred) && $response->emails->preferred ? $response->emails->preferred : null;
+    }
+
+    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        return array($response->first_name, $response->last_name);
+    }
 }
