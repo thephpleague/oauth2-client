@@ -6,7 +6,7 @@ class Linkedin extends IdentityProvider
 {
     public $scopes = array('r_basicprofile r_emailaddress');
     public $responseType = 'json';
-    //public $fields = array('id', 'email-address', 'first-name', 'last-name', 'headline', 'industry', 'picture-url', 'public-profile-url');
+    public $fields = array('id', 'email-address', 'first-name', 'last-name', 'headline', 'picture-url', 'public-profile-url');
 
     public function urlAuthorize()
     {
@@ -20,7 +20,7 @@ class Linkedin extends IdentityProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://api.linkedin.com/v1/people/~?format=json&oauth2_access_token='.$token;
+        return 'https://api.linkedin.com/v1/people/~:('.implode(",", $this->fields).')?format=json&oauth2_access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -34,7 +34,9 @@ class Linkedin extends IdentityProvider
         $user->email = isset($response->emailAddress) && $response->emailAddress ? $response->emailAddress : null;
         $user->description = isset($response->headline) && $response->headline ? $response->headline : null;
         $user->imageUrl = isset($response->pictureUrl) && $response->pictureUrl ? $response->pictureUrl : null;
-        $user->urls = isset($response->publicProfileUrl) && $response->publicProfileUrl ? $response->publicProfileUrl : null;
+        $user->urls = array(
+            'profile' => isset($response->publicProfileUrl) && $response->publicProfileUrl ? $response->publicProfileUrl : null,
+        );
 
         return $user;
     }
