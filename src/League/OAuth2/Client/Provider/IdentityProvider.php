@@ -167,8 +167,13 @@ abstract class IdentityProvider {
 
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
 
-                $raw_response = explode("\n", $e->getResponse());
-                throw new IDPException(end($raw_response));
+                //get reponse with header
+                $raw_response = end(explode("\n", $e->getResponse()));
+
+                //convert error message to array if possible
+                $response = is_string($raw_response) ? json_decode($raw_response) : $raw_response;
+
+                throw new IDPException($response);
 
             }
         }

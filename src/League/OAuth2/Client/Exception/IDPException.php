@@ -8,10 +8,6 @@ class IDPException extends \Exception
 
     public function __construct($result)
     {
-        //result can sometime be a json string
-        if(is_string($result))
-            $result = json_decode($result);
-
         $this->result = $result;
 
         $code = isset($result['code']) ? $result['code'] : 0;
