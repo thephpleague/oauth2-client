@@ -48,6 +48,6 @@ class Github extends IdentityProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return $response->name;
+        return isset($response->name) ? $response->name : null;
     }
 }
