@@ -30,7 +30,7 @@ class Github extends IdentityProvider
         $user->email = isset($response->email) && $response->email ? $response->email : null;
         $user->urls = array(
             'profile' => 'https://github.com/'.$response->login,
-            'site' => isset($response->blog) && $response->blog ? $response->blog : null;
+            'site' => isset($response->blog) && $response->blog ? $response->blog : null
         );
 
         return $user;
