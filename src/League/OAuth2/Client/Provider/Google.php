@@ -32,8 +32,8 @@ class Google extends IdentityProvider
         $user = new User;
         $user->uid = $response['id'];
         $user->name = $response['name'];
-        $user->first_name = $response['given_name'];
-        $user->last_name = $response['family_name'];
+        $user->firstName = $response['given_name'];
+        $user->lastName = $response['family_name'];
         $user->email = $response['email'];
         $user->image = (isset($response['picture'])) ? $response['picture'] : null;
         return $user;
