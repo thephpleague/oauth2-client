@@ -4,7 +4,6 @@ namespace League\OAuth2\Client\Provider;
 
 class Github extends IdentityProvider
 {
-    public $scopes = array('user:email');
     public $responseType = 'string';
 
     public function urlAuthorize()
