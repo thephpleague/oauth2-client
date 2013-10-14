@@ -25,6 +25,8 @@ abstract class IdentityProvider {
 
     public $scopeSeperator = ',';
 
+    public $accessType = '';
+
     public $responseType = 'json';
 
     protected $cachedUserDetailsResponse;
@@ -59,6 +61,10 @@ abstract class IdentityProvider {
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'force' // - google force-recheck
         );
+
+        // Added here because i'm uncertain what a default grant_type should be.
+        if ($this->accessType)
+            $params['access_type'] = $this->accessType;
 
         return $this->urlAuthorize().'?'.http_build_query($params);
     }
