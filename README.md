@@ -57,6 +57,27 @@ if ( ! isset($_GET['code'])) {
 }
 ```
 
+## Refresh tokens
+
+When first requesting an access token some providers will supply you with a `refresh_token` that you may use to retrieve a brand new access token when your's expires.
+
+
+```php
+if ($refreshToken = $t->refreshToken)
+{
+    $_SESSION['refreshToken'] = $refreshToken;
+}
+```
+
+Later, you can use that very refresh token to request a new access token like so.
+
+```php
+$refresh_token = $_SESSION['refreshToken'];
+$new_token = $provider->getAccessToken('refresh_token', array('refresh_token' => $token->refresh_token));
+```
+
+Be sure not to delete your refresh token as you won't be able to refresh your access token.
+
 ### List of built-in identity providers
 
 | Provider | uid    | nickname | name   | first_name | last_name | email  | location | description | imageUrl | urls |
