@@ -63,8 +63,7 @@ abstract class IdentityProvider {
         );
 
         // Added here because i'm uncertain what a default grant_type should be.
-        if ($this->accessType)
-            $params['access_type'] = $this->accessType;
+        if ($this->accessType) $params['access_type'] = $this->accessType;
 
         return $this->urlAuthorize().'?'.http_build_query($params);
     }
