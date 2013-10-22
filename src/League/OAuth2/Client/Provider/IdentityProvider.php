@@ -46,6 +46,16 @@ abstract class IdentityProvider {
 
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
 
+    public function getScopes()
+    {
+        return $this->scopes;
+    }
+
+    public function setScopes(array $scopes)
+    {
+        $this->scopes = $scopes;
+    }
+
     public function getAuthorizationUrl($options = array())
     {
         $state = md5(uniqid(rand(), true));
