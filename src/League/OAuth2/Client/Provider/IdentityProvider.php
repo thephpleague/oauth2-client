@@ -59,6 +59,24 @@ abstract class IdentityProvider {
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'force' // - google force-recheck
         );
+        
+        // google force-recheck this option
+        if (isset($this->approval_prompt))
+        {
+            $params['approval_prompt'] = $this->approval_prompt;
+        }
+
+        // google need this option to obtain refersh token
+        if (isset($this->access_type))
+        {
+            $params['access_type'] = $this->access_type;
+        }
+
+        // google provide this options as a hit to the authentication server
+        if (isset($this->login_hint))
+        {
+            $param['login_hint'] = $this->login_hint;
+        }
 
         return $this->urlAuthorize().'?'.http_build_query($params);
     }
@@ -93,14 +111,16 @@ abstract class IdentityProvider {
         try {
             switch ($this->method) {
                 case 'get':
-                    $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($requestParams));
-                    $request = $client->send();
-                    $response = $request->getBody();
+                    $client = new GuzzleClient();
+                    $request = $client->get($this->urlAccessToken() . '?' . http_build_query($requestParams));
+                    $response = $request->send();
+                    $response = $response->getBody();
                     break;
                 case 'post':
                     $client = new GuzzleClient($this->urlAccessToken());
-                    $request = $client->post(null, null, $requestParams)->send();
-                    $response = $request->getBody();
+                    $request = $client->post(null, null, $requestParams);
+                    $response = $request->send();
+                    $response = $response->getBody();
                     break;
             }
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
@@ -181,4 +201,55 @@ abstract class IdentityProvider {
         return $this->cachedUserDetailsResponse;
     }
 
+
+    /**
+     * A basic all api action(only supporting RESTful api)
+     *
+     * @param   string  http method
+     * @param   string  request url
+     * @param   string  request parameters
+     * @return  array   response(convert json to array)
+     */
+    public function callApi($method, $url, $params)
+    {
+        switch ($method) {
+        case 'get':
+            $request = $http_client->get($url . '?' . http_build_query($params));
+            break;
+        case 'post':
+            $request = $http_client->post($url, array(), $params);
+            break;
+        case 'put':
+            $request = $http_client->put($url, array(), $params);
+            break;
+        case 'delete':
+            $request = $http_client->delete($url, array(), $params);
+            break;
+        case 'patch':
+            $request = $http_client->patch($url, array(), $params);
+            break;
+        default:
+            throw new \InvalidArgumentException('HTTP method {$method} is not supported');
+        }
+
+        // only supoorting json format
+        $request->setHeader('Accept', 'application/json');
+
+        try {
+            $response = $request->send();
+        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+            $raw_response = $e->getResponse();
+            if (($result = json_decode($raw_response->getBody())) === NULL) {
+                $result = array();
+                $result['status'] = $raw_response->getStatusCode();
+                $result['body'] = $raw_response->getBody();
+            }
+        }
+
+        if ( ! isset($result)) {
+            $result = $response->json();
+        }
+
+        return $result;
+    }
 }

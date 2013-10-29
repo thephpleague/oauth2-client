@@ -8,6 +8,8 @@ class Weibo extends IdentityProvider {
 	//public $scopes = array('email');
 
 	public $responseType = 'json';
+	
+	public $name = 'weibo';
 
 	public function urlAuthorize()
 	{

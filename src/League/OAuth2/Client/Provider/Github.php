@@ -6,6 +6,8 @@ class Github extends IdentityProvider
 {
     public $responseType = 'string';
 
+    public $name = "github";
+
     public function urlAuthorize()
     {
         return 'https://github.com/login/oauth/authorize';
