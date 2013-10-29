@@ -27,6 +27,11 @@ class AccessToken
     public $uid;
 
     /**
+     * @var string grantType
+     */
+    public $grantType;
+
+    /**
      * Sets the token, expiry, etc values.
      *
      * @param   array   token options
@@ -58,6 +63,8 @@ class AccessToken
 
         // Grab a refresh token so we can update access tokens when they expires
         isset($options['refresh_token']) and $this->refreshToken = $options['refresh_token'];
+
+        isset($options['grant_type']) and $this->grantType = $options['grant_type'];
     }
 
     /**

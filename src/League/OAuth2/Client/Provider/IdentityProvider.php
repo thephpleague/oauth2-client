@@ -239,7 +239,7 @@ abstract class IdentityProvider {
             $response = $request->send();
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
             $raw_response = $e->getResponse();
-            if (($result = json_decode($raw_response->getBody())) === NULL) {
+            if ( ($result = json_decode($raw_response->getBody())) == NULL) {
                 $result = array();
                 $result['status'] = $raw_response->getStatusCode();
                 $result['body'] = $raw_response->getBody();
