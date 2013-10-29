@@ -34,8 +34,8 @@ class Linkedin extends IdentityProvider
         $user->email = isset($response->emailAddress) ? $response->emailAddress : null;
         $user->location = isset($response->location->name) ? $response->location->name : null;
         $user->description = isset($response->headline) ? $response->headline : null;
-        $user->imageUrl = $response->pictureUrl;
-        $user->urls = $response->publicProfileUrl;
+        $user->imageUrl = isset($response->pictureUrl) ? $response->pictureUrl : null;
+        $user->urls = isset($response->publicProfileUrl) ? $response->publicProfileUrl : null;
 
         return $user;
     }
