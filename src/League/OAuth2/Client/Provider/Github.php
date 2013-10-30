@@ -28,6 +28,7 @@ class Github extends IdentityProvider
         $user->nickname = $response->login;
         $user->name = isset($response->name) ? $response->name : null;
         $user->email = isset($response->email) ? $response->email : null;
+        $user->imageUrl = isset($response->avatar_url) ? $response->avatar_url : null;
         $user->urls = array(
             'GitHub' => 'http://github.com/'.$user->login,
             'Blog' => $user->blog,
