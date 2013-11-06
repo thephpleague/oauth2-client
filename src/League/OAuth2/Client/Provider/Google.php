@@ -12,6 +12,8 @@ class Google extends IdentityProvider
 
     public $login_hint;
 
+    public $name = "google";
+
     public $scopes = array(
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/userinfo.email'
