@@ -180,9 +180,10 @@ abstract class IdentityProvider {
 
             try {
 
-                $client = new GuzzleClient($url);
-                $request = $client->get()->send();
-                $response = $request->getBody();
+                $client = new GuzzleClient();
+                $request = $client->get($url);
+                $response = $request->->send();
+                $response = $response->getBody();
                 $this->cachedUserDetailsResponse = $response;
 
             } catch (\Guzzle\Http\Exception\BadResponseException $e) {
