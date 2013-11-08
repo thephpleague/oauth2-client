@@ -7,7 +7,7 @@ use \League\OAuth2\Client\Token\AccessToken;
 use \League\OAuth2\Client\Exception\IDPException;
 use \League\OAuth2\Client\Exception\Oauth2AuthorizationRequiredException;
 use \Guzzle\Http\Exception\BadResponseException;
-use OAuth2\Client\Grant\GrantInterface;
+use \League\OAuth2\Client\Grant\GrantInterface;
 
 
 abstract class IdentityProvider {

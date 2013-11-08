@@ -2,82 +2,93 @@
 
 namespace League\OAuth2\Client\Token;
 
-use InvalidArgumentException;
 
-class AccessToken
-{
+class AccessToken {
+    
     /**
-     * @var  string  accessToken
+     * @var string accessToken
      */
     public $accessToken;
 
     /**
-     * @var  int  expires
+     * @var int expires
      */
     public $expires;
 
     /**
-     * @var  string  refreshToken
+     * @var string refreshToken
      */
     public $refreshToken;
 
     /**
-     * @var  string  uid
+     * @var string uid
      */
     public $uid;
 
     /**
      * Sets the token, expiry, etc values.
      *
-     * @param   array   token options
-     * @return  void
+     * @param array token options
      */
-    public function __construct(array $options = null)
-    {
-        if ( ! isset($options['access_token'])) {
-            throw new \InvalidArgumentException('Required option not passed: access_token'
-                                                 . PHP_EOL.print_r($options, true));
+    public function __construct( array $options = null ) {
+        
+        if( !isset( $options['access_token'] ) ) {
+            throw new \InvalidArgumentException(
+                    'Required option not passed: access_token'
+                    .PHP_EOL.print_r( $options, true ) );
         }
 
         $this->accessToken = $options['access_token'];
 
         // Some providers (not many) give the uid here, so lets take it
-        isset($options['uid']) and $this->uid = $options['uid'];
+        if( isset( $options['uid'] ) ) {
+            $this->uid = $options['uid'];
+        }
 
-        // Vkontakte uses user_id instead of uid
-        isset($options['user_id']) and $this->uid = $options['user_id'];
+        // VKontakte uses user_id instead of uid
+        if( isset( $options['user_id'] ) ) {
+            $this->uid = $options['user_id'];
+        }
 
-        // Mailru uses x_mailru_vid instead of uid
-        isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
+        // Mail.ru uses x_mailru_vid instead of uid
+        if( isset( $options['x_mailru_vid'] ) ) {
+            $this->uid = $options['x_mailru_vid'];
+        }
 
-        // We need to know when the token expires, add num. seconds to current time
-        isset($options['expires_in']) and $this->expires = time() + ((int) $options['expires_in']);
+        // We need to know when the token expires, add num. seconds
+        // to current time
+        if( isset( $options['expires_in'] ) ) {
+            $this->expires = time() + intval( $options['expires_in'] );
+        }
 
         // Facebook is just being a spec ignoring jerk
-        isset($options['expires']) and $this->expires = time() + ((int) $options['expires']);
+        if( isset( $options['expires'] ) ) {
+            $this->expires = time() + intval( $options['expires'] );
+        }
 
         // Grab a refresh token so we can update access tokens when they expires
-        isset($options['refresh_token']) and $this->refreshToken = $options['refresh_token'];
+        if( isset( $options['refresh_token'] ) ) {
+            $this->refreshToken = $options['refresh_token'];
+        }
     }
 
     /**
      * Returns the token key.
      *
-     * @return  string
+     * @return string
      */
-    public function __toString()
-    {
-        return (string) $this->accessToken;
+    public function __toString() {
+        return (string)$this->accessToken;
     }
 
     /**
      * Return a boolean if the property is set
      *
-     * @param   string  variable name
-     * @return  bool
+     * @param string variable name
+     * @return bool true if the property is set, false otherwise
      */
-    public function __isset($key)
-    {
-        return isset($this->$key);
+    public function __isset( $key ) {
+        return isset( $this->$key );
     }
+
 }

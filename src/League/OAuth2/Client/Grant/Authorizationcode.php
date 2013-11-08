@@ -2,26 +2,26 @@
 
 namespace League\OAuth2\Client\Grant;
 
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use \League\OAuth2\Client\Token\AccessToken;
+
 
 class Authorizationcode implements GrantInterface {
 
-    public function __toString()
-    {
-        return 'authorization_code';
-    }
-
-    public function prepRequestParams($defaultParams, $params)
-    {
-        if ( ! isset($params['code']) || empty($params['code'])) {
-            throw new \BadMethodCallException('Missing authorization code');
+    public function prepRequestParams( array $defaultParams, array $params ) {
+        
+        if( empty( $params['code'] ) ) {
+            throw new \BadMethodCallException( 'Missing authorization code' );
         }
 
-        return array_merge($defaultParams, $params);
+        return array_merge( $defaultParams, $params );
     }
 
-    public function handleResponse($response = array())
-    {
-        return new AccessToken($response);
+    public function handleResponse( array $response = array() ) {
+        return new AccessToken( $response );
     }
+    
+    public function __toString() {
+        return 'authorization_code';
+    }
+    
 }
