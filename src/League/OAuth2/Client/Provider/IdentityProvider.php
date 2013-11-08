@@ -2,12 +2,12 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use \Guzzle\Service\Client as GuzzleClient;
-use \League\OAuth2\Client\Token\AccessToken;
-use \League\OAuth2\Client\Exception\IDPException;
-use \League\OAuth2\Client\Exception\Oauth2AuthorizationRequiredException;
-use \Guzzle\Http\Exception\BadResponseException;
-use \League\OAuth2\Client\Grant\GrantInterface;
+use Guzzle\Service\Client as GuzzleClient;
+use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Exception\IDPException;
+use OAuth2\Client\Exception\Oauth2AuthorizationRequiredException;
+use Guzzle\Http\Exception\BadResponseException;
+use League\OAuth2\Client\Grant\GrantInterface;
 
 
 abstract class IdentityProvider {
@@ -57,6 +57,12 @@ abstract class IdentityProvider {
 
     abstract public function userDetails( $response, AccessToken $token );
 
+    abstract public function userUid( $response, AccessToken $token );
+    
+    abstract public function userEmail( $response, AccessToken $token );
+    
+    abstract public function userScreenName( $response, AccessToken $token );
+    
     
     public function getScopes() {
         return $this->scopes;
@@ -81,7 +87,8 @@ abstract class IdentityProvider {
             'response_type'     => isset( $options['response_type'] )
                     ? $options['response_type']
                     : 'code',
-            'approval_prompt'   => 'force' // - google force-recheck
+            'approval_prompt'   => 'force', // - google force-recheck
+            'v'                 => '5.3',   // - Vkontakte compatibility
         );
 
         return $this->urlAuthorize().'?'.http_build_query( $params );
@@ -104,7 +111,7 @@ abstract class IdentityProvider {
         
         if( is_string( $grant ) ) {
             
-            $grant = 'League\\OAuth2\\Client\\Grant\\'
+            $grant = '\\League\\OAuth2\\Client\\Grant\\'
                     .ucfirst( str_replace( '_', '', $grant ) );
             
             if( !class_exists( $grant ) ) {
@@ -128,14 +135,14 @@ abstract class IdentityProvider {
         );
 
         $requestParams = $grant->prepRequestParams( $defaultParams, $params );
-
+        
         try {
             switch( $this->method ) {
                 case 'get':
                     $client = new GuzzleClient(
                             $this->urlAccessToken()
                             .'?'.http_build_query( $requestParams ) );
-                    $request = $client->send();
+                    $request = $client->get()->send();
                     $response = $request->getBody();
                     break;
                 case 'post':
