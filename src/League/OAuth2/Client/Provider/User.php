@@ -15,9 +15,10 @@ class User implements \IteratorAggregate {
     public $description = null;
     public $imageUrl    = null;
     public $urls        = null;
-    public $sex         = null;
+    
     public $city        = null;
     public $country     = null;
+    public $sex         = null;
     public $birthday    = null;
     
     

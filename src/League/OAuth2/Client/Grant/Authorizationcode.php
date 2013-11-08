@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Grant;
 
-use \League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessToken;
 
 
 class Authorizationcode implements GrantInterface {
