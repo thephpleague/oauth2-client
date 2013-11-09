@@ -2,3 +2,5 @@
 /composer.lock
 .DS_Store
 /testing/
+/nbproject/*
+.directory

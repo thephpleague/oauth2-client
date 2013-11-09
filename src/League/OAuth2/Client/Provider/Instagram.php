@@ -35,4 +35,16 @@ class Instagram extends IdentityProvider
 
         return $user;
     }
+
+    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token) {
+        return null;
+    }
+
+    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token) {
+        return null;
+    }
+
+    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token) {
+        return null;
+    }
 }
