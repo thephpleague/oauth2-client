@@ -182,7 +182,7 @@ abstract class IdentityProvider {
 
                 $client = new GuzzleClient();
                 $request = $client->get($url);
-                $response = $request->->send();
+                $response = $request->send();
                 $response = $response->getBody();
                 $this->cachedUserDetailsResponse = $response;
 
