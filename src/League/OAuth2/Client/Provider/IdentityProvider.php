@@ -57,7 +57,6 @@ abstract class IdentityProvider {
             'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'force' // - google force-recheck
         );
         
         // google force-recheck this option
