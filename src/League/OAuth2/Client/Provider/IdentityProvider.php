@@ -31,7 +31,7 @@ abstract class IdentityProvider {
 
     private $httpClient;
 
-    public function __construct(H$httpClient, $options = array())
+    public function __construct(HttpClientInterface $httpClient, $options = array())
     {
         $this->httpClient = $httpClient;
 
@@ -53,14 +53,16 @@ abstract class IdentityProvider {
     public function getAuthorizationUrl($options = array())
     {
         $state = md5(uniqid(rand(), true));
-        setcookie($this->name.'_authorize_state', $state);
+
+        // PHPUnit will declare: "Cannot modify header information - headers already sent by ..." 
+        //setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
+            'state' => $state
         );
         
         // google force-recheck this option
@@ -113,7 +115,8 @@ abstract class IdentityProvider {
 
         switch ($this->method) {
             case 'get':
-                $response = $this->httpClient->get($this->urlAccessToken() . '?' . http_build_query($requestParams));
+                $response = $this->httpClient->get($this->urlAccessToken() . '?' 
+                    . http_build_query($requestParams));
                 break;
             case 'post':
                 $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);

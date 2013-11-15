@@ -21,7 +21,7 @@ interface HttpClientInterface {
      * @throws  HttpException
      * @return  mixed
      */
-    public function get(string $uri = null, array $headers, array $options = array());
+    public function get($uri = null, array $headers = null, array $options = array());
 
 
     /**
@@ -34,5 +34,5 @@ interface HttpClientInterface {
      * @throws  HttpException
      * @return  mixed
      */
-    public function post(string $uri = null, array $headers, array $postBody = null, array $options);
+    public function post($uri = null, array $headers = null, array $postBody = null, array $options = array());
 }
