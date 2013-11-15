@@ -2,10 +2,10 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\HttpClient\HttpClientInterface;
 
 abstract class IdentityProvider {
 
@@ -29,8 +29,12 @@ abstract class IdentityProvider {
 
     protected $cachedUserDetailsResponse;
 
-    public function __construct($options = array())
+    private $httpClient;
+
+    public function __construct(H$httpClient, $options = array())
     {
+        $this->httpClient = $httpClient;
+
         foreach ($options as $option => $value) {
             if (isset($this->{$option})) {
                 $this->{$option} = $value;
@@ -107,26 +111,13 @@ abstract class IdentityProvider {
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
-        try {
-            switch ($this->method) {
-                case 'get':
-                    $client = new GuzzleClient();
-                    // $client->send() return $response instead of $request
-                    $request = $client->get($this->urlAccessToken() . '?' . http_build_query($requestParams));
-                    $response = $request->send();
-                    $response = $response->getBody();
-                    break;
-                case 'post':
-                    $client = new GuzzleClient($this->urlAccessToken());
-                    // $client->send() return $response instead of $request
-                    $request = $client->post(null, null, $requestParams);
-                    $response = $request->send();
-                    $response = $response->getBody();
-                    break;
-            }
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $raw_response = explode("\n", $e->getResponse());
-            $response = end($raw_response);
+        switch ($this->method) {
+            case 'get':
+                $response = $this->httpClient->get($this->urlAccessToken() . '?' . http_build_query($requestParams));
+                break;
+            case 'post':
+                $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);
+                break;
         }
 
         switch ($this->responseType) {
@@ -179,25 +170,19 @@ abstract class IdentityProvider {
 
             $url = $this->urlUserDetails($token);
 
-            try {
+            $response = $this->httpClient->get($url);
 
-                $client = new GuzzleClient();
-                // $client->send() return $response instead of $request
-                $request = $client->get($url);
-                $response = $request->send();
-                $response = $response->getBody();
+            if (is_string($response))
+            {
+                $response = json_decode($raw_response);
+            }
+
+            if (isset($response['error']) && ! empty($response['error'])) {
+                throw new IDPException($result);
+            }
+            else
+            {
                 $this->cachedUserDetailsResponse = $response;
-
-            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-
-                //get reponse with header
-                $raw_response = end(explode("\n", $e->getResponse()));
-
-                //convert error message to array if possible
-                $response = is_string($raw_response) ? json_decode($raw_response) : $raw_response;
-
-                throw new IDPException($response);
-
             }
         }
 
