@@ -8,6 +8,7 @@ This library makes it stupidly simple to integrate your application with OAuth 2
 * Instagram
 * LinkedIn
 * Microsoft
+* Vkontakte
 
 Adding support for other providers is trivial.
 
