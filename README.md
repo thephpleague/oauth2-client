@@ -74,3 +74,7 @@ if ( ! isset($_GET['code'])) {
 | **Microsoft** | string | null | string | string | string | string | null | null | string | string |
 
 **Notes**: Providers which return URLs sometimes include additional URLs if the user has provided them. These have been wrapped in []
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/php-loep/:package_name/blob/master/LICENSE) for more information.
