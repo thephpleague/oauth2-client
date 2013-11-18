@@ -7,8 +7,8 @@ use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 
-abstract class IdentityProvider {
-
+abstract class IdentityProvider
+{
     public $clientId = '';
 
     public $clientSecret = '';

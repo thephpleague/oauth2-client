@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Linkedin extends IdentityProvider
+class LinkedIn extends IdentityProvider
 {
     public $scopes = array('r_basicprofile r_emailaddress r_contactinfo');
     public $responseType = 'json';
@@ -39,7 +39,7 @@ class Linkedin extends IdentityProvider
 
         return $user;
     }
-    
+
     public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return $response->id;

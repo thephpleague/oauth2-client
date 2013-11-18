@@ -4,8 +4,8 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
-class Authorizationcode implements GrantInterface {
-
+class Authorizationcode implements GrantInterface
+{
     public function __toString()
     {
         return 'authorization_code';
