@@ -58,6 +58,11 @@ abstract class IdentityProvider
 
     public function getAuthorizationUrl($options = array())
     {
+        $options = array_merge(array(
+            'approval_prompt'=> 'force',
+            'response_type' => 'code'
+        ), $options);
+
         $state = md5(uniqid(rand(), true));
         setcookie($this->name.'_authorize_state', $state);
 
@@ -66,8 +71,8 @@ abstract class IdentityProvider
             'redirect_uri' => $this->redirectUri,
             'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
-            'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'force' // - google force-recheck
+            'response_type' => $options['response_type'],
+            'approval_prompt' => $options['approval_prompt']
         );
 
         return $this->urlAuthorize().'?'.http_build_query($params);

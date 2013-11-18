@@ -11,6 +11,13 @@ class Google extends IdentityProvider
         'https://www.googleapis.com/auth/userinfo.email'
     );
 
+    public function getAuthorizationUrl($options = array())
+    {
+        return parent::getAuthorizationUrl(array_merge(array(
+            'approval_prompt' => 'force-recheck'
+        ), $options));
+    }
+
     public function urlAuthorize()
     {
         return 'https://accounts.google.com/o/oauth2/auth';
