@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Token\AccessToken;
+
 class Instagram extends IdentityProvider
 {
     public $scopes = array('basic');
@@ -17,12 +19,12 @@ class Instagram extends IdentityProvider
         return 'https://api.instagram.com/oauth/access_token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://api.instagram.com/v1/users/self?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, AccessToken $token)
     {
 
         $user = new User;

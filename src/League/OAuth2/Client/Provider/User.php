@@ -2,7 +2,10 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class User implements \IteratorAggregate
+use ArrayIterator;
+use IteratorAggregate;
+
+class User implements IteratorAggregate
 {
     public $uid = null;
     public $nickname = null;
@@ -33,7 +36,7 @@ class User implements \IteratorAggregate
 
     public function getIterator()
     {
-        return new \ArrayIterator($this);
+        return new ArrayIterator($this);
     }
 
 }

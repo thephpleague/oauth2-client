@@ -3,9 +3,9 @@
 namespace League\OAuth2\Client\Provider;
 
 use Guzzle\Service\Client as GuzzleClient;
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
-use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
-use League\OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\Authorize;
+use League\OAuth2\Client\Exception\IDPException;
 
 abstract class IdentityProvider
 {
@@ -42,9 +42,9 @@ abstract class IdentityProvider
 
     abstract public function urlAccessToken();
 
-    abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function urlUserDetails(AccessToken $token);
 
-    abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function userDetails($response, AccessToken $token);
 
     public function getScopes()
     {

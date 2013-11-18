@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Token\AccessToken;
+
 class Facebook extends IdentityProvider
 {
     public $scopes = array('offline_access', 'email', 'read_stream');
@@ -17,12 +19,12 @@ class Facebook extends IdentityProvider
         return 'https://graph.facebook.com/oauth/access_token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://graph.facebook.com/me?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, AccessToken $token)
     {
         $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken, 1);
 
@@ -43,17 +45,17 @@ class Facebook extends IdentityProvider
         return $user;
     }
 
-    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
-    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userEmail($response, AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
-    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userScreenName($response, AccessToken $token)
     {
         return array($response->first_name, $response->last_name);
     }

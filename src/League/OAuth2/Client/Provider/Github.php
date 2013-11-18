@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Token\AccessToken;
+
 class Github extends IdentityProvider
 {
     public $responseType = 'string';
@@ -16,12 +18,12 @@ class Github extends IdentityProvider
         return 'https://github.com/login/oauth/access_token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://api.github.com/user?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, AccessToken $token)
     {
         $user = new User;
         $user->uid = $response->id;
@@ -36,17 +38,17 @@ class Github extends IdentityProvider
         return $user;
     }
 
-    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
-    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userEmail($response, AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
-    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userScreenName($response, AccessToken $token)
     {
         return $response->name;
     }
