@@ -225,11 +225,10 @@ EOD;
 
     private function prepareBadResponse()
     {
-        return <<<EOD
-{
-    "error": "invalid_grant"
-}
-EOD;
+        return array(
+            'error' => 'Bad Response',
+            'code'  => '401'
+        );
     }
 
 

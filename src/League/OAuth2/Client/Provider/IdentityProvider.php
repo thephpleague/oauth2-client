@@ -124,7 +124,7 @@ abstract class IdentityProvider {
         }
 
         if (is_array($response) && isset($response['error'])) {
-            throw new IDPException($result);
+            throw new IDPException($response);
         }
 
         switch ($this->responseType) {
