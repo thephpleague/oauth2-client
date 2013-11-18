@@ -123,6 +123,10 @@ abstract class IdentityProvider {
                 break;
         }
 
+        if (is_array($response) && isset($response['error'])) {
+            throw new IDPException($result);
+        }
+
         switch ($this->responseType) {
             case 'json':
                 $result = json_decode($response, true);
@@ -130,10 +134,6 @@ abstract class IdentityProvider {
             case 'string':
                 parse_str($response, $result);
                 break;
-        }
-
-        if (isset($result['error']) && ! empty($result['error'])) {
-            throw new IDPException($result);
         }
 
         return $grant->handleResponse($result);
@@ -174,14 +174,8 @@ abstract class IdentityProvider {
             $url = $this->urlUserDetails($token);
 
             $response = $this->httpClient->get($url);
-
-            if (is_string($response))
-            {
-                $response = json_decode($raw_response);
-            }
-
-            if (isset($response['error']) && ! empty($response['error'])) {
-                throw new IDPException($result);
+            if (is_array($response) && isset($response['error'])) {
+                throw new IDPException($response);
             }
             else
             {

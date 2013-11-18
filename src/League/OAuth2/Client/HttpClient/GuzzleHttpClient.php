@@ -10,7 +10,7 @@ class GuzzleHttpClient implements HttpClientInterface {
     private $guzzleClient;
 
     public function __construct() {
-       $guzzleClient = new GuzzleClient();
+       $this->guzzleClient = new GuzzleClient();
     }
     
     public function get($uri = null, array $headers = null, array $options = array()) {
@@ -19,13 +19,15 @@ class GuzzleHttpClient implements HttpClientInterface {
         try {
             $response =  $request->send();
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            //get reponse with header
-            $result = end(explode("\n", $e->getResponse()));
+            $response = $e->getResponse();
+            $result['body'] = $response->getBody(true);
+            $result['error'] = "Bad Response";
+            $result['code'] = $response->getStatusCode();
 
             return $result;
         }
 
-        $result = $response->getBody();
+        $result = $response->getBody(true);
 
         return $result;
     }
@@ -36,13 +38,15 @@ class GuzzleHttpClient implements HttpClientInterface {
         try {
             $response = $request->send();
         } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            //get reponse with header
-            $result = end(explode("\n", $e->getResponse()));
+            $response = $e->getResponse();
+            $result['body'] = $response->getBody(true);
+            $result['error'] = "Bad Response";
+            $result['code'] = $response->getStatusCode();
 
-            return $result;
+            return $result; 
         }
 
-        $result = $response->getBody();
+        $result = $response->getBody(true);
         
         return $result;
     }
