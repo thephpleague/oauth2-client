@@ -13,8 +13,7 @@ class ProviderTest extends PHPUnit_Framework_TestCase {
         $this->stub = $this->getMockForAbstractClass(
             'League\OAuth2\Client\Provider\IdentityProvider',
             array($this->httpClientMock, $this->prepareOptions())
-        );
-    }
+        ); }
 
 
     public function testGetAuthorizationUrlWithEmptyOptions()
@@ -152,47 +151,73 @@ class ProviderTest extends PHPUnit_Framework_TestCase {
     }
 
 
-    public function TestFetchUserDetailsWithCachedUserDetailsResponse()
+    public function testFetchUserDetailsWithCachedUserDetailsResponse()
     {
-        $this->stub->cachedUserDetailsResponse = "user_info";
-        $result = $this->sbub->fetchUserDetails("adkdjfdksfd");
+        $access_token_mock = $this->getMockBuilder('League\OAuth2\Client\Token\AccessToken')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->stub->expects($this->once())
+            ->method('urlUserDetails')
+            ->with($access_token_mock)
+            ->will($this->returnValue('https://accounts.google.com/o/oauth2/token'));
+
+        $this->httpClientMock->expects($this->once())
+            ->method('get')
+            ->with($this->isType("string"))
+            ->will($this->returnValue("user_info"));
+
+        $this->stub->fetchUserDetails($access_token_mock);
+        $result = $this->stub->fetchUserDetails($access_token_mock);
 
         $this->assertEquals("user_info", $result);
     }
 
 
-    public function TestFetchUserDetailsWithNoCachedUserDetailsResponse()
+    public function testFetchUserDetailsWithNoCachedUserDetailsResponse()
     {
-        $this->httpClientMock->expects($this->once())
-            ->method('get')
-            ->with($this->isType('string'))
-            ->will($this->returnValue("user_info"));
+        
+        $access_token_mock = $this->getMockBuilder('League\OAuth2\Client\Token\AccessToken')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->stub->expects($this->once())
-            ->method('urlAccessToken')
-            ->with($this->equalTo('adkdjfdksfd'))
+            ->method('urlUserDetails')
+            ->with($access_token_mock)
             ->will($this->returnValue('https://accounts.google.com/o/oauth2/token'));
 
-        $result = $this->sbub->fetchUserDetails("adkdjfdksfd");
+        $this->httpClientMock->expects($this->once())
+            ->method('get')
+            ->with($this->isType("string"))
+            ->will($this->returnValue("user_info"));
 
-        $this->assertEqual("user_info", $result);
+
+        $result = $this->stub->fetchUserDetails($access_token_mock);
+
+        $this->assertEquals("user_info", $result);
     }
 
 
     /**
      * @expectedException League\OAuth2\Client\Exception\IDPException
      */
-    public function TestFetchUserDetailsThrowIDPException()
+    public function testFetchUserDetailsThrowIDPException()
     {
-        $this->httpClientMock->expects($this->once())
-            ->method('get')
-            ->with($this->isType('string'))
-            ->will($this->returnValue($this->prepareBadResponse()));
+        $access_token_mock = $this->getMockBuilder('League\OAuth2\Client\Token\AccessToken')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->stub->expects($this->once())
-            ->method('urlAccessToken')
-            ->with($this->equalTo('adkdjfdksfd'))
+            ->method('urlUserDetails')
+            ->with($access_token_mock)
             ->will($this->returnValue('https://accounts.google.com/o/oauth2/token'));
+
+        $this->httpClientMock->expects($this->once())
+            ->method('get')
+            ->with($this->isType("string"))
+            ->will($this->returnValue($this->prepareBadResponse()));
+
+        $this->stub->fetchUserDetails($access_token_mock);
     }
 
 

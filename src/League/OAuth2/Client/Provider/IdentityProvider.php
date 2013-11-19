@@ -167,7 +167,7 @@ abstract class IdentityProvider {
         return $this->userScreenName(json_decode($response), $token);
     }
 
-    protected function fetchUserDetails(AccessToken $token, $force = false)
+    public function fetchUserDetails(AccessToken $token, $force = false)
     {
         if ( ! $this->cachedUserDetailsResponse || $force == true) {
 

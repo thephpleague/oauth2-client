@@ -13,7 +13,7 @@ class GuzzleHttpClient implements HttpClientInterface {
        $this->guzzleClient = new GuzzleClient();
     }
     
-    public function get($uri = null, array $headers = null, array $options = array()) {
+    public function get($uri = null, array $headers = null, array $options = null) {
         
         $request = $this->guzzleClient->get($uri, $headers, $options);
         try {
@@ -32,7 +32,7 @@ class GuzzleHttpClient implements HttpClientInterface {
         return $result;
     }
 
-    public function post($uri = null, array $headers = null, array $postBody = null, array $options = array()) {
+    public function post($uri = null, array $headers = null, array $postBody = null, array $options = null) {
     
         $request = $this->guzzleClient->post($uri, $headers, $postBody, $options);
         try {
