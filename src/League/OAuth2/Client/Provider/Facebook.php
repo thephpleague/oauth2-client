@@ -7,6 +7,8 @@ class Facebook extends IdentityProvider
     public $scopes = array('offline_access', 'email', 'read_stream');
     public $responseType = 'string';
 
+    public $name = "facebook";
+
     public function urlAuthorize()
     {
         return 'https://www.facebook.com/dialog/oauth';

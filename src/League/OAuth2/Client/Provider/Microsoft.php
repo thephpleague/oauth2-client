@@ -7,6 +7,8 @@ class Microsoft extends IdentityProvider
     public $scopes = array('wl.basic', 'wl.emails');
     public $responseType = 'json';
 
+    public $name = "microsoft";
+
     public function urlAuthorize()
     {
         return 'https://oauth.live.com/authorize';

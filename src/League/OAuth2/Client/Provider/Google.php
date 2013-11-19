@@ -6,6 +6,14 @@ class Google extends IdentityProvider
 {
     public $scopeSeperator = ' ';
 
+    public $access_type = 'online';
+
+    public $approval_prompt = 'force';
+
+    public $login_hint;
+
+    public $name = "google";
+
     public $scopes = array(
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/userinfo.email'

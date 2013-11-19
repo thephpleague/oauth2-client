@@ -8,6 +8,8 @@ class Linkedin extends IdentityProvider
     public $responseType = 'json';
     public $fields = array('id', 'email-address', 'first-name', 'last-name', 'headline', 'picture-url', 'public-profile-url');
 
+    public $name = "linkedin";
+
     public function urlAuthorize()
     {
         return 'https://www.linkedin.com/uas/oauth2/authorization';

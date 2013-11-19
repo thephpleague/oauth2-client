@@ -7,6 +7,8 @@ class Instagram extends IdentityProvider
     public $scopes = array('basic');
     public $responseType = 'json';
 
+    public $name = "instagram";
+
     public function urlAuthorize()
     {
         return 'https://api.instagram.com/oauth/authorize';
