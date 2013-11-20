@@ -1,0 +1,16 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+
+before_script:
+  - composer self-update
+  - composer install
+  - pyrus install pear/PHP_CodeSniffer
+  - phpenv rehash
+
+script:
+  - phpcs --standard=psr2 src/
+  - phpunit --coverage-text

@@ -1,4 +1,4 @@
-# OAuth 2.0 Client Library
+# OAuth 2.0 Client Library (pork)
 
 This library makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. It has built in support for:
 
@@ -9,6 +9,7 @@ This library makes it stupidly simple to integrate your application with OAuth 2
 * LinkedIn
 * Microsoft
 * Sina Weibo
+* Vkontakte
 
 Adding support for other providers is trivial.
 
@@ -71,3 +72,7 @@ if ( ! isset($_GET['code'])) {
 | **Sina Weibo** | string | string | string | null | null | null | string | string | string | array (Weibo, Blog) |
 
 **Notes**: Providers which return URLs sometimes include additional URLs if the user has provided them. These have been wrapped in []
+
+## License
+
+The MIT License (MIT). Please see [License File](https://github.com/php-loep/:package_name/blob/master/LICENSE) for more information.

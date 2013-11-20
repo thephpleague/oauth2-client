@@ -7,8 +7,8 @@ use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\HttpClient\HttpClientInterface;
 
-abstract class IdentityProvider {
-
+abstract class IdentityProvider
+{
     public $clientId = '';
 
     public $clientSecret = '';
@@ -49,6 +49,16 @@ abstract class IdentityProvider {
     abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
 
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
+
+    public function getScopes()
+    {
+        return $this->scopes;
+    }
+
+    public function setScopes(array $scopes)
+    {
+        $this->scopes = $scopes;
+    }
 
     public function getAuthorizationUrl($options = array())
     {

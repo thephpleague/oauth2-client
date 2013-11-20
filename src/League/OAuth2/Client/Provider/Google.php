@@ -43,6 +43,7 @@ class Google extends IdentityProvider
         $user->last_name = isset($response->family_name) && $response->family_name ? $response->family_name : null;
         $user->email = isset($response->email) && $response->email ? $response->email : null;
         $user->imageUrl = isset($response->picture) && $response->picture ? $response->picture : null;
+        
         return $user;
     }
 
