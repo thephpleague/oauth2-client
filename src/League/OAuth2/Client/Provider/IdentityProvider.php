@@ -177,8 +177,7 @@ abstract class IdentityProvider {
             if (is_array($response) && isset($response['error'])) {
                 throw new IDPException($response);
             }
-            else
-            {
+            else {
                 $this->cachedUserDetailsResponse = $response;
             }
         }
