@@ -27,6 +27,11 @@ class AccessToken
     public $uid;
 
     /**
+     * @var string tokenType
+     */
+    public $tokenType;
+
+    /**
      * Sets the token, expiry, etc values.
      *
      * @param   array   token options
@@ -58,6 +63,8 @@ class AccessToken
 
         // Grab a refresh token so we can update access tokens when they expires
         isset($options['refresh_token']) and $this->refreshToken = $options['refresh_token'];
+
+        isset($options['token_type']) and $this->tokenType = $options['token_type'];
     }
 
     /**

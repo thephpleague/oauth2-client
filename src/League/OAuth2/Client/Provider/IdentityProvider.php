@@ -2,10 +2,10 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\HttpClient\HttpClientInterface;
 
 abstract class IdentityProvider
 {
@@ -29,8 +29,12 @@ abstract class IdentityProvider
 
     protected $cachedUserDetailsResponse;
 
-    public function __construct($options = array())
+    private $httpClient;
+
+    public function __construct(HttpClientInterface $httpClient, $options = array())
     {
+        $this->httpClient = $httpClient;
+
         foreach ($options as $option => $value) {
             if (isset($this->{$option})) {
                 $this->{$option} = $value;
@@ -59,16 +63,35 @@ abstract class IdentityProvider
     public function getAuthorizationUrl($options = array())
     {
         $state = md5(uniqid(rand(), true));
-        setcookie($this->name.'_authorize_state', $state);
+
+        // PHPUnit will declare: "Cannot modify header information - headers already sent by ..." 
+        //setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'force' // - google force-recheck
+            'state' => $state
         );
+        
+        // google force-recheck this option
+        if (isset($this->approval_prompt))
+        {
+            $params['approval_prompt'] = $this->approval_prompt;
+        }
+
+        // google need this option to obtain refersh token
+        if (isset($this->access_type))
+        {
+            $params['access_type'] = $this->access_type;
+        }
+
+        // google provide this options as a hit to the authentication server
+        if (isset($this->login_hint))
+        {
+            $param['login_hint'] = $this->login_hint;
+        }
 
         return $this->urlAuthorize().'?'.http_build_query($params);
     }
@@ -100,22 +123,18 @@ abstract class IdentityProvider
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
-        try {
-            switch ($this->method) {
-                case 'get':
-                    $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($requestParams));
-                    $request = $client->send();
-                    $response = $request->getBody();
-                    break;
-                case 'post':
-                    $client = new GuzzleClient($this->urlAccessToken());
-                    $request = $client->post(null, null, $requestParams)->send();
-                    $response = $request->getBody();
-                    break;
-            }
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-            $raw_response = explode("\n", $e->getResponse());
-            $response = end($raw_response);
+        switch ($this->method) {
+            case 'get':
+                $response = $this->httpClient->get($this->urlAccessToken() . '?' 
+                    . http_build_query($requestParams));
+                break;
+            case 'post':
+                $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);
+                break;
+        }
+
+        if (is_array($response) && isset($response['error'])) {
+            throw new IDPException($response);
         }
 
         switch ($this->responseType) {
@@ -125,10 +144,6 @@ abstract class IdentityProvider
             case 'string':
                 parse_str($response, $result);
                 break;
-        }
-
-        if (isset($result['error']) && ! empty($result['error'])) {
-            throw new IDPException($result);
         }
 
         return $grant->handleResponse($result);
@@ -162,28 +177,21 @@ abstract class IdentityProvider
         return $this->userScreenName(json_decode($response), $token);
     }
 
-    protected function fetchUserDetails(AccessToken $token, $force = false)
+    public function fetchUserDetails(AccessToken $token, $force = false)
     {
         if ( ! $this->cachedUserDetailsResponse || $force == true) {
 
             $url = $this->urlUserDetails($token);
 
-            try {
-
-                $client = new GuzzleClient($url);
-                $request = $client->get()->send();
-                $response = $request->getBody();
+            $response = $this->httpClient->get($url);
+            if (is_array($response) && isset($response['error'])) {
+                throw new IDPException($response);
+            }
+            else {
                 $this->cachedUserDetailsResponse = $response;
-
-            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-
-                $raw_response = explode("\n", $e->getResponse());
-                throw new IDPException(end($raw_response));
-
             }
         }
 
         return $this->cachedUserDetailsResponse;
     }
-
 }

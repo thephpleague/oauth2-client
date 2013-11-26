@@ -6,6 +6,8 @@ class Github extends IdentityProvider
 {
     public $responseType = 'string';
 
+    public $name = "github";
+
     public function urlAuthorize()
     {
         return 'https://github.com/login/oauth/authorize';
@@ -26,11 +28,11 @@ class Github extends IdentityProvider
         $user = new User;
         $user->uid = $response->id;
         $user->nickname = $response->login;
-        $user->name = isset($response->name) ? $response->name : null;
-        $user->email = isset($response->email) ? $response->email : null;
+        $user->name = isset($response->name) && $response->name ? $response->name : null;
+        $user->email = isset($response->email) && $response->email ? $response->email : null;
         $user->urls = array(
-            'GitHub' => 'http://github.com/'.$user->login,
-            'Blog' => $user->blog,
+            'profile' => 'https://github.com/'.$response->login,
+            'site' => isset($response->blog) && $response->blog ? $response->blog : null
         );
 
         return $user;
@@ -48,6 +50,6 @@ class Github extends IdentityProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return $response->name;
+        return isset($response->name) && $response->name ? $response->name : null;
     }
 }
