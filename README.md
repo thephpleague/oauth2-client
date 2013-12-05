@@ -78,3 +78,7 @@ if ( ! isset($_GET['code'])) {
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/php-loep/:package_name/blob/master/LICENSE) for more information.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/php-loep/oauth2-client/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
