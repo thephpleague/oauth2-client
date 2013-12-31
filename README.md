@@ -6,6 +6,7 @@
 
 This library makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. It has built in support for:
 
+* Buffer
 * Facebook
 * Github
 * Google
@@ -66,6 +67,7 @@ if ( ! isset($_GET['code'])) {
 
 | Provider | uid    | nickname | name   | first_name | last_name | email  | location | description | imageUrl | urls |
 | :------- | :----- | :------- | :----- | :--------- | :-------- | :----- | :------- | :---------- | :------- | :--- |
+| **Buffer** | string | null | null | null | null | null | null | null | null | array (Referral) |
 | **Facebook** | string | string | string | string | string | string | string | string | string   | array (Facebook) |
 | **Github**   | string | string | string | null | null | string | null | null | null | array (Github, [personal])|
 | **Google** | string | string | string | string | string | string | null | null | string | null |
