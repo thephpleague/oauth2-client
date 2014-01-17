@@ -34,7 +34,8 @@ class Weibo extends IdentityProvider {
 
 		$user->uid = $response->id;
 		//username can be: 1) domain (= profile_url), 2) idstr (= id, but return as string)
-		$user->nickname = isset($response->domain) && $response->domain ? $response->domain : $response->idstr;
+		// weibo user name
+		$user->nickname = isset($response->name)? $response->name : $response->domain;
 		//screen_name is display name (= name, there are no username/nickname field)
 		$user->name = isset($response->screen_name) && $response->screen_name ? $response->screen_name : null; 
 		$user->location = isset($response->location) && $response->location ? $response->location : null;
