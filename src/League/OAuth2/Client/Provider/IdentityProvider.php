@@ -158,7 +158,7 @@ abstract class IdentityProvider
             'approval_prompt' => 'auto'
         );
 
-        return $this->urlAuthorize().'?'.http_build_query($params);
+        return $this->urlAuthorize() . '?' . http_build_query($params);
     }
 
     /**
@@ -175,9 +175,8 @@ abstract class IdentityProvider
 
     /**
      * Requests an access token for hte grant
-     * @param  string $grant  [description]
-     * @param  array  $params [description]
-     * @return [type]         [description]
+     * @param  string $grant  Grant Type
+     * @param  array  $params Extra parameters for the request
      */
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
