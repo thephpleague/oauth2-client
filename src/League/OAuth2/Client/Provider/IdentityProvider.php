@@ -64,6 +64,11 @@ abstract class IdentityProvider
     public $responseType = 'json';
 
     /**
+     * state cookie format
+     */
+    public $state_cookie_format = "%s__authorize_state";
+
+    /**
      * Cache area if token has already been accessed.
      * @var Array
      */
@@ -143,7 +148,7 @@ abstract class IdentityProvider
         /**
          * Store the state in the useragents cookie.
          */
-        setcookie($this->name . '_authorize_state', $state);
+        setcookie(sprintf($this->state_cookie_format, $this->name), $state);
 
         /**
          * Build request parameters
@@ -189,6 +194,19 @@ abstract class IdentityProvider
             $grant = new $grant;
         } elseif ( ! $grant instanceof Grant\GrantInterface) {
             throw new \InvalidArgumentException($grant.' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+        }
+
+        //Validate the state
+        if(!isset($_COOKIE[sprintf($this->state_cookie_format, $this->name)]))
+        {
+            throw new \UnexpectedValueException("CSRF State is missing");
+        }
+
+        $state = $_COOKIE[sprintf($this->state_cookie_format, $this->name)];
+
+        if(!empty($params['state']) && strcmp($state, $params['state']) !== 0)
+        {
+            throw new \UnexpectedValueException("CSRF state parameter invalid.");
         }
 
         $defaultParams = array(
