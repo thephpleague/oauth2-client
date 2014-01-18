@@ -106,7 +106,7 @@ class LinkedIn extends IdentityProvider
 
     /**
      * Return the screen name from the response object
-     * @param  stdClass                               $response Response from the Facebook graph
+     * @param  stdClass                               $response Response from the API Server
      * @param  League\OAuth2\Client\Token\AccessToken $token    Token Object
      * @return Array                                            Firstname, Lastname
      */
