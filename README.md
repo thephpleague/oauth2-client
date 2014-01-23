@@ -1,6 +1,6 @@
 # OAuth 2.0 Client Library
 
-[![Build Status](https://travis-ci.org/php-loep/oauth2-client.png?branch=master)](https://travis-ci.org/php-loep/oauth2-client)
+[![Build Status](https://travis-ci.org/thephpleague/oauth2-client.png?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
 [![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.png)](https://packagist.org/packages/league/oauth2-client)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable.png)](https://packagist.org/packages/league/oauth2-client)
 
@@ -77,8 +77,8 @@ if ( ! isset($_GET['code'])) {
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/php-loep/:package_name/blob/master/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE) for more information.
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/php-loep/oauth2-client/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/thephpleague/oauth2-client/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
