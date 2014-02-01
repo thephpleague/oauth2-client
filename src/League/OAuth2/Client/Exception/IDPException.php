@@ -49,8 +49,7 @@ class IDPException extends \Exception
     /**
      * To make debugging easier.
      *
-     * @returns
-     *   The string representation of the error.
+     * @return string The string representation of the error.
      */
     public function __toString()
     {
