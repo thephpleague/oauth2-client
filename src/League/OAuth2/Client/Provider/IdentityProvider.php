@@ -23,7 +23,7 @@ abstract class IdentityProvider
 
     public $method = 'post';
 
-    public $scopeSeperator = ',';
+    public $scopeSeparator = ',';
 
     public $responseType = 'json';
 
@@ -65,7 +65,7 @@ abstract class IdentityProvider
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
             'state' => $state,
-            'scope' => is_array($this->scopes) ? implode($this->scopeSeperator, $this->scopes) : $this->scopes,
+            'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'auto'
         );

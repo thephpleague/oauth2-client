@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Provider;
 
 class Google extends IdentityProvider
 {
-    public $scopeSeperator = ' ';
+    public $scopeSeparator = ' ';
 
     public $scopes = array(
         'https://www.googleapis.com/auth/userinfo.profile',
