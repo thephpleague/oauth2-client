@@ -22,24 +22,9 @@ class Eventbrite extends IdentityProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-
-        echo '<pre>';
-        print_r($response);
-
         $user = new User;
         $user->uid = $response->user->user_id;
-        //$user->nickname = $response->username;
-        //$user->name = $response->name;
-        //$user->firstName = $response->first_name;
-        //$user->lastName = $response->last_name;
         $user->email = $response->user->email;
-        //$user->location = isset($response->hometown->name) ? $response->hometown->name : null;
-        //$user->description = isset($response->bio) ? $response->bio : null;
-//        $user->imageUrl = $imageHeaders['Location'];
-//        $user->urls = array(
-//            'Facebook' => $response->link,
-//        );
-
         return $user;
     }
 
