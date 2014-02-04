@@ -37,7 +37,7 @@ if ( ! isset($_GET['code'])) {
     try {
 
     	// Try to get an access token (using the authorization code grant)
-        $t = $provider->getAccessToken('authorization_code', array('code' => $_GET['code']));
+        $t = $provider->getAccessToken('authorization_code', array('code' => $_GET['code'], 'grant_type' => 'authorization_code'));
 
         try {
 
