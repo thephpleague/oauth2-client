@@ -171,6 +171,7 @@ abstract class IdentityProvider
             try {
 
                 $client = new GuzzleClient($url);
+                $client->setDefaultOption('headers', array('Authorization' => 'Bearer'));
                 $request = $client->get()->send();
                 $response = $request->getBody();
                 $this->cachedUserDetailsResponse = $response;
