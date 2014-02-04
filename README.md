@@ -69,6 +69,7 @@ if ( ! isset($_GET['code'])) {
 
 | Provider | uid    | nickname | name   | first_name | last_name | email  | location | description | imageUrl | urls |
 | :------- | :----- | :------- | :----- | :--------- | :-------- | :----- | :------- | :---------- | :------- | :--- |
+| **Eventbrite** | string | null | null | null | null | string | null | null | null   | null |
 | **Facebook** | string | string | string | string | string | string | string | string | string   | array (Facebook) |
 | **Github**   | string | string | string | null | null | string | null | null | null | array (Github, [personal])|
 | **Google** | string | string | string | string | string | string | null | null | string | null |
