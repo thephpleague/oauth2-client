@@ -29,6 +29,8 @@ abstract class IdentityProvider
 
     protected $cachedUserDetailsResponse;
 
+    public $headers = null;
+
     public function __construct($options = array())
     {
         foreach ($options as $option => $value) {
@@ -171,7 +173,11 @@ abstract class IdentityProvider
             try {
 
                 $client = new GuzzleClient($url);
-                $client->setDefaultOption('headers', array('Authorization' => 'Bearer'));
+
+                if ($this->headers) {
+                    $client->setDefaultOption('headers', $this->headers);
+                }
+
                 $request = $client->get()->send();
                 $response = $request->getBody();
                 $this->cachedUserDetailsResponse = $response;

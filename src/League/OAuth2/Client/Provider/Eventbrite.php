@@ -5,6 +5,13 @@ namespace League\OAuth2\Client\Provider;
 class Eventbrite extends IdentityProvider
 {
 
+    public function __construct()
+    {
+        $this->headers = array(
+            'Authorization' => 'Bearer'
+        );
+    }
+
     public function urlAuthorize()
     {
         return 'https://www.eventbrite.com/oauth/authorize';
