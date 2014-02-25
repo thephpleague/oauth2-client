@@ -45,7 +45,8 @@ class Vkontakte extends IdentityProvider
             'schools',
             'verified');
 
-        return "https://api.vk.com/method/users.get?user_id={$token->uid}&fields=".implode(",", $fields)."&access_token=".$token;
+        return "https://api.vk.com/method/users.get?user_id={$token->uid}&fields=".
+            implode(",", $fields)."&access_token=".$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)

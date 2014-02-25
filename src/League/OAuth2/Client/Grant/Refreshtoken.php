@@ -4,7 +4,8 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Token\AccessToken as AcessToken;
 
-class Refreshtoken implements GrantInterface {
+class Refreshtoken implements GrantInterface
+{
 
     public function __toString()
     {

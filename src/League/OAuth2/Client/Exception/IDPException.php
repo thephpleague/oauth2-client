@@ -63,5 +63,4 @@ class IDPException extends \Exception
 
         return $str . $this->message;
     }
-
 }

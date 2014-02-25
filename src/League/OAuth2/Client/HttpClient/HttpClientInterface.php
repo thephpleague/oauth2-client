@@ -10,8 +10,8 @@ namespace League\OAuth2\Client\HttpClient;
  *
  */
 
-interface HttpClientInterface {
-
+interface HttpClientInterface
+{
     /**
      * HTTP Method GET
      *

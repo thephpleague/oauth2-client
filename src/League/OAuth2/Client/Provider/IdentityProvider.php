@@ -76,20 +76,17 @@ abstract class IdentityProvider
         );
 
         // google force-recheck this option
-        if (isset($this->approval_prompt))
-        {
+        if (isset($this->approval_prompt)) {
             $params['approval_prompt'] = $this->approval_prompt;
         }
 
         // google need this option to obtain refersh token
-        if (isset($this->access_type))
-        {
+        if (isset($this->access_type)) {
             $params['access_type'] = $this->access_type;
         }
 
         // google provide this options as a hit to the authentication server
-        if (isset($this->login_hint))
-        {
+        if (isset($this->login_hint)) {
             $params['login_hint'] = $this->login_hint;
         }
 
