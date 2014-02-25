@@ -90,7 +90,7 @@ abstract class IdentityProvider
             $params['login_hint'] = $this->login_hint;
         }
 
-        return $this->urlAuthorize().'?'.http_build_query($params,'','&',PHP_QUERY_RFC1738);
+        return $this->urlAuthorize() . '?' . http_build_query($params);
     }
 
     public function authorize($options = array())
@@ -103,12 +103,13 @@ abstract class IdentityProvider
     {
         if (is_string($grant)) {
             $grant = 'League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
-            if ( ! class_exists($grant)) {
+            if (!class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
-        } elseif ( ! $grant instanceof Grant\GrantInterface) {
-            throw new \InvalidArgumentException($grant.' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+        } elseif (!$grant instanceof Grant\GrantInterface) {
+            throw new \InvalidArgumentException($grant
+                . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
         }
 
         $defaultParams = array(
@@ -121,26 +122,25 @@ abstract class IdentityProvider
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
         switch ($this->method) {
-        case 'get':
-            $response = $this->httpClient->get($this->urlAccessToken() . '?'
-                . http_build_query($requestParams));
+            case 'get':
+                $response = $this->httpClient->get($this->urlAccessToken() . '?'. http_build_query($requestParams));
             break;
-        case 'post':
-            $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);
-            break;
+            case 'post':
+                $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);
+                break;
         }
 
-        if (is_array($response) && (isset($response['error']) || isset($response['message'])) ) {
+        if (is_array($response) && (isset($response['error']) || isset($response['message']))) {
             throw new IDPException($response);
         }
 
         switch ($this->responseType) {
-        case 'json':
-            $result = json_decode($response, true);
-            break;
-        case 'string':
-            parse_str($response, $result);
-            break;
+            case 'json':
+                $result = json_decode($response, true);
+                break;
+            case 'string':
+                parse_str($response, $result);
+                break;
         }
 
         return $grant->handleResponse($result);
@@ -176,15 +176,14 @@ abstract class IdentityProvider
 
     public function fetchUserDetails(AccessToken $token, $force = false)
     {
-        if ( ! $this->cachedUserDetailsResponse || $force == true) {
+        if (!$this->cachedUserDetailsResponse || $force == true) {
 
             $url = $this->urlUserDetails($token);
 
             $response = $this->httpClient->get($url);
-            if (is_array($response) && (isset($response['error']) || isset($response['message'])) ) {
+            if (is_array($response) && (isset($response['error']) || isset($response['message']))) {
                 throw new IDPException($response);
-            }
-            else {
+            } else {
                 $this->cachedUserDetailsResponse = $response;
             }
         }

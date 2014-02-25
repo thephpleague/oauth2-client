@@ -40,13 +40,13 @@ class Weibo extends IdentityProvider
         $user->nickname = isset($response->name)? $response->name : $response->domain;
         //screen_name is display name (= name, there are no username/nickname field)
         $user->name = isset($response->screen_name) && $response->screen_name
-            ? $response->screen_name : null; 
+            ? $response->screen_name : null;
         $user->location = isset($response->location) && $response->location
             ? $response->location : null;
         //profile_image_url is 50x50, avatar_large is 180x180 (unit:px)
         $user->imageUrl = isset($response->avatar_large) && $response->avatar_large
             ? $response->avatar_large : $response->profile_image_url;
-        $user->description = isset($response->description) && $response->description 
+        $user->description = isset($response->description) && $response->description
             ? $response->description : null;
 
         $user->urls = array(

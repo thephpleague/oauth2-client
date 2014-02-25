@@ -14,7 +14,7 @@ class FBExchangeToken implements GrantInterface
 
     public function prepRequestParams($defaultParams, $params)
     {
-        if ( ! isset($params['fb_exchange_token']) || empty($params['fb_exchange_token'])) {
+        if (!isset($params['fb_exchange_token']) || empty($params['fb_exchange_token'])) {
             throw new BadMethodCallException('Missing faceboook exchange token');
         }
 
