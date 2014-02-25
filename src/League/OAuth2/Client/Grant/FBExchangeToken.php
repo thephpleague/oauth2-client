@@ -4,8 +4,8 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
-class FBExchangeToken implements GrantInterface {
-
+class FBExchangeToken implements GrantInterface
+{
     public function __toString()
     {
         return 'fb_exchange_token';
