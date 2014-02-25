@@ -4,64 +4,64 @@ namespace League\OAuth2\Client\Exception;
 
 class IDPException extends \Exception
 {
-    protected $result;
+	protected $result;
 
-    public function __construct($result)
-    {
-        $this->result = $result;
+	public function __construct($result)
+	{
+		$this->result = $result;
 
-        $code = isset($result['code']) ? $result['code'] : 0;
+		$code = isset($result['code']) ? $result['code'] : 0;
 
-        if (isset($result['error'])) {
+		if (isset($result['error'])) {
 
-            // OAuth 2.0 Draft 10 style
-            $message = $result['error'];
+			// OAuth 2.0 Draft 10 style
+			$message = $result['error'];
 
-        } elseif (isset($result['message'])) {
+		} elseif (isset($result['message'])) {
 
-            // cURL style
-            $message = $result['message'];
+			// cURL style
+			$message = $result['message'];
 
-        } else {
+		} else {
 
-            $message = 'Unknown Error.';
+			$message = 'Unknown Error.';
 
-        }
+		}
 
-        //we should output $message (string) and $code (int) for exception
-        parent::__construct($message, $code);
-    }
+		// we should output $message (string) and $code (int) for exception
+		parent::__construct($message, $code);
+	}
 
-    public function getType()
-    {
-        if (isset($this->result['error'])) {
+	public function getType()
+	{
+		if (isset($this->result['error'])) {
 
-            $message = $this->result['error'];
+			$message = $this->result['error'];
 
-            if (is_string($message)) {
-                // OAuth 2.0 Draft 10 style
-                return $message;
-            }
-        }
+			if (is_string($message)) {
+				// OAuth 2.0 Draft 10 style
+				return $message;
+			}
+		}
 
-        return 'Exception';
-    }
+		return 'Exception';
+	}
 
-    /**
-     * To make debugging easier.
-     *
-     * @returns
-     *   The string representation of the error.
-     */
-    public function __toString()
-    {
-        $str = $this->getType() . ': ';
+	/**
+	 * To make debugging easier.
+	 *
+	 * @returns
+	 *   The string representation of the error.
+	 */
+	public function __toString()
+	{
+		$str = $this->getType() . ': ';
 
-        if ($this->code != 0) {
-            $str .= $this->code . ': ';
-        }
+		if ($this->code != 0) {
+			$str .= $this->code . ': ';
+		}
 
-        return $str . $this->message;
-    }
+		return $str . $this->message;
+	}
 
 }

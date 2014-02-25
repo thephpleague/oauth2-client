@@ -8,7 +8,7 @@ class Google extends IdentityProvider
 
     public $access_type = 'online';
 
-    public $approval_prompt = 'force';
+    public $approval_prompt = 'auto';
 
     public $login_hint;
 
