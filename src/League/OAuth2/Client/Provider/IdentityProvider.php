@@ -108,8 +108,7 @@ abstract class IdentityProvider
             }
             $grant = new $grant;
         } elseif (!$grant instanceof Grant\GrantInterface) {
-            throw new \InvalidArgumentException($grant
-                . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+            throw new \InvalidArgumentException($grant . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
         }
 
         $defaultParams = array(
@@ -124,7 +123,7 @@ abstract class IdentityProvider
         switch ($this->method) {
             case 'get':
                 $response = $this->httpClient->get($this->urlAccessToken() . '?'. http_build_query($requestParams));
-            break;
+                break;
             case 'post':
                 $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);
                 break;
