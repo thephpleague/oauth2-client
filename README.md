@@ -2,7 +2,9 @@
 
 This is a fork from php-loep/oauth2-client
 
-[![Build Status](https://travis-ci.org/bitinn/oauth2-client.png?branch=2.0)](https://travis-ci.org/bitinn/oauth2-client)
+[![Build Status](https://travis-ci.org/thephpleague/oauth2-client.png?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
+[![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.png)](https://packagist.org/packages/league/oauth2-client)
+[![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable.png)](https://packagist.org/packages/league/oauth2-client)
 
 This library makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. It has built in support for:
 
