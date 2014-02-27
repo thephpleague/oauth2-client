@@ -4,8 +4,8 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
-class FBExchangeToken implements GrantInterface {
-
+class FBExchangeToken implements GrantInterface
+{
     public function __toString()
     {
         return 'fb_exchange_token';
@@ -14,7 +14,7 @@ class FBExchangeToken implements GrantInterface {
 
     public function prepRequestParams($defaultParams, $params)
     {
-        if ( ! isset($params['fb_exchange_token']) || empty($params['fb_exchange_token'])) {
+        if (!isset($params['fb_exchange_token']) || empty($params['fb_exchange_token'])) {
             throw new BadMethodCallException('Missing faceboook exchange token');
         }
 

@@ -35,5 +35,4 @@ class User implements \IteratorAggregate
     {
         return new \ArrayIterator($this);
     }
-
 }

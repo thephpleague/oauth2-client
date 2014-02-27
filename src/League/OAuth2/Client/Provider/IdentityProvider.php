@@ -64,7 +64,7 @@ abstract class IdentityProvider
     {
         $state = md5(uniqid(rand(), true));
 
-        // PHPUnit will declare: "Cannot modify header information - headers already sent by ..." 
+        // PHPUnit will declare: "Cannot modify header information - headers already sent by ..."
         //setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
@@ -74,26 +74,23 @@ abstract class IdentityProvider
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'state' => $state
         );
-        
+
         // google force-recheck this option
-        if (isset($this->approval_prompt))
-        {
+        if (isset($this->approval_prompt)) {
             $params['approval_prompt'] = $this->approval_prompt;
         }
 
         // google need this option to obtain refersh token
-        if (isset($this->access_type))
-        {
+        if (isset($this->access_type)) {
             $params['access_type'] = $this->access_type;
         }
 
         // google provide this options as a hit to the authentication server
-        if (isset($this->login_hint))
-        {
-            $param['login_hint'] = $this->login_hint;
+        if (isset($this->login_hint)) {
+            $params['login_hint'] = $this->login_hint;
         }
 
-        return $this->urlAuthorize().'?'.http_build_query($params);
+        return $this->urlAuthorize() . '?' . http_build_query($params);
     }
 
     public function authorize($options = array())
@@ -106,12 +103,14 @@ abstract class IdentityProvider
     {
         if (is_string($grant)) {
             $grant = 'League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
-            if ( ! class_exists($grant)) {
+            if (!class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
-        } elseif ( ! $grant instanceof Grant\GrantInterface) {
-            throw new \InvalidArgumentException($grant.' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+        } elseif (!$grant instanceof Grant\GrantInterface) {
+            throw new \InvalidArgumentException(
+                $grant . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface'
+            );
         }
 
         $defaultParams = array(
@@ -125,15 +124,14 @@ abstract class IdentityProvider
 
         switch ($this->method) {
             case 'get':
-                $response = $this->httpClient->get($this->urlAccessToken() . '?' 
-                    . http_build_query($requestParams));
+                $response = $this->httpClient->get($this->urlAccessToken() . '?'. http_build_query($requestParams));
                 break;
             case 'post':
                 $response = $this->httpClient->post($this->urlAccessToken(), null, $requestParams);
                 break;
         }
 
-        if (is_array($response) && isset($response['error'])) {
+        if (is_array($response) && (isset($response['error']) || isset($response['message']))) {
             throw new IDPException($response);
         }
 
@@ -179,15 +177,14 @@ abstract class IdentityProvider
 
     public function fetchUserDetails(AccessToken $token, $force = false)
     {
-        if ( ! $this->cachedUserDetailsResponse || $force == true) {
+        if (!$this->cachedUserDetailsResponse || $force == true) {
 
             $url = $this->urlUserDetails($token);
 
             $response = $this->httpClient->get($url);
-            if (is_array($response) && isset($response['error'])) {
+            if (is_array($response) && (isset($response['error']) || isset($response['message']))) {
                 throw new IDPException($response);
-            }
-            else {
+            } else {
                 $this->cachedUserDetailsResponse = $response;
             }
         }

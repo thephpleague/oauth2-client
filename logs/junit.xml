@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="OAuth Client" tests="13" assertions="43" failures="0" errors="0" time="0.016942">
+    <testsuite name="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" tests="13" assertions="43" failures="0" errors="0" time="0.016942">
+      <testcase name="testGetAuthorizationUrlWithEmptyOptions" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="20" assertions="6" time="0.009541"/>
+      <testcase name="testGetAuthorizationUrlWithSomeOptions" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="42" assertions="6" time="0.000401"/>
+      <testcase name="testGetAccessTokenWithUnknowGrantArgs" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="70" assertions="1" time="0.000505"/>
+      <testcase name="testGetAccessTokenWithNotInstanceOfGrantInterfaceArgs" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="80" assertions="1" time="0.000304"/>
+      <testcase name="testGetAccessTokenWithEmpty" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="90" assertions="1" time="0.000474"/>
+      <testcase name="testGetAccessTokenUseHttpClientGetMethod" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="96" assertions="5" time="0.001214"/>
+      <testcase name="testGetAccessTokenUseHttpClientPostMethod" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="116" assertions="5" time="0.000545"/>
+      <testcase name="testGetAccessTokenReturnBadResponseAndThrowIDPException" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="139" assertions="3" time="0.000663"/>
+      <testcase name="testGetAccessTokenReturnCurlExceptionAndThrowIDPException" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="157" assertions="3" time="0.000523"/>
+      <testcase name="testFetchUserDetailsWithCachedUserDetailsResponse" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="174" assertions="3" time="0.001155"/>
+      <testcase name="testFetchUserDetailsWithNoCachedUserDetailsResponse" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="197" assertions="3" time="0.000616"/>
+      <testcase name="testFetchUserDetailsReturnBadResponseAndThrowIDPException" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="224" assertions="3" time="0.000506"/>
+      <testcase name="testFetchUserDetailsReturnCurlExceptionAndThrowIDPException" class="ProviderTest" file="/home/beginteam/Workspace/leaf-server/www/oauth2-client/tests/ProviderTest.php" line="247" assertions="3" time="0.000495"/>
+    </testsuite>
+  </testsuite>
+</testsuites>

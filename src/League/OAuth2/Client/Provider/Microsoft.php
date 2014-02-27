@@ -32,10 +32,14 @@ class Microsoft extends IdentityProvider
 
         $user->uid = $response->id;
         $user->name = isset($response->name) && $response->name ? $response->name : null;
-        $user->firstName = isset($response->first_name) && $response->first_name ? $response->first_name : null;
-        $user->lastName = isset($response->last_name) && $response->last_name ? $response->last_name : null;
-        $user->email = isset($response->emails->preferred) && $response->emails->preferred ? $response->emails->preferred : null;
-        $user->imageUrl = isset($imageHeaders['Location']) && $imageHeaders['Location'] ? $imageHeaders['Location'] : null;
+        $user->firstName = isset($response->first_name) && $response->first_name
+            ? $response->first_name : null;
+        $user->lastName = isset($response->last_name) && $response->last_name
+            ? $response->last_name : null;
+        $user->email = isset($response->emails->preferred) && $response->emails->preferred
+            ? $response->emails->preferred : null;
+        $user->imageUrl = isset($imageHeaders['Location']) && $imageHeaders['Location']
+            ? $imageHeaders['Location'] : null;
         $user->urls = array(
             'profile' => $response->link.'/cid-'.$response->id,
         );
@@ -50,7 +54,8 @@ class Microsoft extends IdentityProvider
 
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->emails->preferred) && $response->emails->preferred ? $response->emails->preferred : null;
+        return isset($response->emails->preferred) && $response->emails->preferred
+            ? $response->emails->preferred : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)

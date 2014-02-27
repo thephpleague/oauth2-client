@@ -4,16 +4,18 @@ namespace League\OAuth2\Client\HttpClient;
 
 use Guzzle\Service\Client as GuzzleClient;
 
-class GuzzleHttpClient implements HttpClientInterface {
+class GuzzleHttpClient implements HttpClientInterface
+{
 
+    protected $guzzleClient;
 
-    private $guzzleClient;
-
-    public function __construct() {
+    public function __construct()
+    {
         $this->guzzleClient = new GuzzleClient();
     }
 
-    public function get($uri = null, $headers = null, array $options = array()) {
+    public function get($uri = null, $headers = null, array $options = array())
+    {
 
         $request = $this->guzzleClient->get($uri, $headers, $options);
 
@@ -29,6 +31,10 @@ class GuzzleHttpClient implements HttpClientInterface {
             $result['code'] = $response->getStatusCode();
 
             return $result;
+        } catch (\Guzzle\Http\Exception\CurlException $e) {
+            $result['message'] = 'Curl Exception';
+
+            return $result;
         }
 
         $result = $response->getBody(true);
@@ -36,8 +42,8 @@ class GuzzleHttpClient implements HttpClientInterface {
         return $result;
     }
 
-    public function post($uri = null, $headers = null, $postBody = null, array $options = array()) {
-
+    public function post($uri = null, $headers = null, $postBody = null, array $options = array())
+    {
         $request = $this->guzzleClient->post($uri, $headers, $postBody, $options);
 
         // use proxy
@@ -51,7 +57,11 @@ class GuzzleHttpClient implements HttpClientInterface {
             $result['error'] = "Bad Response";
             $result['code'] = $response->getStatusCode();
 
-            return $result; 
+            return $result;
+        } catch (\Guzzle\Http\Exception\CurlException $e) {
+            $result['message'] = 'Curl Exception';
+
+            return $result;
         }
 
         $result = $response->getBody(true);
@@ -65,6 +75,6 @@ class GuzzleHttpClient implements HttpClientInterface {
         $request->getCurlOptions()->set(CURLOPT_HTTPPROXYTUNNEL, true);
         $request->getCurlOptions()->set(CURLOPT_SSL_VERIFYPEER, false);
         $request->getCurlOptions()->set(CURLOPT_PROXY, '127.0.0.1:7005');
-        $request->getCurlOptions()->set(CURLOPT_PROXYTYPE, 7); 
+        $request->getCurlOptions()->set(CURLOPT_PROXYTYPE, 7);
     }
 }

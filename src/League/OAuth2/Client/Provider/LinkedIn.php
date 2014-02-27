@@ -6,7 +6,8 @@ class LinkedIn extends IdentityProvider
 {
     public $scopes = array('r_basicprofile r_emailaddress');
     public $responseType = 'json';
-    public $fields = array('id', 'email-address', 'first-name', 'last-name', 'headline', 'picture-url', 'public-profile-url');
+    public $fields = array('id', 'email-address', 'first-name',
+        'last-name','headline', 'picture-url', 'public-profile-url');
 
     public $name = "linkedin";
 
@@ -22,7 +23,8 @@ class LinkedIn extends IdentityProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://api.linkedin.com/v1/people/~:('.implode(",", $this->fields).')?format=json&oauth2_access_token='.$token;
+        return 'https://api.linkedin.com/v1/people/~:('
+            .implode(",", $this->fields).')?format=json&oauth2_access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -30,14 +32,22 @@ class LinkedIn extends IdentityProvider
         $user = new User;
 
         $user->uid = $response->id;
-        $user->name = isset($response->firstName) && isset($response->lastName) && $response->firstName && $response->lastName ? $response->firstName.' '.$response->lastName : null;
-        $user->firstName = isset($response->firstName) && $response->firstName ? $response->firstName : null;
-        $user->lastName = isset($response->lastName) && $response->lastName ? $response->lastName : null;
-        $user->email = isset($response->emailAddress) && $response->emailAddress ? $response->emailAddress : null;
-        $user->description = isset($response->headline) && $response->headline ? $response->headline : null;
-        $user->imageUrl = isset($response->pictureUrl) && $response->pictureUrl ? $response->pictureUrl : null;
+        $user->name = isset($response->firstName) && isset($response->lastName)
+            && $response->firstName && $response->lastName
+            ? $response->firstName.' '.$response->lastName : null;
+        $user->firstName = isset($response->firstName) && $response->firstName
+            ? $response->firstName : null;
+        $user->lastName = isset($response->lastName) && $response->lastName
+            ? $response->lastName : null;
+        $user->email = isset($response->emailAddress) && $response->emailAddress
+            ? $response->emailAddress : null;
+        $user->description = isset($response->headline) && $response->headline
+            ? $response->headline : null;
+        $user->imageUrl = isset($response->pictureUrl) && $response->pictureUrl
+            ? $response->pictureUrl : null;
         $user->urls = array(
-            'profile' => isset($response->publicProfileUrl) && $response->publicProfileUrl ? $response->publicProfileUrl : null,
+            'profile' => isset($response->publicProfileUrl) && $response->publicProfileUrl
+            ? $response->publicProfileUrl : null,
         );
 
         return $user;
@@ -50,11 +60,14 @@ class LinkedIn extends IdentityProvider
 
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->emailAddress) && $response->emailAddress ? $response->emailAddress : null;
+        return isset($response->emailAddress) && $response->emailAddress
+            ? $response->emailAddress : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->firstName) && isset($response->lastName) && $response->firstName && $response->lastName ? $response->firstName.' '.$response->lastName : null;
+        return isset($response->firstName) && isset($response->lastName)
+            && $response->firstName && $response->lastName
+            ? $response->firstName.' '.$response->lastName : null;
     }
 }
