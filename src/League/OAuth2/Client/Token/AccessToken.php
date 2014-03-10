@@ -27,6 +27,11 @@ class AccessToken
     public $uid;
 
     /**
+     * @var string tokenType
+     */
+    public $tokenType;
+
+    /**
      * Sets the token, expiry, etc values.
      *
      * @param   array   token options
@@ -34,9 +39,10 @@ class AccessToken
      */
     public function __construct(array $options = null)
     {
-        if ( ! isset($options['access_token'])) {
-            throw new \InvalidArgumentException('Required option not passed: access_token'
-                                                 . PHP_EOL.print_r($options, true));
+        if (!isset($options['access_token'])) {
+            throw new \InvalidArgumentException(
+                'Required option not passed: access_token' . PHP_EOL.print_r($options, true)
+            );
         }
 
         $this->accessToken = $options['access_token'];
@@ -58,6 +64,8 @@ class AccessToken
 
         // Grab a refresh token so we can update access tokens when they expires
         isset($options['refresh_token']) and $this->refreshToken = $options['refresh_token'];
+
+        isset($options['token_type']) and $this->tokenType = $options['token_type'];
     }
 
     /**

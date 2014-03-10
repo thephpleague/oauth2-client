@@ -28,7 +28,7 @@ class IDPException extends \Exception
 
         }
 
-        //we should output $message (string) and $code (int) for exception
+        // we should output $message (string) and $code (int) for exception
         parent::__construct($message, $code);
     }
 
@@ -63,5 +63,4 @@ class IDPException extends \Exception
 
         return $str . $this->message;
     }
-
 }

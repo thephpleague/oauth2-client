@@ -6,6 +6,14 @@ class Google extends IdentityProvider
 {
     public $scopeSeperator = ' ';
 
+    public $access_type = 'online';
+
+    public $approval_prompt = 'auto';
+
+    public $login_hint;
+
+    public $name = "google";
+
     public $scopes = array(
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/userinfo.email'
@@ -35,6 +43,7 @@ class Google extends IdentityProvider
         $user->last_name = isset($response->family_name) && $response->family_name ? $response->family_name : null;
         $user->email = isset($response->email) && $response->email ? $response->email : null;
         $user->imageUrl = isset($response->picture) && $response->picture ? $response->picture : null;
+        
         return $user;
     }
 
