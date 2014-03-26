@@ -2,7 +2,7 @@
 
 This is a fork from php-loep/oauth2-client
 
-[![Build Status](https://travis-ci.org/bitinn/oauth2-client.png?branch=master)](https://travis-ci.org/bitinn/oauth2-client)
+[![Build Status](https://travis-ci.org/bitinn/oauth2-client.png?branch=local)](https://travis-ci.org/bitinn/oauth2-client)
 
 This library makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. It has built in support for:
 
