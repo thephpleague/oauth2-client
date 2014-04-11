@@ -81,10 +81,15 @@ abstract class IdentityProvider
         exit;
     }
 
+    protected function getClient($url)
+    {
+        return new GuzzleClient($url);
+    }
+
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
         if (is_string($grant)) {
-            $grant = 'League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
+            $grant = 'League\\OAuth2\\Client\\Grant\\' . implode("", array_map("ucfirst", explode("_", $grant)));
             if ( ! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
@@ -105,12 +110,12 @@ abstract class IdentityProvider
         try {
             switch ($this->method) {
                 case 'get':
-                    $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($requestParams,'','&',PHP_QUERY_RFC1738));
+                    $client = $this->getClient($this->urlAccessToken() . '?' . http_build_query($requestParams,'','&',PHP_QUERY_RFC1738));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
                 case 'post':
-                    $client = new GuzzleClient($this->urlAccessToken());
+                    $client = $this->getClient($this->urlAccessToken());
                     $request = $client->post(null, null, $requestParams)->send();
                     $response = $request->getBody();
                     break;
@@ -172,7 +177,7 @@ abstract class IdentityProvider
 
             try {
 
-                $client = new GuzzleClient($url);
+                $client = $this->getClient($url);
 
                 if ($this->headers) {
                     $client->setDefaultOption('headers', $this->headers);
