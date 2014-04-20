@@ -28,7 +28,7 @@ class Facebook extends IdentityProvider
 
         $user = new User;
         $user->uid = $response->id;
-        $user->nickname = $response->username;
+        $user->nickname = isset($response->username) ? $response->username : null;
         $user->name = $response->name;
         $user->firstName = $response->first_name;
         $user->lastName = $response->last_name;
