@@ -30,6 +30,9 @@ abstract class IdentityProvider
     protected $cachedUserDetailsResponse;
 
     public $headers = null;
+    
+   /** @var int This represents: PHP_QUERY_RFC1738. The default encryption type for the http_build_query setup */
+    protected $httpBuildEncType = 1;
 
     public function __construct($options = array())
     {
@@ -72,7 +75,7 @@ abstract class IdentityProvider
             'approval_prompt' => 'auto'
         );
 
-        return $this->urlAuthorize().'?'.http_build_query($params,'','&',PHP_QUERY_RFC1738);
+        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&', PHP_QUERY_RFC1738);
     }
 
     public function authorize($options = array())
@@ -105,7 +108,7 @@ abstract class IdentityProvider
         try {
             switch ($this->method) {
                 case 'get':
-                    $client = new GuzzleClient($this->urlAccessToken() . '?' . http_build_query($requestParams,'','&',PHP_QUERY_RFC1738));
+                    $client = new GuzzleClient($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&', PHP_QUERY_RFC1738));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
@@ -163,7 +166,28 @@ abstract class IdentityProvider
 
         return $this->userScreenName(json_decode($response), $token);
     }
-
+    
+    /**
+     * Build HTTP the HTTP query, handling PHP version control options
+     *
+     * @param array $params
+     * @param integer $numeric_prefix
+     * @param string $arg_separator
+     * @param null|integer $enc_type
+     * @return string
+     */
+    protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
+    {
+        if(version_compare(PHP_VERSION, '5.4.0', '>=')) {
+            if($enc_type === null) {
+                $enc_type = $this->httpBuildEncType;
+            }
+            $url = http_build_query($params, $numeric_prefix, $arg_separator, $enc_type);
+        } else {
+            $url = http_build_query($params, $numeric_prefix, $arg_separator);
+        }
+        return $url;
+    }
     protected function fetchUserDetails(AccessToken $token, $force = false)
     {
         if ( ! $this->cachedUserDetailsResponse || $force == true) {
