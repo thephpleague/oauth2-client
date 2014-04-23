@@ -6,6 +6,7 @@ use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\Grant\GrantInterface;
 
 abstract class IdentityProvider
 {
@@ -30,7 +31,7 @@ abstract class IdentityProvider
     protected $cachedUserDetailsResponse;
 
     public $headers = null;
-    
+
    /** @var int This represents: PHP_QUERY_RFC1738. The default encryption type for the http_build_query setup */
     protected $httpBuildEncType = 1;
 
@@ -92,7 +93,7 @@ abstract class IdentityProvider
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
-        } elseif ( ! $grant instanceof Grant\GrantInterface) {
+        } elseif ( ! $grant instanceof GrantInterface) {
             throw new \InvalidArgumentException($grant.' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
         }
 
@@ -166,7 +167,7 @@ abstract class IdentityProvider
 
         return $this->userScreenName(json_decode($response), $token);
     }
-    
+
     /**
      * Build HTTP the HTTP query, handling PHP version control options
      *
