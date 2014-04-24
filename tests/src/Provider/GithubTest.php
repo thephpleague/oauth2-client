@@ -3,7 +3,6 @@
 namespace LeagueTest\OAuth2\Client\Provider;
 
 use \Mockery as m;
-use Zend\Uri\UriFactory;
 
 class GithubTest extends \PHPUnit_Framework_TestCase
 {
@@ -44,7 +43,6 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('/login/oauth/access_token', $uri['path']);
     }
-
 
     public function testGetAccessToken()
     {

@@ -3,9 +3,6 @@
 namespace LeagueTest\OAuth2\Client\Provider;
 
 use \Mockery as m;
-use Zend\Uri\UriFactory;
-use Guzzle\Service\Client as GuzzleClient;
-use Guzzle\Http\Client as GuzzleHttp;
 
 class FacebookTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,7 +43,6 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('/oauth/access_token', $uri['path']);
     }
-
 
     public function testGetAccessToken()
     {
