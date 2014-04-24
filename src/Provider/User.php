@@ -4,16 +4,16 @@ namespace League\OAuth2\Client\Provider;
 
 class User implements \IteratorAggregate
 {
-    public $uid = null;
-    public $nickname = null;
-    public $name = null;
-    public $firstName = null;
-    public $lastName = null;
-    public $email = null;
-    public $location = null;
-    public $description = null;
-    public $imageUrl = null;
-    public $urls = null;
+    public $uid;
+    public $nickname;
+    public $name;
+    public $firstName;
+    public $lastName;
+    public $email;
+    public $location;
+    public $description;
+    public $imageUrl;
+    public $urls;
 
     public function __set($name, $value)
     {
