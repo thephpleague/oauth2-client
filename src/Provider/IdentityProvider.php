@@ -64,7 +64,6 @@ abstract class IdentityProvider
     public function getAuthorizationUrl($options = array())
     {
         $state = md5(uniqid(rand(), true));
-        setcookie($this->name.'_authorize_state', $state);
 
         $params = array(
             'client_id' => $this->clientId,

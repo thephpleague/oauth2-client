@@ -9,7 +9,7 @@
     "require-dev": {
         "phpunit/phpunit": "*",
         "fabpot/php-cs-fixer": "0.4.*@dev",
-        "fzaninotto/faker": "*"
+        "mockery/mockery": "dev-master"
     },
     "keywords": [
         "oauth",
