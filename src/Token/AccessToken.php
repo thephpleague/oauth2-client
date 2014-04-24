@@ -29,8 +29,8 @@ class AccessToken
     /**
      * Sets the token, expiry, etc values.
      *
-     * @param   array   $options token options
-     * @return  void
+     * @param  array $options token options
+     * @return void
      */
     public function __construct(array $options = null)
     {
@@ -63,7 +63,7 @@ class AccessToken
     /**
      * Returns the token key.
      *
-     * @return  string
+     * @return string
      */
     public function __toString()
     {
@@ -74,7 +74,7 @@ class AccessToken
      * Return a boolean if the property is set
      *
      * @param   string  variable name
-     * @return  bool
+     * @return bool
      */
     public function __isset($key)
     {

@@ -32,6 +32,7 @@ class Eventbrite extends IdentityProvider
         $user = new User;
         $user->uid = $response->user->user_id;
         $user->email = $response->user->email;
+
         return $user;
     }
 

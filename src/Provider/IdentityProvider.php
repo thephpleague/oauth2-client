@@ -4,7 +4,6 @@ namespace League\OAuth2\Client\Provider;
 
 use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
-use League\OAuth2\Client\Token\Authorize as AuthorizeToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 
@@ -93,7 +92,7 @@ abstract class IdentityProvider
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
-        } elseif ( ! $grant instanceof GrantInterface) {
+        } elseif (! $grant instanceof GrantInterface) {
             throw new \InvalidArgumentException($grant.' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
         }
 
@@ -171,27 +170,28 @@ abstract class IdentityProvider
     /**
      * Build HTTP the HTTP query, handling PHP version control options
      *
-     * @param array $params
-     * @param integer $numeric_prefix
-     * @param string $arg_separator
-     * @param null|integer $enc_type
+     * @param  array        $params
+     * @param  integer      $numeric_prefix
+     * @param  string       $arg_separator
+     * @param  null|integer $enc_type
      * @return string
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
-        if(version_compare(PHP_VERSION, '5.4.0', '>=')) {
-            if($enc_type === null) {
+        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+            if ($enc_type === null) {
                 $enc_type = $this->httpBuildEncType;
             }
             $url = http_build_query($params, $numeric_prefix, $arg_separator, $enc_type);
         } else {
             $url = http_build_query($params, $numeric_prefix, $arg_separator);
         }
+
         return $url;
     }
     protected function fetchUserDetails(AccessToken $token, $force = false)
     {
-        if ( ! $this->cachedUserDetailsResponse || $force == true) {
+        if (! $this->cachedUserDetailsResponse || $force == true) {
 
             $url = $this->urlUserDetails($token);
 

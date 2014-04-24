@@ -36,6 +36,7 @@ class Google extends IdentityProvider
         $user->lastName = $response['family_name'];
         $user->email = $response['email'];
         $user->imageUrl = (isset($response['picture'])) ? $response['picture'] : null;
+
         return $user;
     }
 
