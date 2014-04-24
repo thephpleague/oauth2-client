@@ -20,7 +20,7 @@ class LinkedIn extends IdentityProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://api.linkedin.com/v1/people/~:('.implode(",", $this->fields).')?format=json&oauth2_access_token='.$token;
+        return 'https://api.linkedin.com/v1/people/~:(' . implode(",", $this->fields) . ')?format=json&oauth2_access_token=' . $token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -28,7 +28,7 @@ class LinkedIn extends IdentityProvider
         $user = new User;
 
         $user->uid = $response->id;
-        $user->name = $response->firstName.' '.$response->lastName;
+        $user->name = $response->firstName . ' ' . $response->lastName;
         $user->firstName = $response->firstName;
         $user->lastName = $response->lastName;
         $user->email = isset($response->emailAddress) ? $response->emailAddress : null;

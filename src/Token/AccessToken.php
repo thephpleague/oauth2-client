@@ -34,7 +34,7 @@ class AccessToken
      */
     public function __construct(array $options = null)
     {
-        if ( ! isset($options['access_token'])) {
+        if (! isset($options['access_token'])) {
             throw new \InvalidArgumentException('Required option not passed: access_token'
                                                  . PHP_EOL.print_r($options, true));
         }

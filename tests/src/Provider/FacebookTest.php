@@ -4,15 +4,17 @@ namespace LeagueTest\OAuth2\Client\Provider;
 
 use \Mockery as m;
 use Zend\Uri\UriFactory;
+use Guzzle\Service\Client as GuzzleClient;
+use Guzzle\Http\Client as GuzzleHttp;
 
-class GithubTest extends \PHPUnit_Framework_TestCase
+class FacebookTest extends \PHPUnit_Framework_TestCase
 {
     protected $provider;
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Github(array(
-            'clientId' => 'mock',
+        $this->provider = new \League\OAuth2\Client\Provider\Facebook(array(
+            'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ));
@@ -42,7 +44,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $url = $this->provider->urlAccessToken();
         $uri = parse_url($url);
 
-        $this->assertEquals('/login/oauth/access_token', $uri['path']);
+        $this->assertEquals('/oauth/access_token', $uri['path']);
     }
 
 
@@ -58,6 +60,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
 
+#    print_r($token);die();
+
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertLessThanOrEqual(time() + 3600, $token->expires);
         $this->assertGreaterThanOrEqual(time(), $token->expires);
@@ -67,8 +71,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->provider->setScopes(array('user', 'repo'));
-        $this->assertEquals(array('user', 'repo'), $this->provider->getScopes());
+        $this->assertEquals(array('offline_access', 'email', 'read_stream'), $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -77,20 +80,21 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "login": "mock_login", "name": "mock_name", "email": "mock_email"}');
+        $getResponse->shouldReceive('getBody')->andReturn('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}');
+        $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
-        $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
+        $client->shouldReceive('get->send')->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));
-        $this->assertEquals('mock_name', $this->provider->getUserScreenName($token));
-        $this->assertEquals('mock_name', $user->name);
+        $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
+        $this->assertEquals('mock_email', $user->email);
     }
 }

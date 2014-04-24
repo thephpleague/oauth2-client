@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Provider;
 
 use Guzzle\Service\Client as GuzzleClient;
+use Guzzle\Http\Exception\BadResponseException;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
@@ -27,9 +28,9 @@ abstract class IdentityProvider
 
     public $responseType = 'json';
 
-    protected $cachedUserDetailsResponse;
-
     public $headers = null;
+
+    protected $httpClient;
 
    /** @var int This represents: PHP_QUERY_RFC1738. The default encryption type for the http_build_query setup */
     protected $httpBuildEncType = 1;
@@ -41,6 +42,22 @@ abstract class IdentityProvider
                 $this->{$option} = $value;
             }
         }
+
+        $this->setHttpClient(new GuzzleClient);
+    }
+
+    public function setHttpClient(GuzzleClient $client)
+    {
+        $this->httpClient = $client;
+
+        return $this;
+    }
+
+    public function getHttpClient()
+    {
+        $client = clone $this->httpClient;
+
+        return $client;
     }
 
     abstract public function urlAuthorize();
@@ -77,11 +94,13 @@ abstract class IdentityProvider
         return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&', PHP_QUERY_RFC1738);
     }
 
+    // @codeCoverageIgnoreStart
     public function authorize($options = array())
     {
         header('Location: ' . $this->getAuthorizationUrl($options));
         exit;
     }
+    // @codeCoverageIgnoreEnd
 
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
@@ -105,19 +124,21 @@ abstract class IdentityProvider
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
         try {
-            switch ($this->method) {
-                case 'get':
-                    $client = new GuzzleClient($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&', PHP_QUERY_RFC1738));
+            switch (strtoupper($this->method)) {
+                case 'GET':
+                    $client = $this->getHttpClient();
+                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&', PHP_QUERY_RFC1738));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
-                case 'post':
-                    $client = new GuzzleClient($this->urlAccessToken());
+                case 'POST':
+                    $client = $this->getHttpClient();
+                    $client->setBaseUrl($this->urlAccessToken());
                     $request = $client->post(null, null, $requestParams)->send();
                     $response = $request->getBody();
                     break;
             }
-        } catch (\Guzzle\Http\Exception\BadResponseException $e) {
+        } catch (BadResponseException $e) {
             $raw_response = explode("\n", $e->getResponse());
             $response = end($raw_response);
         }
@@ -188,33 +209,30 @@ abstract class IdentityProvider
 
         return $url;
     }
+
     protected function fetchUserDetails(AccessToken $token, $force = false)
     {
-        if (! $this->cachedUserDetailsResponse || $force == true) {
+        $url = $this->urlUserDetails($token);
 
-            $url = $this->urlUserDetails($token);
+        try {
 
-            try {
+            $client = $this->getHttpClient();
+            $client->setBaseUrl($url);
 
-                $client = new GuzzleClient($url);
-
-                if ($this->headers) {
-                    $client->setDefaultOption('headers', $this->headers);
-                }
-
-                $request = $client->get()->send();
-                $response = $request->getBody();
-                $this->cachedUserDetailsResponse = $response;
-
-            } catch (\Guzzle\Http\Exception\BadResponseException $e) {
-
-                $raw_response = explode("\n", $e->getResponse());
-                throw new IDPException(end($raw_response));
-
+            if ($this->headers) {
+                $client->setDefaultOption('headers', $this->headers);
             }
+
+            $request = $client->get()->send();
+            $response = $request->getBody();
+
+        } catch (BadResponseException $e) {
+            // @codeCoverageIgnoreStart
+            $raw_response = explode("\n", $e->getResponse());
+            throw new IDPException(end($raw_response));
+            // @codeCoverageIgnoreEnd
         }
 
-        return $this->cachedUserDetailsResponse;
+        return $response;
     }
-
 }
