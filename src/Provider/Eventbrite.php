@@ -48,6 +48,6 @@ class Eventbrite extends IdentityProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return array($response->first_name, $response->last_name);
+        return $response->user->user_id;
     }
 }

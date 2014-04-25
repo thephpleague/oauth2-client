@@ -69,15 +69,4 @@ class AccessToken
     {
         return (string) $this->accessToken;
     }
-
-    /**
-     * Return a boolean if the property is set
-     *
-     * @param   string  variable name
-     * @return bool
-     */
-    public function __isset($key)
-    {
-        return isset($this->$key);
-    }
 }

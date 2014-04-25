@@ -111,7 +111,7 @@ abstract class IdentityProvider
             }
             $grant = new $grant;
         } elseif (! $grant instanceof GrantInterface) {
-            throw new \InvalidArgumentException($grant.' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+            throw new \InvalidArgumentException(get_class($grant) . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
         }
 
         $defaultParams = array(
@@ -126,21 +126,30 @@ abstract class IdentityProvider
         try {
             switch (strtoupper($this->method)) {
                 case 'GET':
+                    // @codeCoverageIgnoreStart
+                    // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
                     $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&', PHP_QUERY_RFC1738));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
+                    // @codeCoverageIgnoreEnd
                 case 'POST':
                     $client = $this->getHttpClient();
                     $client->setBaseUrl($this->urlAccessToken());
                     $request = $client->post(null, null, $requestParams)->send();
                     $response = $request->getBody();
                     break;
+                // @codeCoverageIgnoreStart
+                default:
+                    throw new \InvalidArgumentException('Neither GET nor POST is specified for request');
+                // @codeCoverageIgnoreEnd
             }
         } catch (BadResponseException $e) {
+            // @codeCoverageIgnoreStart
             $raw_response = explode("\n", $e->getResponse());
             $response = end($raw_response);
+            // @codeCoverageIgnoreEnd
         }
 
         switch ($this->responseType) {
@@ -153,36 +162,38 @@ abstract class IdentityProvider
         }
 
         if (isset($result['error']) && ! empty($result['error'])) {
+            // @codeCoverageIgnoreStart
             throw new IDPException($result);
+            // @codeCoverageIgnoreEnd
         }
 
         return $grant->handleResponse($result);
     }
 
-    public function getUserDetails(AccessToken $token, $force = false)
+    public function getUserDetails(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
 
         return $this->userDetails(json_decode($response), $token);
     }
 
-    public function getUserUid(AccessToken $token, $force = false)
+    public function getUserUid(AccessToken $token)
     {
-        $response = $this->fetchUserDetails($token, $force);
+        $response = $this->fetchUserDetails($token, true);
 
         return $this->userUid(json_decode($response), $token);
     }
 
-    public function getUserEmail(AccessToken $token, $force = false)
+    public function getUserEmail(AccessToken $token)
     {
-        $response = $this->fetchUserDetails($token, $force);
+        $response = $this->fetchUserDetails($token, true);
 
         return $this->userEmail(json_decode($response), $token);
     }
 
-    public function getUserScreenName(AccessToken $token, $force = false)
+    public function getUserScreenName(AccessToken $token)
     {
-        $response = $this->fetchUserDetails($token, $force);
+        $response = $this->fetchUserDetails($token, true);
 
         return $this->userScreenName(json_decode($response), $token);
     }
@@ -195,6 +206,7 @@ abstract class IdentityProvider
      * @param  string       $arg_separator
      * @param  null|integer $enc_type
      * @return string
+     * @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
@@ -210,7 +222,7 @@ abstract class IdentityProvider
         return $url;
     }
 
-    protected function fetchUserDetails(AccessToken $token, $force = false)
+    protected function fetchUserDetails(AccessToken $token)
     {
         $url = $this->urlUserDetails($token);
 

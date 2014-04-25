@@ -90,6 +90,7 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
+        $this->assertEquals(12345, $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $user->email);
     }
 }

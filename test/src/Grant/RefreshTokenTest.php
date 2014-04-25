@@ -1,6 +1,6 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Provider;
+namespace LeagueTest\OAuth2\Client\Grant;
 
 use \Mockery as m;
 
@@ -36,7 +36,7 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
         $grant = new \League\OAuth2\Client\Grant\RefreshToken();
         $refreshToken = $this->provider->getAccessToken($grant, array('refresh_token' => $token->refreshToken));
-        $this->assertEquals('refresh_token', (string)$grant);
+        $this->assertEquals('refresh_token', (string) $grant);
     }
 
     /**
