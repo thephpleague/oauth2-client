@@ -38,12 +38,12 @@ class Eventbrite extends IdentityProvider
 
     public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return $response->id;
+        return $response->user->user_id;
     }
 
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->email) && $response->email ? $response->email : null;
+        return isset($response->user->email) && $response->user->email ? $response->user->email : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
