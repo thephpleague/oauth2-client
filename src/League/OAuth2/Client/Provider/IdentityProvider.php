@@ -101,7 +101,7 @@ abstract class IdentityProvider
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
-            'grant_type'    => $grant,
+            'grant_type'    => $grant->__toString(),
         );
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
