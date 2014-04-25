@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" stopOnError="false" stopOnFailure="false" stopOnIncomplete="false" stopOnSkipped="false" bootstrap="tests/Bootstrap.php">
+<phpunit colors="true" bootstrap="./test/Bootstrap.php">
 	<testsuites>
-		<testsuite name="OAuth Client">
-			<directory>tests</directory>
+		<testsuite name="all">
+			<directory>./test</directory>
 		</testsuite>
 	</testsuites>
-	<filter>
-		<blacklist>
-			<directory suffix=".php">vendor</directory>
-			<directory suffix=".php">tests</directory>
-			<directory suffix=".php">build</directory>
-		</blacklist>
-	</filter>
+
+    <filter>
+        <blacklist>
+        <directory suffix=".php">./vendor</directory>
+        <directory suffix=".php">./test</directory>
+    </blacklist>
+    </filter>
+                                                                                        
 	<logging>
-		<log type="coverage-html" target="build/logs/coverage" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
+		<log type="coverage-html" target="./build/logs/coverage" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
 		<log type="coverage-text" target="php://stdout" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
-		<log type="coverage-clover" target="build/logs/clover.xml"/>
-		<log type="junit" target="build/logs/junit.xml" logIncompleteSkipped="false"/>
+		<log type="coverage-clover" target="./build/logs/clover.xml"/>
+		<log type="junit" target="./build/logs/junit.xml" logIncompleteSkipped="false"/>
 	</logging>
 </phpunit>
