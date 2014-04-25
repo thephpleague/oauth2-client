@@ -17,7 +17,7 @@ This library makes it stupidly simple to integrate your application with OAuth 2
 
 Adding support for other providers is trivial.
 
-The library requires PHP 5.3+ and is PSR-0 compatible.
+The library requires PHP 5.3+ and is PSR-4 compatible.
 
 ## Usage
 
@@ -61,7 +61,9 @@ if ( ! isset($_GET['code'])) {
     } catch (Exception $e) {
 
         // Failed to get access token
-
+	// If you have a refesh token you can use it here:
+        $grant = new \League\OAuth2\Client\Grant\RefreshToken();
+        $t = $provider->getAccessToken($grant, array('refresh_token' => $refreshToken));
     }
 }
 ```

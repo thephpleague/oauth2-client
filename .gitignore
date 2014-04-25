@@ -1,5 +1,8 @@
-/vendor/
-/composer.lock
+vendor/
+composer.lock
+composer.phar
 .DS_Store
-/testing/
-/nbproject/private/
+testing/
+nbproject/private/
+test/log
+build

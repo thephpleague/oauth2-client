@@ -35,7 +35,7 @@ class Instagram extends IdentityProvider
 
         return $user;
     }
-    
+
     public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return $response->data->id;

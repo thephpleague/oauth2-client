@@ -8,7 +8,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*",
-        "fzaninotto/faker": "*"
+        "fabpot/php-cs-fixer": "0.4.*@dev",
+        "mockery/mockery": "dev-master"
     },
     "keywords": [
         "oauth",
@@ -29,8 +30,9 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "League\\OAuth2\\Client": "src/"
+        "psr-4": {
+            "League\\OAuth2\\Client\\": "src/",
+            "LeagueTest\\OAuth2\\Client\\": "test/src/"
         }
     }
 }

@@ -24,18 +24,22 @@ class Facebook extends IdentityProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $imageHeaders = get_headers('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken, 1);
+        $client = $this->getHttpClient();
+        $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token=' . $token->accessToken);
+        $request = $client->get()->send();
+        $info = $request->getInfo();
+        $imageUrl = $info['url'];
 
         $user = new User;
         $user->uid = $response->id;
-        $user->nickname = isset($response->username) ? $response->username : null;
+        $user->nickname = (isset($response->username)) ? $response->username : null;
         $user->name = $response->name;
         $user->firstName = $response->first_name;
         $user->lastName = $response->last_name;
-        $user->email = isset($response->email) ? $response->email : null;
-        $user->location = isset($response->hometown->name) ? $response->hometown->name : null;
-        $user->description = isset($response->bio) ? $response->bio : null;
-        $user->imageUrl = $imageHeaders['Location'];
+        $user->email = (isset($response->email)) ? $response->email : null;
+        $user->location = (isset($response->hometown->name)) ? $response->hometown->name : null;
+        $user->description = (isset($response->bio)) ? $response->bio : null;
+        $user->imageUrl = ($imageUrl) ? $imageUrl: null;
         $user->urls = array(
             'Facebook' => $response->link,
         );

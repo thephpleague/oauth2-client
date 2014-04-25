@@ -29,12 +29,12 @@ class AccessToken
     /**
      * Sets the token, expiry, etc values.
      *
-     * @param   array   $options token options
-     * @return  void
+     * @param  array $options token options
+     * @return void
      */
     public function __construct(array $options = null)
     {
-        if ( ! isset($options['access_token'])) {
+        if (! isset($options['access_token'])) {
             throw new \InvalidArgumentException('Required option not passed: access_token'
                                                  . PHP_EOL.print_r($options, true));
         }
@@ -63,21 +63,10 @@ class AccessToken
     /**
      * Returns the token key.
      *
-     * @return  string
+     * @return string
      */
     public function __toString()
     {
         return (string) $this->accessToken;
-    }
-
-    /**
-     * Return a boolean if the property is set
-     *
-     * @param   string  variable name
-     * @return  bool
-     */
-    public function __isset($key)
-    {
-        return isset($this->$key);
     }
 }
