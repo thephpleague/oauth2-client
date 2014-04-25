@@ -2,38 +2,30 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class User implements \IteratorAggregate
+class User
 {
-    public $uid;
-    public $nickname;
-    public $name;
-    public $firstName;
-    public $lastName;
-    public $email;
-    public $location;
-    public $description;
-    public $imageUrl;
-    public $urls;
+    protected $uid;
+    protected $nickname;
+    protected $name;
+    protected $firstName;
+    protected $lastName;
+    protected $email;
+    protected $location;
+    protected $description;
+    protected $imageUrl;
+    protected $urls;
 
-    public function __set($name, $value)
-    {
-        if (isset($this->{$name})) {
-            $this->{$name} = $value;
+    public function __get($property) {
+        if (property_exists($this, $property)) {
+            return $this->$property;
         }
     }
 
-    public function __get($name)
-    {
-        if (isset($this->{$name})) {
-            return $this->{$name};
-        } else {
-            return null;
+    public function __set($property, $value) {
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
         }
-    }
 
-    public function getIterator()
-    {
-        return new \ArrayIterator($this);
+        return $this;
     }
-
 }
