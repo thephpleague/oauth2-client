@@ -24,7 +24,14 @@ class Microsoft extends IdentityProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $imageHeaders = get_headers('https://apis.live.net/v5.0/'.$response->id.'/picture', 1);
+        $client = $this->getHttpClient();
+        $client->setBaseUrl('https://apis.live.net/v5.0/' . $response->id . '/picture');
+        $request = $client->get()->send();
+        $info = $request->getInfo();
+
+        print_r($info);die();
+
+        $imageUrl = $info['url'];
 
         $user = new User;
 
