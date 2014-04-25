@@ -61,7 +61,9 @@ if ( ! isset($_GET['code'])) {
     } catch (Exception $e) {
 
         // Failed to get access token
-
+	// If you have a refesh token you can use it here:
+        $grant = new \League\OAuth2\Client\Grant\RefreshToken();
+        $t = $provider->getAccessToken($grant, array('refresh_token' => $refreshToken));
     }
 }
 ```

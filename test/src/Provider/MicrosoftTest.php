@@ -77,6 +77,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
         $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
+        $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
@@ -91,5 +92,6 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
+        $this->assertEquals('mock_image_url', $user->imageUrl);
     }
 }

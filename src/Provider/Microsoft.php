@@ -28,9 +28,6 @@ class Microsoft extends IdentityProvider
         $client->setBaseUrl('https://apis.live.net/v5.0/' . $response->id . '/picture');
         $request = $client->get()->send();
         $info = $request->getInfo();
-
-        print_r($info);die();
-
         $imageUrl = $info['url'];
 
         $user = new User;
@@ -40,7 +37,7 @@ class Microsoft extends IdentityProvider
         $user->firstName = $response->first_name;
         $user->lastName = $response->last_name;
         $user->email = isset($response->emails->preferred) ? $response->emails->preferred : null;
-        $user->imageUrl = $imageHeaders['Location'];
+        $user->imageUrl = $imageUrl;
         $user->urls = $response->link.'/cid-'.$response->id;
 
         return $user;
