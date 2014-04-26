@@ -6,13 +6,16 @@
 		</testsuite>
 	</testsuites>
 
-    <filter>
-        <blacklist>
-        <directory suffix=".php">./vendor</directory>
-        <directory suffix=".php">./test</directory>
-    </blacklist>
-    </filter>
-                                                                                        
+	<filter>
+		<blacklist>
+			<directory suffix=".php">./vendor</directory>
+			<directory suffix=".php">./test</directory>
+		</blacklist>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">src</directory>
+		</whitelist>
+	</filter>
+
 	<logging>
 		<log type="coverage-html" target="./build/logs/coverage" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
 		<log type="coverage-text" target="php://stdout" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
