@@ -5,8 +5,9 @@ namespace League\OAuth2\Client\Provider;
 class Eventbrite extends IdentityProvider
 {
 
-    public function __construct()
+    public function __construct($options)
     {
+        parent::__construct($options);
         $this->headers = array(
             'Authorization' => 'Bearer'
         );
