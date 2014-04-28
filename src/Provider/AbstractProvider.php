@@ -213,7 +213,7 @@ abstract class AbstractProvider
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
-        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+        if (version_compare(PHP_VERSION, '5.4.0', '>=') && !defined('HHVM_VERSION')) {
             if ($enc_type === null) {
                 $enc_type = $this->httpBuildEncType;
             }
