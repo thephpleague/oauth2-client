@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Eventbrite extends IdentityProvider
+class Eventbrite extends AbstractProvider
 {
 
     public function __construct($options)

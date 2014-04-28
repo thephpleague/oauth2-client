@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Microsoft extends IdentityProvider
+class Microsoft extends AbstractProvider
 {
     public $scopes = array('wl.basic', 'wl.emails');
     public $responseType = 'json';

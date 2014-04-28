@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Google extends IdentityProvider
+class Google extends AbstractProvider
 {
     public $scopeSeparator = ' ';
 
