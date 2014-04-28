@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Entity\User;
+
 class Google extends AbstractProvider
 {
     public $scopeSeparator = ' ';
@@ -29,13 +31,19 @@ class Google extends AbstractProvider
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $response = (array) $response;
+
         $user = new User;
-        $user->uid = $response['id'];
-        $user->name = $response['name'];
-        $user->firstName = $response['given_name'];
-        $user->lastName = $response['family_name'];
-        $user->email = $response['email'];
-        $user->imageUrl = (isset($response['picture'])) ? $response['picture'] : null;
+
+        $imageUrl = (isset($response['picture'])) ? $response['picture'] : null;
+
+        $user->exchangeArray(array(
+            'uid' => $response['id'],
+            'name' => $response['name'],
+            'firstname' => $response['given_name'],
+            'lastName' => $response['family_name'],
+            'email' => $response['email'],
+            'imageUrl' => $imageUrl,
+        ));
 
         return $user;
     }

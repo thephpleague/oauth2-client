@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Entity\User;
+
 class LinkedIn extends AbstractProvider
 {
     public $scopes = array('r_basicprofile r_emailaddress r_contactinfo');
@@ -27,15 +29,21 @@ class LinkedIn extends AbstractProvider
     {
         $user = new User;
 
-        $user->uid = $response->id;
-        $user->name = $response->firstName . ' ' . $response->lastName;
-        $user->firstName = $response->firstName;
-        $user->lastName = $response->lastName;
-        $user->email = isset($response->emailAddress) ? $response->emailAddress : null;
-        $user->location = isset($response->location->name) ? $response->location->name : null;
-        $user->description = isset($response->headline) ? $response->headline : null;
-        $user->imageUrl = $response->pictureUrl;
-        $user->urls = $response->publicProfileUrl;
+        $email = (isset($response->emailAddress)) ? $response->emailAddress : null;
+        $location = (isset($response->location->name)) ? $response->location->name : null;
+        $description = (isset($response->headline)) ? $response->headline : null;
+
+        $user->exchangeArray(array(
+            'uid' => $response->id,
+            'name' => $response->firstName . ' ' . $response->lastName,
+            'firstname' => $response->firstName,
+            'lastname' => $response->lastName,
+            'email' => $email,
+            'location' => $location,
+            'description' => $description,
+            'imageurl' => $response->pictureUrl,
+            'urls' => $response->publicProfileUrl,
+        ));
 
         return $user;
     }

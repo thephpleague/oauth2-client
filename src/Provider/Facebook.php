@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Entity\User;
+
 class Facebook extends AbstractProvider
 {
     public $scopes = array('offline_access', 'email', 'read_stream');
@@ -31,18 +33,25 @@ class Facebook extends AbstractProvider
         $imageUrl = $info['url'];
 
         $user = new User;
-        $user->uid = $response->id;
-        $user->nickname = (isset($response->username)) ? $response->username : null;
-        $user->name = $response->name;
-        $user->firstName = $response->first_name;
-        $user->lastName = $response->last_name;
-        $user->email = (isset($response->email)) ? $response->email : null;
-        $user->location = (isset($response->hometown->name)) ? $response->hometown->name : null;
-        $user->description = (isset($response->bio)) ? $response->bio : null;
-        $user->imageUrl = ($imageUrl) ? $imageUrl: null;
-        $user->urls = array(
-            'Facebook' => $response->link,
-        );
+
+        $username = (isset($response->username)) ? $response->username : null;
+        $email = (isset($response->email)) ? $response->email : null;
+        $location = (isset($response->hometown->name)) ? $response->hometown->name : null;
+        $description = (isset($response->bio)) ? $response->bio : null;
+        $imageUrl = ($imageUrl) ?: null;
+
+        $user->exchangeArray(array(
+            'uid' => $response->id,
+            'nickname' => $username,
+            'name' => $response->name,
+            'firstname' => $response->first_name,
+            'lastname' => $response->last_name,
+            'email' => $email,
+            'location' => $location,
+            'description' => $description,
+            'imageurl' => $imageUrl,
+            'urls' => array( 'Facebook' => $response->link ),
+        ));
 
         return $user;
     }

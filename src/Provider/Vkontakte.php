@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Entity\User;
+
 class Vkontakte extends AbstractProvider
 {
     public $scopes = array();
@@ -53,15 +55,22 @@ class Vkontakte extends AbstractProvider
         $response = $response->response[0];
 
         $user = new User;
-        $user->uid = $response->uid;
-        $user->nickname = $response->nickname;
-        $user->name = $response->screen_name;
-        $user->firstName = $response->first_name;
-        $user->lastName = $response->last_name;
-        $user->email = isset($response->email) ? $response->email : null;
-        $user->location = isset($response->country) ? $response->country : null;
-        $user->description = isset($response->status) ? $response->status : null;
-        $user->imageUrl = $response->photo_200_orig;
+
+        $email = (isset($response->email)) ? $response->email : null;
+        $location = (isset($response->country)) ? $response->country : null;
+        $description = (isset($response->status)) ? $response->status : null;
+
+        $user->exchangeArray(array(
+            'uid' => $response->uid,
+            'nickname' => $response->nickname,
+            'name' => $response->screen_name,
+            'firstname' => $response->first_name,
+            'lastname' => $response->last_name,
+            'email' => $email,
+            'location' => $location,
+            'description' => $description,
+            'imageUrl' => $response->photo_200_orig,
+        ));
 
         return $user;
     }
