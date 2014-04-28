@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Instagram extends IdentityProvider
+class Instagram extends AbstractProvider
 {
     public $scopes = array('basic');
     public $responseType = 'json';

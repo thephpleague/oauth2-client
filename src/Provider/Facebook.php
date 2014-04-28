@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Facebook extends IdentityProvider
+class Facebook extends AbstractProvider
 {
     public $scopes = array('offline_access', 'email', 'read_stream');
     public $responseType = 'string';
