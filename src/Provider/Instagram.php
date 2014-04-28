@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Entity\User;
+
 class Instagram extends AbstractProvider
 {
     public $scopes = array('basic');
@@ -27,11 +29,15 @@ class Instagram extends AbstractProvider
 
         $user = new User;
 
-        $user->uid = $response->data->id;
-        $user->nickname = $response->data->username;
-        $user->name = $response->data->full_name;
-        $user->description = isset($response->data->bio) ? $response->data->bio : null;
-        $user->imageUrl = $response->data->profile_picture;
+        $description = (isset($response->data->bio)) ? $response->data->bio : null;
+
+        $user->exchangeArray(array(
+            'uid' => $response->data->id,
+            'nickname' => $response->data->username,
+            'name' => $response->data->full_name,
+            'description' => $description,
+            'imageUrl' => $response->data->profile_picture,
+        ));
 
         return $user;
     }
