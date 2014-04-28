@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Github extends IdentityProvider
+class Github extends AbstractProvider
 {
     public $responseType = 'string';
 

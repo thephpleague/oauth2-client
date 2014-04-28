@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Vkontakte extends IdentityProvider
+class Vkontakte extends AbstractProvider
 {
     public $scopes = array();
     public $responseType = 'json';

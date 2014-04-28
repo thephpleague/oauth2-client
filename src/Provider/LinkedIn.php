@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class LinkedIn extends IdentityProvider
+class LinkedIn extends AbstractProvider
 {
     public $scopes = array('r_basicprofile r_emailaddress r_contactinfo');
     public $responseType = 'json';
