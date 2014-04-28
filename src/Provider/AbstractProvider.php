@@ -91,7 +91,7 @@ abstract class AbstractProvider
             'approval_prompt' => 'auto'
         );
 
-        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&', PHP_QUERY_RFC1738);
+        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&', 1 /* PHP_QUERY_RFC1738 */);
     }
 
     // @codeCoverageIgnoreStart
