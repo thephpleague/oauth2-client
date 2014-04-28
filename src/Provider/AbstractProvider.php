@@ -91,7 +91,7 @@ abstract class AbstractProvider
             'approval_prompt' => 'auto'
         );
 
-        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&', 1 /* PHP_QUERY_RFC1738 */);
+        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
     }
 
     // @codeCoverageIgnoreStart
@@ -129,7 +129,7 @@ abstract class AbstractProvider
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&', PHP_QUERY_RFC1738));
+                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
