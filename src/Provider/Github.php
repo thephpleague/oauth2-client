@@ -2,7 +2,9 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Github extends IdentityProvider
+use League\OAuth2\Client\Entity\User;
+
+class Github extends AbstractProvider
 {
     public $responseType = 'string';
 
@@ -24,14 +26,19 @@ class Github extends IdentityProvider
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $user = new User;
-        $user->uid = $response->id;
-        $user->nickname = $response->login;
-        $user->name = isset($response->name) ? $response->name : null;
-        $user->email = isset($response->email) ? $response->email : null;
-        $user->urls = array(
-            'GitHub' => 'http://github.com/'.$user->login,
-            'Blog' => $user->blog,
-        );
+
+        $name = (isset($response->name)) ? $response->name : null;
+        $email = (isset($response->email)) ? $response->email : null;
+
+        $user->exchangeArray(array(
+            'uid' => $response->id,
+            'nickname' => $response->login,
+            'name' => $name,
+            'email' => $email,
+            'urls'  =>array(
+                'GitHub' => 'http://github.com/' . $response->login,
+            ),
+        ));
 
         return $user;
     }

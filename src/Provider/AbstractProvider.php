@@ -8,7 +8,7 @@ use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 
-abstract class IdentityProvider
+abstract class AbstractProvider
 {
     public $clientId = '';
 
@@ -32,7 +32,10 @@ abstract class IdentityProvider
 
     protected $httpClient;
 
-   /** @var int This represents: PHP_QUERY_RFC1738. The default encryption type for the http_build_query setup */
+   /**
+    * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
+    *          and the default encryption type for the http_build_query setup
+    */
     protected $httpBuildEncType = 1;
 
     public function __construct($options = array())
@@ -91,7 +94,7 @@ abstract class IdentityProvider
             'approval_prompt' => 'auto'
         );
 
-        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&', PHP_QUERY_RFC1738);
+        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
     }
 
     // @codeCoverageIgnoreStart
@@ -129,7 +132,7 @@ abstract class IdentityProvider
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&', PHP_QUERY_RFC1738));
+                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
@@ -210,7 +213,7 @@ abstract class IdentityProvider
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
-        if (version_compare(PHP_VERSION, '5.4.0', '>=')) {
+        if (version_compare(PHP_VERSION, '5.4.0', '>=') && !defined('HHVM_VERSION')) {
             if ($enc_type === null) {
                 $enc_type = $this->httpBuildEncType;
             }

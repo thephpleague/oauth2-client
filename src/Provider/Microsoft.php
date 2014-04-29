@@ -2,7 +2,9 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Microsoft extends IdentityProvider
+use League\OAuth2\Client\Entity\User;
+
+class Microsoft extends AbstractProvider
 {
     public $scopes = array('wl.basic', 'wl.emails');
     public $responseType = 'json';
@@ -32,13 +34,17 @@ class Microsoft extends IdentityProvider
 
         $user = new User;
 
-        $user->uid = $response->id;
-        $user->name = $response->name;
-        $user->firstName = $response->first_name;
-        $user->lastName = $response->last_name;
-        $user->email = isset($response->emails->preferred) ? $response->emails->preferred : null;
-        $user->imageUrl = $imageUrl;
-        $user->urls = $response->link.'/cid-'.$response->id;
+        $email = (isset($response->emails->preferred)) ? $response->emails->preferred : null;
+
+        $user->exchangeArray(array(
+            'uid' => $response->id,
+            'name' => $response->name,
+            'firstname' => $response->first_name,
+            'lastname' => $response->last_name,
+            'email' => $email,
+            'imageurl' => $imageUrl,
+            'urls' => $response->link . '/cid-' . $response->id,
+        ));
 
         return $user;
     }

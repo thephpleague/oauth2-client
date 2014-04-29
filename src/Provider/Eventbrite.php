@@ -2,7 +2,9 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class Eventbrite extends IdentityProvider
+use League\OAuth2\Client\Entity\User;
+
+class Eventbrite extends AbstractProvider
 {
 
     public function __construct($options)
@@ -31,8 +33,10 @@ class Eventbrite extends IdentityProvider
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $user = new User;
-        $user->uid = $response->user->user_id;
-        $user->email = $response->user->email;
+        $user->exchangeArray(array(
+            'uid' => $response->user->user_id,
+            'email' => $response->user->email,
+        ));
 
         return $user;
     }
