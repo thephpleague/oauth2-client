@@ -9,7 +9,8 @@
     "require-dev": {
         "phpunit/phpunit": "*",
         "fabpot/php-cs-fixer": "0.4.*@dev",
-        "mockery/mockery": "dev-master"
+        "mockery/mockery": "dev-master",
+        "symfony/symfony": "dev-master"
     },
     "keywords": [
         "oauth",

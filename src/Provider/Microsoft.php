@@ -8,6 +8,7 @@ class Microsoft extends AbstractProvider
 {
     public $scopes = array('wl.basic', 'wl.emails');
     public $responseType = 'json';
+    protected $supportState = false;
 
     public function urlAuthorize()
     {

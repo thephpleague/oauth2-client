@@ -30,7 +30,6 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('client_id', $query);
         $this->assertArrayHasKey('redirect_uri', $query);
-        $this->assertArrayHasKey('state', $query);
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);

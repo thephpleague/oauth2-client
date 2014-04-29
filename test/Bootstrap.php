@@ -17,6 +17,7 @@ class Bootstrap
     public static function init()
     {
         static::initAutoloader();
+        session_start();
     }
 
     protected static function initAutoloader()

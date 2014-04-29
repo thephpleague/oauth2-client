@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\State;
 
-class Default extends \ArrayObject
+class DefaultManager extends \ArrayObject
 {
     protected $namespace = 'oauth2-client';
 
@@ -18,12 +18,12 @@ class Default extends \ArrayObject
 
     public function __get($name)
     {
-        return $_SESSION[$this->namespace][$name];
+        return (isset($_SESSION[$this->getNamespace()][$name])) ? $_SESSION[$this->namespace][$name]: null ;
     }
 
     public function __set($property, $value)
     {
-        $_SESSION[$this->namespace][$property] = $value;
+        $_SESSION[$this->getNamespace()][$property] = $value;
 
         return $this;
     }

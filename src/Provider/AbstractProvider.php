@@ -34,7 +34,7 @@ abstract class AbstractProvider
 
     /**
      * Must be an instance of GuzzleClient
-     * 
+     *
      * @var httpClient GuzzleClient
      */
     protected $httpClient;
@@ -42,10 +42,19 @@ abstract class AbstractProvider
     /**
      * Must implement \ArrayObject and persist
      * data between requests
-     * 
+     *
      * @var stateManager \ArrayObject
      */
     protected $stateManager;
+
+    /**
+     * Not all OAuth2 Providers return the
+     * state when sent so let each Provider
+     * set it's own support
+     *
+     * @var supportState boolean
+     */
+    protected $supportState = false;
 
    /**
     * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
@@ -111,16 +120,18 @@ abstract class AbstractProvider
 
     public function getAuthorizationUrl($options = array())
     {
-        $state = md5(uniqid(rand(), true));
-
         $params = array(
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'auto'
+            'approval_prompt' => 'auto',
         );
+
+        if ($this->supportState) {
+            $params['state'] = (isset($options['state'])) ? $options['state']: bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+            $this->getStateManager()->state = $params['state'];
+        }
 
         return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
     }
@@ -128,9 +139,6 @@ abstract class AbstractProvider
     // @codeCoverageIgnoreStart
     public function authorize($options = array())
     {
-        $options['state'] = (isset($options['state'])) ? $options['state']: md5(rand());
-        $this->getStateManager()->state = $options['state'];
-
         header('Location: ' . $this->getAuthorizationUrl($options));
         exit;
     }
@@ -149,10 +157,10 @@ abstract class AbstractProvider
         }
 
         // Enforce state for authorization code requests
-        if ($grant instanceof AuthorizationCode) {
-            if (! isset($params['state']
-                or $this->getStateManager()->state !== $params['state']) {
-                throw new IDPException('Unable to validate state');
+        if ($this->supportState and $grant instanceof AuthorizationCode) {
+            if (! isset($params['state'])
+                or $this->getStateManager()->state != $params['state']) {
+                throw new IDPException(array('code' => '-1', 'message' => 'Unable to validate state'));
             }
         }
 

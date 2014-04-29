@@ -54,7 +54,8 @@ class LinkedInTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $this->provider->getStateManager()->state = 'mock_state';
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code', 'state' => $this->provider->getStateManager()->state));
 
 #    print_r($token);die();
 
@@ -84,7 +85,8 @@ class LinkedInTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $this->provider->getStateManager()->state = 'mock_state';
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code', 'state' => $this->provider->getStateManager()->state));
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));

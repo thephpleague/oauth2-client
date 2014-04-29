@@ -24,6 +24,7 @@ class User
                 $name
             ));
         }
+
         return $this->{$name};
     }
 
