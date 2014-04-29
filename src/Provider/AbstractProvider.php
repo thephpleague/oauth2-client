@@ -32,8 +32,19 @@ abstract class AbstractProvider
 
     public $headers = null;
 
+    /**
+     * Must be an instance of GuzzleClient
+     * 
+     * @var httpClient GuzzleClient
+     */
     protected $httpClient;
 
+    /**
+     * Must implement \ArrayObject and persist
+     * data between requests
+     * 
+     * @var stateManager \ArrayObject
+     */
     protected $stateManager;
 
    /**
