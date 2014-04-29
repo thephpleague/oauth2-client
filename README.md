@@ -7,8 +7,8 @@
 Everyone is used to seeing those "Connect with Facebook/Google/etc" buttons around the Internet and social network
 integration is an important feature of most web-apps these days. Many of these sites use an Authentication and Authorization standard called OAuth 2.0.
 
-It will work with any OAuth 2.0 provider (be it your own [PHP OAuth 2.0 Server] or Facebook) and provides support for 
-popular systems out of the box. This package abstracts out some of the subtle but important differences between various providers, handles access tokens and refresh tokens, and allows you easy access to profile information on these other sites.
+It will work with any OAuth 2.0 provider (be it an OAuth 2.0 Server for your own API or Facebook) and provides support
+for popular systems out of the box. This package abstracts out some of the subtle but important differences between various providers, handles access tokens and refresh tokens, and allows you easy access to profile information on these other sites.
 
 This package is compliant with [PSR-1][], [PSR-2][] and [PSR-4][]. If you notice compliance oversights, please send 
 a patch via pull request.
