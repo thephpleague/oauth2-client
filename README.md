@@ -68,19 +68,28 @@ if ( ! isset($_GET['code'])) {
 }
 ```
 
-### List of built-in identity providers
+### Built-In Providers
 
-| Provider | uid    | nickname | name   | first_name | last_name | email  | location | description | imageUrl | urls |
-| :------- | :----- | :------- | :----- | :--------- | :-------- | :----- | :------- | :---------- | :------- | :--- |
-| **Eventbrite** | string | null | null | null | null | string | null | null | null   | null |
-| **Facebook** | string | string | string | string | string | string | string | string | string   | array (Facebook) |
-| **Github**   | string | string | string | null | null | string | null | null | null | array (Github, [personal])|
-| **Google** | string | string | string | string | string | string | null | null | string | null |
-| **Instagram** | string | string | string | null | null | null | null | string | string | null |
-| **LinkedIn** | string | null | string | null | null | string | string | string | string | string |
-| **Microsoft** | string | null | string | string | string | string | null | null | string | string |
+- Eventbrite
+- Facebook
+- Github
+- Google
+- Instagram
+- LinkedIn
+- Microsoft
 
-**Notes**: Providers which return URLs sometimes include additional URLs if the user has provided them. These have been wrapped in []
+These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
+damages our ability to make this package the best it can be, especially as we progress towards v1.0. 
+
+If you would like to support other providers, please make them available as a Composer package, then link to them
+below.
+
+### Third-Party Providers
+
+These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
+so please help them out with a pull request if you notice this. 
+
+- _< insert providers here >_
 
 ## License
 
