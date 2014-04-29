@@ -3,14 +3,14 @@
     "description": "OAuth 2.0 Client Library",
     "license": "MIT",
     "require": {
+        "ext-mcrypt": "*",
         "php": ">=5.3.0",
         "guzzle/guzzle": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
         "fabpot/php-cs-fixer": "0.4.*@dev",
-        "mockery/mockery": "dev-master",
-        "symfony/symfony": "dev-master"
+        "mockery/mockery": "dev-master"
     },
     "keywords": [
         "oauth",

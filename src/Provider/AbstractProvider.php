@@ -7,7 +7,6 @@ use Guzzle\Http\Exception\BadResponseException;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
-use League\OAuth2\Client\State\DefaultManager;
 use League\OAuth2\Client\Grant\AuthorizationCode;
 
 abstract class AbstractProvider
@@ -40,14 +39,6 @@ abstract class AbstractProvider
     protected $httpClient;
 
     /**
-     * Must implement \ArrayObject and persist
-     * data between requests
-     *
-     * @var stateManager \ArrayObject
-     */
-    protected $stateManager;
-
-    /**
      * Not all OAuth2 Providers return the
      * state when sent so let each Provider
      * set it's own support
@@ -71,7 +62,32 @@ abstract class AbstractProvider
         }
 
         $this->setHttpClient(new GuzzleClient);
-        $this->setStateManager(new DefaultManager);
+    }
+
+    public function encryptState($plaintext) 
+    {
+        $key = pack('H*', bin2hex($this->clientId . $this->clientSecret));
+
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+
+        $ciphertext = $iv . mcrypt_encrypt(MCRYPT_RIJNDAEL_128, $key,
+            $plaintext, MCRYPT_MODE_CBC, $iv);
+
+        return base64_encode($ciphertext);
+    }
+
+    public function decryptState($state)
+    {
+        $key = pack('H*', bin2hex($this->clientId . $this->clientSecret));
+
+        $ciphertext_dec = base64_decode($state);
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv_dec = substr($ciphertext_dec, 0, $iv_size);
+        $ciphertext_dec = substr($ciphertext_dec, $iv_size);
+
+        return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key,
+            $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec));
     }
 
     public function setHttpClient(GuzzleClient $client)
@@ -86,18 +102,6 @@ abstract class AbstractProvider
         $client = clone $this->httpClient;
 
         return $client;
-    }
-
-    public function setStateManager(\ArrayObject $manager)
-    {
-        $this->stateManager = $manager;
-
-        return $this;
-    }
-
-    public function getStateManager()
-    {
-        return $this->stateManager;
     }
 
     abstract public function urlAuthorize();
@@ -129,8 +133,7 @@ abstract class AbstractProvider
         );
 
         if ($this->supportState) {
-            $params['state'] = (isset($options['state'])) ? $options['state']: bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
-            $this->getStateManager()->state = $params['state'];
+            $params['state'] = $this->encryptState('oauth2-client');
         }
 
         return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
@@ -158,8 +161,7 @@ abstract class AbstractProvider
 
         // Enforce state for authorization code requests
         if ($this->supportState and $grant instanceof AuthorizationCode) {
-            if (! isset($params['state'])
-                or $this->getStateManager()->state != $params['state']) {
+            if (! isset($params['state']) or 'oauth2-client' != $this->decryptState($params['state'])) {
                 throw new IDPException(array('code' => '-1', 'message' => 'Unable to validate state'));
             }
         }
