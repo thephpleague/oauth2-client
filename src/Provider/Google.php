@@ -7,6 +7,7 @@ use League\OAuth2\Client\Entity\User;
 class Google extends AbstractProvider
 {
     public $scopeSeparator = ' ';
+    protected $supportState = false;
 
     public $scopes = array(
         'https://www.googleapis.com/auth/userinfo.profile',

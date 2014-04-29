@@ -38,6 +38,20 @@ abstract class AbstractProvider
     */
     protected $httpBuildEncType = 1;
 
+    /**
+     * Does the Provider require a state when an access_token is requested?
+     *
+     * @var boolean requireState
+     */
+    protected $requireState = false;
+
+    /**
+     * Does the Provider support the state parameter optionally regulated by requireState
+     *
+     * @var boolean supportState
+     */
+    protected $supportState = false;
+
     public function __construct($options = array())
     {
         foreach ($options as $option => $value) {
@@ -83,16 +97,21 @@ abstract class AbstractProvider
 
     public function getAuthorizationUrl($options = array())
     {
-        $state = md5(uniqid(rand(), true));
-
         $params = array(
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'state' => $state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'auto'
         );
+
+        if ($this->requireState and !$options['state']) {
+            throw new \Exception('state is a required parameter for this Provider');
+        }
+
+        if ($this->supportState and $options['state']) {
+            $params['state'] = $options['state'];
+        }
 
         return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
     }
