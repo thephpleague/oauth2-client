@@ -7,6 +7,8 @@ use Guzzle\Http\Exception\BadResponseException;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\State\DefaultManager;
+use League\OAuth2\Client\Grant\AuthorizationCode;
 
 abstract class AbstractProvider
 {
@@ -32,6 +34,8 @@ abstract class AbstractProvider
 
     protected $httpClient;
 
+    protected $stateManager;
+
    /**
     * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
     *          and the default encryption type for the http_build_query setup
@@ -47,6 +51,7 @@ abstract class AbstractProvider
         }
 
         $this->setHttpClient(new GuzzleClient);
+        $this->setStateManager(new DefaultManager);
     }
 
     public function setHttpClient(GuzzleClient $client)
@@ -61,6 +66,18 @@ abstract class AbstractProvider
         $client = clone $this->httpClient;
 
         return $client;
+    }
+
+    public function setStateManager(\ArrayObject $manager)
+    {
+        $this->stateManager = $manager;
+
+        return $this;
+    }
+
+    public function getStateManager()
+    {
+        return $this->stateManager;
     }
 
     abstract public function urlAuthorize();
@@ -100,6 +117,9 @@ abstract class AbstractProvider
     // @codeCoverageIgnoreStart
     public function authorize($options = array())
     {
+        $options['state'] = (isset($options['state'])) ? $options['state']: md5(rand());
+        $this->getStateManager()->state = $options['state'];
+
         header('Location: ' . $this->getAuthorizationUrl($options));
         exit;
     }
@@ -115,6 +135,14 @@ abstract class AbstractProvider
             $grant = new $grant;
         } elseif (! $grant instanceof GrantInterface) {
             throw new \InvalidArgumentException(get_class($grant) . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+        }
+
+        // Enforce state for authorization code requests
+        if ($grant instanceof AuthorizationCode) {
+            if (! isset($params['state']
+                or $this->getStateManager()->state !== $params['state']) {
+                throw new IDPException('Unable to validate state');
+            }
         }
 
         $defaultParams = array(
