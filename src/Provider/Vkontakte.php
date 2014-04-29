@@ -8,6 +8,7 @@ class Vkontakte extends AbstractProvider
 {
     public $scopes = array();
     public $responseType = 'json';
+    protected $supportState = true;
 
     public function urlAuthorize()
     {

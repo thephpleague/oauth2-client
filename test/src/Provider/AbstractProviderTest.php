@@ -4,7 +4,7 @@ namespace LeagueTest\OAuth2\Client\Provider;
 
 use \Mockery as m;
 
-class IdentityProviderTest extends \PHPUnit_Framework_TestCase
+class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected $provider;
 

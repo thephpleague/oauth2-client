@@ -54,7 +54,8 @@ class VkontakteTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $state = $this->provider->encryptState('oauth2-client');
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code', 'state' => $state));
 
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertLessThanOrEqual(time() + 3600, $token->expires);
@@ -82,7 +83,8 @@ class VkontakteTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $state = $this->provider->encryptState('oauth2-client');
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code', 'state' => $state));
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));

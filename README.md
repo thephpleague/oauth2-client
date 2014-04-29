@@ -37,8 +37,13 @@ if ( ! isset($_GET['code'])) {
 
     try {
 
-    	// Try to get an access token (using the authorization code grant)
-        $t = $provider->getAccessToken('authorization_code', array('code' => $_GET['code']));
+    	// Try to get an access token (using the authorization code grant and app state)
+        $state = (isset($_GET['state'])) ? $_GET['state']: null;
+
+        $t = $oauth2->getAccessToken('authorization_code', array(
+            'code' => $_GET['code'],
+            'state' => $state
+        ));
 
         // NOTE: If you are using Eventbrite you will need to add the grant_type parameter (see below)
         // $t = $provider->getAccessToken('authorization_code', array('code' => $_GET['code'], 'grant_type' => 'authorization_code'));
