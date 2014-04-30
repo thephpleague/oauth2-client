@@ -24,7 +24,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
     public function testAuthorizationUrl()
     {
-        $url = $this->provider->getAuthorizationUrl();
+        $url = $this->provider->getAuthorizationUrl(array('state' => 'mock_state'));
         $uri = parse_url($url);
         parse_str($uri['query'], $query);
 
