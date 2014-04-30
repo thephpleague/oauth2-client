@@ -44,6 +44,11 @@ abstract class AbstractProvider
      * @var boolean requireState
      */
     protected $requireState = false;
+    
+    public function getRequireState()
+    {
+        return $this->requireState;
+    }
 
     /**
      * Does the Provider support the state parameter optionally regulated by requireState
@@ -51,6 +56,11 @@ abstract class AbstractProvider
      * @var boolean supportState
      */
     protected $supportState = false;
+
+    public function getSupportState()
+    {
+        return $this->supportState;
+    }
 
     public function __construct($options = array())
     {
@@ -105,7 +115,7 @@ abstract class AbstractProvider
             'approval_prompt' => 'auto'
         );
 
-        if ($this->requireState and !$options['state']) {
+        if ($this->requireState and !isset($options['state'])) {
             throw new \Exception('state is a required parameter for this Provider');
         }
 

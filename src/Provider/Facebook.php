@@ -8,7 +8,8 @@ class Facebook extends AbstractProvider
 {
     public $scopes = array('offline_access', 'email', 'read_stream');
     public $responseType = 'string';
-    protected $supportState = false;
+    protected $supportState = true;
+    protected $requireState = false;
 
     public function urlAuthorize()
     {
