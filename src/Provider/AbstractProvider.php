@@ -39,27 +39,15 @@ abstract class AbstractProvider
     protected $httpBuildEncType = 1;
 
     /**
-     * Does the Provider require a state when an access_token is requested?
+     * Does the Provider support and/or require a state when an access_token is requested?
      *
      * @var boolean requireState
      */
     protected $requireState = false;
-    
+
     public function getRequireState()
     {
         return $this->requireState;
-    }
-
-    /**
-     * Does the Provider support the state parameter optionally regulated by requireState
-     *
-     * @var boolean supportState
-     */
-    protected $supportState = false;
-
-    public function getSupportState()
-    {
-        return $this->supportState;
     }
 
     public function __construct($options = array())
@@ -117,9 +105,7 @@ abstract class AbstractProvider
 
         if ($this->requireState and !isset($options['state'])) {
             throw new \Exception('state is a required parameter for this Provider');
-        }
-
-        if ($this->supportState and $options['state']) {
+        } else if ($this->requireState) {
             $params['state'] = $options['state'];
         }
 
