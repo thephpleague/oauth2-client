@@ -30,12 +30,26 @@ $provider = new League\OAuth2\Client\Provider\<provider name>(array(
 
 if ( ! isset($_GET['code'])) {
 
-	// If we don't have an authorization code then get one
-    $provider->authorize();
+    // Optionally, based on your Provider, create a State token
+    $options = [];
+    if ($provider->getRequireState()) {
+        $options['state'] = $application->generateState();
+    }
+
+    // If we don't have an authorization code then get one
+    $provider->authorize($options);
 
 } else {
 
     try {
+
+	// Optionally, based on your provider, validate the state.  Validation of the state is
+        // not handled by this library
+        if ($provider->getRequireState()) {
+            if (! $application->validateState($_GET['state'])) {
+                throw new \Exception('Unable to validate state');
+            }
+        }
 
     	// Try to get an access token (using the authorization code grant)
         $t = $provider->getAccessToken('authorization_code', array('code' => $_GET['code']));

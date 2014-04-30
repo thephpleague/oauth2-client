@@ -7,6 +7,7 @@ use League\OAuth2\Client\Entity\User;
 class Github extends AbstractProvider
 {
     public $responseType = 'string';
+    protected $requireState = false;
 
     public function urlAuthorize()
     {
