@@ -4,7 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.png)](https://packagist.org/packages/league/oauth2-client)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable.png)](https://packagist.org/packages/league/oauth2-client)
 
-This library makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. 
+This package makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. 
 
 Everyone is used to seeing those "Connect with Facebook/Google/etc" buttons around the Internet and social network
 integration is an important feature of most web-apps these days. Many of these sites use an Authentication and Authorization standard called OAuth 2.0.
