@@ -32,7 +32,7 @@ if ( ! isset($_GET['code'])) {
 
     // Optionally, based on your Provider, create a State token
     $options = [];
-    if ($provider->supportState) {
+    if ($provider->getSupportState()) {
         $options['state'] = $application->generateState();
     }
 
@@ -45,7 +45,7 @@ if ( ! isset($_GET['code'])) {
 
 	// Optionally, based on your provider, validate the state.  Validation of the state is
         // not handled by this library
-        if ($provider->supportState) {
+        if ($provider->getSupportState()) {
             if (! $application->validateState($_GET['state'])) {
                 throw new \Exception('Unable to validate state');
             }
