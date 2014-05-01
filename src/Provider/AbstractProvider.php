@@ -94,6 +94,12 @@ abstract class AbstractProvider
             'approval_prompt' => 'auto'
         );
 
+        if ($this->requireState and !isset($options['state'])) {
+            throw new \Exception('state is a required parameter for this Provider');
+        } elseif ($this->requireState) {
+            $params['state'] = $options['state'];
+        }
+
         return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
     }
 
