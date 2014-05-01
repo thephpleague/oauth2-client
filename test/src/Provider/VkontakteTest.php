@@ -47,7 +47,7 @@ class VkontakteTest extends \PHPUnit_Framework_TestCase
     public function testGetAccessToken()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires_in": 3600, "refresh_token": "mock_refresh_token", "user_id": 1}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
@@ -57,8 +57,7 @@ class VkontakteTest extends \PHPUnit_Framework_TestCase
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
 
         $this->assertEquals('mock_access_token', $token->accessToken);
-        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
-        $this->assertGreaterThanOrEqual(time(), $token->expires);
+        $this->assertEquals(3600, $token->expires_in);
         $this->assertEquals('mock_refresh_token', $token->refreshToken);
         $this->assertEquals('1', $token->uid);
     }
@@ -71,10 +70,10 @@ class VkontakteTest extends \PHPUnit_Framework_TestCase
     public function testUserData()
     {
         $postResponse = m::mock('Guzzle\Http\Message\Response');
-        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires_in": 3600, "refresh_token": "mock_refresh_token", "user_id": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"response": [{"uid": 12345, "nickname": "mock_nickname", "screen_name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "country": "UK", "status": "mock_status", "photo_200_orig": "mock_image_url"}]}');
+        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"response": [{"user_id": 12345, "nickname": "mock_nickname", "screen_name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "country": "UK", "status": "mock_status", "photo_200_orig": "mock_image_url"}]}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
