@@ -6,6 +6,7 @@ use League\OAuth2\Client\Entity\User;
 
 class Eventbrite extends AbstractProvider
 {
+    protected $requireState = false;
 
     public function __construct($options)
     {

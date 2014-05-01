@@ -85,15 +85,15 @@ if ( ! isset($_GET['code'])) {
 
 } else {
 
-	// Try to get an access token (using the authorization code grant)
+    // Try to get an access token (using the authorization code grant)
     $token = $provider->getAccessToken('authorization_code', [
-    	'code' => $_GET['code']
+        'code' => $_GET['code']
     ]);
 
     // If you are using Eventbrite you will need to add the grant_type parameter (see below)
     $token = $provider->getAccessToken('authorization_code', [
-    	'code' => $_GET['code'],
-    	'grant_type' => 'authorization_code'
+        'code' => $_GET['code'],
+        'grant_type' => 'authorization_code'
     ]);
 
     // Optional: Now you have a token you can look up a users profile data
@@ -103,7 +103,7 @@ if ( ! isset($_GET['code'])) {
         $userDetails = $provider->getUserDetails($token);
 
         // Use these details to create a new profile
-	    printf('Hello %s!', $userDetails->firstName);
+        printf('Hello %s!', $userDetails->firstName);
 
     } catch (Exception $e) {
 
