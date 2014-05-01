@@ -12,9 +12,14 @@ class AccessToken
     public $accessToken;
 
     /**
-     * @var  int  expires
+     * @var  int  expires_in
      */
     public $expires_in;
+
+    /**
+     * @var int expires
+     */
+    public $expires;
 
     /**
      * @var  string  refreshToken
@@ -60,6 +65,8 @@ class AccessToken
             // Facebook uses expires instead of expires_in
             $this->expires_in = $options['expires'];
         }
+
+        $this->expires = time() + $this->expires_in;
 
         // Grab a refresh token so we can update access tokens when they expires
         if (isset($options['refresh_token'])) {
