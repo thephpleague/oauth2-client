@@ -14,7 +14,7 @@ class AccessToken
     /**
      * @var  int  expires
      */
-    public $expires;
+    public $expires_in;
 
     /**
      * @var  string  refreshToken
@@ -41,23 +41,30 @@ class AccessToken
 
         $this->accessToken = $options['access_token'];
 
-        // Some providers (not many) give the uid here, so lets take it
-        isset($options['uid']) and $this->uid = $options['uid'];
+        // Find uid
+        if (isset($options['uid'])) {
+            $this->uid = $options['uid'];
+        } elseif (isset($options['user_id'])) {
+            // Vkontakte uses user_id instead of uid
+            $this->uid = $options['user_id'];
+        } elseif (isset($options['x_mailru_vid'])) {
+            // Mailru uses x_mailru_vid instead of uid
+            $this->uid = $options['x_mailru_vid'];
+        }
 
-        // Vkontakte uses user_id instead of uid
-        isset($options['user_id']) and $this->uid = $options['user_id'];
-
-        // Mailru uses x_mailru_vid instead of uid
-        isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
-
-        // We need to know when the token expires, add num. seconds to current time
-        isset($options['expires_in']) and $this->expires = time() + ((int) $options['expires_in']);
-
-        // Facebook is just being a spec ignoring jerk
-        isset($options['expires']) and $this->expires = time() + ((int) $options['expires']);
+        // The OAuth2 spec works in expires_in values and
+        // not expiratory dates (as previously coded)
+        if (isset($options['expires_in'])) {
+            $this->expires_in = $options['expires_in'];
+        } elseif (isset($options['expires'])) {
+            // Facebook uses expires instead of expires_in
+            $this->expires_in = $options['expires'];
+        }
 
         // Grab a refresh token so we can update access tokens when they expires
-        isset($options['refresh_token']) and $this->refreshToken = $options['refresh_token'];
+        if (isset($options['refresh_token'])) {
+            $this->refreshToken = $options['refresh_token'];
+        }
     }
 
     /**

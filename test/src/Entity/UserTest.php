@@ -29,24 +29,24 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     public function testExchangeArrayGetArrayCopy()
     {
-	$this->user->exchangeArray($this->userArray);
+    $this->user->exchangeArray($this->userArray);
         $this->assertEquals($this->userArray, $this->user->getArrayCopy());
     }
 
     public function testMagicMethos()
     {
-	$this->user->exchangeArray($this->userArray);
+    $this->user->exchangeArray($this->userArray);
 
         $this->user->name = 'mock_change_test';
 
-	$this->assertTrue(isset($this->user->name));
+    $this->assertTrue(isset($this->user->name));
         $this->assertEquals('mock_change_test', $this->user->name);
     }
 
     /**
      * @expectedException PHPUnit_Framework_Error_Notice
      * Acutal exception expected below but magic testing on phpunit give above
-     * @expectedException \OutOfRangeException 
+     * @expectedException \OutOfRangeException
      */
     public function testInvalidMagicSet()
     {
@@ -54,7 +54,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \OutOfRangeException 
+     * @expectedException \OutOfRangeException
      */
     public function testInvalidMagicGet()
     {

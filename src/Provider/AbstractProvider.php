@@ -105,7 +105,7 @@ abstract class AbstractProvider
 
         if ($this->requireState and !isset($options['state'])) {
             throw new \Exception('state is a required parameter for this Provider');
-        } else if ($this->requireState) {
+        } elseif ($this->requireState) {
             $params['state'] = $options['state'];
         }
 
