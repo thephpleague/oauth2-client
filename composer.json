@@ -4,12 +4,12 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "guzzle/guzzle": "*"
+        "guzzle/guzzle": "~3.7"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "fabpot/php-cs-fixer": "0.4.*@dev",
-        "mockery/mockery": "dev-master"
+        "phpunit/phpunit": "~4.0",
+        "mockery/mockery": "~0.9",
+        "fabpot/php-cs-fixer": "0.4.*@dev"
     },
     "keywords": [
         "oauth",
@@ -31,8 +31,17 @@
     ],
     "autoload": {
         "psr-4": {
-            "League\\OAuth2\\Client\\": "src/",
+            "League\\OAuth2\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "LeagueTest\\OAuth2\\Client\\": "test/src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.3-dev"
         }
     }
 }
