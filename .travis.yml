@@ -11,12 +11,14 @@ matrix:
     - php: hhvm
 
 before_script:
-    - composer self-update
-    - composer --version
-    - composer install --prefer-source
+  - composer self-update
+  - composer require satooshi/php-coveralls:dev-master --no-update --dev
+  - composer install --prefer-source
 
-script: phpunit
+script: 
+  - mkdir -p build/logs
+  - phpunit --coverage-text
+  - ./vendor/bin/phpcs src --standard=psr2
 
-cache:
-  directories:
-    - vendor
+after_script:
+  - php vendor/bin/coveralls

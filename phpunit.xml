@@ -7,19 +7,16 @@
 	</testsuites>
 
 	<filter>
-		<blacklist>
-			<directory suffix=".php">./vendor</directory>
-			<directory suffix=".php">./test</directory>
-		</blacklist>
-		<whitelist addUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">src</directory>
-		</whitelist>
+		<whitelist>
+            <directory suffix=".php">src/</directory>
+        </whitelist>
 	</filter>
 
 	<logging>
-		<log type="coverage-html" target="./build/logs/coverage" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
-		<log type="coverage-text" target="php://stdout" title="lncd/OAuth-client" charset="UTF-8" yui="true" highlight="true" lowUpperBound="50" highLowerBound="90"/>
-		<log type="coverage-clover" target="./build/logs/clover.xml"/>
-		<log type="junit" target="./build/logs/junit.xml" logIncompleteSkipped="false"/>
-	</logging>
+        <log type="tap" target="build/report.tap"/>
+        <log type="junit" target="build/report.junit.xml"/>
+        <log type="coverage-html" target="build/coverage" charset="UTF-8" yui="true" highlight="true"/>
+        <log type="coverage-text" target="build/coverage.txt"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
 </phpunit>
