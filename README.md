@@ -41,22 +41,18 @@ damages our ability to make this package the best it can be, especially as we pr
 If you would like to support other providers, please make them available as a Composer package, then link to them
 below.
 
-These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
+These providers allow integration with other providers not included with `oauth2-client`. They may require an older version
 so please help them out with a pull request if you notice this. 
 
-- _Insert providers here_
+- [box.com](https://github.com/StukiOrg/BoxOAuth2Client-PHP)
+- add more providers
 
-## Install
+##Installation with Composer
 
-Via Composer
-
-``` json
-{
-    "require": {
-        "league/oauth2-client": "~0.3"
-    }
-}
+```sh
+$ php composer.phar require league/oauth2-client:~0.3
 ```
+For composer documentation, please refer to [getcomposer.org](http://getcomposer.org/).
 
 ## Requirements
 
