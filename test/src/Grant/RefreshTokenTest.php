@@ -1,6 +1,6 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Grant;
+namespace League\OAuth2\Client\Test\Grant;
 
 use \Mockery as m;
 
@@ -17,11 +17,6 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    protected function tearDown()
-    {
-#        m::close();
-    }
-
     public function testGetAccessToken()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
@@ -33,10 +28,13 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
 
         $grant = new \League\OAuth2\Client\Grant\RefreshToken();
-        $refreshToken = $this->provider->getAccessToken($grant, array('refresh_token' => $token->refreshToken));
         $this->assertEquals('refresh_token', (string) $grant);
+
+        $newToken = $this->provider->getAccessToken($grant, array('refresh_token' => $token->refreshToken));
+        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $newToken);
     }
 
     /**

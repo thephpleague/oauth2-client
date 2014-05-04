@@ -1,10 +1,10 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Provider;
+namespace League\OAuth2\Client\Test\Provider;
 
 use \Mockery as m;
 
-class IdentityProviderTest extends \PHPUnit_Framework_TestCase
+class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected $provider;
 
@@ -17,17 +17,12 @@ class IdentityProviderTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    protected function tearDown()
-    {
-#        m::close();
-    }
-
     /**
      * @expectedException InvalidArgumentException
      */
     public function testInvalidGrantString()
     {
-        $test = $this->provider->getAccessToken('invalid_grant', array('invalid_parameter' => 'none'));
+        $this->provider->getAccessToken('invalid_grant', array('invalid_parameter' => 'none'));
     }
 
     /**
@@ -36,6 +31,6 @@ class IdentityProviderTest extends \PHPUnit_Framework_TestCase
     public function testInvalidGrantObject()
     {
         $grant = new \StdClass;
-        $test = $this->provider->getAccessToken($grant, array('invalid_parameter' => 'none'));
+        $this->provider->getAccessToken($grant, array('invalid_parameter' => 'none'));
     }
 }

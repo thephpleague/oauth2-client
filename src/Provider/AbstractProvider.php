@@ -108,7 +108,9 @@ abstract class AbstractProvider
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
         if (is_string($grant)) {
-            $grant = 'League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
+            // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
+            $className = str_replace(' ', '', ucwords(str_replace(array('-', '_'), ' ', $grant)));
+            $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
             if (! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }

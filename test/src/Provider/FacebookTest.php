@@ -1,6 +1,6 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Provider;
+namespace League\OAuth2\Client\Test\Provider;
 
 use \Mockery as m;
 
@@ -15,11 +15,6 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ));
-    }
-
-    protected function tearDown()
-    {
-#        m::close();
     }
 
     public function testAuthorizationUrl()

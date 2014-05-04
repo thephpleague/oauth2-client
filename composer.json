@@ -3,7 +3,7 @@
     "description": "OAuth 2.0 Client Library",
     "license": "MIT",
     "require": {
-        "php": ">=5.3.0",
+        "php": ">=5.4.0",
         "guzzle/guzzle": "~3.7"
     },
     "require-dev": {
@@ -36,7 +36,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "LeagueTest\\OAuth2\\Client\\": "test/src/"
+            "League\\OAuth2\\Client\\Test\\": "test/src/"
         }
     },
     "extra": {
