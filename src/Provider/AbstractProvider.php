@@ -123,13 +123,16 @@ abstract class AbstractProvider
     public function getAccessToken($grant = 'authorization_code', $params = array())
     {
         if (is_string($grant)) {
-            $grant = 'League\\OAuth2\\Client\\Grant\\'.ucfirst(str_replace('_', '', $grant));
-            if ( ! class_exists($grant)) {
+            // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
+            $className = str_replace(' ', '', ucwords(str_replace(array('-', '_'), ' ', $grant)));
+            $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
+            if (! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
             $grant = new $grant;
         } elseif (! $grant instanceof GrantInterface) {
-            throw new \InvalidArgumentException(get_class($grant) . ' is not an instance of League\OAuth2\Client\Grant\GrantInterface');
+            $message = get_class($grant).' is not an instance of League\OAuth2\Client\Grant\GrantInterface';
+            throw new \InvalidArgumentException($message);
         }
 
         $defaultParams = array(
@@ -224,7 +227,7 @@ abstract class AbstractProvider
      * @param  string       $arg_separator
      * @param  null|integer $enc_type
      * @return string
-     * @codeCoverageIgnoreStart
+     *                                     @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {

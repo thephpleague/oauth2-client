@@ -1,6 +1,6 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Provider;
+namespace League\OAuth2\Client\Test\Provider;
 
 use \Mockery as m;
 
@@ -15,11 +15,6 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ));
-    }
-
-    protected function tearDown()
-    {
-#        m::close();
     }
 
     public function testAuthorizationUrl()
@@ -54,8 +49,6 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
-
-#    print_r($token);die();
 
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertEquals(3600, $token->expires_in);

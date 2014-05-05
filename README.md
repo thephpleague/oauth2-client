@@ -1,6 +1,7 @@
 # OAuth 2.0 Client
 
 [![Build Status](https://travis-ci.org/thephpleague/oauth2-client.png?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
+[![Coverage Status](https://coveralls.io/repos/thephpleague/oauth2-client/badge.png)](https://coveralls.io/r/thephpleague/oauth2-client)
 [![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.png)](https://packagist.org/packages/league/oauth2-client)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable.png)](https://packagist.org/packages/league/oauth2-client)
 
@@ -140,6 +141,3 @@ $ phpunit
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE) for more information.
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/thephpleague/oauth2-client/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

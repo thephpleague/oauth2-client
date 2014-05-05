@@ -1,6 +1,6 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Grant;
+namespace League\OAuth2\Client\Test\Grant;
 
 use \Mockery as m;
 
@@ -15,11 +15,6 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ));
-    }
-
-    protected function tearDown()
-    {
-#        m::close();
     }
 
     public function testGetAccessToken()
@@ -41,6 +36,6 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('invalid_code' => 'mock_authorization_code'));
+        $this->provider->getAccessToken('authorization_code', array('invalid_code' => 'mock_authorization_code'));
     }
 }

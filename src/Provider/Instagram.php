@@ -57,5 +57,4 @@ class Instagram extends AbstractProvider
     {
         return $response->data->full_name;
     }
-
 }

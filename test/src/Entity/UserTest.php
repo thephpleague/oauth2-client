@@ -1,12 +1,13 @@
 <?php
 
-namespace LeagueTest\OAuth2\Client\Token;
+namespace League\OAuth2\Client\Test\Token;
 
 use League\OAuth2\Client\Entity\User;
 
 class UserTest extends \PHPUnit_Framework_TestCase
 {
     private $user;
+
     private $userArray;
 
     public function setUp()
@@ -29,17 +30,17 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     public function testExchangeArrayGetArrayCopy()
     {
-    $this->user->exchangeArray($this->userArray);
+        $this->user->exchangeArray($this->userArray);
         $this->assertEquals($this->userArray, $this->user->getArrayCopy());
     }
 
     public function testMagicMethos()
     {
-    $this->user->exchangeArray($this->userArray);
+        $this->user->exchangeArray($this->userArray);
 
         $this->user->name = 'mock_change_test';
 
-    $this->assertTrue(isset($this->user->name));
+        $this->assertTrue(isset($this->user->name));
         $this->assertEquals('mock_change_test', $this->user->name);
     }
 
@@ -58,6 +59,6 @@ class UserTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidMagicGet()
     {
-        $mock = $this->user->invalidProp;
+        $this->user->invalidProp;
     }
 }
