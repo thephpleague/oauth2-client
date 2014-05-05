@@ -9,6 +9,7 @@ class Vkontakte extends AbstractProvider
 {
     public $scopes = array();
     public $responseType = 'json';
+    protected $requireState = true;
 
     public function urlAuthorize()
     {
@@ -63,7 +64,7 @@ class Vkontakte extends AbstractProvider
         $description = (isset($response->status)) ? $response->status : null;
 
         $user->exchangeArray(array(
-            'uid' => $response->uid,
+            'uid' => $response->user_id,
             'nickname' => $response->nickname,
             'name' => $response->screen_name,
             'firstname' => $response->first_name,
@@ -79,22 +80,18 @@ class Vkontakte extends AbstractProvider
 
     public function userUid($response, AccessToken $token)
     {
-        $response = $response->response[0];
-
-        return $response->uid;
+        return $this->userDetails($response, $token)->uid;
     }
 
     public function userEmail($response, AccessToken $token)
     {
-        $response = $response->response[0];
-
-        return isset($response->email) && $response->email ? $response->email : null;
+        return $this->userDetails($response, $token)->email;
     }
 
     public function userScreenName($response, AccessToken $token)
     {
-        $response = $response->response[0];
+        $user = $this->userDetails($response, $token);
 
-        return array($response->first_name, $response->last_name);
+        return array($user->firstName, $user->lastName);
     }
 }

@@ -8,6 +8,7 @@ class Instagram extends AbstractProvider
 {
     public $scopes = array('basic');
     public $responseType = 'json';
+    protected $requireState = false;
 
     public function urlAuthorize()
     {

@@ -19,14 +19,14 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testAuthorizationUrl()
     {
-        $url = $this->provider->getAuthorizationUrl();
+        $url = $this->provider->getAuthorizationUrl(array('state' => 'mock_state'));
         $uri = parse_url($url);
         parse_str($uri['query'], $query);
 
         $this->assertArrayHasKey('client_id', $query);
         $this->assertArrayHasKey('redirect_uri', $query);
-        $this->assertArrayHasKey('state', $query);
         $this->assertArrayHasKey('scope', $query);
+        $this->assertArrayHasKey('state', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
     }
@@ -54,8 +54,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 #    print_r($token);die();
 
         $this->assertEquals('mock_access_token', $token->accessToken);
-        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
-        $this->assertGreaterThanOrEqual(time(), $token->expires);
+        $this->assertEquals(3600, $token->expires_in);
         $this->assertEquals('mock_refresh_token', $token->refreshToken);
         $this->assertEquals('1', $token->uid);
     }

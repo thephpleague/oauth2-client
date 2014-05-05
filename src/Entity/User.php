@@ -70,6 +70,8 @@ class User
             $key = strtolower($key);
             switch ($key) {
                 case 'uid':
+                case 'user_id':
+                case 'x_mailru_vid':
                     $this->uid = $value;
                     break;
                 case 'nickname':

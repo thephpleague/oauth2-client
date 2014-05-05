@@ -9,6 +9,7 @@ class LinkedIn extends AbstractProvider
 {
     public $scopes = array('r_basicprofile r_emailaddress r_contactinfo');
     public $responseType = 'json';
+    protected $requireState = true;
     public $fields = array(
         'id', 'email-address', 'first-name', 'last-name', 'headline',
         'location', 'industry', 'picture-url', 'public-profile-url'

@@ -25,7 +25,6 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 
         $this->assertArrayHasKey('client_id', $query);
         $this->assertArrayHasKey('redirect_uri', $query);
-        $this->assertArrayHasKey('state', $query);
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
@@ -42,7 +41,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
     public function testGetAccessToken()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires_in": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
@@ -54,8 +53,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 #    print_r($token);die();
 
         $this->assertEquals('mock_access_token', $token->accessToken);
-        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
-        $this->assertGreaterThanOrEqual(time(), $token->expires);
+        $this->assertEquals(3600, $token->expires_in);
         $this->assertEquals('mock_refresh_token', $token->refreshToken);
         $this->assertEquals('1', $token->uid);
     }
@@ -68,7 +66,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
     public function testUserData()
     {
         $postResponse = m::mock('Guzzle\Http\Message\Response');
-        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires_in": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
         $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
