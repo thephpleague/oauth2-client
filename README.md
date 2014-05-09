@@ -5,7 +5,7 @@
 [![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.png)](https://packagist.org/packages/league/oauth2-client)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable.png)](https://packagist.org/packages/league/oauth2-client)
 
-This package makes it stupidly simple to integrate your application with OAuth 2.0 identity providers. 
+This package makes it stupidly simple to integrate your application with OAuth 2.0 identity providers.
 
 Everyone is used to seeing those "Connect with Facebook/Google/etc" buttons around the Internet and social network
 integration is an important feature of most web-apps these days. Many of these sites use an Authentication and Authorization standard called OAuth 2.0.
@@ -13,7 +13,7 @@ integration is an important feature of most web-apps these days. Many of these s
 It will work with any OAuth 2.0 provider (be it an OAuth 2.0 Server for your own API or Facebook) and provides support
 for popular systems out of the box. This package abstracts out some of the subtle but important differences between various providers, handles access tokens and refresh tokens, and allows you easy access to profile information on these other sites.
 
-This package is compliant with [PSR-1][], [PSR-2][] and [PSR-4][]. If you notice compliance oversights, please send 
+This package is compliant with [PSR-1][], [PSR-2][] and [PSR-4][]. If you notice compliance oversights, please send
 a patch via pull request.
 
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
@@ -34,7 +34,7 @@ This package currently has built-in support for:
 - Microsoft
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
-damages our ability to make this package the best it can be, especially as we progress towards v1.0. 
+damages our ability to make this package the best it can be, especially as we progress towards v1.0.
 
 ### Third-Party Providers
 
@@ -42,9 +42,10 @@ If you would like to support other providers, please make them available as a Co
 below.
 
 These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
-so please help them out with a pull request if you notice this. 
+so please help them out with a pull request if you notice this.
 
-- _Insert providers here_
+- [QQ](https://github.com/tlikai/oauth2-client)
+- [Weibo](https://github.com/tlikai/oauth2-client)
 
 ## Install
 
@@ -60,7 +61,7 @@ Via Composer
 
 ## Requirements
 
-The following versions of PHP are supported. 
+The following versions of PHP are supported.
 
 * PHP 5.4
 * PHP 5.5
@@ -114,7 +115,7 @@ if ( ! isset($_GET['code'])) {
 
     // Use this to interact with an API on the users behalf
     echo $token->access_token;
-    
+
     // Use this to get a new access token if the old one expires
     echo $token->refresh_token;
 
