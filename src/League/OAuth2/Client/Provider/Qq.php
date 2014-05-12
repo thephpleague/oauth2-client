@@ -61,8 +61,7 @@ class Qq extends IdentityProvider
 
         $response = json_decode($response);
 
-        if (!isset($response->ret) || $response->ret != 0)
-        {
+        if (!isset($response->ret) || $response->ret != 0) {
             $result['code'] = $response->ret;
             $result['message'] = $response->msg;
 
