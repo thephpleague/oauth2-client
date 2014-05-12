@@ -21,44 +21,6 @@ a patch via pull request.
 [PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
 
 
-### Built-In Providers
-
-This package currently has built-in support for:
-
-- Eventbrite
-- Facebook
-- Github
-- Google
-- Instagram
-- LinkedIn
-- Microsoft
-
-These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
-damages our ability to make this package the best it can be, especially as we progress towards v1.0.
-
-### Third-Party Providers
-
-If you would like to support other providers, please make them available as a Composer package, then link to them
-below.
-
-These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
-so please help them out with a pull request if you notice this.
-
-- [QQ](https://github.com/tlikai/oauth2-client)
-- [Weibo](https://github.com/tlikai/oauth2-client)
-
-## Install
-
-Via Composer
-
-``` json
-{
-    "require": {
-        "league/oauth2-client": "~0.3"
-    }
-}
-```
-
 ## Requirements
 
 The following versions of PHP are supported.
@@ -135,6 +97,51 @@ $provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
 
 $grant = new \League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
+```
+
+
+### Built-In Providers
+
+This package currently has built-in support for:
+
+- Eventbrite
+- Facebook
+- Github
+- Google
+- Instagram
+- LinkedIn
+- Microsoft
+
+These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
+damages our ability to make this package the best it can be, especially as we progress towards v1.0.
+
+### Third-Party Providers
+
+If you would like to support other providers, please make them available as a Composer package, then link to them
+below.
+
+These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
+so please help them out with a pull request if you notice this.
+
+- [QQ](https://github.com/tlikai/oauth2-client)
+- [Weibo](https://github.com/tlikai/oauth2-client)
+
+### Client Packages
+
+Some developers use this library as a base for their own PHP API wrappers, and that seems like a really great idea. It might make it slightly tricky to integrate their provider with an existing generic "OAuth 2.0 All the Things" login system, but it does make working with them easier.
+
+- [Sniply](https://github.com/younes0/sniply)
+
+## Install
+
+Via Composer
+
+``` json
+{
+    "require": {
+        "league/oauth2-client": "~0.3"
+    }
+}
 ```
 
 ## Testing
