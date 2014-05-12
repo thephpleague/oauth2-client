@@ -29,7 +29,7 @@ abstract class IdentityProvider
 
     protected $cachedUserDetailsResponse;
 
-    private $httpClient;
+    protected $httpClient;
 
     public function __construct(HttpClientInterface $httpClient, $options = array())
     {
@@ -117,7 +117,7 @@ abstract class IdentityProvider
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
-            'grant_type'    => $grant,
+            'grant_type'    => (string)$grant,
         );
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
