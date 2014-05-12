@@ -47,7 +47,7 @@ class Qq extends IdentityProvider
 
         // fetch QQ user profile
         $params = array(
-            'access_token' => $token,
+            'access_token' => $token->accessToken,
             'oauth_consumer_key' => $this->clientId,
             'openid' => $openid_response->openid
         );
