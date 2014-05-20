@@ -150,6 +150,21 @@ Via Composer
 $ phpunit
 ```
 
+## Contributing
+
+Please see [CONTRIBUTING](https://github.com/thephpleague/oauth2-client/blob/master/CONTRIBUTING.md) for details.
+
+
+## Credits
+
+- [Alex Bilbie](https://github.com/alexbilbie)
+- [Ben Corlett](https://github.com/bencorlett)
+- [James Mills](https://github.com/jamesmills)
+- [Phil Sturgeon](https://github.com/philsturgeon)
+- [Tom Anderson](https://github.com/TomHAnderson)
+- [All Contributors](https://github.com/thephpleague/oauth2-client/contributors)
+
+
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE) for more information.
