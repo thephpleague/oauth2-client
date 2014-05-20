@@ -161,7 +161,6 @@ Please see [CONTRIBUTING](https://github.com/thephpleague/oauth2-client/blob/mas
 - [Ben Corlett](https://github.com/bencorlett)
 - [James Mills](https://github.com/jamesmills)
 - [Phil Sturgeon](https://github.com/philsturgeon)
-- [Tom Anderson](https://github.com/TomHAnderson)
 - [All Contributors](https://github.com/thephpleague/oauth2-client/contributors)
 
 
