@@ -39,12 +39,12 @@ class Facebook extends AbstractProvider
 
         $user = new User;
 
-        $username = ($username) ?: null;
+        $username = (isset($username)) ? $username : null;
         $email = (isset($response->email)) ? $response->email : null;
         $location = (isset($response->hometown->name)) ? $response->hometown->name : null;
         $description = (isset($response->bio)) ? $response->bio : null;
         $imageUrl = ($imageUrl) ?: null;
-
+        
         $user->exchangeArray(array(
             'uid' => $response->id,
             'nickname' => $username,
