@@ -29,6 +29,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
+        $this->assertNotNull($this->provider->state);
     }
 
     public function testUrlAccessToken()
