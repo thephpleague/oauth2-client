@@ -16,6 +16,8 @@ abstract class AbstractProvider
 
     public $redirectUri = '';
 
+    public $state;
+
     public $name;
 
     public $uidKey = 'uid';
@@ -83,12 +85,12 @@ abstract class AbstractProvider
 
     public function getAuthorizationUrl($options = array())
     {
-        $state = md5(uniqid(rand(), true));
+        $this->state = md5(uniqid(rand(), true));
 
         $params = array(
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'state' => $state,
+            'state' => $this->state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'auto'
