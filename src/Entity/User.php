@@ -14,6 +14,8 @@ class User
     protected $description;
     protected $imageUrl;
     protected $urls;
+    protected $gender;
+    protected $locale;
 
     public function __get($name)
     {
@@ -61,6 +63,8 @@ class User
             'description' => $this->description,
             'imageUrl' => $this->imageUrl,
             'urls' => $this->urls,
+            'gender' => $this->gender,
+            'locale' => $this->locale,
         );
     }
 
@@ -98,6 +102,12 @@ class User
                     break;
                 case 'urls':
                     $this->urls = $value;
+                    break;
+                case 'gender':
+                    $this->gender = $value;
+                    break;
+                case 'locale':
+                    $this->locale = $value;
                     break;
             }
         }
