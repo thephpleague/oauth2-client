@@ -36,7 +36,7 @@ class User
             throw new \OutOfRangeException(sprintf(
                 '%s does not contain a property by the name of "%s"',
                 __CLASS__,
-                $name
+                $property
             ));
         }
 
