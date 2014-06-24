@@ -50,12 +50,12 @@ if ( ! isset($_GET['code'])) {
 } else {
 
 	// Try to get an access token (using the authorization code grant)
-    $token = $provider->getAccessToken('authorization_code', [
+    $token = $provider->getAccessToken('authorizationCode', [
     	'code' => $_GET['code']
     ]);
 
     // If you are using Eventbrite you will need to add the grant_type parameter (see below)
-    $token = $provider->getAccessToken('authorization_code', [
+    $token = $provider->getAccessToken('authorizationCode', [
     	'code' => $_GET['code'],
     	'grant_type' => 'authorization_code'
     ]);
