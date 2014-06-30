@@ -14,7 +14,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-			'hostedDomain' => 'mock_domain',
+            'hostedDomain' => 'mock_domain',
         ));
     }
 
@@ -30,7 +30,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
-		$this->assertArrayHasKey('hd', $query);
+        $this->assertArrayHasKey('hd', $query);
         $this->assertNotNull($this->provider->state);
     }
 
