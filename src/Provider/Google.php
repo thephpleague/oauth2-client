@@ -13,6 +13,22 @@ class Google extends AbstractProvider
         'https://www.googleapis.com/auth/userinfo.email'
     );
 
+   /**
+    * @var string If set, this will be sent to google as the "hd" parameter.
+    * @link https://developers.google.com/accounts/docs/OAuth2Login#hd-param
+    */
+    public $hostedDomain = '';
+
+    public function setHostedDomain($hd)
+    {
+        $this->hostedDomain = $hd;
+    }
+
+    public function getHostedDomain()
+    {
+        return $this->hostedDomain;
+    }
+
     public function urlAuthorize()
     {
         return 'https://accounts.google.com/o/oauth2/auth';
@@ -61,5 +77,16 @@ class Google extends AbstractProvider
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return array($response->given_name, $response->family_name);
+    }
+
+    public function getAuthorizationUrl($options = array())
+    {
+        $url = parent::getAuthorizationUrl($options);
+
+        if (!empty($this->hostedDomain)) {
+            $url .= '&' . $this->httpBuildQuery(['hd' => $this->hostedDomain]);
+        }
+
+        return $url;
     }
 }
