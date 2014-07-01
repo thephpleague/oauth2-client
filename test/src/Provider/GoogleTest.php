@@ -90,4 +90,15 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
     }
+
+    public function testGetHostedDomain()
+    {
+        $this->assertEquals('mock_domain', $this->provider->getHostedDomain());
+    }
+
+    public function testSetHostedDomain()
+    {
+        $this->provider->setHostedDomain('changed_domain');
+        $this->assertEquals('changed_domain', $this->provider->hostedDomain);
+    }
 }
