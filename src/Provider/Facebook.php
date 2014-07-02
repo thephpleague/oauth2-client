@@ -26,11 +26,15 @@ class Facebook extends AbstractProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $client = $this->getHttpClient();
-        $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token=' . $token->accessToken);
-        $request = $client->get()->send();
-        $info = $request->getInfo();
-        $imageUrl = $info['url'];
+        try {
+            $client = $this->getHttpClient();
+            $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token=' . $token->accessToken);
+            $request = $client->get()->send();
+            $info = $request->getInfo();
+            $imageUrl = $info['url'];
+        } catch (\Exception $e) {
+			$imageUrl = null;
+		}
 
         $user = new User;
 
