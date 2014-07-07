@@ -8,13 +8,9 @@ class IDPException extends \Exception
 
     public function __construct($result)
     {
-        
-        // should check if the $result is a string
-        if(is_string($result)){
-            
-            $jsonString = json_decode($result,true);
-            
-            if(is_array($jsonString)){
+        if (is_string($result)) {
+            $jsonString = json_decode($result, true);
+            if (is_array($jsonString)) {
                 $result = $jsonString;
             }
         }
