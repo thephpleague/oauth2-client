@@ -8,7 +8,7 @@ use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 
-abstract class AbstractProvider
+abstract class AbstractProvider implements ProviderInterface
 {
     public $clientId = '';
 
