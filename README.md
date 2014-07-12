@@ -106,6 +106,7 @@ This package currently has built-in support for:
 
 - Eventbrite
 - Facebook
+- Foursquare
 - Github
 - Google
 - Instagram
