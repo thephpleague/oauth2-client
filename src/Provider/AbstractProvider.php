@@ -30,6 +30,8 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $responseType = 'json';
 
+    public $accessType = '';
+
     public $headers = null;
 
     protected $httpClient;
@@ -95,6 +97,8 @@ abstract class AbstractProvider implements ProviderInterface
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'auto'
         );
+
+        if($this->state != '') { $params['access_type'] = $this->accessType; }
 
         return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
     }
