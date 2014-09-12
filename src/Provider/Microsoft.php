@@ -40,10 +40,10 @@ class Microsoft extends AbstractProvider
         $user->exchangeArray(array(
             'uid' => $response->id,
             'name' => $response->name,
-            'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
+            'firstName' => $response->first_name,
+            'lastName' => $response->last_name,
             'email' => $email,
-            'imageurl' => $imageUrl,
+            'imageUrl' => $imageUrl,
             'urls' => $response->link . '/cid-' . $response->id,
         ));
 

@@ -6,7 +6,7 @@ use League\OAuth2\Client\Entity\User;
 
 class Facebook extends AbstractProvider
 {
-    public $scopes = array('offline_access', 'email', 'read_stream');
+    public $scopes = array('offline_access', 'email');
     public $responseType = 'string';
 
     public function urlAuthorize()
@@ -26,11 +26,15 @@ class Facebook extends AbstractProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $client = $this->getHttpClient();
-        $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token=' . $token->accessToken);
-        $request = $client->get()->send();
-        $info = $request->getInfo();
-        $imageUrl = $info['url'];
+        try {
+            $client = $this->getHttpClient();
+            $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token=' . $token->accessToken);
+            $request = $client->get()->send();
+            $info = $request->getInfo();
+            $imageUrl = $info['url'];
+        } catch (\Exception $e) {
+            $imageUrl = null;
+        }
 
         $user = new User;
 
@@ -44,12 +48,12 @@ class Facebook extends AbstractProvider
             'uid' => $response->id,
             'nickname' => $username,
             'name' => $response->name,
-            'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
+            'firstName' => $response->first_name,
+            'lastName' => $response->last_name,
             'email' => $email,
             'location' => $location,
             'description' => $description,
-            'imageurl' => $imageUrl,
+            'imageUrl' => $imageUrl,
             'urls' => array( 'Facebook' => $response->link ),
         ));
 
@@ -69,5 +73,11 @@ class Facebook extends AbstractProvider
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return array($response->first_name, $response->last_name);
+    }
+
+    public function userSex($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        $availableSex = ['male', 'female'];
+        return in_array($response->gender, $availableSex) ? $response->gender : null;
     }
 }

@@ -66,8 +66,8 @@ class Vkontakte extends AbstractProvider
             'uid' => $response->uid,
             'nickname' => $response->nickname,
             'name' => $response->screen_name,
-            'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
+            'firstName' => $response->first_name,
+            'lastName' => $response->last_name,
             'email' => $email,
             'location' => $location,
             'description' => $description,
@@ -96,5 +96,12 @@ class Vkontakte extends AbstractProvider
         $response = $response->response[0];
 
         return array($response->first_name, $response->last_name);
+    }
+
+    public function userSex($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        $response = $response->response[0];
+        $availableSex = [1 => 'female', 2 => 'male'];
+        return isset($availableSex[$response->sex]) ? $availableSex[$response->sex] : null;
     }
 }

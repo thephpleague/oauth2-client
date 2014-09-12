@@ -206,6 +206,16 @@ abstract class AbstractProvider
         return $this->userScreenName(json_decode($response), $token);
     }
 
+    public function getUserSex(AccessToken $token)
+    {
+        $response = $this->fetchUserDetails($token, true);
+
+        if (method_exists($this, 'userSex')) {
+            return $this->userSex(json_decode($response), $token);
+        }
+        return null;
+    }
+
     /**
      * Build HTTP the HTTP query, handling PHP version control options
      *

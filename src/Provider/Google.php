@@ -39,7 +39,7 @@ class Google extends AbstractProvider
         $user->exchangeArray(array(
             'uid' => $response['id'],
             'name' => $response['name'],
-            'firstname' => $response['given_name'],
+            'firstName' => $response['given_name'],
             'lastName' => $response['family_name'],
             'email' => $response['email'],
             'imageUrl' => $imageUrl,
@@ -61,5 +61,11 @@ class Google extends AbstractProvider
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return array($response->given_name, $response->family_name);
+    }
+
+    public function userSex($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        $availableSex = ['male', 'female'];
+        return in_array($response->gender, $availableSex) ? $response->gender : null;
     }
 }

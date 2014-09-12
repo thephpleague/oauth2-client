@@ -16,6 +16,7 @@ class User
     protected $urls;
     protected $gender;
     protected $locale;
+    protected $sex;
 
     public function __get($name)
     {
