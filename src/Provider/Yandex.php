@@ -5,7 +5,7 @@ namespace League\OAuth2\Client\Provider;
 use League\OAuth2\Client\Entity\User;
 use League\OAuth2\Client\Token\AccessToken;
 
-class Yandex extends IdentityProvider {
+class Yandex extends AbstractProvider {
 
 	public $scopes = array();
 	public $responseType = 'json';

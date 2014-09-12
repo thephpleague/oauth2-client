@@ -43,7 +43,7 @@ class YandexTest extends \PHPUnit_Framework_TestCase
     public function testGetAccessToken()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
+        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
@@ -70,7 +70,7 @@ class YandexTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "real_name": "mock_real_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "default_email": "mock_default_email", "sex": "male"}');
+        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "real_name": "mock_real_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "default_email": "mock_email", "sex": "male"}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
