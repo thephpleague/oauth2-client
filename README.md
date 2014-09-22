@@ -38,7 +38,8 @@ The following versions of PHP are supported.
 $provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
     'clientId'  =>  'XXXXXXXX',
     'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/'
+    'redirectUri'   =>  'https://your-registered-redirect-uri/',
+    'scopes' => array('email', '...', '...'),
 ));
 
 if ( ! isset($_GET['code'])) {
