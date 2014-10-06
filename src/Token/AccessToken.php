@@ -25,7 +25,7 @@ class AccessToken
      * @var  string  uid
      */
     public $uid;
-    
+
     /**
      * @var  string  email
      */
@@ -56,7 +56,7 @@ class AccessToken
 
         // Mailru uses x_mailru_vid instead of uid
         isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
-        
+
         // Some providers (VKontakte) give the email here, so lets take it sends
         isset($options['email']) and $this->email = $options['email'];
 

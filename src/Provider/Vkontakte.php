@@ -7,7 +7,7 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class Vkontakte extends AbstractProvider
 {
-    public $scopes = array();
+    public $scopes = array('email');
     public $responseType = 'json';
 
     public function urlAuthorize()
@@ -22,7 +22,9 @@ class Vkontakte extends AbstractProvider
 
     public function urlUserDetails(AccessToken $token)
     {
-        $fields = array('nickname',
+        $fields = array(
+            'email',
+            'nickname',
             'screen_name',
             'sex',
             'bdate',
@@ -58,7 +60,7 @@ class Vkontakte extends AbstractProvider
 
         $user = new User;
 
-        $email = (isset($token->email)) ? $token->email : null;
+        $email = isset($token->email) ? $token->email : null;
         $location = (isset($response->country)) ? $response->country : null;
         $description = (isset($response->status)) ? $response->status : null;
 
@@ -88,7 +90,7 @@ class Vkontakte extends AbstractProvider
     {
         $response = $response->response[0];
 
-        return isset($response->email) && $response->email ? $response->email : null;
+        return empty($token->email) ? null : $token->email;
     }
 
     public function userScreenName($response, AccessToken $token)
