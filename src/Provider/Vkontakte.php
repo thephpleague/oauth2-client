@@ -58,7 +58,7 @@ class Vkontakte extends AbstractProvider
 
         $user = new User;
 
-        $email = (isset($response->email)) ? $response->email : null;
+        $email = (isset($token->email)) ? $token->email : null;
         $location = (isset($response->country)) ? $response->country : null;
         $description = (isset($response->status)) ? $response->status : null;
 
