@@ -22,7 +22,10 @@ class Yandex extends AbstractProvider {
 
 	public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
 	{
-		return 'https://login.yandex.ru/info?format=json&' . http_build_query(array('oauth_token' => $token->accessToken));
+		$this->headers = array(
+			'Authorization' => 'Bearer ' . $token->accessToken
+		);
+		return 'https://login.yandex.ru/info';
 	}
 
 	public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -35,7 +38,8 @@ class Yandex extends AbstractProvider {
 			'firstName' => $response->first_name,
 			'lastName' => $response->last_name,
 			'email' => $response->default_email,
-			'imageUrl' => null
+			'imageUrl' => null,
+			'gender' => $response->sex
 		));
 		return $user;
 	}
@@ -54,10 +58,4 @@ class Yandex extends AbstractProvider {
 	{
 		return array($response->first_name, $response->last_name);
 	}
-
-    public function userSex($response, \League\OAuth2\Client\Token\AccessToken $token)
-    {
-		$availableSex = ['male', 'female'];
-		return in_array($response->sex, $availableSex) ? $response->sex : null;
-    }
 }

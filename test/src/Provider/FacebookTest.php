@@ -88,6 +88,5 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
-        $this->assertEquals('male', $this->provider->getUserSex($token));
     }
 }

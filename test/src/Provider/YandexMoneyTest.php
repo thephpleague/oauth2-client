@@ -4,13 +4,13 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use \Mockery as m;
 
-class GoogleTest extends \PHPUnit_Framework_TestCase
+class YandexMoneyTest extends \PHPUnit_Framework_TestCase
 {
     protected $provider;
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
+        $this->provider = new \League\OAuth2\Client\Provider\YandexMoney(array(
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
@@ -37,7 +37,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $url = $this->provider->urlAccessToken();
         $uri = parse_url($url);
 
-        $this->assertEquals('/o/oauth2/token', $uri['path']);
+        $this->assertEquals('/oauth/token', $uri['path']);
     }
 
     public function testGetAccessToken()
@@ -52,8 +52,6 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
 
-#    print_r($token);die();
-
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertLessThanOrEqual(time() + 3600, $token->expires);
         $this->assertGreaterThanOrEqual(time(), $token->expires);
@@ -63,29 +61,27 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(array('https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'), $this->provider->getScopes());
+        $this->assertEquals(array('account-info'), $this->provider->getScopes());
     }
 
     public function testUserData()
     {
         $postResponse = m::mock('Guzzle\Http\Message\Response');
-        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token"}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "name": "mock_name", "given_name": "mock_first_name", "family_name": "mock_last_name", "email": "mock_email", "gender": "male"}');
+        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"account": 12345, "balance": "123.45", "currency": "123", "account_status": "mock_status", "account_type": "mock_type"}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('setDefaultOption')->times(1);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
-        $user = $this->provider->getUserDetails($token);
+        $account = $this->provider->getUserDetails($token);
 
-        $this->assertEquals(12345, $this->provider->getUserUid($token));
-        $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
-        $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
-        $this->assertEquals('mock_email', $user->email);
+        $this->assertEquals(12345, $account->uid);
     }
 }

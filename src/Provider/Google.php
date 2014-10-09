@@ -43,6 +43,7 @@ class Google extends AbstractProvider
             'lastName' => $response['family_name'],
             'email' => $response['email'],
             'imageUrl' => $imageUrl,
+            'gender' => $response['gender'],
         ));
 
         return $user;
@@ -61,11 +62,5 @@ class Google extends AbstractProvider
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return array($response->given_name, $response->family_name);
-    }
-
-    public function userSex($response, \League\OAuth2\Client\Token\AccessToken $token)
-    {
-        $availableSex = ['male', 'female'];
-        return in_array($response->gender, $availableSex) ? $response->gender : null;
     }
 }

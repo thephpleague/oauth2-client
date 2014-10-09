@@ -51,6 +51,7 @@ class Facebook extends AbstractProvider
             'firstName' => $response->first_name,
             'lastName' => $response->last_name,
             'email' => $email,
+            'gender' => $response->gender,
             'location' => $location,
             'description' => $description,
             'imageUrl' => $imageUrl,
@@ -73,11 +74,5 @@ class Facebook extends AbstractProvider
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return array($response->first_name, $response->last_name);
-    }
-
-    public function userSex($response, \League\OAuth2\Client\Token\AccessToken $token)
-    {
-        $availableSex = ['male', 'female'];
-        return in_array($response->gender, $availableSex) ? $response->gender : null;
     }
 }

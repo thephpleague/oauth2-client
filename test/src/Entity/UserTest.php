@@ -36,7 +36,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->userArray, $this->user->getArrayCopy());
     }
 
-    public function testMagicMethos()
+    public function testMagicMethods()
     {
         $this->user->exchangeArray($this->userArray);
 

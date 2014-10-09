@@ -74,6 +74,7 @@ class YandexTest extends \PHPUnit_Framework_TestCase
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('setDefaultOption')->times(1);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
@@ -85,6 +86,5 @@ class YandexTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
-        $this->assertEquals('male', $this->provider->getUserSex($token));
     }
 }
