@@ -11,12 +11,12 @@ class Microsoft extends IdentityProvider
 
     public function urlAuthorize()
     {
-        return 'https://oauth.live.com/authorize';
+        return 'https://login.live.com/oauth20_authorize.srf';
     }
 
     public function urlAccessToken()
     {
-        return 'https://oauth.live.com/token';
+        return 'https://login.live.com/oauth20_token.srf';
     }
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
