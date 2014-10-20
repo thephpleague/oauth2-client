@@ -1,13 +1,13 @@
 <?php
-
 namespace League\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Entity\User;
+use League\OAuth2\Client\Token\AccessToken;
 
 class Strava extends AbstractProvider
 {
     public $responseType = 'json';
-
+    
     public function urlAuthorize()
     {
         return 'https://www.strava.com/oauth/authorize';
@@ -18,12 +18,12 @@ class Strava extends AbstractProvider
         return 'https://www.strava.com/oauth/token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://www.strava.com/api/v3/athlete/?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userDetails($response, AccessToken $token)
     {
         $user = new User;
 
@@ -41,18 +41,18 @@ class Strava extends AbstractProvider
         return $user;
     }
 
-    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
-    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userEmail($response, AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
-    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userScreenName($response, AccessToken $token)
     {
-        return implode(" ", array($response->firstname, $response->lastname));
+        return array($response->firstname, $response->lastname);
     }
 }
