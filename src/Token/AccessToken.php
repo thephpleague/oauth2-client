@@ -52,7 +52,7 @@ class AccessToken
         // Mailru uses x_mailru_vid instead of uid
         isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
 
-        // We need to know when the token expires. Show preference to 
+        // We need to know when the token expires. Show preference to
         // 'expires_in' since it is defined in RFC6749 Section 5.1.
         // Defer to 'expires' if it is provided instead.
         if (!empty($options['expires_in'])) {
