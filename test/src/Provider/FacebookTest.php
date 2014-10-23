@@ -63,7 +63,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(array('offline_access', 'email', 'read_stream'), $this->provider->getScopes());
+        $this->assertEquals(array('offline_access', 'email'), $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -72,7 +72,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->andReturn('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}');
+        $getResponse->shouldReceive('getBody')->andReturn('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url", "gender": "male"}');
         $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
 
         $client = m::mock('Guzzle\Service\Client');

@@ -39,10 +39,11 @@ class Google extends AbstractProvider
         $user->exchangeArray(array(
             'uid' => $response['id'],
             'name' => $response['name'],
-            'firstname' => $response['given_name'],
+            'firstName' => $response['given_name'],
             'lastName' => $response['family_name'],
             'email' => $response['email'],
             'imageUrl' => $imageUrl,
+            'gender' => $response['gender'],
         ));
 
         return $user;

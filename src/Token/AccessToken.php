@@ -27,6 +27,11 @@ class AccessToken
     public $uid;
 
     /**
+     * @var  string  email
+     */
+    public $email;
+
+    /**
      * Sets the token, expiry, etc values.
      *
      * @param  array $options token options
@@ -51,6 +56,9 @@ class AccessToken
 
         // Mailru uses x_mailru_vid instead of uid
         isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
+
+        // Some providers (VKontakte) give the email here, so lets take it sends
+        isset($options['email']) and $this->email = $options['email'];
 
         // We need to know when the token expires. Show preference to 
         // 'expires_in' since it is defined in RFC6749 Section 5.1.

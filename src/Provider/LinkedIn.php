@@ -41,12 +41,12 @@ class LinkedIn extends AbstractProvider
         $user->exchangeArray(array(
             'uid' => $response->id,
             'name' => $response->firstName . ' ' . $response->lastName,
-            'firstname' => $response->firstName,
-            'lastname' => $response->lastName,
+            'firstName' => $response->firstName,
+            'lastName' => $response->lastName,
             'email' => $email,
             'location' => $location,
             'description' => $description,
-            'imageurl' => $response->pictureUrl,
+            'imageUrl' => $response->pictureUrl,
             'urls' => $response->publicProfileUrl,
         ));
 
