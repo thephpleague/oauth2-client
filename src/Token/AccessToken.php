@@ -60,7 +60,11 @@ class AccessToken
         } elseif (!empty($options['expires'])) {
             // Some providers supply the seconds until expiration rather than
             // the exact timestamp. Take a best guess at which we received.
-            $this->expires = ($options['expires'] > time()) ? $options['expires'] : time() + ((int) $options['expires']);
+            if ($options['expires'] > time()) {
+                $this->expires = $options['expires'];
+            } else {
+                $this->expires = time() + ((int)$options['expires']);
+            }
         }
 
         // Grab a refresh token so we can update access tokens when they expires
