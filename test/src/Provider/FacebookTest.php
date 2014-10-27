@@ -82,7 +82,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
 
         $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('setBaseUrl')->times(6);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->andReturn($getResponse);
         $this->provider->setHttpClient($client);
