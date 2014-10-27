@@ -11,4 +11,11 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
     {
         new \League\OAuth2\Client\Token\AccessToken(array('invalid_access_token' => 'none'));
     }
+
+    public function testExpiresInCorrection()
+    {
+        $options =array('access_token' => 'access_token', 'expires_in' => 100);
+        $token = new \League\OAuth2\Client\Token\AccessToken($options);
+        $this->assertNotNull($token->expires);
+    }
 }
