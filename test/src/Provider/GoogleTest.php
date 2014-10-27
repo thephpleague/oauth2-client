@@ -18,6 +18,12 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+    public function tearDown()
+    {
+        m::close();
+        parent::tearDown();
+    }
+
     public function testAuthorizationUrl()
     {
         $url = $this->provider->getAuthorizationUrl();

@@ -17,6 +17,12 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+    public function tearDown()
+    {
+        m::close();
+        parent::tearDown();
+    }
+
     public function testGetAccessToken()
     {
         $response = m::mock('Guzzle\Http\Message\Response');

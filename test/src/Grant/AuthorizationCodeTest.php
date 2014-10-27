@@ -17,6 +17,12 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
+    public function tearDown()
+    {
+        m::close();
+        parent::tearDown();
+    }
+
     public function testGetAccessToken()
     {
         $grant = new \League\OAuth2\Client\Grant\AuthorizationCode();
