@@ -76,13 +76,13 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"user": {"user_id": 12345, "email": "mock_email"}}');
+        $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"user": {"user_id": 12345, "email": "mock_email"}}');
 
         $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('setBaseUrl')->times(5);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
-        $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
-        $client->shouldReceive('setDefaultOption')->times(1);
+        $client->shouldReceive('get->send')->times(4)->andReturn($getResponse);
+        $client->shouldReceive('setDefaultOption')->times(4);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
