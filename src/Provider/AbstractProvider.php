@@ -8,7 +8,7 @@ use League\OAuth2\Client\Token\AccessToken as AccessToken;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 
-abstract class AbstractProvider
+abstract class AbstractProvider implements ProviderInterface
 {
     public $clientId = '';
 
@@ -214,7 +214,7 @@ abstract class AbstractProvider
      * @param  string       $arg_separator
      * @param  null|integer $enc_type
      * @return string
-     *                                     @codeCoverageIgnoreStart
+     * @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
