@@ -82,6 +82,7 @@ class Concrete5Test extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('setBaseUrl')->times(1);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->andReturn($getResponse);
+        $client->shouldReceive('setDefaultOption')->times(1);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
