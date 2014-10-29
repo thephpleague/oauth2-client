@@ -47,9 +47,9 @@ class Concrete5 extends AbstractProvider
                 'firstname' => $response->first_name,
                 'lastname'  => $response->last_name,
                 'nickname'  => $response->username
-            ));
+            )
+        );
 
         return $user;
     }
-
 }
