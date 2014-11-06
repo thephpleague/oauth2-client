@@ -69,9 +69,9 @@ abstract class AbstractProvider implements ProviderInterface
 
     abstract public function urlAccessToken();
 
-    abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function urlUserDetails(AccessToken $token);
 
-    abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function userDetails($response, AccessToken $token);
 
     public function getScopes()
     {
@@ -138,8 +138,9 @@ abstract class AbstractProvider implements ProviderInterface
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
                     $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
-                    $request = $client->send();
+                    $request = $client->get()->send();
                     $response = $request->getBody();
+//                    var_dump($response);die;
                     break;
                     // @codeCoverageIgnoreEnd
                 case 'POST':
