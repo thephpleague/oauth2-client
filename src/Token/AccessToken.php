@@ -30,7 +30,8 @@ class AccessToken
      * Sets the token, expiry, etc values.
      *
      * @param  array $options token options
-     * @return void
+     *
+     * @return \League\OAuth2\Client\Token\AccessToken
      */
     public function __construct(array $options = null)
     {

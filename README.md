@@ -112,6 +112,7 @@ This package currently has built-in support for:
 - Instagram
 - LinkedIn
 - Microsoft
+- Bitrix24
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
