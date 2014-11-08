@@ -36,8 +36,8 @@ class AccessToken
     {
         if (! isset($options['access_token'])) {
             throw new \InvalidArgumentException(
-                'Required option not passed: access_token'. PHP_EOL
-                . print_r($options, true)
+                'Required option not passed: access_token'.PHP_EOL
+                .print_r($options, true)
             );
         }
 

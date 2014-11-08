@@ -2,11 +2,11 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use Guzzle\Service\Client as GuzzleClient;
 use Guzzle\Http\Exception\BadResponseException;
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -22,7 +22,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $uidKey = 'uid';
 
-    public $scopes = array();
+    public $scopes = [];
 
     public $method = 'post';
 
@@ -40,7 +40,7 @@ abstract class AbstractProvider implements ProviderInterface
     */
     protected $httpBuildEncType = 1;
 
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         foreach ($options as $option => $value) {
             if (isset($this->{$option})) {
@@ -48,7 +48,7 @@ abstract class AbstractProvider implements ProviderInterface
             }
         }
 
-        $this->setHttpClient(new GuzzleClient);
+        $this->setHttpClient(new GuzzleClient());
     }
 
     public function setHttpClient(GuzzleClient $client)
@@ -83,51 +83,51 @@ abstract class AbstractProvider implements ProviderInterface
         $this->scopes = $scopes;
     }
 
-    public function getAuthorizationUrl($options = array())
+    public function getAuthorizationUrl($options = [])
     {
         $this->state = md5(uniqid(rand(), true));
 
-        $params = array(
+        $params = [
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
             'state' => $this->state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'auto'
-        );
+            'approval_prompt' => 'auto',
+        ];
 
-        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
+        return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
     // @codeCoverageIgnoreStart
-    public function authorize($options = array())
+    public function authorize($options = [])
     {
-        header('Location: ' . $this->getAuthorizationUrl($options));
+        header('Location: '.$this->getAuthorizationUrl($options));
         exit;
     }
     // @codeCoverageIgnoreEnd
 
-    public function getAccessToken($grant = 'authorization_code', $params = array())
+    public function getAccessToken($grant = 'authorization_code', $params = [])
     {
         if (is_string($grant)) {
             // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
-            $className = str_replace(' ', '', ucwords(str_replace(array('-', '_'), ' ', $grant)));
+            $className = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $grant)));
             $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
             if (! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
-            $grant = new $grant;
+            $grant = new $grant();
         } elseif (! $grant instanceof GrantInterface) {
             $message = get_class($grant).' is not an instance of League\OAuth2\Client\Grant\GrantInterface';
             throw new \InvalidArgumentException($message);
         }
 
-        $defaultParams = array(
+        $defaultParams = [
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
             'grant_type'    => $grant,
-        );
+        ];
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
@@ -137,7 +137,7 @@ abstract class AbstractProvider implements ProviderInterface
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
+                    $client->setBaseUrl($this->urlAccessToken().'?'.$this->httpBuildQuery($requestParams, '', '&'));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
@@ -235,7 +235,6 @@ abstract class AbstractProvider implements ProviderInterface
         $url = $this->urlUserDetails($token);
 
         try {
-
             $client = $this->getHttpClient();
             $client->setBaseUrl($url);
 
@@ -245,7 +244,6 @@ abstract class AbstractProvider implements ProviderInterface
 
             $request = $client->get()->send();
             $response = $request->getBody();
-
         } catch (BadResponseException $e) {
             // @codeCoverageIgnoreStart
             $raw_response = explode("\n", $e->getResponse());

@@ -7,7 +7,7 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class Vkontakte extends AbstractProvider
 {
-    public $scopes = array();
+    public $scopes = [];
     public $responseType = 'json';
 
     public function urlAuthorize()
@@ -22,7 +22,7 @@ class Vkontakte extends AbstractProvider
 
     public function urlUserDetails(AccessToken $token)
     {
-        $fields = array('nickname',
+        $fields = ['nickname',
             'screen_name',
             'sex',
             'bdate',
@@ -46,23 +46,23 @@ class Vkontakte extends AbstractProvider
             'can_post',
             'universities',
             'schools',
-            'verified');
+            'verified', ];
 
         return "https://api.vk.com/method/users.get?user_id={$token->uid}&fields="
-            . implode(",", $fields)."&access_token={$token}";
+            .implode(",", $fields)."&access_token={$token}";
     }
 
     public function userDetails($response, AccessToken $token)
     {
         $response = $response->response[0];
 
-        $user = new User;
+        $user = new User();
 
         $email = (isset($response->email)) ? $response->email : null;
         $location = (isset($response->country)) ? $response->country : null;
         $description = (isset($response->status)) ? $response->status : null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response->uid,
             'nickname' => $response->nickname,
             'name' => $response->screen_name,
@@ -72,7 +72,7 @@ class Vkontakte extends AbstractProvider
             'location' => $location,
             'description' => $description,
             'imageUrl' => $response->photo_200_orig,
-        ));
+        ]);
 
         return $user;
     }
@@ -95,6 +95,6 @@ class Vkontakte extends AbstractProvider
     {
         $response = $response->response[0];
 
-        return array($response->first_name, $response->last_name);
+        return [$response->first_name, $response->last_name];
     }
 }

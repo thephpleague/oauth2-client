@@ -2,7 +2,6 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use \Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -10,11 +9,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
+        $this->provider = new \League\OAuth2\Client\Provider\Google([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+        ]);
     }
 
     /**
@@ -22,7 +21,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidGrantString()
     {
-        $this->provider->getAccessToken('invalid_grant', array('invalid_parameter' => 'none'));
+        $this->provider->getAccessToken('invalid_grant', ['invalid_parameter' => 'none']);
     }
 
     /**
@@ -30,7 +29,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidGrantObject()
     {
-        $grant = new \StdClass;
-        $this->provider->getAccessToken($grant, array('invalid_parameter' => 'none'));
+        $grant = new \StdClass();
+        $this->provider->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 }

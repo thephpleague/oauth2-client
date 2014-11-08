@@ -6,13 +6,12 @@ use League\OAuth2\Client\Entity\User;
 
 class Eventbrite extends AbstractProvider
 {
-
     public function __construct($options)
     {
         parent::__construct($options);
-        $this->headers = array(
-            'Authorization' => 'Bearer'
-        );
+        $this->headers = [
+            'Authorization' => 'Bearer',
+        ];
     }
 
     public function urlAuthorize()
@@ -32,11 +31,11 @@ class Eventbrite extends AbstractProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $user = new User;
-        $user->exchangeArray(array(
+        $user = new User();
+        $user->exchangeArray([
             'uid' => $response->user->user_id,
             'email' => $response->user->email,
-        ));
+        ]);
 
         return $user;
     }

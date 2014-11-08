@@ -18,11 +18,11 @@ interface ProviderInterface
 
     public function setScopes(array $scopes);
 
-    public function getAuthorizationUrl($options = array());
+    public function getAuthorizationUrl($options = []);
 
-    public function authorize($options = array());
+    public function authorize($options = []);
 
-    public function getAccessToken($grant = 'authorization_code', $params = array());
+    public function getAccessToken($grant = 'authorization_code', $params = []);
 
     public function getUserDetails(AccessToken $token);
 
