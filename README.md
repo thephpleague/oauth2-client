@@ -126,6 +126,7 @@ so please help them out with a pull request if you notice this.
 
 - [QQ](https://github.com/tlikai/oauth2-client)
 - [Weibo](https://github.com/tlikai/oauth2-client)
+- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
 
 ### Client Packages
 
