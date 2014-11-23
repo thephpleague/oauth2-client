@@ -6,3 +6,4 @@ testing/
 nbproject/private/
 test/log
 build
+.idea
