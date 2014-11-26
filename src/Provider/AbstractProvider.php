@@ -85,7 +85,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public function getAuthorizationUrl($options = array())
     {
-        $this->state = md5(uniqid(rand(), true));
+        $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
 
         $params = array(
             'client_id' => $this->clientId,
