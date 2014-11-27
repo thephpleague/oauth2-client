@@ -175,7 +175,27 @@ abstract class AbstractProvider implements ProviderInterface
             // @codeCoverageIgnoreEnd
         }
 
+        $this->setResultUid($result);
+
         return $grant->handleResponse($result);
+    }
+
+    /**
+     * Sets any result keys we've received matching our provider-defined uidKey to the key "uid".
+     *
+     * @param array $result
+     */
+    protected function setResultUid(array &$result)
+    {
+        // If we're operating with the default uidKey there's nothing to do.
+        if ($this->uidKey === "uid" ) {
+            return;
+        }
+
+        if (isset($result[$this->uidKey])) {
+            // The AccessToken expects a "uid" to have the key "uid".
+            $result['uid'] = $result[$this->uidKey];
+        }
     }
 
     public function getUserDetails(AccessToken $token)
