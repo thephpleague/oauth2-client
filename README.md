@@ -38,7 +38,8 @@ The following versions of PHP are supported.
 $provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
     'clientId'  =>  'XXXXXXXX',
     'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/'
+    'redirectUri'   =>  'https://your-registered-redirect-uri/',
+    'scopes' => array('email', '...', '...'),
 ));
 
 if ( ! isset($_GET['code'])) {
@@ -125,6 +126,7 @@ so please help them out with a pull request if you notice this.
 
 - [QQ](https://github.com/tlikai/oauth2-client)
 - [Weibo](https://github.com/tlikai/oauth2-client)
+- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
 
 ### Client Packages
 

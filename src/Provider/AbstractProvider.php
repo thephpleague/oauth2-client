@@ -85,7 +85,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public function getAuthorizationUrl($options = array())
     {
-        $this->state = md5(uniqid(rand(), true));
+        $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
 
         $params = array(
             'client_id' => $this->clientId,
@@ -214,7 +214,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @param  string       $arg_separator
      * @param  null|integer $enc_type
      * @return string
-     *                                     @codeCoverageIgnoreStart
+     * @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {

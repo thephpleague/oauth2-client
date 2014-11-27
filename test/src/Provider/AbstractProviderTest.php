@@ -33,4 +33,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $grant = new \StdClass;
         $this->provider->getAccessToken($grant, array('invalid_parameter' => 'none'));
     }
+    
+    public function testAuthorizationUrlStateParam()
+    {
+        $this->assertContains('state=XXX', $this->provider->getAuthorizationUrl([
+            'state' => 'XXX'
+        ]));
+    }
+    
 }
