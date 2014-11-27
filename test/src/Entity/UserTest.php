@@ -12,9 +12,9 @@ class UserTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->user = new User;
+        $this->user = new User();
 
-        $this->userArray = array(
+        $this->userArray = [
             'uid' => 'mock_uid',
             'nickname' => 'mock_nickname',
             'name' => 'mock_name',
@@ -26,8 +26,8 @@ class UserTest extends \PHPUnit_Framework_TestCase
             'imageUrl' => 'mock_imageUrl',
             'urls' => 'mock_urls',
             'gender' => 'mock_gender',
-            'locale' => 'mock_locale'
-        );
+            'locale' => 'mock_locale',
+        ];
     }
 
     public function testExchangeArrayGetArrayCopy()

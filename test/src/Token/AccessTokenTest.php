@@ -9,6 +9,6 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidRefreshToken()
     {
-        new \League\OAuth2\Client\Token\AccessToken(array('invalid_access_token' => 'none'));
+        new \League\OAuth2\Client\Token\AccessToken(['invalid_access_token' => 'none']);
     }
 }

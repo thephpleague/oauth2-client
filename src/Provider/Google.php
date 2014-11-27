@@ -8,10 +8,10 @@ class Google extends AbstractProvider
 {
     public $scopeSeparator = ' ';
 
-    public $scopes = array(
+    public $scopes = [
         'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-    );
+        'https://www.googleapis.com/auth/userinfo.email',
+    ];
 
     public function urlAuthorize()
     {
@@ -32,18 +32,18 @@ class Google extends AbstractProvider
     {
         $response = (array) $response;
 
-        $user = new User;
+        $user = new User();
 
         $imageUrl = (isset($response['picture'])) ? $response['picture'] : null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response['id'],
             'name' => $response['name'],
             'firstname' => $response['given_name'],
             'lastName' => $response['family_name'],
             'email' => $response['email'],
             'imageUrl' => $imageUrl,
-        ));
+        ]);
 
         return $user;
     }
@@ -60,6 +60,6 @@ class Google extends AbstractProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return array($response->given_name, $response->family_name);
+        return [$response->given_name, $response->family_name];
     }
 }
