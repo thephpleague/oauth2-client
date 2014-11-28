@@ -168,12 +168,8 @@ Some developers use this library as a base for their own PHP API wrappers, and t
 
 Via Composer
 
-``` json
-{
-    "require": {
-        "league/oauth2-client": "~0.3"
-    }
-}
+``` bash
+$ composer require "league/oauth2-client=~0.5"
 ```
 
 ## Testing
