@@ -14,6 +14,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+            'hostedDomain' => 'mock_domain',
         ]);
     }
 
@@ -29,6 +30,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
+        $this->assertArrayHasKey('hd', $query);
         $this->assertNotNull($this->provider->state);
     }
 
@@ -87,5 +89,16 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
+    }
+
+    public function testGetHostedDomain()
+    {
+        $this->assertEquals('mock_domain', $this->provider->getHostedDomain());
+    }
+
+    public function testSetHostedDomain()
+    {
+        $this->provider->setHostedDomain('changed_domain');
+        $this->assertEquals('changed_domain', $this->provider->hostedDomain);
     }
 }
