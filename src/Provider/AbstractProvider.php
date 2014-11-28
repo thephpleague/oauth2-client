@@ -65,12 +65,41 @@ abstract class AbstractProvider implements ProviderInterface
         return $client;
     }
 
+    /**
+     * Get the URL that this provider uses to begin authorization.
+     *
+     * @return string
+     */
     abstract public function urlAuthorize();
 
+    /**
+     * Get the URL that this provider users to request an access token.
+     *
+     * @return string
+     */
     abstract public function urlAccessToken();
 
+    /**
+     * Get the URL that this provider uses to request user details.
+     *
+     * Since this URL is typically an authorized route, most providers will require you to pass the access_token as
+     * a parameter to the request. For example, the google url is:
+     *
+     * 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token
+     *
+     * @param AccessToken $token
+     * @return string
+     */
     abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
 
+    /**
+     * Given an object response from the server, process the user details into a format expected by the user
+     * of the client.
+     *
+     * @param object $response
+     * @param AccessToken $token
+     * @return mixed
+     */
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
 
     public function getScopes()
