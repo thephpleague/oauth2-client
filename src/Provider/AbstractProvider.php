@@ -188,7 +188,7 @@ abstract class AbstractProvider implements ProviderInterface
     protected function setResultUid(array &$result)
     {
         // If we're operating with the default uidKey there's nothing to do.
-        if ($this->uidKey === "uid" ) {
+        if ($this->uidKey === "uid") {
             return;
         }
 
