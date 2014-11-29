@@ -169,7 +169,7 @@ Some developers use this library as a base for their own PHP API wrappers, and t
 Via Composer
 
 ``` bash
-$ composer require "league/oauth2-client=~0.5.0"
+$ composer require league/oauth2-client
 ```
 
 ## Testing
