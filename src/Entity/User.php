@@ -14,6 +14,8 @@ class User
     protected $description;
     protected $imageUrl;
     protected $urls;
+    protected $gender;
+    protected $locale;
 
     public function __get($name)
     {
@@ -34,7 +36,7 @@ class User
             throw new \OutOfRangeException(sprintf(
                 '%s does not contain a property by the name of "%s"',
                 __CLASS__,
-                $name
+                $property
             ));
         }
 
@@ -50,7 +52,7 @@ class User
 
     public function getArrayCopy()
     {
-        return array(
+        return [
             'uid' => $this->uid,
             'nickname' => $this->nickname,
             'name' => $this->name,
@@ -61,7 +63,9 @@ class User
             'description' => $this->description,
             'imageUrl' => $this->imageUrl,
             'urls' => $this->urls,
-        );
+            'gender' => $this->gender,
+            'locale' => $this->locale,
+        ];
     }
 
     public function exchangeArray(array $data)
@@ -98,6 +102,12 @@ class User
                     break;
                 case 'urls':
                     $this->urls = $value;
+                    break;
+                case 'gender':
+                    $this->gender = $value;
+                    break;
+                case 'locale':
+                    $this->locale = $value;
                     break;
             }
         }

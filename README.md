@@ -38,7 +38,8 @@ The following versions of PHP are supported.
 $provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
     'clientId'  =>  'XXXXXXXX',
     'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/'
+    'redirectUri'   =>  'https://your-registered-redirect-uri/',
+    'scopes' => array('email', '...', '...'),
 ));
 
 if ( ! isset($_GET['code'])) {
@@ -76,13 +77,13 @@ if ( ! isset($_GET['code'])) {
     }
 
     // Use this to interact with an API on the users behalf
-    echo $token->access_token;
+    echo $token->accessToken;
 
     // Use this to get a new access token if the old one expires
-    echo $token->refresh_token;
+    echo $token->refreshToken;
 
     // Number of seconds until the access token will expire, and need refreshing
-    echo $token->expires_in;
+    echo $token->expires;
 }
 ```
 
@@ -123,8 +124,39 @@ below.
 These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
 so please help them out with a pull request if you notice this.
 
+- [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
 - [QQ](https://github.com/tlikai/oauth2-client)
 - [Weibo](https://github.com/tlikai/oauth2-client)
+- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
+
+### Implementing your own provider
+
+If you are working with an oauth2 service not supported out-of-the-box or by an existing package, it is quite simple to
+implement your own. Simply extend `League\OAuth2\Client\Provider\AbstractProvider` and implement the required abstract
+methods:
+
+```php
+abstract public function urlAuthorize();
+abstract public function urlAccessToken();
+abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
+abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
+```
+
+Each of these abstract methods contain a docblock defining their expectations and typical behaviour. Once you have
+extended this class, you can simply follow the example above using your new `Provider`.
+
+#### Custom account identifiers in access token responses
+
+Some OAuth2 Server implementations include a field in their access token response defining some identifier
+for the user account that just requested the access token. In many cases this field, if present, is called "uid", but
+some providers define custom identifiers in their response. If your provider uses a nonstandard name for the "uid" field,
+when extending the AbstractProvider, in your new class, define a property `public $uidKey` and set it equal to whatever
+your provider uses as its key. For example, Battle.net uses `accountId` as the key for the identifier field, so in that
+provider you would add a property:
+
+```php
+public $uidKey = 'accountId';
+```
 
 ### Client Packages
 
@@ -136,18 +168,14 @@ Some developers use this library as a base for their own PHP API wrappers, and t
 
 Via Composer
 
-``` json
-{
-    "require": {
-        "league/oauth2-client": "~0.3"
-    }
-}
+``` bash
+$ composer require "league/oauth2-client=~0.5.0"
 ```
 
 ## Testing
 
 ``` bash
-$ phpunit
+$ ./vendor/bin/phpunit
 ```
 
 ## Contributing

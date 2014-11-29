@@ -2,13 +2,13 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use Guzzle\Service\Client as GuzzleClient;
 use Guzzle\Http\Exception\BadResponseException;
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
-abstract class AbstractProvider
+abstract class AbstractProvider implements ProviderInterface
 {
     public $clientId = '';
 
@@ -16,11 +16,13 @@ abstract class AbstractProvider
 
     public $redirectUri = '';
 
+    public $state;
+
     public $name;
 
     public $uidKey = 'uid';
 
-    public $scopes = array();
+    public $scopes = [];
 
     public $method = 'post';
 
@@ -38,15 +40,15 @@ abstract class AbstractProvider
     */
     protected $httpBuildEncType = 1;
 
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         foreach ($options as $option => $value) {
-            if (isset($this->{$option})) {
+            if (property_exists($this, $option)) {
                 $this->{$option} = $value;
             }
         }
 
-        $this->setHttpClient(new GuzzleClient);
+        $this->setHttpClient(new GuzzleClient());
     }
 
     public function setHttpClient(GuzzleClient $client)
@@ -63,12 +65,41 @@ abstract class AbstractProvider
         return $client;
     }
 
+    /**
+     * Get the URL that this provider uses to begin authorization.
+     *
+     * @return string
+     */
     abstract public function urlAuthorize();
 
+    /**
+     * Get the URL that this provider users to request an access token.
+     *
+     * @return string
+     */
     abstract public function urlAccessToken();
 
+    /**
+     * Get the URL that this provider uses to request user details.
+     *
+     * Since this URL is typically an authorized route, most providers will require you to pass the access_token as
+     * a parameter to the request. For example, the google url is:
+     *
+     * 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token
+     *
+     * @param AccessToken $token
+     * @return string
+     */
     abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
 
+    /**
+     * Given an object response from the server, process the user details into a format expected by the user
+     * of the client.
+     *
+     * @param object $response
+     * @param AccessToken $token
+     * @return mixed
+     */
     abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
 
     public function getScopes()
@@ -81,51 +112,51 @@ abstract class AbstractProvider
         $this->scopes = $scopes;
     }
 
-    public function getAuthorizationUrl($options = array())
+    public function getAuthorizationUrl($options = [])
     {
-        $state = md5(uniqid(rand(), true));
+        $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
 
-        $params = array(
+        $params = [
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'state' => $state,
+            'state' => $this->state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'auto'
-        );
+            'approval_prompt' => 'auto',
+        ];
 
-        return $this->urlAuthorize() . '?' . $this->httpBuildQuery($params, '', '&');
+        return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
     // @codeCoverageIgnoreStart
-    public function authorize($options = array())
+    public function authorize($options = [])
     {
-        header('Location: ' . $this->getAuthorizationUrl($options));
+        header('Location: '.$this->getAuthorizationUrl($options));
         exit;
     }
     // @codeCoverageIgnoreEnd
 
-    public function getAccessToken($grant = 'authorization_code', $params = array())
+    public function getAccessToken($grant = 'authorization_code', $params = [])
     {
         if (is_string($grant)) {
             // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
-            $className = str_replace(' ', '', ucwords(str_replace(array('-', '_'), ' ', $grant)));
+            $className = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $grant)));
             $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
             if (! class_exists($grant)) {
                 throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
             }
-            $grant = new $grant;
+            $grant = new $grant();
         } elseif (! $grant instanceof GrantInterface) {
             $message = get_class($grant).' is not an instance of League\OAuth2\Client\Grant\GrantInterface';
             throw new \InvalidArgumentException($message);
         }
 
-        $defaultParams = array(
+        $defaultParams = [
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
             'grant_type'    => $grant,
-        );
+        ];
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
@@ -135,7 +166,7 @@ abstract class AbstractProvider
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
+                    $client->setBaseUrl($this->urlAccessToken().'?'.$this->httpBuildQuery($requestParams, '', '&'));
                     $request = $client->send();
                     $response = $request->getBody();
                     break;
@@ -173,7 +204,27 @@ abstract class AbstractProvider
             // @codeCoverageIgnoreEnd
         }
 
+        $this->setResultUid($result);
+
         return $grant->handleResponse($result);
+    }
+
+    /**
+     * Sets any result keys we've received matching our provider-defined uidKey to the key "uid".
+     *
+     * @param array $result
+     */
+    protected function setResultUid(array &$result)
+    {
+        // If we're operating with the default uidKey there's nothing to do.
+        if ($this->uidKey === "uid") {
+            return;
+        }
+
+        if (isset($result[$this->uidKey])) {
+            // The AccessToken expects a "uid" to have the key "uid".
+            $result['uid'] = $result[$this->uidKey];
+        }
     }
 
     public function getUserDetails(AccessToken $token)
@@ -212,7 +263,7 @@ abstract class AbstractProvider
      * @param  string       $arg_separator
      * @param  null|integer $enc_type
      * @return string
-     *                                     @codeCoverageIgnoreStart
+     * @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
@@ -233,7 +284,6 @@ abstract class AbstractProvider
         $url = $this->urlUserDetails($token);
 
         try {
-
             $client = $this->getHttpClient();
             $client->setBaseUrl($url);
 
@@ -243,7 +293,6 @@ abstract class AbstractProvider
 
             $request = $client->get()->send();
             $response = $request->getBody();
-
         } catch (BadResponseException $e) {
             // @codeCoverageIgnoreStart
             $raw_response = explode("\n", $e->getResponse());
