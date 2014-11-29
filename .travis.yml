@@ -13,7 +13,7 @@ before_script:
 
 script: 
   - mkdir -p build/logs
-  - phpunit --coverage-text
+  - ./vendor/bin/phpunit --coverage-text
   - ./vendor/bin/phpcs src --standard=psr2
 
 after_script:

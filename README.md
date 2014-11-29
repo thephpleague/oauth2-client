@@ -175,7 +175,7 @@ $ composer require "league/oauth2-client=~0.5.0"
 ## Testing
 
 ``` bash
-$ phpunit
+$ ./vendor/bin/phpunit
 ```
 
 ## Contributing
