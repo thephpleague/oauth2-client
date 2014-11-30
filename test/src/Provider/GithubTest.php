@@ -10,11 +10,11 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Github(array(
+        $this->provider = new \League\OAuth2\Client\Provider\Github([
             'clientId' => 'mock',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+        ]);
     }
 
     public function tearDown()
@@ -56,7 +56,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertLessThanOrEqual(time() + 3600, $token->expires);
@@ -67,8 +67,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->provider->setScopes(array('user', 'repo'));
-        $this->assertEquals(array('user', 'repo'), $this->provider->getScopes());
+        $this->provider->setScopes(['user', 'repo']);
+        $this->assertEquals(['user', 'repo'], $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -85,7 +85,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->times(4)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));

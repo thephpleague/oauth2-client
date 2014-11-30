@@ -6,7 +6,7 @@ use League\OAuth2\Client\Entity\User;
 
 class Instagram extends AbstractProvider
 {
-    public $scopes = array('basic');
+    public $scopes = ['basic'];
     public $responseType = 'json';
 
     public function urlAuthorize()
@@ -26,18 +26,17 @@ class Instagram extends AbstractProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-
-        $user = new User;
+        $user = new User();
 
         $description = (isset($response->data->bio)) ? $response->data->bio : null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response->data->id,
             'nickname' => $response->data->username,
             'name' => $response->data->full_name,
             'description' => $description,
             'imageUrl' => $response->data->profile_picture,
-        ));
+        ]);
 
         return $user;
     }

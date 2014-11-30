@@ -6,7 +6,7 @@ use League\OAuth2\Client\Entity\User;
 
 class Facebook extends AbstractProvider
 {
-    public $scopes = array('offline_access', 'email', 'read_stream');
+    public $scopes = ['offline_access', 'email', 'read_stream'];
     public $responseType = 'string';
 
     public function urlAuthorize()
@@ -27,12 +27,12 @@ class Facebook extends AbstractProvider
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         $client = $this->getHttpClient();
-        $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token=' . $token->accessToken);
+        $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken);
         $request = $client->get()->send();
         $info = $request->getInfo();
         $imageUrl = $info['url'];
 
-        $user = new User;
+        $user = new User();
 
         $username = (isset($response->username)) ? $response->username : null;
         $email = (isset($response->email)) ? $response->email : null;
@@ -40,7 +40,7 @@ class Facebook extends AbstractProvider
         $description = (isset($response->bio)) ? $response->bio : null;
         $imageUrl = ($imageUrl) ?: null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response->id,
             'nickname' => $username,
             'name' => $response->name,
@@ -50,8 +50,8 @@ class Facebook extends AbstractProvider
             'location' => $location,
             'description' => $description,
             'imageurl' => $imageUrl,
-            'urls' => array( 'Facebook' => $response->link ),
-        ));
+            'urls' => [ 'Facebook' => $response->link ],
+        ]);
 
         return $user;
     }
@@ -68,6 +68,6 @@ class Facebook extends AbstractProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return array($response->first_name, $response->last_name);
+        return [$response->first_name, $response->last_name];
     }
 }

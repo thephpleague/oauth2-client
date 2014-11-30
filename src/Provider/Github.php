@@ -25,20 +25,20 @@ class Github extends AbstractProvider
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $user = new User;
+        $user = new User();
 
         $name = (isset($response->name)) ? $response->name : null;
         $email = (isset($response->email)) ? $response->email : null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response->id,
             'nickname' => $response->login,
             'name' => $name,
             'email' => $email,
-            'urls'  =>array(
-                'GitHub' => 'http://github.com/' . $response->login,
-            ),
-        ));
+            'urls'  => [
+                'GitHub' => 'http://github.com/'.$response->login,
+            ],
+        ]);
 
         return $user;
     }

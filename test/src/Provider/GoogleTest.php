@@ -10,11 +10,12 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
+        $this->provider = new \League\OAuth2\Client\Provider\Google([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+            'hostedDomain' => 'mock_domain',
+        ]);
     }
 
     public function tearDown()
@@ -35,6 +36,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('scope', $query);
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
+        $this->assertArrayHasKey('hd', $query);
         $this->assertNotNull($this->provider->state);
     }
 
@@ -56,7 +58,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
 #    print_r($token);die();
 
@@ -69,7 +71,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(array('https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'), $this->provider->getScopes());
+        $this->assertEquals(['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'], $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -86,12 +88,23 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->times(4)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));
-        $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
+        $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
+    }
+
+    public function testGetHostedDomain()
+    {
+        $this->assertEquals('mock_domain', $this->provider->getHostedDomain());
+    }
+
+    public function testSetHostedDomain()
+    {
+        $this->provider->setHostedDomain('changed_domain');
+        $this->assertEquals('changed_domain', $this->provider->hostedDomain);
     }
 }

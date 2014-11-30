@@ -36,8 +36,8 @@ class AccessToken
     {
         if (! isset($options['access_token'])) {
             throw new \InvalidArgumentException(
-                'Required option not passed: access_token'. PHP_EOL
-                . print_r($options, true)
+                'Required option not passed: access_token'.PHP_EOL
+                .print_r($options, true)
             );
         }
 
@@ -51,6 +51,9 @@ class AccessToken
 
         // Mailru uses x_mailru_vid instead of uid
         isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
+
+        //Battle.net uses accountId instead of uid
+        isset($options['accountId']) and $this->uid = $options['accountId'];
 
         // We need to know when the token expires. Show preference to
         // 'expires_in' since it is defined in RFC6749 Section 5.1.

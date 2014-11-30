@@ -8,10 +8,26 @@ class Google extends AbstractProvider
 {
     public $scopeSeparator = ' ';
 
-    public $scopes = array(
+    public $scopes = [
         'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email'
-    );
+        'https://www.googleapis.com/auth/userinfo.email',
+    ];
+
+   /**
+    * @var string If set, this will be sent to google as the "hd" parameter.
+    * @link https://developers.google.com/accounts/docs/OAuth2Login#hd-param
+    */
+    public $hostedDomain = '';
+
+    public function setHostedDomain($hd)
+    {
+        $this->hostedDomain = $hd;
+    }
+
+    public function getHostedDomain()
+    {
+        return $this->hostedDomain;
+    }
 
     public function urlAuthorize()
     {
@@ -32,18 +48,18 @@ class Google extends AbstractProvider
     {
         $response = (array) $response;
 
-        $user = new User;
+        $user = new User();
 
         $imageUrl = (isset($response['picture'])) ? $response['picture'] : null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response['id'],
             'name' => $response['name'],
             'firstname' => $response['given_name'],
             'lastName' => $response['family_name'],
             'email' => $response['email'],
             'imageUrl' => $imageUrl,
-        ));
+        ]);
 
         return $user;
     }
@@ -60,6 +76,17 @@ class Google extends AbstractProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return array($response->given_name, $response->family_name);
+        return [$response->given_name, $response->family_name];
+    }
+
+    public function getAuthorizationUrl($options = array())
+    {
+        $url = parent::getAuthorizationUrl($options);
+
+        if (!empty($this->hostedDomain)) {
+            $url .= '&' . $this->httpBuildQuery(['hd' => $this->hostedDomain]);
+        }
+
+        return $url;
     }
 }

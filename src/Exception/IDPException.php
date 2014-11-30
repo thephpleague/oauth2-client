@@ -13,19 +13,13 @@ class IDPException extends \Exception
         $code = isset($result['code']) ? $result['code'] : 0;
 
         if (isset($result['error'])) {
-
             // OAuth 2.0 Draft 10 style
             $message = $result['error'];
-
         } elseif (isset($result['message'])) {
-
             // cURL style
             $message = $result['message'];
-
         } else {
-
             $message = 'Unknown Error.';
-
         }
 
         parent::__construct($message, $code);
@@ -34,7 +28,6 @@ class IDPException extends \Exception
     public function getType()
     {
         if (isset($this->result['error'])) {
-
             $message = $this->result['error'];
 
             if (is_string($message)) {
@@ -53,12 +46,12 @@ class IDPException extends \Exception
      */
     public function __toString()
     {
-        $str = $this->getType() . ': ';
+        $str = $this->getType().': ';
 
         if ($this->code != 0) {
-            $str .= $this->code . ': ';
+            $str .= $this->code.': ';
         }
 
-        return $str . $this->message;
+        return $str.$this->message;
     }
 }

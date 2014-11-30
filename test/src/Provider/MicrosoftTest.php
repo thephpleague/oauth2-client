@@ -10,11 +10,11 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Microsoft(array(
+        $this->provider = new \League\OAuth2\Client\Provider\Microsoft([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+        ]);
     }
 
     public function tearDown()
@@ -56,7 +56,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
 #    print_r($token);die();
 
@@ -69,7 +69,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(array('wl.basic', 'wl.emails'), $this->provider->getScopes());
+        $this->assertEquals(['wl.basic', 'wl.emails'], $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -78,6 +78,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
+
         $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
         $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
 
@@ -87,11 +88,11 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->times(5)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));
-        $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
+        $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
         $this->assertEquals('mock_image_url', $user->imageUrl);

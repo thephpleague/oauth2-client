@@ -7,7 +7,7 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class Microsoft extends AbstractProvider
 {
-    public $scopes = array('wl.basic', 'wl.emails');
+    public $scopes = ['wl.basic', 'wl.emails'];
     public $responseType = 'json';
 
     public function urlAuthorize()
@@ -28,24 +28,24 @@ class Microsoft extends AbstractProvider
     public function userDetails($response, AccessToken $token)
     {
         $client = $this->getHttpClient();
-        $client->setBaseUrl('https://apis.live.net/v5.0/' . $response->id . '/picture');
+        $client->setBaseUrl('https://apis.live.net/v5.0/'.$response->id.'/picture');
         $request = $client->get()->send();
         $info = $request->getInfo();
         $imageUrl = $info['url'];
 
-        $user = new User;
+        $user = new User();
 
         $email = (isset($response->emails->preferred)) ? $response->emails->preferred : null;
 
-        $user->exchangeArray(array(
+        $user->exchangeArray([
             'uid' => $response->id,
             'name' => $response->name,
             'firstname' => $response->first_name,
             'lastname' => $response->last_name,
             'email' => $email,
             'imageurl' => $imageUrl,
-            'urls' => $response->link . '/cid-' . $response->id,
-        ));
+            'urls' => $response->link.'/cid-'.$response->id,
+        ]);
 
         return $user;
     }
@@ -64,6 +64,6 @@ class Microsoft extends AbstractProvider
 
     public function userScreenName($response, AccessToken $token)
     {
-        return array($response->first_name, $response->last_name);
+        return [$response->first_name, $response->last_name];
     }
 }

@@ -10,11 +10,11 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Facebook(array(
+        $this->provider = new \League\OAuth2\Client\Provider\Facebook([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+        ]);
     }
 
     public function tearDown()
@@ -56,7 +56,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
 #    print_r($token);die();
 
@@ -69,7 +69,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(array('offline_access', 'email', 'read_stream'), $this->provider->getScopes());
+        $this->assertEquals(['offline_access', 'email', 'read_stream'], $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -79,7 +79,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
         $getResponse->shouldReceive('getBody')->andReturn('{"id": 12345, "name": "mock_name", "username": "mock_username", "first_name": "mock_first_name", "last_name": "mock_last_name", "email": "mock_email", "Location": "mock_home", "bio": "mock_description", "link": "mock_facebook_url"}');
-        $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
+        $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(6);
@@ -87,11 +87,11 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));
-        $this->assertEquals(array('mock_first_name', 'mock_last_name'), $this->provider->getUserScreenName($token));
+        $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
     }
