@@ -17,10 +17,16 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
+    public function tearDown()
+    {
+        m::close();
+        parent::tearDown();
+    }
+
     public function testGetAccessToken()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(2)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(1);
@@ -40,11 +46,11 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
     public function testInvalidUsername()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(2)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response->shouldReceive('getBody')->times(0)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $client->shouldReceive('setBaseUrl')->times(0);
+        $client->shouldReceive('post->send')->times(0)->andReturn($response);
         $this->provider->setHttpClient($client);
 
         $this->provider->getAccessToken('password', array('invalid_username' => 'mock_username', 'password' => 'mock_password'));
@@ -56,11 +62,11 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
     public function testInvalidPassword()
     {
         $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(2)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response->shouldReceive('getBody')->times(0)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $client->shouldReceive('setBaseUrl')->times(0);
+        $client->shouldReceive('post->send')->times(0)->andReturn($response);
         $this->provider->setHttpClient($client);
 
         $this->provider->getAccessToken('password', array('username' => 'mock_username', 'invalid_password' => 'mock_password'));
