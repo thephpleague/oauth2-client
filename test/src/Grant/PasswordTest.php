@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use \Mockery as m;
+use Mockery as m;
 
 class PasswordTest extends \PHPUnit_Framework_TestCase
 {

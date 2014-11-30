@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use \Mockery as m;
+use Mockery as m;
 
 class EventbriteTest extends \PHPUnit_Framework_TestCase
 {
