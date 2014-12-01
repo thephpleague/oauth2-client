@@ -39,14 +39,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $grant = new \StdClass();
         $this->provider->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
-    
+
     public function testAuthorizationUrlStateParam()
     {
         $this->assertContains('state=XXX', $this->provider->getAuthorizationUrl([
             'state' => 'XXX'
         ]));
     }
-    
+
     /**
      * Tests https://github.com/thephpleague/oauth2-client/issues/134
      */
