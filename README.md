@@ -125,6 +125,7 @@ These providers allow integration with other providers not supported by `oauth2-
 so please help them out with a pull request if you notice this.
 
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
+- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
 - [QQ](https://github.com/tlikai/oauth2-client)
 - [Weibo](https://github.com/tlikai/oauth2-client)
 - [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
