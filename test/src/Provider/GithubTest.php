@@ -59,6 +59,27 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('1', $token->uid);
     }
 
+    public function testGetAccessTokenSetResultUid()
+    {
+        $this->provider->uidKey = 'otherKey';
+
+        $response = m::mock('Guzzle\Http\Message\Response');
+        $response->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey={1234}');
+
+        $client = m::mock('Guzzle\Service\Client');
+        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+
+        $this->assertEquals('mock_access_token', $token->accessToken);
+        $this->assertLessThanOrEqual(time() + 3600, $token->expires);
+        $this->assertGreaterThanOrEqual(time(), $token->expires);
+        $this->assertEquals('mock_refresh_token', $token->refreshToken);
+        $this->assertEquals('{1234}', $token->uid);
+    }
+
     public function testScopes()
     {
         $this->provider->setScopes(['user', 'repo']);
