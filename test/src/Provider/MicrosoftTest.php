@@ -76,7 +76,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $postResponse = m::mock('GuzzleHttp\Message\Response');
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
-        $getResponse = m::mock('Guzzle\Http\Message\Response');
+        $getResponse = m::mock('GuzzleHttp\Message\Response');
 
         $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
         $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
