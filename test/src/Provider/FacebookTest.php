@@ -52,7 +52,6 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
 
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
@@ -82,7 +81,6 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
 
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('setBaseUrl')->times(6);
         $client->shouldReceive('post')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get')->andReturn($getResponse);
 

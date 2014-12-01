@@ -52,7 +52,6 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
@@ -78,10 +77,9 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('GuzzleHttp\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"data": {"id": "12345", "username": "mock_username", "full_name": "mock_full_name", "bio": "mock_bio", "profile_picture": "mock_profile_picture"}}');
+        $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"data": {"id": "12345", "username": "mock_username", "full_name": "mock_full_name", "bio": "mock_bio", "profile_picture": "mock_profile_picture"}}');
 
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('setBaseUrl')->times(5);
         $client->shouldReceive('post')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get')->times(4)->andReturn($getResponse);
         $this->provider->setHttpClient($client);

@@ -52,7 +52,6 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
@@ -82,10 +81,9 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
         $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
 
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(6);
-        $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
-        $client->shouldReceive('get->send')->times(5)->andReturn($getResponse);
+        $client = m::mock('GuzzleHttp\Client');
+        $client->shouldReceive('post')->times(1)->andReturn($postResponse);
+        $client->shouldReceive('get')->times(5)->andReturn($getResponse);
 
         $this->provider->setHttpClient($client);
 
