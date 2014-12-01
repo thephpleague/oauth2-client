@@ -2,8 +2,8 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use Guzzle\Http\Exception\BadResponseException;
-use Guzzle\Service\Client as GuzzleClient;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
@@ -173,8 +173,11 @@ abstract class AbstractProvider implements ProviderInterface
                     // @codeCoverageIgnoreEnd
                 case 'POST':
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken());
-                    $request = $client->post(null, null, $requestParams)->send();
+                    $url = $this->urlAccessToken();
+                    $options = [
+                        'body' => $requestParams
+                    ];
+                    $request = $client->post($url, $options);
                     $response = $request->getBody();
                     break;
                 // @codeCoverageIgnoreStart
@@ -195,6 +198,7 @@ abstract class AbstractProvider implements ProviderInterface
                 break;
             case 'string':
                 parse_str($response, $result);
+
                 break;
         }
 
@@ -285,13 +289,14 @@ abstract class AbstractProvider implements ProviderInterface
 
         try {
             $client = $this->getHttpClient();
-            $client->setBaseUrl($url);
+
+            $options = [];
 
             if ($this->headers) {
-                $client->setDefaultOption('headers', $this->headers);
+                $options['headers'] = $this->headers;
             }
 
-            $request = $client->get()->send();
+            $request = $client->get($url, $options);
             $response = $request->getBody();
         } catch (BadResponseException $e) {
             // @codeCoverageIgnoreStart
