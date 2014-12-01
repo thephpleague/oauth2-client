@@ -65,6 +65,21 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($value, $mockProvider->{$key});
         }
     }
+
+    public function testSetRedirectHandler()
+    {
+        $this->testFunction = false;
+
+        $callback = function ($url) {
+            $this->testFunction = $url;
+        };
+
+        $this->provider->setRedirectHandler($callback);
+
+        $this->provider->authorize('http://test.url/');
+
+        $this->assertNotFalse($this->testFunction);
+    }
 }
 
 class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
