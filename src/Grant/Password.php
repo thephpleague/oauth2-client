@@ -6,11 +6,20 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class Password implements GrantInterface
 {
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'password';
     }
 
+    /**
+     * @param array $defaultParams
+     * @param array $params
+     *
+     * @return array
+     */
     public function prepRequestParams($defaultParams, $params)
     {
         if (! isset($params['username']) || empty($params['username'])) {
@@ -26,6 +35,11 @@ class Password implements GrantInterface
         return array_merge($defaultParams, $params);
     }
 
+    /**
+     * @param array $response
+     *
+     * @return AccessToken
+     */
     public function handleResponse($response = array())
     {
         return new AccessToken($response);

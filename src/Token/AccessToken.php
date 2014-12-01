@@ -30,7 +30,6 @@ class AccessToken
      * Sets the token, expiry, etc values.
      *
      * @param  array $options token options
-     * @return void
      */
     public function __construct(array $options = null)
     {

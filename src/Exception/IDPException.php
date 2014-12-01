@@ -6,7 +6,10 @@ class IDPException extends \Exception
 {
     protected $result;
 
-    public function __construct($result)
+    /**
+     * @param array $result
+     */
+    public function __construct(array $result)
     {
         $this->result = $result;
 

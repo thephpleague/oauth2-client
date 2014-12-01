@@ -10,21 +10,38 @@ class Microsoft extends AbstractProvider
     public $scopes = ['wl.basic', 'wl.emails'];
     public $responseType = 'json';
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://oauth.live.com/authorize';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://oauth.live.com/token';
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function urlUserDetails(AccessToken $token)
     {
         return 'https://apis.live.net/v5.0/me?access_token='.$token;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
     public function userDetails($response, AccessToken $token)
     {
         $client = $this->getHttpClient();
@@ -50,11 +67,23 @@ class Microsoft extends AbstractProvider
         return $user;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string|null
+     */
     public function userEmail($response, AccessToken $token)
     {
         return isset($response->emails->preferred) && $response->emails->preferred
@@ -62,6 +91,12 @@ class Microsoft extends AbstractProvider
             : null;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
     public function userScreenName($response, AccessToken $token)
     {
         return [$response->first_name, $response->last_name];

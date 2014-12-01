@@ -50,6 +50,9 @@ class User
         return (property_exists($this, $name));
     }
 
+    /**
+     * @return array
+     */
     public function getArrayCopy()
     {
         return [
@@ -68,6 +71,11 @@ class User
         ];
     }
 
+    /**
+     * @param array $data
+     *
+     * @return static
+     */
     public function exchangeArray(array $data)
     {
         foreach ($data as $key => $value) {

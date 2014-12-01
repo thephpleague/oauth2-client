@@ -20,31 +20,54 @@ class Google extends AbstractProvider
     */
     public $hostedDomain = '';
 
+    /**
+     * @param string $hd
+     */
     public function setHostedDomain($hd)
     {
         $this->hostedDomain = $hd;
     }
 
+    /**
+     * @return string
+     */
     public function getHostedDomain()
     {
         return $this->hostedDomain;
     }
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://accounts.google.com/o/oauth2/auth';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://accounts.google.com/o/oauth2/token';
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function urlUserDetails(AccessToken $token)
     {
         return 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
     public function userDetails($response, AccessToken $token)
     {
         $response = (array) $response;
@@ -65,21 +88,44 @@ class Google extends AbstractProvider
         return $user;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return string | null
+     */
     public function userEmail($response, AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
     public function userScreenName($response, AccessToken $token)
     {
         return [$response->given_name, $response->family_name];
     }
 
+    /**
+     * @param array $options
+     *
+     * @return string
+     */
     public function getAuthorizationUrl($options = array())
     {
         $url = parent::getAuthorizationUrl($options);

@@ -10,21 +10,38 @@ class Facebook extends AbstractProvider
     public $scopes = ['offline_access', 'email', 'read_stream'];
     public $responseType = 'string';
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://www.facebook.com/dialog/oauth';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://graph.facebook.com/oauth/access_token';
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function urlUserDetails(AccessToken $token)
     {
         return 'https://graph.facebook.com/me?access_token='.$token;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
     public function userDetails($response, AccessToken $token)
     {
         $client = $this->getHttpClient();
@@ -57,16 +74,34 @@ class Facebook extends AbstractProvider
         return $user;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return string|null
+     */
     public function userEmail($response, AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
     public function userScreenName($response, AccessToken $token)
     {
         return [$response->first_name, $response->last_name];

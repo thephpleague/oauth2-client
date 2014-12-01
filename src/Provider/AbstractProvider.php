@@ -4,6 +4,7 @@ namespace League\OAuth2\Client\Provider;
 
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Service\Client as GuzzleClient;
+use League\OAuth2\Client\Entity\User;
 use League\OAuth2\Client\Exception\IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken;
@@ -54,6 +55,11 @@ abstract class AbstractProvider implements ProviderInterface
         $this->setHttpClient(new GuzzleClient());
     }
 
+    /**
+     * @param GuzzleClient $client
+     *
+     * @return $this
+     */
     public function setHttpClient(GuzzleClient $client)
     {
         $this->httpClient = $client;
@@ -61,6 +67,9 @@ abstract class AbstractProvider implements ProviderInterface
         return $this;
     }
 
+    /**
+     * @return GuzzleClient
+     */
     public function getHttpClient()
     {
         $client = clone $this->httpClient;
@@ -101,20 +110,31 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @param object $response
      * @param AccessToken $token
-     * @return mixed
+     * @return User
      */
     abstract public function userDetails($response, AccessToken $token);
 
+    /**
+     * @return array
+     */
     public function getScopes()
     {
         return $this->scopes;
     }
 
+    /**
+     * @param array $scopes
+     */
     public function setScopes(array $scopes)
     {
         $this->scopes = $scopes;
     }
 
+    /**
+     * @param array $options
+     *
+     * @return string
+     */
     public function getAuthorizationUrl($options = [])
     {
         $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
@@ -132,6 +152,9 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     // @codeCoverageIgnoreStart
+    /**
+     * @param array $options
+     */
     public function authorize($options = [])
     {
         header('Location: '.$this->getAuthorizationUrl($options));
@@ -139,6 +162,13 @@ abstract class AbstractProvider implements ProviderInterface
     }
     // @codeCoverageIgnoreEnd
 
+    /**
+     * @param string $grant
+     * @param array $params
+     *
+     * @return AccessToken
+     * @throws IDPException
+     */
     public function getAccessToken($grant = 'authorization_code', $params = [])
     {
         if (is_string($grant)) {
@@ -230,6 +260,12 @@ abstract class AbstractProvider implements ProviderInterface
         }
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return User
+     * @throws IDPException
+     */
     public function getUserDetails(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
@@ -237,6 +273,12 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userDetails(json_decode($response), $token);
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     * @throws IDPException
+     */
     public function getUserUid(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
@@ -244,6 +286,12 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userUid(json_decode($response), $token);
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     * @throws IDPException
+     */
     public function getUserEmail(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
@@ -251,6 +299,12 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userEmail(json_decode($response), $token);
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return array
+     * @throws IDPException
+     */
     public function getUserScreenName(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
@@ -282,6 +336,12 @@ abstract class AbstractProvider implements ProviderInterface
         return $url;
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     * @throws IDPException
+     */
     protected function fetchUserDetails(AccessToken $token)
     {
         $url = $this->urlUserDetails($token);

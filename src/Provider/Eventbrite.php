@@ -62,16 +62,34 @@ class Eventbrite extends AbstractProvider
         return $user;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function userUid($response, AccessToken $token)
     {
         return $response->user->user_id;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string|null
+     */
     public function userEmail($response, AccessToken $token)
     {
         return isset($response->user->email) && $response->user->email ? $response->user->email : null;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
     public function userScreenName($response, AccessToken $token)
     {
         return $response->user->user_id;
