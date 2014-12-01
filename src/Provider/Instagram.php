@@ -3,28 +3,46 @@
 namespace League\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Entity\User;
+use League\OAuth2\Client\Token\AccessToken;
 
 class Instagram extends AbstractProvider
 {
     public $scopes = ['basic'];
     public $responseType = 'json';
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://api.instagram.com/oauth/authorize';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://api.instagram.com/oauth/access_token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://api.instagram.com/v1/users/self?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
+    public function userDetails($response, AccessToken $token)
     {
         $user = new User();
 
@@ -41,17 +59,33 @@ class Instagram extends AbstractProvider
         return $user;
     }
 
-    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
+    public function userUid($response, AccessToken $token)
     {
         return $response->data->id;
     }
 
-    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     */
+    public function userEmail($response, AccessToken $token)
     {
         return;
     }
 
-    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return mixed
+     */
+    public function userScreenName($response, AccessToken $token)
     {
         return $response->data->full_name;
     }

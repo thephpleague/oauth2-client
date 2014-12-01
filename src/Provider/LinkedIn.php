@@ -14,22 +14,39 @@ class LinkedIn extends AbstractProvider
         'location', 'industry', 'picture-url', 'public-profile-url',
     ];
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://www.linkedin.com/uas/oauth2/authorization';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://www.linkedin.com/uas/oauth2/accessToken';
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function urlUserDetails(AccessToken $token)
     {
         return 'https://api.linkedin.com/v1/people/~:('.implode(",", $this->fields)
             .')?format=json&oauth2_access_token='.$token;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
     public function userDetails($response, AccessToken $token)
     {
         $user = new User();
@@ -54,11 +71,23 @@ class LinkedIn extends AbstractProvider
         return $user;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string|null
+     */
     public function userEmail($response, AccessToken $token)
     {
         return isset($response->emailAddress) && $response->emailAddress
@@ -66,6 +95,12 @@ class LinkedIn extends AbstractProvider
             : null;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
     public function userScreenName($response, AccessToken $token)
     {
         return [$response->firstName, $response->lastName];

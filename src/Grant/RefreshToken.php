@@ -6,11 +6,20 @@ use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
 class RefreshToken implements GrantInterface
 {
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return 'refresh_token';
     }
 
+    /**
+     * @param array $defaultParams
+     * @param array $params
+     *
+     * @return array
+     */
     public function prepRequestParams($defaultParams, $params)
     {
         if (! isset($params['refresh_token']) || empty($params['refresh_token'])) {
@@ -22,6 +31,11 @@ class RefreshToken implements GrantInterface
         return array_merge($defaultParams, $params);
     }
 
+    /**
+     * @param array $response
+     *
+     * @return AccessToken
+     */
     public function handleResponse($response = [])
     {
         return new AccessToken($response);

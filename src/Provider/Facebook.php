@@ -3,28 +3,46 @@
 namespace League\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Entity\User;
+use League\OAuth2\Client\Token\AccessToken;
 
 class Facebook extends AbstractProvider
 {
     public $scopes = ['offline_access', 'email', 'read_stream'];
     public $responseType = 'string';
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://www.facebook.com/dialog/oauth';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://graph.facebook.com/oauth/access_token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://graph.facebook.com/me?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
+    public function userDetails($response, AccessToken $token)
     {
         $client = $this->getHttpClient();
         $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken);
@@ -56,17 +74,35 @@ class Facebook extends AbstractProvider
         return $user;
     }
 
-    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
+    public function userUid($response, AccessToken $token)
     {
         return $response->id;
     }
 
-    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return string|null
+     */
+    public function userEmail($response, AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
-    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
+    public function userScreenName($response, AccessToken $token)
     {
         return [$response->first_name, $response->last_name];
     }

@@ -10,16 +10,27 @@ class Vkontakte extends AbstractProvider
     public $scopes = [];
     public $responseType = 'json';
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://oauth.vk.com/authorize';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://oauth.vk.com/access_token';
     }
 
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function urlUserDetails(AccessToken $token)
     {
         $fields = ['nickname',
@@ -52,6 +63,12 @@ class Vkontakte extends AbstractProvider
             .implode(",", $fields)."&access_token={$token}";
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
     public function userDetails($response, AccessToken $token)
     {
         $response = $response->response[0];
@@ -77,6 +94,12 @@ class Vkontakte extends AbstractProvider
         return $user;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return string
+     */
     public function userUid($response, AccessToken $token)
     {
         $response = $response->response[0];
@@ -84,6 +107,12 @@ class Vkontakte extends AbstractProvider
         return $response->uid;
     }
 
+    /**
+     * @param $response
+     * @param AccessToken $token
+     *
+     * @return string|null
+     */
     public function userEmail($response, AccessToken $token)
     {
         $response = $response->response[0];
@@ -91,6 +120,12 @@ class Vkontakte extends AbstractProvider
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return array
+     */
     public function userScreenName($response, AccessToken $token)
     {
         $response = $response->response[0];

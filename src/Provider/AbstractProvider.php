@@ -1,45 +1,138 @@
 <?php
+/**
+ * This file is part of the League\OAuth2\Client package.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @copyright Copyright (c) 2014 Alex Bilbie <hello@alexbilbie.com>
+ * @license http://opensource.org/licenses/MIT MIT
+ */
 
 namespace League\OAuth2\Client\Provider;
 
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Service\Client as GuzzleClient;
-use League\OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\Entity\User;
+use League\OAuth2\Client\Exception\IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use League\OAuth2\Client\Token\AccessToken;
 
+/**
+ * Base class representing OAuth 2.0 providers
+ */
 abstract class AbstractProvider implements ProviderInterface
 {
+    /**
+     * The client identifier issued to the client by the provider
+     *
+     * @var string
+     */
     public $clientId = '';
 
+    /**
+     * The client secret used to authenticate the client with the provider
+     *
+     * @var string
+     */
     public $clientSecret = '';
 
+    /**
+     * URL to which the authorization server redirects the user-agent after
+     * completing the authorization request
+     *
+     * @var string
+     */
     public $redirectUri = '';
 
+    /**
+     * An opaque value used by the client to maintain state between the
+     * request and callback
+     *
+     * @var string
+     */
     public $state;
 
+    /**
+     * @var string
+     */
     public $name;
 
+    /**
+     * The name used by the provider for their user identifier
+     *
+     * This is usually "uid," but it may be known by other names, so we provide
+     * the ability to set it on a per provider basis.
+     *
+     * @var string
+     */
     public $uidKey = 'uid';
 
+    /**
+     * List of permission scopes we are requesting from the provider
+     *
+     * @var array
+     */
     public $scopes = [];
 
+    /**
+     * HTTP request method to use when communicating with the provider
+     *
+     * @var string
+     */
     public $method = 'post';
 
+    /**
+     * Separator string to use between scopes, when sending them to the provider
+     *
+     * @var string
+     */
     public $scopeSeparator = ',';
 
+    /**
+     * The expected response type from the provider
+     *
+     * @var string
+     */
     public $responseType = 'json';
 
+    /**
+     * Array of additional headers to add to the HTTP request
+     *
+     * This array must be in key/value format, where key is the header name
+     * and value is the header value, for example:
+     *
+     * ```php
+     * $provider->headers = [
+     *     'X-Foo' => 'Bar',
+     * ];
+     * ```
+     *
+     * @var array|null
+     */
     public $headers = null;
 
+    /**
+     * The HTTP client to use for requests to the provider
+     *
+     * @var GuzzleClient
+     */
     protected $httpClient;
 
-   /**
-    * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
-    *          and the default encryption type for the http_build_query setup
-    */
+    /**
+     * This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
+     * and the default encryption type for the http_build_query setup
+     *
+     * @link http://php.net/http-build-query
+     * @var int
+     */
     protected $httpBuildEncType = 1;
 
+    /**
+     * Constructs a provider
+     *
+     * @param array $options Options for initializing this provider
+     */
     public function __construct($options = [])
     {
         foreach ($options as $option => $value) {
@@ -51,6 +144,12 @@ abstract class AbstractProvider implements ProviderInterface
         $this->setHttpClient(new GuzzleClient());
     }
 
+    /**
+     * Sets the HTTP client to use for requests with this provider
+     *
+     * @param GuzzleClient $client
+     * @return self
+     */
     public function setHttpClient(GuzzleClient $client)
     {
         $this->httpClient = $client;
@@ -58,6 +157,11 @@ abstract class AbstractProvider implements ProviderInterface
         return $this;
     }
 
+    /**
+     * Returns a copy of the HTTP client used by this provider
+     *
+     * @return GuzzleClient
+     */
     public function getHttpClient()
     {
         $client = clone $this->httpClient;
@@ -90,7 +194,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @param AccessToken $token
      * @return string
      */
-    abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function urlUserDetails(AccessToken $token);
 
     /**
      * Given an object response from the server, process the user details into a format expected by the user
@@ -98,20 +202,37 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @param object $response
      * @param AccessToken $token
-     * @return mixed
+     * @return User
      */
-    abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function userDetails($response, AccessToken $token);
 
+    /**
+     * Returns the array of permission scopes to be requested from this provider
+     *
+     * @return array
+     */
     public function getScopes()
     {
         return $this->scopes;
     }
 
+    /**
+     * Sets the permission scopes to be requested from this provider
+     *
+     * @param array $scopes
+     */
     public function setScopes(array $scopes)
     {
         $this->scopes = $scopes;
     }
 
+    /**
+     * Returns the fully constructed URL used to authorize a user with this provider
+     *
+     * @param array $options
+     *
+     * @return string
+     */
     public function getAuthorizationUrl($options = [])
     {
         $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
@@ -128,14 +249,28 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
-    // @codeCoverageIgnoreStart
+    /**
+     * Sets a Location header and immediately exits to redirect the user-agent to the authorization URL
+     *
+     * @param array $options
+     * @codeCoverageIgnore
+     */
     public function authorize($options = [])
     {
         header('Location: '.$this->getAuthorizationUrl($options));
         exit;
     }
-    // @codeCoverageIgnoreEnd
 
+    /**
+     * Retrieves an access token from the provider
+     *
+     * @param string $grant the grant type
+     * @param array $params
+     * @return AccessToken
+     * @throws InvalidArgumentException for an unknown grant type
+     * @throws IDPException if the provider returns an error
+     * @link http://tools.ietf.org/html/rfc6749#section-4.1.3
+     */
     public function getAccessToken($grant = 'authorization_code', $params = [])
     {
         if (is_string($grant)) {
@@ -227,6 +362,13 @@ abstract class AbstractProvider implements ProviderInterface
         }
     }
 
+    /**
+     * Returns a representation of the authorized user profile for this provider
+     *
+     * @param AccessToken $token
+     * @return User
+     * @throws IDPException
+     */
     public function getUserDetails(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
@@ -234,6 +376,13 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userDetails(json_decode($response), $token);
     }
 
+    /**
+     * Returns the user identifier for the authorized user profile for this provider
+     *
+     * @param AccessToken $token
+     * @return string
+     * @throws IDPException
+     */
     public function getUserUid(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
@@ -241,6 +390,13 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userUid(json_decode($response), $token);
     }
 
+    /**
+     * Returns the email address for the authorized user profile for this provider
+     *
+     * @param AccessToken $token
+     * @return string
+     * @throws IDPException
+     */
     public function getUserEmail(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
@@ -248,6 +404,13 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userEmail(json_decode($response), $token);
     }
 
+    /**
+     * Returns the screen namem for the authorized user profile for this provider
+     *
+     * @param AccessToken $token
+     * @return array
+     * @throws IDPException
+     */
     public function getUserScreenName(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
@@ -256,14 +419,14 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * Build HTTP the HTTP query, handling PHP version control options
+     * Build URL query string, handling PHP version control options
      *
-     * @param  array        $params
-     * @param  integer      $numeric_prefix
-     * @param  string       $arg_separator
-     * @param  null|integer $enc_type
+     * @param array $params
+     * @param integer $numeric_prefix
+     * @param string $arg_separator
+     * @param null|integer $enc_type
      * @return string
-     * @codeCoverageIgnoreStart
+     * @codeCoverageIgnore
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
@@ -279,6 +442,13 @@ abstract class AbstractProvider implements ProviderInterface
         return $url;
     }
 
+    /**
+     * Makes an HTTP request to get information about the authorized user profile for this provider
+     *
+     * @param AccessToken $token
+     * @return string
+     * @throws IDPException if the provider returns a bad response
+     */
     protected function fetchUserDetails(AccessToken $token)
     {
         $url = $this->urlUserDetails($token);
