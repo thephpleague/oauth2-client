@@ -6,7 +6,7 @@ use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Exception\IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
-useAccessToken;
+use League\OAuth2\Client\Token\AccessToken;
 
 abstract class AbstractProvider implements ProviderInterface
 {
