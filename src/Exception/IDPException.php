@@ -27,16 +27,18 @@ class IDPException extends \Exception
 
     public function getType()
     {
+        $result = 'Exception';
+
         if (isset($this->result['error'])) {
             $message = $this->result['error'];
 
             if (is_string($message)) {
                 // OAuth 2.0 Draft 10 style
-                return $message;
+                $result = $message;
             }
         }
 
-        return 'Exception';
+        return $result;
     }
 
     /**
