@@ -3,9 +3,14 @@
 namespace League\OAuth2\Client\Provider;
 
 use League\OAuth2\Client\Entity\User;
+use League\OAuth2\Client\Token\AccessToken;
 
 class Eventbrite extends AbstractProvider
 {
+
+    /**
+     * @param array $options
+     */
     public function __construct($options)
     {
         parent::__construct($options);
@@ -14,22 +19,39 @@ class Eventbrite extends AbstractProvider
         ];
     }
 
+    /**
+     * @return string
+     */
     public function urlAuthorize()
     {
         return 'https://www.eventbrite.com/oauth/authorize';
     }
 
+    /**
+     * @return string
+     */
     public function urlAccessToken()
     {
         return 'https://www.eventbrite.com/oauth/token';
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param AccessToken $token
+     *
+     * @return string
+     */
+    public function urlUserDetails(AccessToken $token)
     {
         return 'https://www.eventbrite.com/json/user_get?access_token='.$token;
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @param object $response
+     * @param AccessToken $token
+     *
+     * @return User
+     */
+    public function userDetails($response, AccessToken $token)
     {
         $user = new User();
         $user->exchangeArray([
@@ -40,17 +62,17 @@ class Eventbrite extends AbstractProvider
         return $user;
     }
 
-    public function userUid($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userUid($response, AccessToken $token)
     {
         return $response->user->user_id;
     }
 
-    public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userEmail($response, AccessToken $token)
     {
         return isset($response->user->email) && $response->user->email ? $response->user->email : null;
     }
 
-    public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
+    public function userScreenName($response, AccessToken $token)
     {
         return $response->user->user_id;
     }
