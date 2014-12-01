@@ -134,8 +134,7 @@ abstract class AbstractProvider implements ProviderInterface
     public function authorize($options = [])
     {
         $url = $this->getAuthorizationUrl($options);
-        if ($this->redirectHandler)
-        {
+        if ($this->redirectHandler) {
             $handler = $this->redirectHandler;
             return $handler($url);
         }
