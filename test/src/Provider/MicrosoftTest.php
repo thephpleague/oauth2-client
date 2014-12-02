@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use \Mockery as m;
+use Mockery as m;
 
 class MicrosoftTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,6 +15,12 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ]);
+    }
+
+    public function tearDown()
+    {
+        m::close();
+        parent::tearDown();
     }
 
     public function testAuthorizationUrl()
@@ -72,13 +78,14 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(1)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
-        $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
+
+        $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"id": 12345, "name": "mock_name", "first_name": "mock_first_name", "last_name": "mock_last_name", "emails": {"preferred": "mock_email"}, "link": "mock_link"}');
+        $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
 
         $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('setBaseUrl')->times(6);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
-        $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
+        $client->shouldReceive('get->send')->times(5)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);

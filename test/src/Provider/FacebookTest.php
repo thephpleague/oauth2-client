@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use \Mockery as m;
+use Mockery as m;
 
 class FacebookTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,6 +15,12 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ]);
+    }
+
+    public function tearDown()
+    {
+        m::close();
+        parent::tearDown();
     }
 
     public function testAuthorizationUrl()
@@ -76,7 +82,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
         $getResponse->shouldReceive('getInfo')->andReturn(['url' => 'mock_image_url']);
 
         $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('setBaseUrl')->times(6);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->andReturn($getResponse);
         $this->provider->setHttpClient($client);
