@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use Closure;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
@@ -33,6 +34,8 @@ abstract class AbstractProvider implements ProviderInterface
     public $headers = null;
 
     protected $httpClient;
+
+    protected $redirectHandler;
 
    /**
     * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
@@ -128,13 +131,18 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
-    // @codeCoverageIgnoreStart
     public function authorize($options = [])
     {
-        header('Location: '.$this->getAuthorizationUrl($options));
+        $url = $this->getAuthorizationUrl($options);
+        if ($this->redirectHandler) {
+            $handler = $this->redirectHandler;
+            return $handler($url);
+        }
+        // @codeCoverageIgnoreStart
+        header('Location: ' . $url);
         exit;
+        // @codeCoverageIgnoreEnd
     }
-    // @codeCoverageIgnoreEnd
 
     public function getAccessToken($grant = 'authorization_code', $params = [])
     {
@@ -301,5 +309,10 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         return $response;
+    }
+
+    public function setRedirectHandler(Closure $handler)
+    {
+        $this->redirectHandler = $handler;
     }
 }
