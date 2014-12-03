@@ -38,12 +38,20 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($this->provider->state);
     }
 
+    public function testUrlAuthorize()
+    {
+        $url = $this->provider->urlAuthorize();
+        $uri = parse_url($url);
+
+        $this->assertEquals('/oauth20_authorize.srf', $uri['path']);
+    }
+
     public function testUrlAccessToken()
     {
         $url = $this->provider->urlAccessToken();
         $uri = parse_url($url);
 
-        $this->assertEquals('/token', $uri['path']);
+        $this->assertEquals('/oauth20_token.srf', $uri['path']);
     }
 
     public function testGetAccessToken()
