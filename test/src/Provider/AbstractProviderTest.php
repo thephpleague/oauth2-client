@@ -2,10 +2,15 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use Mockery as m;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Token\AccessToken;
+use \Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var AbstractProvider
+     */
     protected $provider;
 
     protected function setUp()
@@ -86,6 +91,56 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->provider->authorize('http://test.url/');
 
         $this->assertNotFalse($this->testFunction);
+    }
+
+    /**
+     * @param $response
+     *
+     * @dataProvider userPropertyProvider
+     */
+    public function testGetUserProperties($response, $name = null, $email = null, $id = null)
+    {
+        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+
+        $provider = $this->getMockForAbstractClass(
+          '\League\OAuth2\Client\Provider\AbstractProvider',
+          [
+            [
+              'clientId'     => 'mock_client_id',
+              'clientSecret' => 'mock_secret',
+              'redirectUri'  => 'none',
+            ]
+          ]
+        );
+
+        /**
+         * @var $provider AbstractProvider
+         */
+
+        $this->assertEquals($name, $provider->userScreenName($response, $token));
+        $this->assertEquals($email, $provider->userEmail($response, $token));
+        $this->assertEquals($id, $provider->userUid($response, $token));
+    }
+
+    public function userPropertyProvider()
+    {
+        $response        = new \stdClass();
+        $response->id    = 1;
+        $response->email = 'test@example.com';
+        $response->name  = 'test';
+
+        $response2        = new \stdClass();
+        $response2->id    = null;
+        $response2->email = null;
+        $response2->name  = null;
+
+        $response3 = new \stdClass();
+
+        return [
+          [$response, 'test', 'test@example.com', 1],
+          [$response2],
+          [$response3],
+        ];
     }
 }
 
