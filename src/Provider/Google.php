@@ -76,7 +76,9 @@ class Google extends AbstractProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return [$response['name']->givenName, $response['name']->familyName];
+        $givenName = $response['name']->givenName;
+        $familyName = $response['name']->familyName;
+        return [$givenName, $familyName];
     }
 
     public function getAuthorizationUrl($options = array())
