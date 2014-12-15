@@ -71,12 +71,12 @@ class Google extends AbstractProvider
 
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->email) && $response->email ? $response->email : null;
+        return $response['emails'] && count($response['emails']) > 0 && isset($response['emails'][0]->value) && $response['emails'][0]->value ? $response['emails'][0]->value : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return [$response->given_name, $response->family_name];
+        return [$response['name']->givenName, $response['name']->familyName];
     }
 
     public function getAuthorizationUrl($options = array())
