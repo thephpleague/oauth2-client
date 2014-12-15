@@ -13,10 +13,10 @@ class Google extends AbstractProvider
         'https://www.googleapis.com/auth/userinfo.email',
     ];
 
-   /**
-    * @var string If set, this will be sent to google as the "hd" parameter.
-    * @link https://developers.google.com/accounts/docs/OAuth2Login#hd-param
-    */
+    /**
+     * @var string If set, this will be sent to google as the "hd" parameter.
+     * @link https://developers.google.com/accounts/docs/OAuth2Login#hd-param
+     */
     public $hostedDomain = '';
 
     public function setHostedDomain($hd)
