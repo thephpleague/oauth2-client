@@ -9,8 +9,8 @@ class Google extends AbstractProvider
     public $scopeSeparator = ' ';
 
     public $scopes = [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/profile',
+        'https://www.googleapis.com/auth/email',
     ];
 
     /**
@@ -41,7 +41,7 @@ class Google extends AbstractProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token;
+        return 'https://www.googleapis.com/plus/v1/people/me?alt=json&access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -54,10 +54,10 @@ class Google extends AbstractProvider
 
         $user->exchangeArray([
             'uid' => $response['id'],
-            'name' => $response['name'],
-            'firstname' => $response['given_name'],
-            'lastName' => $response['family_name'],
-            'email' => $response['email'],
+            'name' => $response['displayName'],
+            'firstname' => $response['name']->givenName,
+            'lastName' => $response['name']->familyName,
+            'email' => $response['emails'][0]->value,
             'imageUrl' => $imageUrl,
         ]);
 
@@ -71,12 +71,14 @@ class Google extends AbstractProvider
 
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->email) && $response->email ? $response->email : null;
+        return $response['emails'] && count($response['emails']) > 0 && isset($response['emails'][0]->value) && $response['emails'][0]->value ? $response['emails'][0]->value : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return [$response->given_name, $response->family_name];
+        $givenName = $response['name']->givenName;
+        $familyName = $response['name']->familyName;
+        return [$givenName, $familyName];
     }
 
     public function getAuthorizationUrl($options = array())

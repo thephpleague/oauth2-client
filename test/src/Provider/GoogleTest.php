@@ -71,7 +71,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'], $this->provider->getScopes());
+        $this->assertEquals(['https://www.googleapis.com/auth/profile', 'https://www.googleapis.com/auth/email'], $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -80,7 +80,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"id": 12345, "name": "mock_name", "given_name": "mock_first_name", "family_name": "mock_last_name", "email": "mock_email"}');
+        $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"organizations":[{"type":"work","name":"Org Name","primary":false,"title":"User title"}],"kind":"plus#person","displayName":"mock_name","name":{"givenName":"mock_first_name","familyName":"mock_last_name"},"language":"en","isPlusUser":true,"url":"mock_url","gender":"male","image":{"url":"mock_image_url","isDefault":false},"placesLived":[{"primary":true,"value":"mock_location"}],"emails":[{"type":"account","value":"mock_email"}],"etag":"mock_etag","domain":"mock_domain","verified":false,"circledByCount":12,"id":"12345","objectType":"person"}');
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(5);
