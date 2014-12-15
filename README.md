@@ -125,12 +125,11 @@ These providers allow integration with other providers not supported by `oauth2-
 so please help them out with a pull request if you notice this.
 
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
+- [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
+- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
 - [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
-- [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
-- [QQ](https://github.com/tlikai/oauth2-client)
-- [Weibo](https://github.com/tlikai/oauth2-client)
-- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
+- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 
 ### Implementing your own provider
 

@@ -33,14 +33,17 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $headers = null;
 
+    /**
+     * @var GuzzleClient
+     */
     protected $httpClient;
 
     protected $redirectHandler;
 
-   /**
-    * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
-    *          and the default encryption type for the http_build_query setup
-    */
+    /**
+     * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
+     *          and the default encryption type for the http_build_query setup
+     */
     protected $httpBuildEncType = 1;
 
     public function __construct($options = [])
@@ -93,7 +96,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @param AccessToken $token
      * @return string
      */
-    abstract public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function urlUserDetails(AccessToken $token);
 
     /**
      * Given an object response from the server, process the user details into a format expected by the user
@@ -103,7 +106,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @param AccessToken $token
      * @return mixed
      */
-    abstract public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token);
+    abstract public function userDetails($response, AccessToken $token);
 
     public function getScopes()
     {
@@ -131,6 +134,7 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
+    // @codeCoverageIgnoreStart
     public function authorize($options = [])
     {
         $url = $this->getAuthorizationUrl($options);
@@ -174,8 +178,8 @@ abstract class AbstractProvider implements ProviderInterface
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken().'?'.$this->httpBuildQuery($requestParams, '', '&'));
-                    $request = $client->send();
+                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
+                    $request = $client->get(null, null, $requestParams)->send();
                     $response = $request->getBody();
                     break;
                     // @codeCoverageIgnoreEnd
@@ -267,6 +271,21 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->userScreenName(json_decode($response), $token);
     }
 
+    public function userUid($response, AccessToken $token)
+    {
+        return isset($response->id) && $response->id ? $response->id : null;
+    }
+
+    public function userEmail($response, AccessToken $token)
+    {
+        return isset($response->email) && $response->email ? $response->email : null;
+    }
+
+    public function userScreenName($response, AccessToken $token)
+    {
+        return isset($response->name) && $response->name ? $response->name : null;
+    }
+
     /**
      * Build HTTP the HTTP query, handling PHP version control options
      *
@@ -274,6 +293,7 @@ abstract class AbstractProvider implements ProviderInterface
      * @param  integer      $numeric_prefix
      * @param  string       $arg_separator
      * @param  null|integer $enc_type
+     *
      * @return string
      * @codeCoverageIgnoreStart
      */
