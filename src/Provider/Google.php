@@ -9,8 +9,8 @@ class Google extends AbstractProvider
     public $scopeSeparator = ' ';
 
     public $scopes = [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/profile',
+        'https://www.googleapis.com/auth/email',
     ];
 
     /**
@@ -41,7 +41,7 @@ class Google extends AbstractProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token;
+        return 'https://www.googleapis.com/plus/v1/people/me?alt=json&access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -54,10 +54,10 @@ class Google extends AbstractProvider
 
         $user->exchangeArray([
             'uid' => $response['id'],
-            'name' => $response['name'],
-            'firstname' => $response['given_name'],
-            'lastName' => $response['family_name'],
-            'email' => $response['email'],
+            'name' => $response['displayName'],
+            'firstname' => $response['name']->givenName,
+            'lastName' => $response['name']->familyName,
+            'email' => $response['emails'][0]->value,
             'imageUrl' => $imageUrl,
         ]);
 
