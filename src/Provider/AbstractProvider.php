@@ -135,7 +135,7 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     // @codeCoverageIgnoreStart
-    public function authorize($options = array())
+    public function authorize($options = [])
     {
         $url = $this->getAuthorizationUrl($options);
         if ($this->redirectHandler) {
@@ -179,7 +179,7 @@ abstract class AbstractProvider implements ProviderInterface
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
                     $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
-                    $request  = $client->get(null, null, $requestParams)->send();
+                    $request = $client->get(null, null, $requestParams)->send();
                     $response = $request->getBody();
                     break;
                     // @codeCoverageIgnoreEnd

@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
-use \Mockery as m;
+use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -103,14 +103,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
         $provider = $this->getMockForAbstractClass(
-          '\League\OAuth2\Client\Provider\AbstractProvider',
-          [
+            '\League\OAuth2\Client\Provider\AbstractProvider',
             [
-              'clientId'     => 'mock_client_id',
-              'clientSecret' => 'mock_secret',
-              'redirectUri'  => 'none',
+              [
+                  'clientId'     => 'mock_client_id',
+                  'clientSecret' => 'mock_secret',
+                  'redirectUri'  => 'none',
+              ]
             ]
-          ]
         );
 
         /**
@@ -124,22 +124,22 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function userPropertyProvider()
     {
-        $response        = new \stdClass();
-        $response->id    = 1;
+        $response = new \stdClass();
+        $response->id = 1;
         $response->email = 'test@example.com';
-        $response->name  = 'test';
+        $response->name = 'test';
 
-        $response2        = new \stdClass();
-        $response2->id    = null;
+        $response2 = new \stdClass();
+        $response2->id = null;
         $response2->email = null;
-        $response2->name  = null;
+        $response2->name = null;
 
         $response3 = new \stdClass();
 
         return [
-          [$response, 'test', 'test@example.com', 1],
-          [$response2],
-          [$response3],
+            [$response, 'test', 'test@example.com', 1],
+            [$response2],
+            [$response3],
         ];
     }
 }
