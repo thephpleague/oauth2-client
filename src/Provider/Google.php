@@ -42,9 +42,9 @@ class Google extends AbstractProvider
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
         return
-          'https://www.googleapis.com/plus/v1/people/me?'.
-          'fields=name(familyName%2CgivenName)%2CdisplayName%2C'.
-          'emails%2Fvalue%2Cimage%2Furl&alt=json&access_token='.$token;
+            'https://www.googleapis.com/plus/v1/people/me?'.
+            'fields=name(familyName%2CgivenName)%2CdisplayName%2C'.
+            'emails%2Fvalue%2Cimage%2Furl&alt=json&access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -54,11 +54,11 @@ class Google extends AbstractProvider
         $user = new User();
 
         $imageUrl = (isset($response['image']) &&
-          $response['image']->url) ? $response['image']->url : null;
+            $response['image']->url) ? $response['image']->url : null;
         $email =
-          (isset($response['emails']) &&
-          count($response['emails']) &&
-          $response['emails'][0]->value)? $response['emails'][0]->value : null;
+            (isset($response['emails']) &&
+            count($response['emails']) &&
+            $response['emails'][0]->value)? $response['emails'][0]->value : null;
 
         $user->exchangeArray([
             'uid' => $response['id'],
@@ -80,8 +80,8 @@ class Google extends AbstractProvider
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return ($response->emails &&
-          count($response->emails) &&
-          $response->emails[0]->value) ? $response->emails[0]->value : null;
+            count($response->emails) &&
+            $response->emails[0]->value) ? $response->emails[0]->value : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
