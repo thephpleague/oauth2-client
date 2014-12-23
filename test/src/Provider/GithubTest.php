@@ -132,4 +132,26 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->provider->domain.'/login/oauth/access_token', $this->provider->urlAccessToken());
         $this->assertEquals($this->provider->domain.'/api/v3/user?access_token=mock_access_token', $this->provider->urlUserDetails($token));
     }
+
+    public function testUserEmails()
+    {
+        $postResponse = m::mock('Guzzle\Http\Message\Response');
+        $postResponse->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
+
+        $getResponse = m::mock('Guzzle\Http\Message\Response');
+        $getResponse->shouldReceive('getBody')->times(1)->andReturn('[{"email":"mock_email_1","primary":false,"verified":true},{"email":"mock_email_2","primary":false,"verified":true},{"email":"mock_email_3","primary":true,"verified":true}]');
+
+        $client = m::mock('Guzzle\Service\Client');
+        $client->shouldReceive('setBaseUrl')->times(2);
+        $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
+        $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
+        $this->provider->setHttpClient($client);
+
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $emails = $this->provider->getUserEmails($token);
+        $this->assertInternalType('array', $emails);
+        $this->assertCount(3, $emails);
+        $this->assertEquals('mock_email_3', $emails[2]->email);
+        $this->assertTrue($emails[2]->primary);
+    }
 }
