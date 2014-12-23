@@ -311,6 +311,11 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $url = $this->urlUserDetails($token);
 
+        return $this->fetchProviderData($url);
+    }
+
+    protected function fetchProviderData($url)
+    {
         try {
             $client = $this->getHttpClient();
             $client->setBaseUrl($url);
@@ -330,6 +335,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         return $response;
     }
+
 
     public function setRedirectHandler(Closure $handler)
     {
