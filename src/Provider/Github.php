@@ -8,19 +8,24 @@ class Github extends AbstractProvider
 {
     public $responseType = 'string';
 
+    public $domain = 'https://github.com';
+
     public function urlAuthorize()
     {
-        return 'https://github.com/login/oauth/authorize';
+        return $this->domain.'/login/oauth/authorize';
     }
 
     public function urlAccessToken()
     {
-        return 'https://github.com/login/oauth/access_token';
+        return $this->domain.'/login/oauth/access_token';
     }
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://api.github.com/user?access_token='.$token;
+        if ($this->domain == 'https://github.com') {
+            return $this->domain.'/user?access_token='.$token;
+        }
+        return $this->domain.'/api/v3/user?access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -36,7 +41,7 @@ class Github extends AbstractProvider
             'name' => $name,
             'email' => $email,
             'urls'  => [
-                'GitHub' => 'http://github.com/'.$response->login,
+                'GitHub' => $this->domain.'/'.$response->login,
             ],
         ]);
 
