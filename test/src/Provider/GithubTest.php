@@ -116,12 +116,11 @@ class GithubTest extends \PHPUnit_Framework_TestCase
     {
         $this->provider->domain = 'https://github.company.com';
 
-        $client = m::mock('Guzzle\Service\Client');
-        $response = m::mock('Guzzle\Http\Message\Response');
+        $client = m::mock('GuzzleHttp\Client');
+        $response = m::mock('GuzzleHttp\Message\Response');
         $response->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey={1234}');
 
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $client->shouldReceive('post')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
@@ -133,16 +132,15 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
     public function testUserEmails()
     {
-        $postResponse = m::mock('Guzzle\Http\Message\Response');
+        $postResponse = m::mock('GuzzleHttp\Message\Response');
         $postResponse->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&uid=1');
 
-        $getResponse = m::mock('Guzzle\Http\Message\Response');
+        $getResponse = m::mock('GuzzleHttp\Message\Response');
         $getResponse->shouldReceive('getBody')->times(1)->andReturn('[{"email":"mock_email_1","primary":false,"verified":true},{"email":"mock_email_2","primary":false,"verified":true},{"email":"mock_email_3","primary":true,"verified":true}]');
 
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(2);
-        $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
-        $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
+        $client = m::mock('GuzzleHttp\Client');
+        $client->shouldReceive('post')->times(1)->andReturn($postResponse);
+        $client->shouldReceive('get')->times(1)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
