@@ -42,11 +42,19 @@ $provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
     'scopes' => array('email', '...', '...'),
 ));
 
-if ( ! isset($_GET['code'])) {
+if (!isset($_GET['code'])) {
 
     // If we don't have an authorization code then get one
-    header('Location: '.$provider->getAuthorizationUrl());
+    $authUrl = $provider->getAuthorizationUrl();
+    $_SESSION['oauth2state'] = $provider->state;
+    header('Location: '.$authUrl);
     exit;
+
+// Check given state against previously stored one to mitigate CSRF attack
+} elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+
+    unset($_SESSION['oauth2state']);
+    exit('Invalid state');
 
 } else {
 
@@ -130,6 +138,7 @@ so please help them out with a pull request if you notice this.
 - [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
+- [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
 
 ### Implementing your own provider
 

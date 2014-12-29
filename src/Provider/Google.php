@@ -9,8 +9,8 @@ class Google extends AbstractProvider
     public $scopeSeparator = ' ';
 
     public $scopes = [
-        'https://www.googleapis.com/auth/userinfo.profile',
-        'https://www.googleapis.com/auth/userinfo.email',
+        'profile',
+        'email',
     ];
 
     /**
@@ -41,7 +41,10 @@ class Google extends AbstractProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token;
+        return
+            'https://www.googleapis.com/plus/v1/people/me?'.
+            'fields=name(familyName%2CgivenName)%2CdisplayName%2C'.
+            'emails%2Fvalue%2Cimage%2Furl&alt=json&access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -50,14 +53,19 @@ class Google extends AbstractProvider
 
         $user = new User();
 
-        $imageUrl = (isset($response['picture'])) ? $response['picture'] : null;
+        $imageUrl = (isset($response['image']) &&
+            $response['image']->url) ? $response['image']->url : null;
+        $email =
+            (isset($response['emails']) &&
+            count($response['emails']) &&
+            $response['emails'][0]->value)? $response['emails'][0]->value : null;
 
         $user->exchangeArray([
             'uid' => $response['id'],
-            'name' => $response['name'],
-            'firstname' => $response['given_name'],
-            'lastName' => $response['family_name'],
-            'email' => $response['email'],
+            'name' => $response['displayName'],
+            'firstname' => $response['name']->givenName,
+            'lastName' => $response['name']->familyName,
+            'email' => $email,
             'imageUrl' => $imageUrl,
         ]);
 
@@ -71,12 +79,14 @@ class Google extends AbstractProvider
 
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return isset($response->email) && $response->email ? $response->email : null;
+        return ($response->emails &&
+            count($response->emails) &&
+            $response->emails[0]->value) ? $response->emails[0]->value : null;
     }
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return [$response->given_name, $response->family_name];
+        return [$response->name->givenName, $response->name->familyName];
     }
 
     public function getAuthorizationUrl($options = array())
