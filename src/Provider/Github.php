@@ -22,10 +22,18 @@ class Github extends AbstractProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        if ($this->domain == 'https://github.com') {
+        if ($this->domain === 'https://github.com') {
             return $this->domain.'/user?access_token='.$token;
         }
         return $this->domain.'/api/v3/user?access_token='.$token;
+    }
+
+    public function urlUserEmails(\League\OAuth2\Client\Token\AccessToken $token)
+    {
+        if ($this->domain === 'https://github.com') {
+            return $this->domain.'/user/emails?access_token='.$token;
+        }
+        return $this->domain.'/api/v3/user/emails?access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
@@ -53,13 +61,32 @@ class Github extends AbstractProvider
         return $response->id;
     }
 
+    public function getUserEmails(\League\OAuth2\Client\Token\AccessToken $token)
+    {
+        $response = $this->fetchUserEmails($token);
+
+        return $this->userEmails(json_decode($response), $token);
+    }
+
     public function userEmail($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return isset($response->email) && $response->email ? $response->email : null;
     }
 
+    public function userEmails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    {
+        return $response;
+    }
+
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return $response->name;
+    }
+
+    protected function fetchUserEmails(\League\OAuth2\Client\Token\AccessToken $token)
+    {
+        $url = $this->urlUserEmails($token);
+
+        return $this->fetchProviderData($url);
     }
 }
