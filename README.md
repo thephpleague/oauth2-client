@@ -138,6 +138,7 @@ so please help them out with a pull request if you notice this.
 - [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
+- [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
 
 ### Implementing your own provider
 
