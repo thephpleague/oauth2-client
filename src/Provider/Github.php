@@ -30,7 +30,10 @@ class Github extends AbstractProvider
 
     public function urlUserEmails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://api.github.com/user/emails?access_token='.$token;
+        if ($this->domain === 'https://github.com') {
+            return $this->domain.'/user/emails?access_token='.$token;
+        }
+        return $this->domain.'/api/v3/user/emails?access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
