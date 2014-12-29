@@ -22,7 +22,7 @@ class Github extends AbstractProvider
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        if ($this->domain == 'https://github.com') {
+        if ($this->domain === 'https://github.com') {
             return $this->domain.'/user?access_token='.$token;
         }
         return $this->domain.'/api/v3/user?access_token='.$token;
