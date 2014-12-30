@@ -43,7 +43,7 @@ class Google extends AbstractProvider
     {
         return
             'https://www.googleapis.com/plus/v1/people/me?'.
-            'fields=name(familyName%2CgivenName)%2CdisplayName%2C'.
+            'fields=id%2Cname(familyName%2CgivenName)%2CdisplayName%2C'.
             'emails%2Fvalue%2Cimage%2Furl&alt=json&access_token='.$token;
     }
 
