@@ -123,11 +123,11 @@ abstract class AbstractProvider implements ProviderInterface
         $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
 
         $params = [
-            'client_id' => $this->clientId,
-            'redirect_uri' => $this->redirectUri,
-            'state' => $this->state,
-            'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
-            'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
+            'client_id'       => $this->clientId,
+            'redirect_uri'    => $this->redirectUri,
+            'state'           => $this->state,
+            'scope'           => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
+            'response_type'   => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => 'auto',
         ];
 

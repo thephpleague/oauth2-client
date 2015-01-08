@@ -41,16 +41,16 @@ class Facebook extends AbstractProvider
         $imageUrl = ($imageUrl) ?: null;
 
         $user->exchangeArray([
-            'uid' => $response->id,
-            'nickname' => $username,
-            'name' => $response->name,
-            'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
-            'email' => $email,
-            'location' => $location,
+            'uid'         => $response->id,
+            'nickname'    => $username,
+            'name'        => $response->name,
+            'firstname'   => $response->first_name,
+            'lastname'    => $response->last_name,
+            'email'       => $email,
+            'location'    => $location,
             'description' => $description,
-            'imageurl' => $imageUrl,
-            'urls' => [ 'Facebook' => $response->link ],
+            'imageurl'    => $imageUrl,
+            'urls'        => [ 'Facebook' => $response->link ],
         ]);
 
         return $user;

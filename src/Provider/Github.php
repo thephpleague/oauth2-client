@@ -44,11 +44,11 @@ class Github extends AbstractProvider
         $email = (isset($response->email)) ? $response->email : null;
 
         $user->exchangeArray([
-            'uid' => $response->id,
+            'uid'      => $response->id,
             'nickname' => $response->login,
-            'name' => $name,
-            'email' => $email,
-            'urls'  => [
+            'name'     => $name,
+            'email'    => $email,
+            'urls'     => [
                 'GitHub' => $this->domain.'/'.$response->login,
             ],
         ]);

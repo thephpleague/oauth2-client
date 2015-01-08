@@ -63,15 +63,15 @@ class Vkontakte extends AbstractProvider
         $description = (isset($response->status)) ? $response->status : null;
 
         $user->exchangeArray([
-            'uid' => $response->uid,
-            'nickname' => $response->nickname,
-            'name' => $response->screen_name,
-            'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
-            'email' => $email,
-            'location' => $location,
+            'uid'         => $response->uid,
+            'nickname'    => $response->nickname,
+            'name'        => $response->screen_name,
+            'firstname'   => $response->first_name,
+            'lastname'    => $response->last_name,
+            'email'       => $email,
+            'location'    => $location,
             'description' => $description,
-            'imageUrl' => $response->photo_200_orig,
+            'imageUrl'    => $response->photo_200_orig,
         ]);
 
         return $user;

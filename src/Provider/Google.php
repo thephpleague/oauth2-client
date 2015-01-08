@@ -61,12 +61,12 @@ class Google extends AbstractProvider
             $response['emails'][0]->value)? $response['emails'][0]->value : null;
 
         $user->exchangeArray([
-            'uid' => $response['id'],
-            'name' => $response['displayName'],
+            'uid'       => $response['id'],
+            'name'      => $response['displayName'],
             'firstname' => $response['name']->givenName,
-            'lastName' => $response['name']->familyName,
-            'email' => $email,
-            'imageUrl' => $imageUrl,
+            'lastName'  => $response['name']->familyName,
+            'email'     => $email,
+            'imageUrl'  => $imageUrl,
         ]);
 
         return $user;

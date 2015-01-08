@@ -15,18 +15,18 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->user = new User();
 
         $this->userArray = [
-            'uid' => 'mock_uid',
-            'nickname' => 'mock_nickname',
-            'name' => 'mock_name',
-            'firstName' => 'mock_firstName',
-            'lastName' => 'mock_lastName',
-            'email' => 'mock_email',
-            'location' => 'mock_location',
+            'uid'         => 'mock_uid',
+            'nickname'    => 'mock_nickname',
+            'name'        => 'mock_name',
+            'firstName'   => 'mock_firstName',
+            'lastName'    => 'mock_lastName',
+            'email'       => 'mock_email',
+            'location'    => 'mock_location',
             'description' => 'mock_description',
-            'imageUrl' => 'mock_imageUrl',
-            'urls' => 'mock_urls',
-            'gender' => 'mock_gender',
-            'locale' => 'mock_locale',
+            'imageUrl'    => 'mock_imageUrl',
+            'urls'        => 'mock_urls',
+            'gender'      => 'mock_gender',
+            'locale'      => 'mock_locale',
         ];
     }
 

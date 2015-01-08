@@ -33,7 +33,7 @@ class Eventbrite extends AbstractProvider
     {
         $user = new User();
         $user->exchangeArray([
-            'uid' => $response->user->user_id,
+            'uid'   => $response->user->user_id,
             'email' => $response->user->email,
         ]);
 

@@ -53,18 +53,18 @@ class User
     public function getArrayCopy()
     {
         return [
-            'uid' => $this->uid,
-            'nickname' => $this->nickname,
-            'name' => $this->name,
-            'firstName' => $this->firstName,
-            'lastName' => $this->lastName,
-            'email' => $this->email,
-            'location' => $this->location,
+            'uid'         => $this->uid,
+            'nickname'    => $this->nickname,
+            'name'        => $this->name,
+            'firstName'   => $this->firstName,
+            'lastName'    => $this->lastName,
+            'email'       => $this->email,
+            'location'    => $this->location,
             'description' => $this->description,
-            'imageUrl' => $this->imageUrl,
-            'urls' => $this->urls,
-            'gender' => $this->gender,
-            'locale' => $this->locale,
+            'imageUrl'    => $this->imageUrl,
+            'urls'        => $this->urls,
+            'gender'      => $this->gender,
+            'locale'      => $this->locale,
         ];
     }
 

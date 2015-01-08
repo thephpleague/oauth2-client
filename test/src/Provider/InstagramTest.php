@@ -11,9 +11,9 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->provider = new \League\OAuth2\Client\Provider\Instagram([
-            'clientId' => 'mock_client_id',
+            'clientId'     => 'mock_client_id',
             'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
+            'redirectUri'  => 'none',
         ]);
     }
 

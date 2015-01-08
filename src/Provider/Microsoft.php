@@ -38,13 +38,13 @@ class Microsoft extends AbstractProvider
         $email = (isset($response->emails->preferred)) ? $response->emails->preferred : null;
 
         $user->exchangeArray([
-            'uid' => $response->id,
-            'name' => $response->name,
+            'uid'       => $response->id,
+            'name'      => $response->name,
             'firstname' => $response->first_name,
-            'lastname' => $response->last_name,
-            'email' => $email,
-            'imageurl' => $imageUrl,
-            'urls' => $response->link.'/cid-'.$response->id,
+            'lastname'  => $response->last_name,
+            'email'     => $email,
+            'imageurl'  => $imageUrl,
+            'urls'      => $response->link.'/cid-'.$response->id,
         ]);
 
         return $user;
