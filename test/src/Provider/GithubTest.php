@@ -11,9 +11,9 @@ class GithubTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->provider = new \League\OAuth2\Client\Provider\Github([
-            'clientId' => 'mock',
+            'clientId'     => 'mock',
             'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
+            'redirectUri'  => 'none',
         ]);
     }
 

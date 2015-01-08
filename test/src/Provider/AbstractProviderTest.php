@@ -16,9 +16,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->provider = new \League\OAuth2\Client\Provider\Google([
-            'clientId' => 'mock_client_id',
+            'clientId'     => 'mock_client_id',
             'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
+            'redirectUri'  => 'none',
         ]);
     }
 
@@ -58,17 +58,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testConstructorSetsProperties()
     {
         $options = [
-            'clientId' => '1234',
-            'clientSecret' => '4567',
-            'redirectUri' => 'http://example.org/redirect',
-            'state' => 'foo',
-            'name' => 'bar',
-            'uidKey' => 'mynewuid',
-            'scopes' => ['a', 'b', 'c'],
-            'method' => 'get',
+            'clientId'       => '1234',
+            'clientSecret'   => '4567',
+            'redirectUri'    => 'http://example.org/redirect',
+            'state'          => 'foo',
+            'name'           => 'bar',
+            'uidKey'         => 'mynewuid',
+            'scopes'         => ['a', 'b', 'c'],
+            'method'         => 'get',
             'scopeSeparator' => ';',
-            'responseType' => 'csv',
-            'headers' => ['Foo' => 'Bar'],
+            'responseType'   => 'csv',
+            'headers'        => ['Foo' => 'Bar'],
         ];
 
         $mockProvider = new MockProvider($options);

@@ -40,15 +40,15 @@ class LinkedIn extends AbstractProvider
         $pictureUrl = (isset($response->pictureUrl)) ? $response->pictureUrl : null;
 
         $user->exchangeArray([
-            'uid' => $response->id,
-            'name' => $response->firstName.' '.$response->lastName,
-            'firstname' => $response->firstName,
-            'lastname' => $response->lastName,
-            'email' => $email,
-            'location' => $location,
+            'uid'         => $response->id,
+            'name'        => $response->firstName.' '.$response->lastName,
+            'firstname'   => $response->firstName,
+            'lastname'    => $response->lastName,
+            'email'       => $email,
+            'location'    => $location,
             'description' => $description,
-            'imageurl' => $pictureUrl,
-            'urls' => $response->publicProfileUrl,
+            'imageurl'    => $pictureUrl,
+            'urls'        => $response->publicProfileUrl,
         ]);
 
         return $user;
