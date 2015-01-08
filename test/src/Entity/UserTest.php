@@ -1,6 +1,6 @@
 <?php
 
-namespace League\OAuth2\Client\Test\Token;
+namespace League\OAuth2\Client\Test\Entity;
 
 use League\OAuth2\Client\Entity\User;
 
