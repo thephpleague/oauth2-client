@@ -314,7 +314,7 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->fetchProviderData($url);
     }
 
-    protected function fetchProviderData($url)
+    protected function fetchProviderData($url, AccessToken $token = null)
     {
         try {
             $client = $this->getHttpClient();
