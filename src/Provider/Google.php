@@ -29,6 +29,10 @@ class Google extends AbstractProvider
         return $this->hostedDomain;
     }
 
+    /**
+     * @var string If set, this will be sent to google as the "access_type" parameter.
+     * @link https://developers.google.com/accounts/docs/OAuth2WebServer#offline
+     */
     public $accessType = '';
 
     public function setAccessType($accessType)
