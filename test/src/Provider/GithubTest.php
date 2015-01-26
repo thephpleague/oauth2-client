@@ -115,6 +115,23 @@ class GithubTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
     }
 
+    public function testGithubDomainUrls()
+    {
+        $client = m::mock('Guzzle\Service\Client');
+        $response = m::mock('Guzzle\Http\Message\Response');
+        $response->shouldReceive('getBody')->times(1)->andReturn('access_token=mock_access_token&expires=3600&refresh_token=mock_refresh_token&otherKey={1234}');
+
+        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+
+        $this->assertEquals($this->provider->domain.'/login/oauth/authorize', $this->provider->urlAuthorize());
+        $this->assertEquals($this->provider->domain.'/login/oauth/access_token', $this->provider->urlAccessToken());
+        $this->assertEquals($this->provider->apiDomain.'/user?access_token=mock_access_token', $this->provider->urlUserDetails($token));
+        $this->assertEquals($this->provider->apiDomain.'/user/emails?access_token=mock_access_token', $this->provider->urlUserEmails($token));
+    }
+
     public function testGithubEnterpriseDomainUrls()
     {
         $this->provider->domain = 'https://github.company.com';
