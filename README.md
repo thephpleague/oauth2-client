@@ -35,12 +35,12 @@ The following versions of PHP are supported.
 ### Authorization Code Flow
 
 ```php
-$provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
-    'clientId'  =>  'XXXXXXXX',
-    'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/',
-    'scopes' => array('email', '...', '...'),
-));
+$provider = new League\OAuth2\Client\Provider\<ProviderName>([
+    'clientId'      => 'XXXXXXXX',
+    'clientSecret'  => 'XXXXXXXX',
+    'redirectUri'   => 'https://your-registered-redirect-uri/',
+    'scopes'        => ['email', '...', '...'],
+]);
 
 if (!isset($_GET['code'])) {
 
@@ -58,9 +58,9 @@ if (!isset($_GET['code'])) {
 
 } else {
 
-	// Try to get an access token (using the authorization code grant)
+    // Try to get an access token (using the authorization code grant)
     $token = $provider->getAccessToken('authorization_code', [
-    	'code' => $_GET['code']
+        'code' => $_GET['code']
     ]);
 
     // Optional: Now you have a token you can look up a users profile data
@@ -70,7 +70,7 @@ if (!isset($_GET['code'])) {
         $userDetails = $provider->getUserDetails($token);
 
         // Use these details to create a new profile
-	    printf('Hello %s!', $userDetails->firstName);
+        printf('Hello %s!', $userDetails->firstName);
 
     } catch (Exception $e) {
 
@@ -92,11 +92,11 @@ if (!isset($_GET['code'])) {
 ### Refreshing a Token
 
 ```php
-$provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
-    'clientId'  =>  'XXXXXXXX',
-    'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/'
-));
+$provider = new League\OAuth2\Client\Provider\<ProviderName>([
+    'clientId'      => 'XXXXXXXX',
+    'clientSecret'  => 'XXXXXXXX',
+    'redirectUri'   => 'https://your-registered-redirect-uri/',
+]);
 
 $grant = new \League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
