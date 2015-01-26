@@ -63,12 +63,6 @@ if (!isset($_GET['code'])) {
     	'code' => $_GET['code']
     ]);
 
-    // If you are using Eventbrite you will need to add the grant_type parameter (see below)
-    $token = $provider->getAccessToken('authorization_code', [
-    	'code' => $_GET['code'],
-    	'grant_type' => 'authorization_code'
-    ]);
-
     // Optional: Now you have a token you can look up a users profile data
     try {
 
