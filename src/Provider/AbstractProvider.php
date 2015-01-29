@@ -128,7 +128,7 @@ abstract class AbstractProvider implements ProviderInterface
             'state' => $this->state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'auto',
+            'approval_prompt' => isset($options['approval_prompt']) ? $options['approval_prompt'] : 'auto',
         ];
 
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
