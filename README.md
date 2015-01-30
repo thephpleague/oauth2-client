@@ -134,6 +134,7 @@ so please help them out with a pull request if you notice this.
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
+- [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
 
 ### Implementing your own provider
 
