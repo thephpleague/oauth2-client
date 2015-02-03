@@ -15,6 +15,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
             'hostedDomain' => 'mock_domain',
+            'accessType' => 'mock_access_type'
         ]);
     }
 
@@ -37,6 +38,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('response_type', $query);
         $this->assertArrayHasKey('approval_prompt', $query);
         $this->assertArrayHasKey('hd', $query);
+        $this->assertArrayHasKey('access_type', $query);
         $this->assertNotNull($this->provider->state);
     }
 
@@ -106,5 +108,16 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
     {
         $this->provider->setHostedDomain('changed_domain');
         $this->assertEquals('changed_domain', $this->provider->hostedDomain);
+    }
+
+    public function testGetAccessType()
+    {
+        $this->assertEquals('mock_access_type', $this->provider->getAccessType());
+    }
+
+    public function testSetAccessType()
+    {
+        $this->provider->setAccessType('changed_access_type');
+        $this->assertEquals('changed_access_type', $this->provider->accessType);
     }
 }
