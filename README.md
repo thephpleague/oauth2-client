@@ -127,14 +127,15 @@ These providers allow integration with other providers not supported by `oauth2-
 so please help them out with a pull request if you notice this.
 
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
+- [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
+- [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
 - [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
-- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
-- [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
-- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
-- [Google Nest](https://github.com/JC5/nest-oauth2-provider)
-- [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
+- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
+- [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
+- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
+- [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 
 ### Implementing your own provider
 
