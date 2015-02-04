@@ -6,43 +6,71 @@ use League\OAuth2\Client\Entity\User;
 
 class Facebook extends AbstractProvider
 {
-    public $scopes = ['offline_access', 'email', 'read_stream'];
+    /**
+     * @const string The fallback Graph API version to use for requests.
+     */
+    const DEFAULT_GRAPH_VERSION = 'v2.2';
+
+    /**
+     * @var string The Graph API version to use for requests.
+     */
+    protected $graphApiVersion;
+
+    public $scopes = ['public_profile', 'email'];
+
     public $responseType = 'string';
+
+    public function __construct($options)
+    {
+        parent::__construct($options);
+        $this->graphApiVersion = (isset($options['graphApiVersion']))
+            ? $options['graphApiVersion']
+            : static::DEFAULT_GRAPH_VERSION;
+    }
 
     public function urlAuthorize()
     {
-        return 'https://www.facebook.com/dialog/oauth';
+        return 'https://www.facebook.com/'.$this->graphApiVersion.'/dialog/oauth';
     }
 
     public function urlAccessToken()
     {
-        return 'https://graph.facebook.com/oauth/access_token';
+        return 'https://graph.facebook.com/'.$this->graphApiVersion.'/oauth/access_token';
     }
 
     public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
     {
-        return 'https://graph.facebook.com/me?access_token='.$token;
+        $fields = implode(',', [
+            'id',
+            'name',
+            'first_name',
+            'last_name',
+            'email',
+            'hometown',
+            'bio',
+            'picture.type(large){url}',
+            'gender',
+            'locale',
+            'link',
+        ]);
+
+        return 'https://graph.facebook.com/'.$this->graphApiVersion.'/me?fields='.$fields.'&access_token='.$token;
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        $client = $this->getHttpClient();
-        $client->setBaseUrl('https://graph.facebook.com/me/picture?type=normal&access_token='.$token->accessToken);
-        $request = $client->get()->send();
-        $info = $request->getInfo();
-        $imageUrl = $info['url'];
-
         $user = new User();
 
-        $username = (isset($response->username)) ? $response->username : null;
         $email = (isset($response->email)) ? $response->email : null;
+        // The "hometown" field will only be returned if you ask for the `user_hometown` permission.
         $location = (isset($response->hometown->name)) ? $response->hometown->name : null;
         $description = (isset($response->bio)) ? $response->bio : null;
-        $imageUrl = ($imageUrl) ?: null;
+        $imageUrl = (isset($response->picture->data->url)) ? $response->picture->data->url : null;
+        $gender = (isset($response->gender)) ? $response->gender : null;
+        $locale = (isset($response->locale)) ? $response->locale : null;
 
         $user->exchangeArray([
             'uid' => $response->id,
-            'nickname' => $username,
             'name' => $response->name,
             'firstname' => $response->first_name,
             'lastname' => $response->last_name,
@@ -50,6 +78,8 @@ class Facebook extends AbstractProvider
             'location' => $location,
             'description' => $description,
             'imageurl' => $imageUrl,
+            'gender' => $gender,
+            'locale' => $locale,
             'urls' => [ 'Facebook' => $response->link ],
         ]);
 
