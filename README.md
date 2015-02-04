@@ -114,7 +114,6 @@ $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 This package currently has built-in support for:
 
 - Eventbrite
-- Facebook
 - Github
 - Google
 - Instagram
@@ -139,6 +138,7 @@ so please help them out with a pull request if you notice this.
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
+- [Facebook](https://packagist.org/packages/league/oauth2-facebook)
 
 ### Implementing your own provider
 
