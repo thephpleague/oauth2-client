@@ -196,8 +196,7 @@ abstract class AbstractProvider implements ProviderInterface
             }
         } catch (BadResponseException $e) {
             // @codeCoverageIgnoreStart
-            $raw_response = explode("\n", $e->getResponse());
-            $response = end($raw_response);
+            $response = $e->getResponse()->getBody();
             // @codeCoverageIgnoreEnd
         }
 
