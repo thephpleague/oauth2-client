@@ -4,10 +4,8 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use Mockery as m;
 
-class EventbriteTest extends \PHPUnit_Framework_TestCase
+class EventbriteTest extends ConcreteProviderTest
 {
-    protected $provider;
-
     protected function setUp()
     {
         $this->provider = new \League\OAuth2\Client\Provider\Eventbrite([
@@ -15,12 +13,6 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ]);
-    }
-
-    public function tearDown()
-    {
-        m::close();
-        parent::tearDown();
     }
 
     public function testAuthorizationUrl()
@@ -48,11 +40,9 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAccessToken()
     {
-        $response = m::mock('GuzzleHttp\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $client = $this->createMockHttpClient();
+        $client->shouldReceive('post')->times(1)->andReturn($this->createMockResponse('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'));
 
-        $client = m::mock('GuzzleHttp\Client');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -71,13 +61,11 @@ class EventbriteTest extends \PHPUnit_Framework_TestCase
 
     public function testUserData()
     {
-        $postResponse = m::mock('GuzzleHttp\Message\Response');
-        $postResponse->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $client = $this->createMockHttpClient();
 
-        $getResponse = m::mock('GuzzleHttp\Message\Response');
-        $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"user": {"user_id": 12345, "email": "mock_email"}}');
+        $postResponse = $this->createMockResponse('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $getResponse = $this->createMockResponse('{"user": {"user_id": 12345, "email": "mock_email"}}');
 
-        $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('post')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get')->times(4)->andReturn($getResponse);
 

@@ -6,6 +6,7 @@ use Mockery as m;
 
 class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \League\OAuth2\Client\Provider\AbstractProvider */
     protected $provider;
 
     protected function setUp()
@@ -30,7 +31,7 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException BadMethodCallException
+     * @expectedException \BadMethodCallException
      */
     public function testInvalidRefreshToken()
     {
