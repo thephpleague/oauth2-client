@@ -3,8 +3,9 @@
 namespace League\OAuth2\Client\Provider;
 
 use Closure;
-use Guzzle\Http\Exception\BadResponseException;
-use Guzzle\Service\Client as GuzzleClient;
+use Ivory\HttpAdapter\GuzzleHttpAdapter;
+use Ivory\HttpAdapter\HttpAdapterException;
+use Ivory\HttpAdapter\HttpAdapterInterface;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
@@ -34,7 +35,7 @@ abstract class AbstractProvider implements ProviderInterface
     public $headers = null;
 
     /**
-     * @var GuzzleClient
+     * @var HttpAdapterInterface
      */
     protected $httpClient;
 
@@ -46,7 +47,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $httpBuildEncType = 1;
 
-    public function __construct($options = [])
+    public function __construct($options = [], HttpAdapterInterface $httpClient = null)
     {
         foreach ($options as $option => $value) {
             if (property_exists($this, $option)) {
@@ -54,10 +55,10 @@ abstract class AbstractProvider implements ProviderInterface
             }
         }
 
-        $this->setHttpClient(new GuzzleClient());
+        $this->setHttpClient($httpClient ?: new GuzzleHttpAdapter());
     }
 
-    public function setHttpClient(GuzzleClient $client)
+    public function setHttpClient(HttpAdapterInterface $client)
     {
         $this->httpClient = $client;
 
@@ -66,7 +67,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public function getHttpClient()
     {
-        $client = clone $this->httpClient;
+        $client = $this->httpClient;
 
         return $client;
     }
@@ -178,25 +179,25 @@ abstract class AbstractProvider implements ProviderInterface
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
-                    $request = $client->get(null, null, $requestParams)->send();
-                    $response = $request->getBody();
+                    $httpResponse = $client->get(
+                        $this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&')
+                    );
+                    $response = (string) $httpResponse->getBody();
                     break;
                     // @codeCoverageIgnoreEnd
                 case 'POST':
                     $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken());
-                    $request = $client->post(null, null, $requestParams)->send();
-                    $response = $request->getBody();
+                    $httpResponse = $client->post($this->urlAccessToken(), [], $requestParams);
+                    $response = (string) $httpResponse->getBody();
                     break;
                 // @codeCoverageIgnoreStart
                 default:
                     throw new \InvalidArgumentException('Neither GET nor POST is specified for request');
                 // @codeCoverageIgnoreEnd
             }
-        } catch (BadResponseException $e) {
+        } catch (HttpAdapterException $e) {
             // @codeCoverageIgnoreStart
-            $response = $e->getResponse()->getBody();
+            $response = (string) $e->getResponse()->getBody();
             // @codeCoverageIgnoreEnd
         }
 
@@ -317,17 +318,13 @@ abstract class AbstractProvider implements ProviderInterface
     {
         try {
             $client = $this->getHttpClient();
-            $client->setBaseUrl($url);
 
-            if ($this->headers) {
-                $client->setDefaultOption('headers', $this->headers);
-            }
+            $httpResponse = $client->get($url, $this->headers ?: []);
 
-            $request = $client->get()->send();
-            $response = $request->getBody();
-        } catch (BadResponseException $e) {
+            $response = (string) $httpResponse->getBody();
+        } catch (HttpAdapterException $e) {
             // @codeCoverageIgnoreStart
-            $raw_response = explode("\n", $e->getResponse());
+            $raw_response = explode("\n", (string) $e->getResponse()->getBody());
             throw new IDPException(end($raw_response));
             // @codeCoverageIgnoreEnd
         }

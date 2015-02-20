@@ -6,6 +6,7 @@ use Mockery as m;
 
 class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var \League\OAuth2\Client\Provider\AbstractProvider */
     protected $provider;
 
     protected function setUp()
@@ -25,12 +26,12 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAccessToken()
     {
-        $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(2)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(2)->andReturn(new \Ivory\HttpAdapter\Message\Stream\StringStream('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'));
 
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(2);
-        $client->shouldReceive('post->send')->times(2)->andReturn($response);
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(2)->andReturn($response);
+
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -44,16 +45,16 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException BadMethodCallException
+     * @expectedException \BadMethodCallException
      */
     public function testInvalidRefreshToken()
     {
-        $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(1)->andReturn(new \Ivory\HttpAdapter\Message\Stream\StringStream('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'));
 
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);

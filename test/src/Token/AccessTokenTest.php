@@ -5,7 +5,7 @@ namespace League\OAuth2\Client\Test\Token;
 class AccessTokenTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidRefreshToken()
     {
