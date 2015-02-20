@@ -29,7 +29,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidGrantString()
     {
@@ -37,7 +37,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testInvalidGrantObject()
     {
@@ -76,6 +76,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         foreach ($options as $key => $value) {
             $this->assertEquals($value, $mockProvider->{$key});
         }
+    }
+
+    public function testConstructorSetsHttpAdapter()
+    {
+        $mockAdapter = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+
+        $mockProvider = new MockProvider([], $mockAdapter);
+        $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
     }
 
     public function testSetRedirectHandler()
