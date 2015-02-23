@@ -215,9 +215,22 @@ abstract class AbstractProvider implements ProviderInterface
             // @codeCoverageIgnoreEnd
         }
 
-        $this->setResultUid($result);
+        $result = $this->prepareAccessTokenResult($result);
 
         return $grant->handleResponse($result);
+    }
+
+    /**
+     * Prepare the access token response for the grant. Custom mapping of
+     * expirations, etc should be done here.
+     *
+     * @param  array $result
+     * @return array
+     */
+    protected function prepareAccessTokenResult(array $result)
+    {
+        $this->setResultUid($result);
+        return $result;
     }
 
     /**
