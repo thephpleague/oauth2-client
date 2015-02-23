@@ -43,14 +43,13 @@ class AccessToken
 
         $this->accessToken = $options['access_token'];
 
-        // Some providers (not many) give the uid here, so lets take it
-        isset($options['uid']) and $this->uid = $options['uid'];
+        if (!empty($options['uid'])) {
+            $this->uid = $options['uid'];
+        }
 
-        // Mailru uses x_mailru_vid instead of uid
-        isset($options['x_mailru_vid']) and $this->uid = $options['x_mailru_vid'];
-
-        //Battle.net uses accountId instead of uid
-        isset($options['accountId']) and $this->uid = $options['accountId'];
+        if (!empty($options['refresh_token'])) {
+            $this->refreshToken = $options['refresh_token'];
+        }
 
         // We need to know when the token expires. Show preference to
         // 'expires_in' since it is defined in RFC6749 Section 5.1.
@@ -64,9 +63,6 @@ class AccessToken
             $expiresInFuture = $expires > time();
             $this->expires = $expiresInFuture ? $expires : time() + ((int) $expires);
         }
-
-        // Grab a refresh token so we can update access tokens when they expires
-        isset($options['refresh_token']) and $this->refreshToken = $options['refresh_token'];
     }
 
     /**
