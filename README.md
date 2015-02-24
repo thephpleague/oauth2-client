@@ -35,12 +35,12 @@ The following versions of PHP are supported.
 ### Authorization Code Flow
 
 ```php
-$provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
-    'clientId'  =>  'XXXXXXXX',
-    'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/',
-    'scopes' => array('email', '...', '...'),
-));
+$provider = new League\OAuth2\Client\Provider\<ProviderName>([
+    'clientId'      => 'XXXXXXXX',
+    'clientSecret'  => 'XXXXXXXX',
+    'redirectUri'   => 'https://your-registered-redirect-uri/',
+    'scopes'        => ['email', '...', '...'],
+]);
 
 if (!isset($_GET['code'])) {
 
@@ -58,15 +58,9 @@ if (!isset($_GET['code'])) {
 
 } else {
 
-	// Try to get an access token (using the authorization code grant)
+    // Try to get an access token (using the authorization code grant)
     $token = $provider->getAccessToken('authorization_code', [
-    	'code' => $_GET['code']
-    ]);
-
-    // If you are using Eventbrite you will need to add the grant_type parameter (see below)
-    $token = $provider->getAccessToken('authorization_code', [
-    	'code' => $_GET['code'],
-    	'grant_type' => 'authorization_code'
+        'code' => $_GET['code']
     ]);
 
     // Optional: Now you have a token you can look up a users profile data
@@ -76,7 +70,7 @@ if (!isset($_GET['code'])) {
         $userDetails = $provider->getUserDetails($token);
 
         // Use these details to create a new profile
-	    printf('Hello %s!', $userDetails->firstName);
+        printf('Hello %s!', $userDetails->firstName);
 
     } catch (Exception $e) {
 
@@ -98,11 +92,11 @@ if (!isset($_GET['code'])) {
 ### Refreshing a Token
 
 ```php
-$provider = new League\OAuth2\Client\Provider\<ProviderName>(array(
-    'clientId'  =>  'XXXXXXXX',
-    'clientSecret'  =>  'XXXXXXXX',
-    'redirectUri'   =>  'https://your-registered-redirect-uri/'
-));
+$provider = new League\OAuth2\Client\Provider\<ProviderName>([
+    'clientId'      => 'XXXXXXXX',
+    'clientSecret'  => 'XXXXXXXX',
+    'redirectUri'   => 'https://your-registered-redirect-uri/',
+]);
 
 $grant = new \League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
@@ -132,13 +126,18 @@ These providers allow integration with other providers not supported by `oauth2-
 so please help them out with a pull request if you notice this.
 
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
+- [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
+- [Facebook](https://packagist.org/packages/league/oauth2-facebook)
+- [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
+- [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
 - [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
-- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
-- [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
-- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
-- [Facebook](https://packagist.org/packages/league/oauth2-facebook)
+- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
+- [Square](https://packagist.org/packages/wheniwork/oauth2-square)
+- [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
+- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
+- [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 
 ### Implementing your own provider
 

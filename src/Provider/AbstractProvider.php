@@ -128,7 +128,7 @@ abstract class AbstractProvider implements ProviderInterface
             'state' => $this->state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => 'auto',
+            'approval_prompt' => isset($options['approval_prompt']) ? $options['approval_prompt'] : 'auto',
         ];
 
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
@@ -199,8 +199,7 @@ abstract class AbstractProvider implements ProviderInterface
             }
         } catch (BadResponseException $e) {
             // @codeCoverageIgnoreStart
-            $raw_response = explode("\n", $e->getResponse());
-            $response = end($raw_response);
+            $response = $e->getResponse()->getBody();
             // @codeCoverageIgnoreEnd
         }
 
@@ -220,9 +219,22 @@ abstract class AbstractProvider implements ProviderInterface
             // @codeCoverageIgnoreEnd
         }
 
-        $this->setResultUid($result);
+        $result = $this->prepareAccessTokenResult($result);
 
         return $grant->handleResponse($result);
+    }
+
+    /**
+     * Prepare the access token response for the grant. Custom mapping of
+     * expirations, etc should be done here.
+     *
+     * @param  array $result
+     * @return array
+     */
+    protected function prepareAccessTokenResult(array $result)
+    {
+        $this->setResultUid($result);
+        return $result;
     }
 
     /**
