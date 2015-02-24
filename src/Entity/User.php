@@ -32,13 +32,13 @@ class User
 
     public function __set($property, $value)
     {
-        if (!property_exists($this, $property)) {
+        /*if (!property_exists($this, $property)) {
             throw new \OutOfRangeException(sprintf(
                 '%s does not contain a property by the name of "%s"',
                 __CLASS__,
                 $property
             ));
-        }
+        }*/
 
         $this->$property = $value;
 
