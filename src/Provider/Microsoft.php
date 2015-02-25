@@ -28,10 +28,8 @@ class Microsoft extends AbstractProvider
     public function userDetails($response, AccessToken $token)
     {
         $client = $this->getHttpClient();
-        $url = 'https://apis.live.net/v5.0/' . $response->id . '/picture';
-        $request = $client->get($url);
-        $info = $request->getInfo();
-        $imageUrl = $info['url'];
+        $httpResponse = $client->get('https://apis.live.net/v5.0/'.$response->id.'/picture');
+        $imageUrl = $httpResponse->getHeader('location');
 
         $user = new User();
 
