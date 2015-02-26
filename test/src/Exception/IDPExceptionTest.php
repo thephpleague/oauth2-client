@@ -69,4 +69,17 @@ class IDPExceptionTest extends \PHPUnit_Framework_TestCase
         // message should be the error text since message isn't specifically defined
         $this->assertEquals('Unknown Error.', $exception->getMessage());
     }
+
+    public function testGetResponseBody()
+    {
+        $exception = new IDPException(array('error' => 'message', 'code' => 404));
+
+        $this->assertEquals(
+            [
+                'error' => 'message',
+                'code'  => 404
+            ],
+            $exception->getResponseBody()
+        );
+    }
 }
