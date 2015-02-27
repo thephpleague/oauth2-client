@@ -138,6 +138,7 @@ so please help them out with a pull request if you notice this.
 - [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
+- [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll)
 
 ### Implementing your own provider
 
