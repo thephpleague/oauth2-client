@@ -58,8 +58,6 @@ class LinkedInTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-#    print_r($token);die();
-
         $this->assertEquals('mock_access_token', $token->accessToken);
         $this->assertLessThanOrEqual(time() + 3600, $token->expires);
         $this->assertGreaterThanOrEqual(time(), $token->expires);
@@ -82,6 +80,7 @@ class LinkedInTest extends \PHPUnit_Framework_TestCase
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(5);
+        $client->shouldReceive('setDefaultOption')->times(4);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->times(4)->andReturn($getResponse);
         $this->provider->setHttpClient($client);

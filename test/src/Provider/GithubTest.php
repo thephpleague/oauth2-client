@@ -102,6 +102,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(5);
+        $client->shouldReceive('setDefaultOption')->times(4);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->times(4)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
@@ -128,8 +129,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->provider->domain.'/login/oauth/authorize', $this->provider->urlAuthorize());
         $this->assertEquals($this->provider->domain.'/login/oauth/access_token', $this->provider->urlAccessToken());
-        $this->assertEquals($this->provider->apiDomain.'/user?access_token=mock_access_token', $this->provider->urlUserDetails($token));
-        $this->assertEquals($this->provider->apiDomain.'/user/emails?access_token=mock_access_token', $this->provider->urlUserEmails($token));
+        $this->assertEquals($this->provider->apiDomain.'/user', $this->provider->urlUserDetails($token));
+        $this->assertEquals($this->provider->apiDomain.'/user/emails', $this->provider->urlUserEmails($token));
     }
 
     public function testGithubEnterpriseDomainUrls()
@@ -147,8 +148,8 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->provider->domain.'/login/oauth/authorize', $this->provider->urlAuthorize());
         $this->assertEquals($this->provider->domain.'/login/oauth/access_token', $this->provider->urlAccessToken());
-        $this->assertEquals($this->provider->domain.'/api/v3/user?access_token=mock_access_token', $this->provider->urlUserDetails($token));
-        $this->assertEquals($this->provider->domain.'/api/v3/user/emails?access_token=mock_access_token', $this->provider->urlUserEmails($token));
+        $this->assertEquals($this->provider->domain.'/api/v3/user', $this->provider->urlUserDetails($token));
+        $this->assertEquals($this->provider->domain.'/api/v3/user/emails', $this->provider->urlUserEmails($token));
     }
 
     public function testUserEmails()
@@ -161,6 +162,7 @@ class GithubTest extends \PHPUnit_Framework_TestCase
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setBaseUrl')->times(2);
+        $client->shouldReceive('setDefaultOption')->times(1);
         $client->shouldReceive('post->send')->times(1)->andReturn($postResponse);
         $client->shouldReceive('get->send')->times(1)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
