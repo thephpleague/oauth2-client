@@ -72,7 +72,7 @@ class FacebookTest extends \PHPUnit_Framework_TestCase
     public function testGraphApiVersionWillFallbackToDefault()
     {
         $graphVersion = \League\OAuth2\Client\Provider\Facebook::DEFAULT_GRAPH_VERSION;
-        $fooToken = new \League\OAuth2\Client\Token\AccessToken(['access_token' => 'foo_token']);
+        $fooToken = new \League\OAuth2\Client\Token\AccessToken(array('access_token' => 'foo_token'));
 
         $urlAuthorize = $this->provider->urlAuthorize();
         $urlAccessToken = $this->provider->urlAccessToken();
