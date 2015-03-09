@@ -10,7 +10,7 @@ class Google extends AbstractProvider
 
     public $scopes = array(
         'profile',
-        'email',
+        'email'
     );
 
     /**
@@ -82,7 +82,7 @@ class Google extends AbstractProvider
             'firstname' => $response['name']->givenName,
             'lastName' => $response['name']->familyName,
             'email' => $email,
-            'imageUrl' => $imageUrl,
+            'imageUrl' => $imageUrl
         ]);
 
         return $user;
