@@ -11,7 +11,7 @@ class LinkedIn extends AbstractProvider
     public $responseType = 'json';
     public $fields = array(
         'id', 'email-address', 'first-name', 'last-name', 'headline',
-        'location', 'industry', 'picture-url', 'public-profile-url',
+        'location', 'industry', 'picture-url', 'public-profile-url'
     );
 
     public function urlAuthorize()
