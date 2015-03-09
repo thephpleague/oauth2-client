@@ -10,11 +10,11 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google([
+        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ]);
+        ));
     }
 
     public function tearDown()
@@ -34,6 +34,6 @@ class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidRefreshToken()
     {
-        $this->provider->getAccessToken('authorization_code', ['invalid_code' => 'mock_authorization_code']);
+        $this->provider->getAccessToken('authorization_code', array('invalid_code' => 'mock_authorization_code'));
     }
 }
