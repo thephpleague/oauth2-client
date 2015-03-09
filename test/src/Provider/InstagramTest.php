@@ -13,9 +13,7 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
         $this->provider = new \League\OAuth2\Client\Provider\Instagram(array(
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-            )
-        );
+            'redirectUri' => 'none'));
     }
 
     public function tearDown()
