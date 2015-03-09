@@ -14,7 +14,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
     {
         $this->user = new User();
 
-        $this->userArray = [
+        $this->userArray = array(
             'uid' => 'mock_uid',
             'nickname' => 'mock_nickname',
             'name' => 'mock_name',
@@ -27,7 +27,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
             'urls' => 'mock_urls',
             'gender' => 'mock_gender',
             'locale' => 'mock_locale',
-        ];
+        );
     }
 
     public function testExchangeArrayGetArrayCopy()
