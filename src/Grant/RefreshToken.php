@@ -22,7 +22,7 @@ class RefreshToken implements GrantInterface
         return array_merge($defaultParams, $params);
     }
 
-    public function handleResponse($response = [])
+    public function handleResponse($response = array())
     {
         return new AccessToken($response);
     }

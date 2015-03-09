@@ -23,7 +23,7 @@ class IDPExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTypeEmpty()
     {
-        $exception = new IDPException([]);
+        $exception = new IDPException(array());
 
         $this->assertEquals('Exception', $exception->getType());
     }

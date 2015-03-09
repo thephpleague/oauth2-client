@@ -7,12 +7,12 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class LinkedIn extends AbstractProvider
 {
-    public $scopes = ['r_basicprofile r_emailaddress r_contactinfo'];
+    public $scopes = array('r_basicprofile r_emailaddress r_contactinfo');
     public $responseType = 'json';
-    public $fields = [
+    public $fields = array(
         'id', 'email-address', 'first-name', 'last-name', 'headline',
-        'location', 'industry', 'picture-url', 'public-profile-url',
-    ];
+        'location', 'industry', 'picture-url', 'public-profile-url'
+    );
 
     public function urlAuthorize()
     {
@@ -39,7 +39,7 @@ class LinkedIn extends AbstractProvider
         $description = (isset($response->headline)) ? $response->headline : null;
         $pictureUrl = (isset($response->pictureUrl)) ? $response->pictureUrl : null;
 
-        $user->exchangeArray([
+        $user->exchangeArray(array(
             'uid' => $response->id,
             'name' => $response->firstName.' '.$response->lastName,
             'firstname' => $response->firstName,
@@ -48,8 +48,7 @@ class LinkedIn extends AbstractProvider
             'location' => $location,
             'description' => $description,
             'imageurl' => $pictureUrl,
-            'urls' => $response->publicProfileUrl,
-        ]);
+            'urls' => $response->publicProfileUrl));
 
         return $user;
     }
@@ -68,6 +67,9 @@ class LinkedIn extends AbstractProvider
 
     public function userScreenName($response, AccessToken $token)
     {
-        return [$response->firstName, $response->lastName];
+        return array(
+            $response->firstName,
+            $response->lastName
+        );
     }
 }

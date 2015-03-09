@@ -52,7 +52,7 @@ class User
 
     public function getArrayCopy()
     {
-        return [
+        return array(
             'uid' => $this->uid,
             'nickname' => $this->nickname,
             'name' => $this->name,
@@ -65,7 +65,7 @@ class User
             'urls' => $this->urls,
             'gender' => $this->gender,
             'locale' => $this->locale,
-        ];
+        );
     }
 
     public function exchangeArray(array $data)

@@ -6,7 +6,7 @@ interface GrantInterface
 {
     public function __toString();
 
-    public function handleResponse($response = []);
+    public function handleResponse($response = array());
 
     public function prepRequestParams($defaultParams, $params);
 }

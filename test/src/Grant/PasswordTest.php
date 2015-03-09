@@ -14,7 +14,8 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+            )
+        );
     }
 
     public function tearDown()
