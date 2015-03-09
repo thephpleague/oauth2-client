@@ -10,11 +10,12 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Microsoft([
+        $this->provider = new \League\OAuth2\Client\Provider\Microsoft(array(
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ]);
+            )
+        );
     }
 
     public function tearDown()
@@ -64,7 +65,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
 
 #    print_r($token);die();
 
@@ -77,7 +78,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(['wl.basic', 'wl.emails'], $this->provider->getScopes());
+        $this->assertEquals(array('wl.basic', 'wl.emails'), $this->provider->getScopes());
     }
 
     public function testUserData()
@@ -96,7 +97,7 @@ class MicrosoftTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('get->send')->times(5)->andReturn($getResponse);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals(12345, $this->provider->getUserUid($token));
