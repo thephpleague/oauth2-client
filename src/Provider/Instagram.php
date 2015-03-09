@@ -35,8 +35,7 @@ class Instagram extends AbstractProvider
             'nickname' => $response->data->username,
             'name' => $response->data->full_name,
             'description' => $description,
-            'imageUrl' => $response->data->profile_picture
-            )
+            'imageUrl' => $response->data->profile_picture)
         );
 
         return $user;
