@@ -23,7 +23,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $uidKey = 'uid';
 
-    public $scopes = [];
+    public $scopes = array()
 
     public $method = 'post';
 
@@ -46,7 +46,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $httpBuildEncType = 1;
 
-    public function __construct($options = [])
+    public function __construct($options = array())
     {
         foreach ($options as $option => $value) {
             if (property_exists($this, $option)) {
@@ -118,24 +118,24 @@ abstract class AbstractProvider implements ProviderInterface
         $this->scopes = $scopes;
     }
 
-    public function getAuthorizationUrl($options = [])
+    public function getAuthorizationUrl($options = array())
     {
         $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
 
-        $params = [
+        $params = array(
             'client_id' => $this->clientId,
             'redirect_uri' => $this->redirectUri,
             'state' => $this->state,
             'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
             'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
             'approval_prompt' => isset($options['approval_prompt']) ? $options['approval_prompt'] : 'auto',
-        ];
+        );
 
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
     // @codeCoverageIgnoreStart
-    public function authorize($options = [])
+    public function authorize($options = array())
     {
         $url = $this->getAuthorizationUrl($options);
         if ($this->redirectHandler) {
@@ -148,7 +148,7 @@ abstract class AbstractProvider implements ProviderInterface
         // @codeCoverageIgnoreEnd
     }
 
-    public function getAccessToken($grant = 'authorization_code', $params = [])
+    public function getAccessToken($grant = 'authorization_code', $params = array())
     {
         if (is_string($grant)) {
             // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
