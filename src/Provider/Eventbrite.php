@@ -9,9 +9,9 @@ class Eventbrite extends AbstractProvider
     public function __construct($options)
     {
         parent::__construct($options);
-        $this->headers = [
+        $this->headers = array(
             'Authorization' => 'Bearer',
-        ];
+        );
     }
 
     public function urlAuthorize()
