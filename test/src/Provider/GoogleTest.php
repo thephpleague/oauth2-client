@@ -10,7 +10,7 @@ class GoogleTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google(array()
+        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
