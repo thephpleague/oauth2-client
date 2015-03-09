@@ -10,11 +10,12 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google([
+        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ]);
+            )
+        );
     }
 
     public function tearDown()
@@ -33,13 +34,13 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(2)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
         $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
 
         $grant = new \League\OAuth2\Client\Grant\RefreshToken();
         $this->assertEquals('refresh_token', (string) $grant);
 
-        $newToken = $this->provider->getAccessToken($grant, ['refresh_token' => $token->refreshToken]);
+        $newToken = $this->provider->getAccessToken($grant, array('refresh_token' => $token->refreshToken));
         $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $newToken);
     }
 
@@ -56,9 +57,9 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post->send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $token = $this->provider->getAccessToken('authorization_code', array('code' => 'mock_authorization_code'));
 
         $grant = new \League\OAuth2\Client\Grant\RefreshToken();
-        $refreshToken = $this->provider->getAccessToken($grant, ['invalid_refresh_token' => $token->refreshToken]);
+        $refreshToken = $this->provider->getAccessToken($grant, array('invalid_refresh_token' => $token->refreshToken));
     }
 }
