@@ -103,7 +103,7 @@ class Google extends AbstractProvider
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return array(
-            $response->name->givenName, 
+            $response->name->givenName,
             $response->name->familyName
         );
     }
