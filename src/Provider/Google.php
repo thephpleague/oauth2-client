@@ -76,14 +76,13 @@ class Google extends AbstractProvider
             count($response['emails']) &&
             $response['emails'][0]->value)? $response['emails'][0]->value : null;
 
-        $user->exchangeArray([
+        $user->exchangeArray(array(
             'uid' => $response['id'],
             'name' => $response['displayName'],
             'firstname' => $response['name']->givenName,
             'lastName' => $response['name']->familyName,
             'email' => $email,
-            'imageUrl' => $imageUrl
-        ]);
+            'imageUrl' => $imageUrl));
 
         return $user;
     }
