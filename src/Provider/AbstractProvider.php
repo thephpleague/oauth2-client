@@ -23,7 +23,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $uidKey = 'uid';
 
-    public $scopes = array()
+    public $scopes = array();
 
     public $method = 'post';
 
