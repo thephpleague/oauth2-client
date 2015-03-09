@@ -51,7 +51,7 @@ class Facebook extends AbstractProvider
             'picture.type(large){url}',
             'gender',
             'locale',
-            'link',
+            'link'
             )
         );
 
