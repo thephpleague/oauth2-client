@@ -51,8 +51,7 @@ class Facebook extends AbstractProvider
             'picture.type(large){url}',
             'gender',
             'locale',
-            'link'
-            )
+            'link')
         );
 
         return 'https://graph.facebook.com/'.$this->graphApiVersion.'/me?fields='.$fields.'&access_token='.$token;
@@ -70,7 +69,7 @@ class Facebook extends AbstractProvider
         $gender = (isset($response->gender)) ? $response->gender : null;
         $locale = (isset($response->locale)) ? $response->locale : null;
 
-        $user->exchangeArray([
+        $user->exchangeArray(array(
             'uid' => $response->id,
             'name' => $response->name,
             'firstname' => $response->first_name,
@@ -81,8 +80,8 @@ class Facebook extends AbstractProvider
             'imageurl' => $imageUrl,
             'gender' => $gender,
             'locale' => $locale,
-            'urls' => array( 'Facebook' => $response->link ),
-        ]);
+            'urls' => array( 'Facebook' => $response->link ))
+        );
 
         return $user;
     }
