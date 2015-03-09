@@ -50,9 +50,9 @@ class Github extends AbstractProvider
             'nickname' => $response->login,
             'name' => $name,
             'email' => $email,
-            'urls'  => [
+            'urls'  => array(
                 'GitHub' => $this->domain.'/'.$response->login,
-            ],
+            ),
         ]);
 
         return $user;
