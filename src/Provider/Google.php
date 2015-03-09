@@ -8,10 +8,10 @@ class Google extends AbstractProvider
 {
     public $scopeSeparator = ' ';
 
-    public $scopes = [
+    public $scopes = array(
         'profile',
         'email',
-    ];
+    );
 
     /**
      * @var string If set, this will be sent to google as the "hd" parameter.
@@ -102,7 +102,10 @@ class Google extends AbstractProvider
 
     public function userScreenName($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
-        return [$response->name->givenName, $response->name->familyName];
+        return array(
+            $response->name->givenName, 
+            $response->name->familyName
+        );
     }
 
     public function getAuthorizationUrl($options = array())
@@ -110,11 +113,11 @@ class Google extends AbstractProvider
         $url = parent::getAuthorizationUrl($options);
 
         if (!empty($this->hostedDomain)) {
-            $url .= '&' . $this->httpBuildQuery(['hd' => $this->hostedDomain]);
+            $url .= '&' . $this->httpBuildQuery(array('hd' => $this->hostedDomain));
         }
 
         if (!empty($this->accessType)) {
-            $url .= '&' . $this->httpBuildQuery(['access_type'=> $this->accessType]);
+            $url .= '&' . $this->httpBuildQuery(array('access_type'=> $this->accessType));
         }
 
         return $url;
