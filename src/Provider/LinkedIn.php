@@ -9,6 +9,7 @@ class LinkedIn extends AbstractProvider
 {
     public $scopes = ['r_basicprofile r_emailaddress r_contactinfo'];
     public $responseType = 'json';
+    public $authorizationHeader = 'Bearer';
     public $fields = [
         'id', 'email-address', 'first-name', 'last-name', 'headline',
         'location', 'industry', 'picture-url', 'public-profile-url',
@@ -26,8 +27,8 @@ class LinkedIn extends AbstractProvider
 
     public function urlUserDetails(AccessToken $token)
     {
-        return 'https://api.linkedin.com/v1/people/~:('.implode(",", $this->fields)
-            .')?format=json&oauth2_access_token='.$token;
+        $fields = implode(',', $this->fields);
+        return 'https://api.linkedin.com/v1/people/~:(' . $fields . ')?format=json';
     }
 
     public function userDetails($response, AccessToken $token)

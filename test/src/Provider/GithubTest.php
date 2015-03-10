@@ -114,8 +114,8 @@ class GithubTest extends ConcreteProviderTest
 
         $this->assertEquals($this->provider->domain.'/login/oauth/authorize', $this->provider->urlAuthorize());
         $this->assertEquals($this->provider->domain.'/login/oauth/access_token', $this->provider->urlAccessToken());
-        $this->assertEquals($this->provider->apiDomain.'/user?access_token=mock_access_token', $this->provider->urlUserDetails($token));
-        $this->assertEquals($this->provider->apiDomain.'/user/emails?access_token=mock_access_token', $this->provider->urlUserEmails($token));
+        $this->assertEquals($this->provider->apiDomain.'/user', $this->provider->urlUserDetails($token));
+        $this->assertEquals($this->provider->apiDomain.'/user/emails', $this->provider->urlUserEmails($token));
     }
 
     public function testGithubEnterpriseDomainUrls()
@@ -130,8 +130,8 @@ class GithubTest extends ConcreteProviderTest
 
         $this->assertEquals($this->provider->domain.'/login/oauth/authorize', $this->provider->urlAuthorize());
         $this->assertEquals($this->provider->domain.'/login/oauth/access_token', $this->provider->urlAccessToken());
-        $this->assertEquals($this->provider->domain.'/api/v3/user?access_token=mock_access_token', $this->provider->urlUserDetails($token));
-        $this->assertEquals($this->provider->domain.'/api/v3/user/emails?access_token=mock_access_token', $this->provider->urlUserEmails($token));
+        $this->assertEquals($this->provider->domain.'/api/v3/user', $this->provider->urlUserDetails($token));
+        $this->assertEquals($this->provider->domain.'/api/v3/user/emails', $this->provider->urlUserEmails($token));
     }
 
     public function testUserEmails()
