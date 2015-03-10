@@ -54,4 +54,32 @@ class IDPExceptionTest extends \PHPUnit_Framework_TestCase
             $exception->getResponseBody()
         );
     }
+
+    public function testEmptyMessage()
+    {
+        $exception = new IDPException(array('error' => 'error_message', 'message' => ''));
+        // message should be the error text since message isn't specifically defined
+        $this->assertEquals('error_message', $exception->getMessage());
+    }
+
+    public function testNonEmptyMessage()
+    {
+        $exception = new IDPException(array('error' => 'error_message', 'message' => 'message'));
+        // message should be the error text since message isn't specifically defined
+        $this->assertEquals('message', $exception->getMessage());
+    }
+
+    public function testEmptyError()
+    {
+        $exception = new IDPException(array('error' => '', 'message' => 'message'));
+        // message should be the error text since message isn't specifically defined
+        $this->assertEquals('message', $exception->getMessage());
+    }
+
+    public function testEmptyAndMessage()
+    {
+        $exception = new IDPException(array('error' => '', 'message' => ''));
+        // message should be the error text since message isn't specifically defined
+        $this->assertEquals('Unknown Error.', $exception->getMessage());
+    }
 }
