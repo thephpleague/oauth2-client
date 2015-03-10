@@ -4,17 +4,18 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - 7.0
   - hhvm
 
 before_script:
   - travis_retry composer self-update
-  - travis_retry composer require satooshi/php-coveralls:dev-master --no-update
   - travis_retry composer install --no-interaction --prefer-source
 
-script: 
+script:
   - mkdir -p build/logs
+  - ./vendor/bin/parallel-lint src test
   - ./vendor/bin/phpunit --coverage-text
-  - ./vendor/bin/phpcs src --standard=psr2
+  - ./vendor/bin/phpcs src --standard=psr2 -sp
 
 after_script:
   - php vendor/bin/coveralls
