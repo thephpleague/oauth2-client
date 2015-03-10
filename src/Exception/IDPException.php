@@ -12,10 +12,10 @@ class IDPException extends \Exception
 
         $code = isset($result['code']) ? $result['code'] : 0;
 
-        if (isset($result['error'])) {
+        if (isset($result['error']) && $result['error'] !== '') {
             // OAuth 2.0 Draft 10 style
             $message = $result['error'];
-        } elseif (isset($result['message'])) {
+        } elseif (isset($result['message']) && $result['message'] !== '') {
             // cURL style
             $message = $result['message'];
         } else {
