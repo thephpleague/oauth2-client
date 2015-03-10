@@ -7,8 +7,7 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class Vkontakte extends AbstractProvider
 {
-    public $scopes = [];
-    public $responseType = 'json';
+    public $uidKey = 'user_id';
 
     public function urlAuthorize()
     {

@@ -25,6 +25,11 @@ class IDPException extends \Exception
         parent::__construct($message, $code);
     }
 
+    public function getResponseBody()
+    {
+        return $this->result;
+    }
+
     public function getType()
     {
         $result = 'Exception';

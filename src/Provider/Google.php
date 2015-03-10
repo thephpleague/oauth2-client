@@ -29,6 +29,22 @@ class Google extends AbstractProvider
         return $this->hostedDomain;
     }
 
+    /**
+     * @var string If set, this will be sent to google as the "access_type" parameter.
+     * @link https://developers.google.com/accounts/docs/OAuth2WebServer#offline
+     */
+    public $accessType = '';
+
+    public function setAccessType($accessType)
+    {
+        $this->accessType = $accessType;
+    }
+
+    public function getAccessType()
+    {
+        return $this->accessType;
+    }
+
     public function urlAuthorize()
     {
         return 'https://accounts.google.com/o/oauth2/auth';
@@ -95,6 +111,10 @@ class Google extends AbstractProvider
 
         if (!empty($this->hostedDomain)) {
             $url .= '&' . $this->httpBuildQuery(['hd' => $this->hostedDomain]);
+        }
+
+        if (!empty($this->accessType)) {
+            $url .= '&' . $this->httpBuildQuery(['access_type'=> $this->accessType]);
         }
 
         return $url;
