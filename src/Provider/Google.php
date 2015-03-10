@@ -13,6 +13,8 @@ class Google extends AbstractProvider
         'email',
     ];
 
+    public $authorizationHeader = 'OAuth';
+
     /**
      * @var string If set, this will be sent to google as the "hd" parameter.
      * @link https://developers.google.com/accounts/docs/OAuth2Login#hd-param
@@ -60,7 +62,7 @@ class Google extends AbstractProvider
         return
             'https://www.googleapis.com/plus/v1/people/me?'.
             'fields=id%2Cname(familyName%2CgivenName)%2CdisplayName%2C'.
-            'emails%2Fvalue%2Cimage%2Furl&alt=json&access_token='.$token;
+            'emails%2Fvalue%2Cimage%2Furl&alt=json';
     }
 
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)

@@ -31,7 +31,9 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $responseType = 'json';
 
-    public $headers = null;
+    public $headers = [];
+
+    public $authorizationHeader;
 
     /**
      * @var GuzzleClient
@@ -323,17 +325,19 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $url = $this->urlUserDetails($token);
 
-        return $this->fetchProviderData($url);
+        $headers = $this->getHeaders($token);
+
+        return $this->fetchProviderData($url, $headers);
     }
 
-    protected function fetchProviderData($url)
+    protected function fetchProviderData($url, array $headers = [])
     {
         try {
             $client = $this->getHttpClient();
             $client->setBaseUrl($url);
 
-            if ($this->headers) {
-                $client->setDefaultOption('headers', $this->headers);
+            if ($headers) {
+                $client->setDefaultOption('headers', $headers);
             }
 
             $request = $client->get()->send();
@@ -348,6 +352,23 @@ abstract class AbstractProvider implements ProviderInterface
         return $response;
     }
 
+    protected function getAuthorizationHeaders($token)
+    {
+        $headers = [];
+        if ($this->authorizationHeader) {
+            $headers['Authorization'] = $this->authorizationHeader . ' ' . $token;
+        }
+        return $headers;
+    }
+
+    public function getHeaders($token = null)
+    {
+        $headers = $this->headers;
+        if ($token) {
+            $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
+        }
+        return $headers;
+    }
 
     public function setRedirectHandler(Closure $handler)
     {

@@ -69,6 +69,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'scopeSeparator' => ';',
             'responseType' => 'csv',
             'headers' => ['Foo' => 'Bar'],
+            'authorizationHeader' => 'Bearer',
         ];
 
         $mockProvider = new MockProvider($options);
@@ -141,6 +142,32 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             [$response2],
             [$response3],
         ];
+    }
+
+    public function getHeadersTest()
+    {
+        $provider = $this->getMockForAbstractClass(
+            '\League\OAuth2\Client\Provider\AbstractProvider',
+            [
+              [
+                  'clientId'     => 'mock_client_id',
+                  'clientSecret' => 'mock_secret',
+                  'redirectUri'  => 'none',
+              ]
+            ]
+        );
+
+        /**
+         * @var $provider AbstractProvider
+         */
+        $this->assertEquals([], $provider->getHeaders());
+        $this->assertEquals([], $provider->getHeaders('mock_token'));
+
+        $provider->authorizationHeader = 'Bearer';
+        $this->assertEquals(['Authorization' => 'Bearer abc'], $provider->getHeaders('abc'));
+
+        $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
+        $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
     }
 }
 
