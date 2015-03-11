@@ -205,6 +205,11 @@ abstract class AbstractProvider implements ProviderInterface
         switch ($this->responseType) {
             case 'json':
                 $result = json_decode($response, true);
+
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    $result = [];
+                }
+
                 break;
             case 'string':
                 parse_str($response, $result);
