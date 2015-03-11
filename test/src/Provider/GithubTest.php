@@ -66,12 +66,11 @@ class GithubTest extends ConcreteProviderTest
      */
     public function testGetAccessTokenWithInvalidJson()
     {
-        $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('invalid');
+        $client = $this->createMockHttpClient();
+        $response = $this->createMockResponse('invalid');
 
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+
         $this->provider->setHttpClient($client);
         $this->provider->responseType = 'json';
 
