@@ -1,9 +1,9 @@
 # OAuth 2.0 Client
 
-[![Build Status](https://travis-ci.org/thephpleague/oauth2-client.png?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
-[![Coverage Status](https://coveralls.io/repos/thephpleague/oauth2-client/badge.png)](https://coveralls.io/r/thephpleague/oauth2-client)
-[![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.png)](https://packagist.org/packages/league/oauth2-client)
-[![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable.png)](https://packagist.org/packages/league/oauth2-client)
+[![Build Status](https://travis-ci.org/thephpleague/oauth2-client.svg?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
+[![Coverage Status](https://coveralls.io/repos/thephpleague/oauth2-client/badge.svg?branch=master)](https://coveralls.io/r/thephpleague/oauth2-client?branch=master)
+[![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/version.svg)](https://packagist.org/packages/league/oauth2-client)
+[![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads.svg)](https://packagist.org/packages/league/oauth2-client)
 
 This package makes it stupidly simple to integrate your application with OAuth 2.0 identity providers.
 

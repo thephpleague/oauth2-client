@@ -59,6 +59,25 @@ class GithubTest extends ConcreteProviderTest
         $this->assertEquals('1', $token->uid);
     }
 
+    /**
+     * @ticket 230
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Required option not passed: access_token
+     */
+    public function testGetAccessTokenWithInvalidJson()
+    {
+        $response = m::mock('Guzzle\Http\Message\Response');
+        $response->shouldReceive('getBody')->times(1)->andReturn('invalid');
+
+        $client = m::mock('Guzzle\Service\Client');
+        $client->shouldReceive('setBaseUrl')->times(1);
+        $client->shouldReceive('post->send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+        $this->provider->responseType = 'json';
+
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
     public function testGetAccessTokenSetResultUid()
     {
         $this->provider->uidKey = 'otherKey';
