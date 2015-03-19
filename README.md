@@ -128,6 +128,7 @@ so please help them out with a pull request if you notice this.
 
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
 - [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
+- [Exact Online](https://github.com/PBXg33k/oauth2-exactonline)
 - [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
