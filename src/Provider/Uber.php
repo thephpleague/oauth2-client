@@ -55,6 +55,6 @@ class Uber extends AbstractProvider
 
     public function userScreenName($response, AccessToken $token)
     {
-        return [$response->first_name, $response->last_name];
+        return null;
     }
 }
