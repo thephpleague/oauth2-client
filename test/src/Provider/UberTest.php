@@ -90,7 +90,6 @@ class UberTest extends \PHPUnit_Framework_TestCase
 
         $getResponse = m::mock('Guzzle\Http\Message\Response');
         $getResponse->shouldReceive('getBody')->times(4)->andReturn('{"first_name": "mock_first_name","last_name": "mock_last_name","email": "mock_email","picture": "mock_image_url","promo_code": "teypo","uuid": "mock_id"}');
-        $getResponse->shouldReceive('getInfo')->andReturn(array('url' => 'mock_image_url'));
 
         $client = m::mock('Guzzle\Service\Client');
         $client->shouldReceive('setDefaultOption')->times(4);
@@ -103,7 +102,7 @@ class UberTest extends \PHPUnit_Framework_TestCase
         $user = $this->provider->getUserDetails($token);
 
         $this->assertEquals('mock_id', $this->provider->getUserUid($token));
-        $this->assertEquals(['mock_first_name', 'mock_last_name'], $this->provider->getUserScreenName($token));
+        $this->assertNull($this->provider->getUserScreenName($token));
         $this->assertEquals('mock_email', $this->provider->getUserEmail($token));
         $this->assertEquals('mock_email', $user->email);
         $this->assertEquals('mock_image_url', $user->imageUrl);
