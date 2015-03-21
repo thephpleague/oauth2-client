@@ -107,6 +107,7 @@ $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 
 This package currently has built-in support for:
 
+- Eventbrite
 - Facebook
 - Github
 - Google
@@ -128,7 +129,6 @@ so please help them out with a pull request if you notice this.
 - [Auth0](https://github.com/RiskioFr/oauth2-auth0)
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
 - [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
-- [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite)
 - [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
