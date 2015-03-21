@@ -111,7 +111,6 @@ This package currently has built-in support for:
 - Github
 - Google
 - Instagram
-- LinkedIn
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
@@ -129,6 +128,7 @@ so please help them out with a pull request if you notice this.
 - [Facebook](https://packagist.org/packages/league/oauth2-facebook)
 - [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
+- [LinkedIn](https://github.com/thephpleague/oauth2-linkedin)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
 - [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
 - [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft)
