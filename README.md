@@ -112,7 +112,6 @@ This package currently has built-in support for:
 - Google
 - Instagram
 - LinkedIn
-- Microsoft
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
@@ -132,6 +131,7 @@ so please help them out with a pull request if you notice this.
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
 - [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
+- [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft)
 - [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
 - [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
 - [Square](https://packagist.org/packages/wheniwork/oauth2-square)
