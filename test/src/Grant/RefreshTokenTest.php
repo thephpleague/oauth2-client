@@ -11,7 +11,7 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google([
+        $this->provider = new \League\OAuth2\Client\Test\Provider\Fake([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
