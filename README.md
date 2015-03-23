@@ -108,7 +108,6 @@ $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 This package currently has built-in support for:
 
 - Github
-- Google
 - Instagram
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
@@ -127,6 +126,7 @@ so please help them out with a pull request if you notice this.
 - [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite)
 - [Facebook](https://packagist.org/packages/league/oauth2-facebook)
 - [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
+- [Google](https://packagist.org/packages/league/oauth2-google)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [LinkedIn](https://github.com/thephpleague/oauth2-linkedin)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
