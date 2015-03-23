@@ -102,20 +102,26 @@ $grant = new \League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 ```
 
+## Providers
 
-### Built-In Providers
+All providers must extend [AbstractProvider](https://github.com/thephpleague/oauth2-client/blob/master/src/Provider/AbstractProvider.php), and implement the declared abstract methods.
 
-This package currently has built-in support for:
+The following providers are available:
 
-- Eventbrite
-- Github
-- Google
-- Instagram
+### Official providers
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
 
-### Third-Party Providers
+Gateway | Composer Package | Maintainer
+--- | --- | ---
+[Facebook](https://github.com/thephpleague/oauth2-facebook) | league/oauth2-facebook | [Sammy Kaye Powers](https://github.com/sammyk)
+[Github](https://github.com/thephpleague/oauth2-client) | league/oauth2-client | [The League](https://github.com/thephpleague)
+[Google](https://github.com/thephpleague/oauth2-google) | league/oauth2-google | [Woody Gilk](https://github.com/shadowhand)
+[Instagram](https://github.com/thephpleague/oauth2-instagram) | league/oauth2-instagram | [Steven Maguire](https://github.com/stevenmaguire)
+[LinkedIn](https://github.com/thephpleague/oauth2-linkedin) | league/oauth2-linkedin | [Steven Maguire](https://github.com/stevenmaguire)
+
+### Third party providers
 
 If you would like to support other providers, please make them available as a Composer package, then link to them
 below.
@@ -123,28 +129,33 @@ below.
 These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
 so please help them out with a pull request if you notice this.
 
-- [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
-- [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
-- [Facebook](https://packagist.org/packages/league/oauth2-facebook)
-- [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
-- [Google Nest](https://github.com/JC5/nest-oauth2-provider)
-- [LinkedIn](https://github.com/thephpleague/oauth2-linkedin)
-- [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
-- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
-- [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft)
-- [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
-- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
-- [Square](https://packagist.org/packages/wheniwork/oauth2-square)
-- [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
-- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
-- [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
-- [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll)
+Gateway | Composer Package | Maintainer
+--- | --- | ---
+[Battle.net](https://github.com/tpavlek/oauth2-bnet) | depotwarehouse/oauth2-bnet | [Troy Pavlek](https://github.com/tpavlek)
+[Dropbox](https://github.com/pixelfear/oauth2-dropbox) | pixelfear/oauth2-dropbox | [Jason Varga](https://github.com/jasonvarga)
+[Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
+[FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
+[Google Nest](https://github.com/JC5/nest-oauth2-provider) | grumpydictator/nest-oauth2-provider | [James Cole](https://github.com/JC5)
+[Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
+[Meetup](https://github.com/howlowck/meetup-oauth2-provider) | howlowck/meetup-oauth2-provider | [Hao Luo](https://github.com/howlowck)
+[Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
+[Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
+[Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
+[Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
+[Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
+[Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
+[Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
+[ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll) | wheniwork/oauth2-zenpayroll | [Woody Gilk](https://github.com/shadowhand)
 
-### Implementing your own provider
+### Build your own providers
 
-If you are working with an oauth2 service not supported out-of-the-box or by an existing package, it is quite simple to
-implement your own. Simply extend `League\OAuth2\Client\Provider\AbstractProvider` and implement the required abstract
-methods:
+New providers can be created by cloning the layout of an existing package. When choosing a name for your package, please don’t use the `league` vendor prefix, as this implies that it is officially supported.
+
+You should use your own username as the vendor prefix, and prepend `oauth2-` to the package name to make it clear that your package works with OAuth2 Client. For example, if your GitHub username was santa, and you were implementing the giftpay OAuth2 library, a good name for your composer package would be `santa/oauth2-giftpay`.
+
+#### Implementing your own provider
+
+If you are working with an oauth2 service not supported out-of-the-box or by an existing package, it is quite simple to implement your own. Simply extend `League\OAuth2\Client\Provider\AbstractProvider` and implement the required abstract methods:
 
 ```php
 abstract public function urlAuthorize();
@@ -169,7 +180,12 @@ provider you would add a property:
 public $uidKey = 'accountId';
 ```
 
-### Client Packages
+#### Make your gateway official
+
+If you want to transfer your provider to the `thephpleague` GitHub organization and add it to the list of officially supported providers, please open a pull request on the thephpleague/oauth2-client package. Before new providers will be accepted, they must have 100% unit test code coverage, and follow the conventions and code style used in other OAuth2 Client providers.
+
+
+## Client Packages
 
 Some developers use this library as a base for their own PHP API wrappers, and that seems like a really great idea. It might make it slightly tricky to integrate their provider with an existing generic "OAuth 2.0 All the Things" login system, but it does make working with them easier.
 
