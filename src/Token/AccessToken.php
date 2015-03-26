@@ -65,7 +65,7 @@ class AccessToken
         }
         
         // Some providers (VKontakte) give the email here, so lets take it sends
-		if (!empty($options['email'])) {
+	if (!empty($options['email'])) {
             $this->email = $options['email'];
         }
     }
