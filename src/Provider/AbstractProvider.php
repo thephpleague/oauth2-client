@@ -181,14 +181,14 @@ abstract class AbstractProvider implements ProviderInterface
                     // No providers included with this library use get but 3rd parties may
                     $client = $this->getHttpClient();
                     $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
-                    $request = $client->get(null, null, $requestParams)->send();
+                    $request = $client->get(null, $this->getHeaders(), $requestParams)->send();
                     $response = $request->getBody();
                     break;
                     // @codeCoverageIgnoreEnd
                 case 'POST':
                     $client = $this->getHttpClient();
                     $client->setBaseUrl($this->urlAccessToken());
-                    $request = $client->post(null, null, $requestParams)->send();
+                    $request = $client->post(null, $this->getHeaders(), $requestParams)->send();
                     $response = $request->getBody();
                     break;
                 // @codeCoverageIgnoreStart
