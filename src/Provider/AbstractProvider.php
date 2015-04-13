@@ -342,7 +342,7 @@ abstract class AbstractProvider implements ProviderInterface
         try {
             $client = $this->getHttpClient();
 
-            $httpResponse = $client->get($url, ['headers' => $headers]);
+            $httpResponse = $client->get($url, $headers);
 
             $response = (string) $httpResponse->getBody();
         } catch (HttpAdapterException $e) {
