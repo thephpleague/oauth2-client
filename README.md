@@ -116,7 +116,7 @@ damages our ability to make this package the best it can be, especially as we pr
 Gateway | Composer Package | Maintainer
 --- | --- | ---
 [Facebook](https://github.com/thephpleague/oauth2-facebook) | league/oauth2-facebook | [Sammy Kaye Powers](https://github.com/sammyk)
-[Github](https://github.com/thephpleague/oauth2-client) | league/oauth2-client | [The League](https://github.com/thephpleague)
+[Github](https://github.com/thephpleague/oauth2-github) | league/oauth2-github | [Steven Maguire](https://github.com/stevenmaguire)
 [Google](https://github.com/thephpleague/oauth2-google) | league/oauth2-google | [Woody Gilk](https://github.com/shadowhand)
 [Instagram](https://github.com/thephpleague/oauth2-instagram) | league/oauth2-instagram | [Steven Maguire](https://github.com/stevenmaguire)
 [LinkedIn](https://github.com/thephpleague/oauth2-linkedin) | league/oauth2-linkedin | [Steven Maguire](https://github.com/stevenmaguire)
