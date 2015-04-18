@@ -6,20 +6,24 @@ class IDPException extends \Exception
 {
     protected $result;
 
-    public function __construct($result)
+    public function __construct($result, $message = null, $code = null)
     {
         $this->result = $result;
 
-        $code = isset($result['code']) ? $result['code'] : 0;
+        if (!$code) {
+            $code = isset($result['code']) ? $result['code'] : 0;
+        }
 
-        if (isset($result['error']) && $result['error'] !== '') {
-            // OAuth 2.0 Draft 10 style
-            $message = $result['error'];
-        } elseif (isset($result['message']) && $result['message'] !== '') {
-            // cURL style
-            $message = $result['message'];
-        } else {
-            $message = 'Unknown Error.';
+        if (!$message) {
+            if (isset($result['error']) && $result['error'] !== '') {
+                // OAuth 2.0 Draft 10 style
+                $message = $result['error'];
+            } elseif (isset($result['message']) && $result['message'] !== '') {
+                // cURL style
+                $message = $result['message'];
+            } else {
+                $message = 'Unknown Error.';
+            }
         }
 
         parent::__construct($message, $code);

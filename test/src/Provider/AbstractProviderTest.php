@@ -4,6 +4,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Exception\IDPException;
 use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
@@ -176,6 +177,48 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
         $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
+    }
+
+    /**
+     * @expectedException \League\OAuth2\Client\Exception\IDPException
+     */
+    public function testGetAccessTokenError()
+    {
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(1)->andReturn(new \Ivory\HttpAdapter\Message\Stream\StringStream('{"error": "error_message", "code": 404}'));
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+
+        $this->provider->setHttpClient($client);
+
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
+    /**
+     * @expectedException \League\OAuth2\Client\Exception\IDPException
+     */
+    public function testGetAccessTokenErrorCustom()
+    {
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(1)->andReturn(new \Ivory\HttpAdapter\Message\Stream\StringStream('{"custom_error": "error_message", "custom_code": 404}'));
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+
+        $this->provider->setErrorChecker(function ($result) {
+            if (isset($result['custom_error']) && ! empty($result['custom_error'])) {
+                throw new IDPException($result, $result['custom_error'], $result['custom_code']);
+            }
+        });
+        $this->provider->setHttpClient($client);
+
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
+    public function testSetErrorChecker()
+    {
+
     }
 }
 
