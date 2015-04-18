@@ -143,7 +143,7 @@ abstract class AbstractProvider implements ProviderInterface
         $url = $this->getAuthorizationUrl($options);
         if ($this->redirectHandler) {
             $handler = $this->redirectHandler;
-            return $handler($url);
+            return $handler($url, $this);
         }
         // @codeCoverageIgnoreStart
         header('Location: ' . $url);
