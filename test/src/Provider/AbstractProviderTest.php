@@ -215,11 +215,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
-
-    public function testSetErrorChecker()
-    {
-
-    }
 }
 
 class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
