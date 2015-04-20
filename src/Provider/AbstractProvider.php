@@ -43,6 +43,8 @@ abstract class AbstractProvider implements ProviderInterface
 
     protected $redirectHandler;
 
+    protected $errorChecker;
+
     /**
      * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
      *          and the default encryption type for the http_build_query setup
@@ -58,6 +60,14 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         $this->setHttpClient($httpClient ?: new CurlHttpAdapter());
+
+        if (!isset($options['errorChecker'])) {
+            $this->setErrorChecker(function ($result) {
+                if (isset($result['error']) && ! empty($result['error'])) {
+                    throw new IDPException($result);
+                }
+            });
+        }
     }
 
     public function setHttpClient(HttpAdapterInterface $client)
@@ -220,12 +230,8 @@ abstract class AbstractProvider implements ProviderInterface
 
                 break;
         }
-
-        if (isset($result['error']) && ! empty($result['error'])) {
-            // @codeCoverageIgnoreStart
-            throw new IDPException($result);
-            // @codeCoverageIgnoreEnd
-        }
+        $checker = $this->errorChecker;
+        $checker($result);
 
         $result = $this->prepareAccessTokenResult($result);
 
@@ -379,5 +385,10 @@ abstract class AbstractProvider implements ProviderInterface
     public function setRedirectHandler(Closure $handler)
     {
         $this->redirectHandler = $handler;
+    }
+
+    public function setErrorChecker(Closure $checker)
+    {
+        $this->errorChecker = $checker;
     }
 }
