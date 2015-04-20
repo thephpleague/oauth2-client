@@ -90,16 +90,19 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testSetRedirectHandler()
     {
         $this->testFunction = false;
+        $this->state = false;
 
-        $callback = function ($url) {
+        $callback = function ($url, $provider) {
             $this->testFunction = $url;
+            $this->state = $provider->state;
         };
 
         $this->provider->setRedirectHandler($callback);
 
-        $this->provider->authorize('http://test.url/');
+        $this->provider->authorize();
 
         $this->assertNotFalse($this->testFunction);
+        $this->assertEquals($this->provider->state, $this->state);
     }
 
     /**
