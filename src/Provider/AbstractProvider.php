@@ -223,7 +223,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         if (isset($result['error']) && ! empty($result['error'])) {
             // @codeCoverageIgnoreStart
-            throw new IDPException($result);
+            $this->throwIDPException($result);
             // @codeCoverageIgnoreEnd
         }
 
@@ -304,6 +304,18 @@ abstract class AbstractProvider implements ProviderInterface
     public function userScreenName($response, AccessToken $token)
     {
         return isset($response->name) && $response->name ? $response->name : null;
+    }
+
+    /**
+     * Throws an IDPException when an error response is received
+     *
+     * @param array $result
+     *
+     * @throws IDPException
+     */
+    public function throwIDPException(array $result)
+    {
+        throw new IDPException($result);
     }
 
     /**

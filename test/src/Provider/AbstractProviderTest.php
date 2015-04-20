@@ -180,6 +180,37 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
         $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
     }
+
+    public function testErrorResponsesCanBeCustomizedAtTheProvider()
+    {
+        $provider = new CustomErrorProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn('{"error":{"message":"Foo error","code":1337}}');
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $provider->setHttpClient($client);
+
+        $errorMessage = '';
+        $errorCode = 0;
+
+        try {
+            $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        } catch (\League\OAuth2\Client\Exception\IDPException $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+        }
+
+        $this->assertEquals('Foo error', $errorMessage);
+        $this->assertEquals(1337, $errorCode);
+    }
 }
 
 class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
@@ -202,5 +233,15 @@ class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
     public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
     {
         return '';
+    }
+}
+
+class CustomErrorProvider extends MockProvider
+{
+    public function throwIDPException(array $result)
+    {
+        $result = $result['error'];
+
+        throw new \League\OAuth2\Client\Exception\IDPException($result);
     }
 }
