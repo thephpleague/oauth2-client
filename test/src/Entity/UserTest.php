@@ -36,7 +36,7 @@ class UserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->userArray, $this->user->getArrayCopy());
     }
 
-    public function testMagicMethos()
+    public function testMagicMethods()
     {
         $this->user->exchangeArray($this->userArray);
 
@@ -49,16 +49,44 @@ class UserTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testInvalidMagicSet()
+    public function testInvalidMagicGet()
     {
-        $this->user->invalidProp = 'mock';
+        $this->user->invalidProp;
     }
 
     /**
      * @expectedException \OutOfRangeException
      */
-    public function testInvalidMagicGet()
+    public function testMagicUnsetMethod()
     {
-        $this->user->invalidProp;
+        $this->user->exchangeArray($this->userArray);
+        unset($this->user->name);
+        $this->user->name;
+    }
+
+    public function testArrayAccessMethods()
+    {
+        $this->user->exchangeArray($this->userArray);
+        $this->user['name'] = 'mock_change_test';
+        $this->assertTrue(isset($this->user['name']));
+        $this->assertEquals('mock_change_test', $this->user['name']);
+    }
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testInvalidArrayAccessGet()
+    {
+        $this->user['invalidProp'];
+    }
+
+    /**
+     * @expectedException \OutOfRangeException
+     */
+    public function testArrayAccessUnsetMethod()
+    {
+        $this->user->exchangeArray($this->userArray);
+        unset($this->user['name']);
+        $this->user['name'];
     }
 }
