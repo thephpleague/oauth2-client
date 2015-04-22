@@ -63,6 +63,11 @@ class AccessToken
             $expiresInFuture = $expires > time();
             $this->expires = $expiresInFuture ? $expires : time() + ((int) $expires);
         }
+        
+        // Some providers (VKontakte) give the email here, so lets take it sends
+	if (!empty($options['email'])) {
+            $this->email = $options['email'];
+        }
     }
 
     /**
