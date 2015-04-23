@@ -4,6 +4,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class Fake extends AbstractProvider
 {
@@ -25,5 +26,12 @@ class Fake extends AbstractProvider
     public function userDetails($response, AccessToken $token)
     {
         return new Fake\User;
+    }
+
+    public function errorCheck(array $result)
+    {
+        if (isset($result['error']) && !empty($result['error'])) {
+            throw new IdentityProviderException($result['error'], $result['code'], $result);
+        }
     }
 }

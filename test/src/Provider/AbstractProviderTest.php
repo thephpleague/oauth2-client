@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Test\Provider;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery as m;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -183,7 +184,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
-        $provider = new CustomErrorProvider([
+        $provider = new MockProvider([
           'clientId' => 'mock_client_id',
           'clientSecret' => 'mock_secret',
           'redirectUri' => 'none',
@@ -192,7 +193,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
         $response->shouldReceive('getBody')
                  ->times(1)
-                 ->andReturn('{"error":{"message":"Foo error","code":1337}}');
+                 ->andReturn('{"error":"Foo error","code":1337}');
 
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')->times(1)->andReturn($response);
@@ -203,7 +204,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         try {
             $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-        } catch (\League\OAuth2\Client\Exception\IDPException $e) {
+        } catch (IdentityProviderException $e) {
             $errorMessage = $e->getMessage();
             $errorCode = $e->getCode();
         }
@@ -234,14 +235,11 @@ class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
     {
         return '';
     }
-}
 
-class CustomErrorProvider extends MockProvider
-{
-    public function throwIDPException(array $result)
+    public function errorCheck(array $result)
     {
-        $result = $result['error'];
-
-        throw new \League\OAuth2\Client\Exception\IDPException($result);
+        if (isset($result['error']) && !empty($result['error'])) {
+            throw new IdentityProviderException($result['error'], $result['code'], $result);
+        }
     }
 }
