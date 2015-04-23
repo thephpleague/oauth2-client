@@ -6,7 +6,7 @@ use Closure;
 use Ivory\HttpAdapter\CurlHttpAdapter;
 use Ivory\HttpAdapter\HttpAdapterException;
 use Ivory\HttpAdapter\HttpAdapterInterface;
-use League\OAuth2\Client\Exception\IDPException as IDPException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
 
@@ -221,11 +221,9 @@ abstract class AbstractProvider implements ProviderInterface
                 break;
         }
 
-        if (isset($result['error']) && ! empty($result['error'])) {
-            // @codeCoverageIgnoreStart
-            $this->throwIDPException($result);
-            // @codeCoverageIgnoreEnd
-        }
+        // @codeCoverageIgnoreStart
+        $this->errorCheck($result);
+        // @codeCoverageIgnoreEnd
 
         $result = $this->prepareAccessTokenResult($result);
 
@@ -307,16 +305,13 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * Throws an IDPException when an error response is received
+     * Throws an IdentityProviderException when an error response is received
      *
      * @param array $result
      *
-     * @throws IDPException
+     * @throws IdentityProviderException
      */
-    public function throwIDPException(array $result)
-    {
-        throw new IDPException($result);
-    }
+    abstract public function errorCheck(array $result);
 
     /**
      * Build HTTP the HTTP query, handling PHP version control options
