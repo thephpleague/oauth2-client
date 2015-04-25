@@ -8,6 +8,11 @@ class IDPException extends \Exception
 
     public function __construct($result)
     {
+        if (!empty($result['error']) && is_array($result['error'])) {
+            // Error response is wrapped in a top entity type, JSON:API style.
+            $result = $result['error'];
+        }
+
         $this->result = $result;
 
         $code = isset($result['code']) ? $result['code'] : 0;
