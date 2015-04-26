@@ -202,9 +202,7 @@ abstract class AbstractProvider implements ProviderInterface
                 // @codeCoverageIgnoreEnd
             }
         } catch (HttpAdapterException $e) {
-            // @codeCoverageIgnoreStart
             $response = (string) $e->getResponse()->getBody();
-            // @codeCoverageIgnoreEnd
         }
 
         $result = $this->parseResponse($response);
