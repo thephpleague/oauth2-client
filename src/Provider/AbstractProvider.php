@@ -9,6 +9,7 @@ use Ivory\HttpAdapter\HttpAdapterInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use UnexpectedValueException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -230,10 +231,10 @@ abstract class AbstractProvider implements ProviderInterface
 
         switch ($this->responseType) {
             case 'json':
-                $json = json_decode($response, true);
+                $result = json_decode($response, true);
 
-                if (JSON_ERROR_NONE === json_last_error()) {
-                    $result = $json;
+                if (JSON_ERROR_NONE !== json_last_error()) {
+                    throw new UnexpectedValueException('Unable to parse client response');
                 }
 
                 break;

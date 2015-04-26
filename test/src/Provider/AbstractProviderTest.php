@@ -214,6 +214,29 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo error', $errorMessage);
         $this->assertEquals(1337, $errorCode);
     }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     */
+    public function testParseResponseJsonFailure()
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn('not json');
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $provider->setHttpClient($client);
+
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
 }
 
 class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
