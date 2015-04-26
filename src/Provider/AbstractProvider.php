@@ -206,12 +206,34 @@ abstract class AbstractProvider implements ProviderInterface
             // @codeCoverageIgnoreEnd
         }
 
+        $result = $this->parseResponse($response);
+
+        // @codeCoverageIgnoreStart
+        $this->errorCheck($result);
+        // @codeCoverageIgnoreEnd
+
+        $result = $this->prepareAccessTokenResult($result);
+
+        return $grant->handleResponse($result);
+    }
+
+
+    /**
+     * Parse the response, according to the provider response type.
+     *
+     * @param  string $response
+     * @return array
+     */
+    protected function parseResponse($response)
+    {
+        $result = [];
+
         switch ($this->responseType) {
             case 'json':
-                $result = json_decode($response, true);
+                $json = json_decode($response, true);
 
-                if (JSON_ERROR_NONE !== json_last_error()) {
-                    $result = [];
+                if (JSON_ERROR_NONE === json_last_error()) {
+                    $result = $json;
                 }
 
                 break;
@@ -221,13 +243,7 @@ abstract class AbstractProvider implements ProviderInterface
                 break;
         }
 
-        // @codeCoverageIgnoreStart
-        $this->errorCheck($result);
-        // @codeCoverageIgnoreEnd
-
-        $result = $this->prepareAccessTokenResult($result);
-
-        return $grant->handleResponse($result);
+        return $result;
     }
 
     /**
@@ -357,12 +373,17 @@ abstract class AbstractProvider implements ProviderInterface
             $response = (string) $httpResponse->getBody();
         } catch (HttpAdapterException $e) {
             // @codeCoverageIgnoreStart
-            $raw_response = explode("\n", (string) $e->getResponse()->getBody());
-            throw new IDPException(end($raw_response));
+            $response = (string) $e->getResponse()->getBody();
             // @codeCoverageIgnoreEnd
         }
 
-        return $response;
+        $result = $this->parseResponse($response);
+
+        // @codeCoverageIgnoreStart
+        $this->errorCheck($result);
+        // @codeCoverageIgnoreEnd
+
+        return $result;
     }
 
     protected function getAuthorizationHeaders($token)
