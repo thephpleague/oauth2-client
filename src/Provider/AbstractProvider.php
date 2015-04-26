@@ -8,33 +8,69 @@ use Ivory\HttpAdapter\HttpAdapterException;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use League\OAuth2\Client\Token\AccessToken;
 use UnexpectedValueException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
+    /**
+     * @var string
+     */
     public $clientId = '';
 
+    /**
+     * @var string
+     */
     public $clientSecret = '';
 
+    /**
+     * @var string
+     */
     public $redirectUri = '';
 
+    /**
+     * @var string
+     */
     public $state;
 
+    /**
+     * @var string
+     */
     public $name;
 
+    /**
+     * @var string
+     */
     public $uidKey = 'uid';
 
+    /**
+     * @var array
+     */
     public $scopes = [];
 
+    /**
+     * @var string
+     */
     public $method = 'post';
 
+    /**
+     * @var string
+     */
     public $scopeSeparator = ',';
 
+    /**
+     * @var string
+     */
     public $responseType = 'json';
 
+    /**
+     * @var array
+     */
     public $headers = [];
 
+    /**
+     * @var string
+     */
     public $authorizationHeader;
 
     /**
@@ -42,6 +78,9 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $httpClient;
 
+    /**
+     * @var Closure
+     */
     protected $redirectHandler;
 
     /**
@@ -75,43 +114,6 @@ abstract class AbstractProvider implements ProviderInterface
         return $client;
     }
 
-    /**
-     * Get the URL that this provider uses to begin authorization.
-     *
-     * @return string
-     */
-    abstract public function urlAuthorize();
-
-    /**
-     * Get the URL that this provider users to request an access token.
-     *
-     * @return string
-     */
-    abstract public function urlAccessToken();
-
-    /**
-     * Get the URL that this provider uses to request user details.
-     *
-     * Since this URL is typically an authorized route, most providers will require you to pass the access_token as
-     * a parameter to the request. For example, the google url is:
-     *
-     * 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token
-     *
-     * @param AccessToken $token
-     * @return string
-     */
-    abstract public function urlUserDetails(AccessToken $token);
-
-    /**
-     * Given an object response from the server, process the user details into a format expected by the user
-     * of the client.
-     *
-     * @param object $response
-     * @param AccessToken $token
-     * @return mixed
-     */
-    abstract public function userDetails($response, AccessToken $token);
-
     public function getScopes()
     {
         return $this->scopes;
@@ -122,7 +124,7 @@ abstract class AbstractProvider implements ProviderInterface
         $this->scopes = $scopes;
     }
 
-    public function getAuthorizationUrl($options = [])
+    public function getAuthorizationUrl(array $options = [])
     {
         $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
 
@@ -139,7 +141,7 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     // @codeCoverageIgnoreStart
-    public function authorize($options = [])
+    public function authorize(array $options = [])
     {
         $url = $this->getAuthorizationUrl($options);
         if ($this->redirectHandler) {
@@ -152,7 +154,7 @@ abstract class AbstractProvider implements ProviderInterface
         // @codeCoverageIgnoreEnd
     }
 
-    public function getAccessToken($grant = 'authorization_code', $params = [])
+    public function getAccessToken($grant = 'authorization_code', array $params = [])
     {
         if (is_string($grant)) {
             // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
@@ -324,15 +326,6 @@ abstract class AbstractProvider implements ProviderInterface
             return $response['name'];
         }
     }
-
-    /**
-     * Throws an IdentityProviderException when an error response is received
-     *
-     * @param array $result
-     *
-     * @throws IdentityProviderException
-     */
-    abstract public function errorCheck(array $result);
 
     /**
      * Build HTTP the HTTP query, handling PHP version control options
