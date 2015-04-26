@@ -281,43 +281,49 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $response = $this->fetchUserDetails($token);
 
-        return $this->userDetails(json_decode($response), $token);
+        return $this->userDetails($response, $token);
     }
 
     public function getUserUid(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
 
-        return $this->userUid(json_decode($response), $token);
+        return $this->userUid($response, $token);
     }
 
     public function getUserEmail(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
 
-        return $this->userEmail(json_decode($response), $token);
+        return $this->userEmail($response, $token);
     }
 
     public function getUserScreenName(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
 
-        return $this->userScreenName(json_decode($response), $token);
+        return $this->userScreenName($response, $token);
     }
 
     public function userUid($response, AccessToken $token)
     {
-        return isset($response->id) && $response->id ? $response->id : null;
+        if (!empty($response['id'])) {
+            return $response['id'];
+        }
     }
 
     public function userEmail($response, AccessToken $token)
     {
-        return isset($response->email) && $response->email ? $response->email : null;
+        if (!empty($response['email'])) {
+            return $response['email'];
+        }
     }
 
     public function userScreenName($response, AccessToken $token)
     {
-        return isset($response->name) && $response->name ? $response->name : null;
+        if (!empty($response['name'])) {
+            return $response['name'];
+        }
     }
 
     /**
