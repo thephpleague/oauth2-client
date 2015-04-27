@@ -114,6 +114,16 @@ abstract class AbstractProvider implements ProviderInterface
         return $client;
     }
 
+    // Implementing these interfaces methods should not be required, but not
+    // doing so will break HHVM because of https://github.com/facebook/hhvm/issues/5170
+    // Once HHVM is working, delete the following abstract methods.
+    abstract public function urlAuthorize();
+    abstract public function urlAccessToken();
+    abstract public function urlUserDetails(AccessToken $token);
+    abstract public function userDetails($response, AccessToken $token);
+    abstract public function errorCheck(array $result);
+    // End of methods to delete.
+
     public function getScopes()
     {
         return $this->scopes;
