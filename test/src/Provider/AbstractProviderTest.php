@@ -269,6 +269,38 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
+
+    public function testAuthenticatedRequestAndResponse()
+    {
+        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+
+        $provider = clone $this->provider;
+        $provider->authorizationHeader = 'Bearer';
+
+        $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
+        $this->assertInstanceOf('Ivory\HttpAdapter\Message\RequestInterface', $request);
+
+        // Authorization header should contain the token
+        $header = $request->getHeader('Authorization');
+        $this->assertEquals('Bearer abc', $header);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn('{"example":"response"}');
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('sendRequest')
+               ->times(1)
+               ->with($request)
+               ->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        // Final result should be a parsed response
+        $result = $provider->getResponse($request);
+        $this->assertSame(['example' => 'response'], $result);
+    }
 }
 
 class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
