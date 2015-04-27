@@ -9,6 +9,7 @@ use Ivory\HttpAdapter\HttpAdapterInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use UnexpectedValueException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -201,17 +202,37 @@ abstract class AbstractProvider implements ProviderInterface
                 // @codeCoverageIgnoreEnd
             }
         } catch (HttpAdapterException $e) {
-            // @codeCoverageIgnoreStart
             $response = (string) $e->getResponse()->getBody();
-            // @codeCoverageIgnoreEnd
         }
+
+        $result = $this->parseResponse($response);
+
+        // @codeCoverageIgnoreStart
+        $this->errorCheck($result);
+        // @codeCoverageIgnoreEnd
+
+        $result = $this->prepareAccessTokenResult($result);
+
+        return $grant->handleResponse($result);
+    }
+
+
+    /**
+     * Parse the response, according to the provider response type.
+     *
+     * @param  string $response
+     * @return array
+     */
+    protected function parseResponse($response)
+    {
+        $result = [];
 
         switch ($this->responseType) {
             case 'json':
                 $result = json_decode($response, true);
 
                 if (JSON_ERROR_NONE !== json_last_error()) {
-                    $result = [];
+                    throw new UnexpectedValueException('Unable to parse client response');
                 }
 
                 break;
@@ -221,13 +242,7 @@ abstract class AbstractProvider implements ProviderInterface
                 break;
         }
 
-        // @codeCoverageIgnoreStart
-        $this->errorCheck($result);
-        // @codeCoverageIgnoreEnd
-
-        $result = $this->prepareAccessTokenResult($result);
-
-        return $grant->handleResponse($result);
+        return $result;
     }
 
     /**
@@ -265,43 +280,49 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $response = $this->fetchUserDetails($token);
 
-        return $this->userDetails(json_decode($response), $token);
+        return $this->userDetails($response, $token);
     }
 
     public function getUserUid(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
 
-        return $this->userUid(json_decode($response), $token);
+        return $this->userUid($response, $token);
     }
 
     public function getUserEmail(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
 
-        return $this->userEmail(json_decode($response), $token);
+        return $this->userEmail($response, $token);
     }
 
     public function getUserScreenName(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token, true);
 
-        return $this->userScreenName(json_decode($response), $token);
+        return $this->userScreenName($response, $token);
     }
 
     public function userUid($response, AccessToken $token)
     {
-        return isset($response->id) && $response->id ? $response->id : null;
+        if (!empty($response['id'])) {
+            return $response['id'];
+        }
     }
 
     public function userEmail($response, AccessToken $token)
     {
-        return isset($response->email) && $response->email ? $response->email : null;
+        if (!empty($response['email'])) {
+            return $response['email'];
+        }
     }
 
     public function userScreenName($response, AccessToken $token)
     {
-        return isset($response->name) && $response->name ? $response->name : null;
+        if (!empty($response['name'])) {
+            return $response['name'];
+        }
     }
 
     /**
@@ -357,12 +378,17 @@ abstract class AbstractProvider implements ProviderInterface
             $response = (string) $httpResponse->getBody();
         } catch (HttpAdapterException $e) {
             // @codeCoverageIgnoreStart
-            $raw_response = explode("\n", (string) $e->getResponse()->getBody());
-            throw new IDPException(end($raw_response));
+            $response = (string) $e->getResponse()->getBody();
             // @codeCoverageIgnoreEnd
         }
 
-        return $response;
+        $result = $this->parseResponse($response);
+
+        // @codeCoverageIgnoreStart
+        $this->errorCheck($result);
+        // @codeCoverageIgnoreEnd
+
+        return $result;
     }
 
     protected function getAuthorizationHeaders($token)

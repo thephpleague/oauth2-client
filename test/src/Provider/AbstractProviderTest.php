@@ -2,10 +2,11 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use Ivory\HttpAdapter\HttpAdapterException;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
-use Mockery as m;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 {
@@ -137,22 +138,24 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function userPropertyProvider()
     {
-        $response = new \stdClass();
-        $response->id = 1;
-        $response->email = 'test@example.com';
-        $response->name = 'test';
+        $response = [
+            'id'    => 1,
+            'email' => 'test@example.com',
+            'name'  => 'test',
+        ];
 
-        $response2 = new \stdClass();
-        $response2->id = null;
-        $response2->email = null;
-        $response2->name = null;
+        $response2 = [
+            'id'    => null,
+            'email' => null,
+            'name'  => null,
+        ];
 
-        $response3 = new \stdClass();
+        $response3 = [];
 
         return [
-            [$response, 'test', 'test@example.com', 1],
-            [$response2],
-            [$response3],
+            'full response'  => [$response, 'test', 'test@example.com', 1],
+            'empty response' => [$response2],
+            'no response'    => [$response3],
         ];
     }
 
@@ -211,6 +214,60 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Foo error', $errorMessage);
         $this->assertEquals(1337, $errorCode);
+    }
+
+    public function testClientErrorTriggersHttpException()
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn('{"error":"BadResponse","code":500}');
+
+        $exception = new HttpAdapterException();
+        $exception->setResponse($response);
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andThrow($exception);
+        $provider->setHttpClient($client);
+
+        try {
+            $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        } catch (IdentityProviderException $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+        }
+
+        $this->assertEquals('BadResponse', $errorMessage);
+        $this->assertEquals(500, $errorCode);
+    }
+
+    /**
+     * @expectedException \UnexpectedValueException
+     */
+    public function testParseResponseJsonFailure()
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn('not json');
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $provider->setHttpClient($client);
+
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 }
 
