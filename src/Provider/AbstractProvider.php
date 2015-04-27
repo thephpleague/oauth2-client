@@ -6,6 +6,7 @@ use Closure;
 use Ivory\HttpAdapter\CurlHttpAdapter;
 use Ivory\HttpAdapter\HttpAdapterException;
 use Ivory\HttpAdapter\HttpAdapterInterface;
+use Ivory\HttpAdapter\Message\RequestInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
@@ -216,6 +217,58 @@ abstract class AbstractProvider implements ProviderInterface
         return $grant->handleResponse($result);
     }
 
+    /**
+     * Get an authenticated request instance.
+     *
+     * Creates a PSR-7 compatible request instance that can be modified.
+     * Often used to create calls against an API that requires authentication.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  AccessToken $token
+     * @return RequestInterface
+     */
+    public function getAuthenticatedRequest($method, $url, AccessToken $token)
+    {
+        $factory = $this->getHttpClient()
+            ->getConfiguration()
+            ->getMessageFactory();
+
+        $request = $factory->createRequest($url, $method);
+        $request->addHeaders($this->getHeaders($token));
+        return $request;
+    }
+
+    /**
+     * Get a response for a request instance.
+     *
+     * Processes the response according to provider response type.
+     *
+     * @param  RequestInterface $request
+     * @return mixed
+     */
+    public function getResponse(RequestInterface $request)
+    {
+        try {
+            $client = $this->getHttpClient();
+
+            $httpResponse = $client->sendRequest($request);
+
+            $response = (string) $httpResponse->getBody();
+        } catch (HttpAdapterException $e) {
+            // @codeCoverageIgnoreStart
+            $response = (string) $e->getResponse()->getBody();
+            // @codeCoverageIgnoreEnd
+        }
+
+        $result = $this->parseResponse($response);
+
+        // @codeCoverageIgnoreStart
+        $this->errorCheck($result);
+        // @codeCoverageIgnoreEnd
+
+        return $result;
+    }
 
     /**
      * Parse the response, according to the provider response type.
@@ -363,32 +416,9 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $url = $this->urlUserDetails($token);
 
-        $headers = $this->getHeaders($token);
+        $request = $this->getAuthenticatedRequest(Request::METHOD_GET, $url, $token);
 
-        return $this->fetchProviderData($url, $headers);
-    }
-
-    protected function fetchProviderData($url, array $headers = [])
-    {
-        try {
-            $client = $this->getHttpClient();
-
-            $httpResponse = $client->get($url, $headers);
-
-            $response = (string) $httpResponse->getBody();
-        } catch (HttpAdapterException $e) {
-            // @codeCoverageIgnoreStart
-            $response = (string) $e->getResponse()->getBody();
-            // @codeCoverageIgnoreEnd
-        }
-
-        $result = $this->parseResponse($response);
-
-        // @codeCoverageIgnoreStart
-        $this->errorCheck($result);
-        // @codeCoverageIgnoreEnd
-
-        return $result;
+        return $this->getResponse($request);
     }
 
     protected function getAuthorizationHeaders($token)
