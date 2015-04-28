@@ -85,8 +85,16 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $mockAdapter = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
 
-        $mockProvider = new MockProvider([], $mockAdapter);
+        $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
+    }
+
+    public function testConstructorSetsRandomFactory()
+    {
+        $mockAdapter = m::mock('RandomLib\Factory');
+
+        $mockProvider = new MockProvider([], ['randomFactory' => $mockAdapter]);
+        $this->assertSame($mockAdapter, $mockProvider->getRandomFactory());
     }
 
     public function testSetRedirectHandler()
@@ -183,6 +191,33 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
         $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
+    }
+
+    public function testRandomGeneratorCreatesRandomState()
+    {
+        $xstate = str_repeat('x', 32);
+
+        $generator = m::mock('RandomLib\Generator');
+        $generator->shouldReceive('generateString')->with(32)->times(1)->andReturn($xstate);
+
+        $factory = m::mock('RandomLib\Factory');
+        $factory->shouldReceive('getMediumStrengthGenerator')->times(1)->andReturn($generator);
+
+        $provider = new MockProvider([], ['randomFactory' => $factory]);
+
+        $url = $provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('state', $qs);
+        $this->assertSame($xstate, $qs['state']);
+
+        // Same test, but using the non-mock implementation
+        $url = $this->provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertRegExp('/[a-zA-Z0-9\/+]{32}\b/', $qs['state']);
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
