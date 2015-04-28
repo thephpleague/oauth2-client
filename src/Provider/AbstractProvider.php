@@ -10,6 +10,7 @@ use Ivory\HttpAdapter\Message\RequestInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken;
+use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
 
 abstract class AbstractProvider implements ProviderInterface
@@ -80,6 +81,11 @@ abstract class AbstractProvider implements ProviderInterface
     protected $httpClient;
 
     /**
+     * @var RandomFactory
+     */
+    protected $randomFactory;
+
+    /**
      * @var Closure
      */
     protected $redirectHandler;
@@ -106,6 +112,11 @@ abstract class AbstractProvider implements ProviderInterface
             $collaborators['httpClient'] = new CurlHttpAdapter();
         }
         $this->setHttpClient($collaborators['httpClient']);
+
+        if (empty($collaborators['randomFactory'])) {
+            $collaborators['randomFactory'] = new RandomFactory();
+        }
+        $this->setRandomFactory($collaborators['randomFactory']);
     }
 
     public function setHttpClient(HttpAdapterInterface $client)
@@ -120,6 +131,29 @@ abstract class AbstractProvider implements ProviderInterface
         $client = $this->httpClient;
 
         return $client;
+    }
+
+    /**
+     * Set the instance of the CSPRNG random generator factory to use.
+     *
+     * @param  RandomFactory $factory
+     * @return $this
+     */
+    public function setRandomFactory(RandomFactory $factory)
+    {
+        $this->randomFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Get the instance of the CSPRNG random generatory factory.
+     *
+     * @return RandomFactory
+     */
+    public function getRandomFactory()
+    {
+        return $this->randomFactory;
     }
 
     // Implementing these interfaces methods should not be required, but not
@@ -142,17 +176,46 @@ abstract class AbstractProvider implements ProviderInterface
         $this->scopes = $scopes;
     }
 
+    /**
+     * Get a new random string to use for auth state.
+     *
+     * @param  integer $length
+     * @return string
+     */
+    protected function getRandomState($length = 32)
+    {
+        $generator = $this
+            ->getRandomFactory()
+            ->getMediumStrengthGenerator();
+
+        return $generator->generateString($length);
+    }
+
     public function getAuthorizationUrl(array $options = [])
     {
-        $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
+        if (empty($options['state'])) {
+            $options['state'] = $this->getRandomState();
+        }
+
+        // Store the state, it may need to be accessed later.
+        $this->state = $options['state'];
+
+        $options += [
+            // Do not set the default state here! The random generator takes a
+            // non-trivial amount of time to run.
+            'response_type'   => 'code',
+            'approval_prompt' => 'auto',
+        ];
+
+        $scopes = is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes;
 
         $params = [
-            'client_id' => $this->clientId,
-            'redirect_uri' => $this->redirectUri,
-            'state' => $this->state,
-            'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
-            'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => isset($options['approval_prompt']) ? $options['approval_prompt'] : 'auto',
+            'client_id'       => $this->clientId,
+            'redirect_uri'    => $this->redirectUri,
+            'state'           => $this->state,
+            'scope'           => $scopes,
+            'response_type'   => $options['response_type'],
+            'approval_prompt' => $options['approval_prompt'],
         ];
 
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
