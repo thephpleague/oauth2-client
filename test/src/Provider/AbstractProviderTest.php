@@ -6,6 +6,7 @@ use Ivory\HttpAdapter\HttpAdapterException;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
@@ -17,7 +18,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Test\Provider\Fake([
+        $this->provider = new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
@@ -116,8 +117,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $response
-     *
      * @dataProvider userPropertyProvider
      */
     public function testGetUserProperties($response, $name = null, $email = null, $id = null)
@@ -251,7 +250,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1337, $errorCode);
     }
 
-    public function testClientErrorTriggersHttpException()
+    /**
+     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function testClientErrorTriggersProviderException()
     {
         $provider = new MockProvider([
           'clientId' => 'mock_client_id',
@@ -271,15 +273,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $client->shouldReceive('post')->times(1)->andThrow($exception);
         $provider->setHttpClient($client);
 
-        try {
-            $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-        } catch (IdentityProviderException $e) {
-            $errorMessage = $e->getMessage();
-            $errorCode = $e->getCode();
-        }
-
-        $this->assertEquals('BadResponse', $errorMessage);
-        $this->assertEquals(500, $errorCode);
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
     /**
@@ -335,35 +329,5 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         // Final result should be a parsed response
         $result = $provider->getResponse($request);
         $this->assertSame(['example' => 'response'], $result);
-    }
-}
-
-class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
-{
-    public function urlAuthorize()
-    {
-        return '';
-    }
-
-    public function urlAccessToken()
-    {
-        return '';
-    }
-
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
-    {
-        return '';
-    }
-
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
-    {
-        return '';
-    }
-
-    public function errorCheck(array $result)
-    {
-        if (isset($result['error']) && !empty($result['error'])) {
-            throw new IdentityProviderException($result['error'], $result['code'], $result);
-        }
     }
 }

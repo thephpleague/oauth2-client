@@ -4,40 +4,20 @@ namespace League\OAuth2\Client\Provider\Exception;
 
 class IdentityProviderException extends \Exception
 {
-    protected $result;
+    /**
+     * @var mixed
+     */
+    protected $response;
 
-    public function __construct($message, $code, $result)
+    public function __construct($message, $code, $response)
     {
-        $this->result = $result;
+        $this->response = $response;
 
         parent::__construct($message, $code);
     }
 
     public function getResponseBody()
     {
-        return $this->result;
-    }
-
-    public function getType()
-    {
-        $result = 'Exception';
-
-        return $result;
-    }
-
-    /**
-     * To make debugging easier.
-     *
-     * @return string The string representation of the error.
-     */
-    public function __toString()
-    {
-        $str = $this->getType().': ';
-
-        if ($this->code != 0) {
-            $str .= $this->code.': ';
-        }
-
-        return $str.$this->message;
+        return $this->response;
     }
 }

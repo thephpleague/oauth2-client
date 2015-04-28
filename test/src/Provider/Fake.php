@@ -28,10 +28,10 @@ class Fake extends AbstractProvider
         return new Fake\User;
     }
 
-    public function errorCheck(array $result)
+    protected function checkResponse(array $response)
     {
-        if (isset($result['error']) && !empty($result['error'])) {
-            throw new IdentityProviderException($result['error'], $result['code'], $result);
+        if (!empty($response['error'])) {
+            throw new IdentityProviderException($response['error'], $response['code'], $response);
         }
     }
 }
