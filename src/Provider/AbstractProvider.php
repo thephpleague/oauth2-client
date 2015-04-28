@@ -90,7 +90,11 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $httpBuildEncType = 1;
 
-    public function __construct($options = [], HttpAdapterInterface $httpClient = null)
+    /**
+     * @param array $options
+     * @param array $collaborators
+     */
+    public function __construct($options = [], array $collaborators = [])
     {
         foreach ($options as $option => $value) {
             if (property_exists($this, $option)) {
@@ -98,7 +102,10 @@ abstract class AbstractProvider implements ProviderInterface
             }
         }
 
-        $this->setHttpClient($httpClient ?: new CurlHttpAdapter());
+        if (empty($collaborators['httpClient'])) {
+            $collaborators['httpClient'] = new CurlHttpAdapter();
+        }
+        $this->setHttpClient($collaborators['httpClient']);
     }
 
     public function setHttpClient(HttpAdapterInterface $client)

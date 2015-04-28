@@ -85,7 +85,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $mockAdapter = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
 
-        $mockProvider = new MockProvider([], $mockAdapter);
+        $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
     }
 
