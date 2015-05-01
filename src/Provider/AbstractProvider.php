@@ -163,7 +163,6 @@ abstract class AbstractProvider implements ProviderInterface
     abstract public function urlAccessToken();
     abstract public function urlUserDetails(AccessToken $token);
     abstract public function userDetails($response, AccessToken $token);
-    abstract public function errorCheck(array $result);
     // End of methods to delete.
 
     public function getScopes()
@@ -288,15 +287,10 @@ abstract class AbstractProvider implements ProviderInterface
             $response = (string) $e->getResponse()->getBody();
         }
 
-        $result = $this->parseResponse($response);
+        $response = $this->parseResponse($response);
+        $response = $this->prepareAccessTokenResult($response);
 
-        // @codeCoverageIgnoreStart
-        $this->errorCheck($result);
-        // @codeCoverageIgnoreEnd
-
-        $result = $this->prepareAccessTokenResult($result);
-
-        return $grant->handleResponse($result);
+        return $grant->handleResponse($response);
     }
 
     /**
@@ -338,23 +332,18 @@ abstract class AbstractProvider implements ProviderInterface
 
             $response = (string) $httpResponse->getBody();
         } catch (HttpAdapterException $e) {
-            // @codeCoverageIgnoreStart
             $response = (string) $e->getResponse()->getBody();
-            // @codeCoverageIgnoreEnd
         }
 
-        $result = $this->parseResponse($response);
+        $response = $this->parseResponse($response);
 
-        // @codeCoverageIgnoreStart
-        $this->errorCheck($result);
-        // @codeCoverageIgnoreEnd
-
-        return $result;
+        return $response;
     }
 
     /**
      * Parse the response, according to the provider response type.
      *
+     * @throws UnexpectedValueException
      * @param  string $response
      * @return array
      */
@@ -365,20 +354,28 @@ abstract class AbstractProvider implements ProviderInterface
         switch ($this->responseType) {
             case 'json':
                 $result = json_decode($response, true);
-
                 if (JSON_ERROR_NONE !== json_last_error()) {
                     throw new UnexpectedValueException('Unable to parse client response');
                 }
-
                 break;
             case 'string':
                 parse_str($response, $result);
-
                 break;
         }
 
+        $this->checkResponse($result);
+
         return $result;
     }
+
+    /**
+     * Check a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @param  array $response
+     * @return void
+     */
+    abstract protected function checkResponse(array $response);
 
     /**
      * Prepare the access token response for the grant. Custom mapping of

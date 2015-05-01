@@ -100,15 +100,6 @@ interface ProviderInterface
     public function getHeaders($token = null);
 
     /**
-     * Throws an IdentityProviderException when an error response is received
-     *
-     * @throws IdentityProviderException
-     * @param array $result
-     * @return void
-     */
-    public function errorCheck(array $result);
-
-    /**
      * Get the authorized user details from the provider.
      *
      * Details are specific to the individual provider and may not be consistent!
