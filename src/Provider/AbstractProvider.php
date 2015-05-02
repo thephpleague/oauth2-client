@@ -162,7 +162,6 @@ abstract class AbstractProvider implements ProviderInterface
     abstract public function urlAuthorize();
     abstract public function urlAccessToken();
     abstract public function urlUserDetails(AccessToken $token);
-    abstract public function userDetails($response, AccessToken $token);
     // End of methods to delete.
 
     public function getScopes()

@@ -33,16 +33,6 @@ interface ProviderInterface
     public function urlUserDetails(AccessToken $token);
 
     /**
-     * Given an object response from the server, process the user details into a
-     * format expected by the user of the client.
-     *
-     * @param object $response
-     * @param AccessToken $token
-     * @return mixed
-     */
-    public function userDetails($response, AccessToken $token);
-
-    /**
      * Get the configured scopes for this provider.
      *
      * @return array
@@ -108,28 +98,4 @@ interface ProviderInterface
      * @return League\OAuth2\Client\Provider\UserInterface
      */
     public function getUserDetails(AccessToken $token);
-
-    /**
-     * Get the authorized user id from the provider.
-     *
-     * @param AccessToken $token
-     * @return mixed
-     */
-    public function getUserUid(AccessToken $token);
-
-    /**
-     * Get the authorized user email from the provider.
-     *
-     * @param AccessToken $token
-     * @return mixed
-     */
-    public function getUserEmail(AccessToken $token);
-
-    /**
-     * Get the authorized user screen name from the provider.
-     *
-     * @param AccessToken $token
-     * @return mixed
-     */
-    public function getUserScreenName(AccessToken $token);
 }
