@@ -407,11 +407,20 @@ abstract class AbstractProvider implements ProviderInterface
         }
     }
 
+    /**
+     * Generate a user object from a successful user details request.
+     *
+     * @param object $response
+     * @param AccessToken $token
+     * @return League\OAuth2\Client\Provider\UserInterface
+     */
+    abstract protected function prepareUserDetails(array $response, AccessToken $token);
+
     public function getUserDetails(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
 
-        return $this->userDetails($response, $token);
+        return $this->prepareUserDetails($response, $token);
     }
 
     public function getUserUid(AccessToken $token)
@@ -439,20 +448,6 @@ abstract class AbstractProvider implements ProviderInterface
     {
         if (!empty($response['id'])) {
             return $response['id'];
-        }
-    }
-
-    public function userEmail($response, AccessToken $token)
-    {
-        if (!empty($response['email'])) {
-            return $response['email'];
-        }
-    }
-
-    public function userScreenName($response, AccessToken $token)
-    {
-        if (!empty($response['name'])) {
-            return $response['name'];
         }
     }
 
@@ -485,7 +480,7 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $url = $this->urlUserDetails($token);
 
-        $request = $this->getAuthenticatedRequest(Request::METHOD_GET, $url, $token);
+        $request = $this->getAuthenticatedRequest(RequestInterface::METHOD_GET, $url, $token);
 
         return $this->getResponse($request);
     }

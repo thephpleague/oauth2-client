@@ -121,26 +121,39 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUserProperties($response, $name = null, $email = null, $id = null)
     {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $request = m::mock('Ivory\HttpAdapter\Message\RequestInterface');
+        $request->shouldReceive('addHeaders')->times(1);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn(json_encode(compact('id', 'name', 'email')));
+
+        $factory = m::mock('Ivory\HttpAdapter\Message\MessageFactoryInterface');
+        $factory->shouldReceive('createRequest')->times(1)->andReturn($request);
+
+        $config = m::mock('Ivory\HttpAdapter\ConfigurationInterface');
+        $config->shouldReceive('getMessageFactory')->times(1)->andReturn($factory);
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('getConfiguration')->times(1)->andReturn($config);
+        $client->shouldReceive('sendRequest')->with($request)->times(1)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $provider = $this->getMockForAbstractClass(
-            '\League\OAuth2\Client\Provider\AbstractProvider',
-            [
-              [
-                  'clientId'     => 'mock_client_id',
-                  'clientSecret' => 'mock_secret',
-                  'redirectUri'  => 'none',
-              ]
-            ]
-        );
+        $user = $provider->getUserDetails($token);
 
-        /**
-         * @var $provider AbstractProvider
-         */
-
-        $this->assertEquals($name, $provider->userScreenName($response, $token));
-        $this->assertEquals($email, $provider->userEmail($response, $token));
-        $this->assertEquals($id, $provider->userUid($response, $token));
+        $this->assertEquals($id, $user->getUserId());
+        $this->assertEquals($name, $user->getUserScreenName());
+        $this->assertEquals($email, $user->getUserEmail());
     }
 
     public function userPropertyProvider()
