@@ -1,5 +1,7 @@
 # OAuth 2.0 Client
 
+[![Join the chat at https://gitter.im/thephpleague/oauth2-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/thephpleague/oauth2-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/thephpleague/oauth2-client.svg?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
 [![Coverage Status](https://coveralls.io/repos/thephpleague/oauth2-client/badge.svg?branch=master)](https://coveralls.io/r/thephpleague/oauth2-client?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable)](https://packagist.org/packages/league/oauth2-client)
