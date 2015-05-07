@@ -203,15 +203,18 @@ abstract class AbstractProvider implements ProviderInterface
             // non-trivial amount of time to run.
             'response_type'   => 'code',
             'approval_prompt' => 'auto',
+            'scope'           => $this->scopes,
         ];
 
-        $scopes = is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes;
+        if (is_array($options['scope'])) {
+            $options['scope'] = implode($this->scopeSeparator, $options['scope']);
+        }
 
         $params = [
             'client_id'       => $this->clientId,
             'redirect_uri'    => $this->redirectUri,
             'state'           => $this->state,
-            'scope'           => $scopes,
+            'scope'           => $options['scope'],
             'response_type'   => $options['response_type'],
             'approval_prompt' => $options['approval_prompt'],
         ];

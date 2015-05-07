@@ -205,6 +205,16 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
     }
 
+    public function testScopesOverloadedDuringAuthorize()
+    {
+        $url = $this->provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('scope', $qs);
+        $this->assertSame('foo,bar', $qs['scope']);
+    }
+
     public function testRandomGeneratorCreatesRandomState()
     {
         $xstate = str_repeat('x', 32);
