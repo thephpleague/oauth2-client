@@ -23,9 +23,9 @@ class Fake extends AbstractProvider
         return 'http://example.com/oauth/user';
     }
 
-    public function userDetails($response, AccessToken $token)
+    protected function prepareUserDetails(array $response, AccessToken $token)
     {
-        return new Fake\User;
+        return new Fake\User($response);
     }
 
     protected function checkResponse(array $response)
