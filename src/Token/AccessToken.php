@@ -34,11 +34,11 @@ class AccessToken
      */
     public function __construct(array $options = null)
     {
-        if (! isset($options['access_token'])) {
-            throw new \InvalidArgumentException(
-                'Required option not passed: access_token'.PHP_EOL
-                .print_r($options, true)
-            );
+        if (empty($options['access_token'])) {
+            throw new InvalidArgumentException(sprintf(
+                'Required option not passed: "%s"',
+                'access_token'
+            ));
         }
 
         $this->accessToken = $options['access_token'];
