@@ -216,7 +216,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
-        $this->assertRegExp('/[a-zA-Z0-9\/+]{32}\b/', $qs['state']);
+        $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
