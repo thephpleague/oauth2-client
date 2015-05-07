@@ -10,52 +10,51 @@ class GrantFactory
     protected $registry = [];
 
     /**
-     * Define a grant class in the registry.
+     * Define a grant singleton in the registry.
      *
      * @param  string $name
-     * @param  string $class
+     * @param  GrantInterface $class
      * @return $this
      */
-    public function setGrant($name, $class)
+    public function setGrant($name, GrantInterface $grant)
     {
-        $this->registry[$name] = $this->checkGrant($class);
+        $this->registry[$name] = $grant;
 
         return $this;
     }
 
     /**
-     * Get a grant instance by name.
+     * Get a grant singleton by name.
      *
      * If the grant has not be registered, a default grant will be loaded.
      *
      * @param  string $name
-     * @param  string $options
      * @return GrantInterface
      */
-    public function getGrant($name, array $options = [])
+    public function getGrant($name)
     {
         if (empty($this->registry[$name])) {
-            $this->registry[$name] = $this->getGrantClass($name);
+            $this->registerDefaultGrant($name);
         }
 
-        $class = $this->registry[$name];
-
-        return new $class($options);
+        return $this->registry[$name];
     }
 
     /**
-     * Guess a grant class from the name of the grant.
+     * Register a default grant singleton by name.
      *
      * @param  string $name
-     * @return string
+     * @return $this
      */
-    protected function getGrantClass($name)
+    protected function registerDefaultGrant($name)
     {
         // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
         $class = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
         $class = 'League\\OAuth2\\Client\\Grant\\' . $class;
 
-        return $this->checkGrant($class);
+        $this->checkGrant($class);
+
+        return $this->setGrant($name, new $class);
     }
 
     /**
@@ -72,9 +71,9 @@ class GrantFactory
     /**
      * Check if a variable is a valid grant.
      *
-     * @throws InvalidArgumentException
+     * @throws InvalidGrantException
      * @param  mixed $class
-     * @return mixed
+     * @return void
      */
     public function checkGrant($class)
     {
@@ -84,6 +83,5 @@ class GrantFactory
                 is_object($class) ? get_class($class) : $class
             ));
         }
-        return $class;
     }
 }
