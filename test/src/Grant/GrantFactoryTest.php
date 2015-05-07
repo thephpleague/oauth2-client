@@ -54,35 +54,26 @@ class GrantFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testSetGrantReplaceDefault()
     {
-        $class = 'League\OAuth2\Client\Test\Grant\Fake';
+        $mock = new MockGrant();
 
         $factory = new GrantFactory();
-        $factory->setGrant('password', $class);
+        $factory->setGrant('password', $mock);
 
         $grant = $factory->getGrant('password');
 
-        $this->assertInstanceOf($class, $grant);
+        $this->assertSame($mock, $grant);
     }
 
     public function testSetGrantCustom()
     {
-        $class = 'League\OAuth2\Client\Test\Grant\Fake';
+        $mock = new MockGrant();
 
         $factory = new GrantFactory();
-        $factory->setGrant('fake', $class);
+        $factory->setGrant('fake', $mock);
 
         $grant = $factory->getGrant('fake');
 
-        $this->assertInstanceOf($class, $grant);
-
-    }
-
-    /**
-     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
-     */
-    public function testSetGrantInvalidFails()
-    {
-        $this->factory->setGrant('fail', 'stdClass');
+        $this->assertSame($mock, $grant);
     }
 
     public function testIsGrant()
@@ -96,7 +87,7 @@ class GrantFactoryTest extends \PHPUnit_Framework_TestCase
     public function testCheckGrant()
     {
         $grant = $this->factory->getGrant('password');
-        $this->assertSame($grant, $this->factory->checkGrant($grant));
+        $this->assertNull($this->factory->checkGrant($grant));
     }
 
     /**
