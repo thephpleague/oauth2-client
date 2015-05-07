@@ -139,6 +139,7 @@ so please help them out with a pull request if you notice this.
 - [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
 - [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
 - [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
+- [Reddit](https://github.com/rtheunissen/oauth2-reddit)
 - [Square](https://packagist.org/packages/wheniwork/oauth2-square)
 - [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
 - [Uber](https://github.com/stevenmaguire/oauth2-uber)
