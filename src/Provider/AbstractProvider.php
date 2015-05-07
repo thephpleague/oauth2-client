@@ -8,7 +8,7 @@ use Ivory\HttpAdapter\HttpAdapterException;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 use Ivory\HttpAdapter\Message\RequestInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
 use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
@@ -76,6 +76,11 @@ abstract class AbstractProvider implements ProviderInterface
     public $authorizationHeader;
 
     /**
+     * @var GrantFactory
+     */
+    protected $grantFactory;
+
+    /**
      * @var HttpAdapterInterface
      */
     protected $httpClient;
@@ -108,6 +113,11 @@ abstract class AbstractProvider implements ProviderInterface
             }
         }
 
+        if (empty($collaborators['grantFactory'])) {
+            $collaborators['grantFactory'] = new GrantFactory();
+        }
+        $this->setGrantFactory($collaborators['grantFactory']);
+
         if (empty($collaborators['httpClient'])) {
             $collaborators['httpClient'] = new CurlHttpAdapter();
         }
@@ -117,6 +127,20 @@ abstract class AbstractProvider implements ProviderInterface
             $collaborators['randomFactory'] = new RandomFactory();
         }
         $this->setRandomFactory($collaborators['randomFactory']);
+    }
+
+    public function setGrantFactory(GrantFactory $factory)
+    {
+        $this->grantFactory = $factory;
+
+        return $this;
+    }
+
+    public function getGrantFactory()
+    {
+        $factory = $this->grantFactory;
+
+        return $factory;
     }
 
     public function setHttpClient(HttpAdapterInterface $client)
@@ -239,16 +263,9 @@ abstract class AbstractProvider implements ProviderInterface
     public function getAccessToken($grant = 'authorization_code', array $params = [])
     {
         if (is_string($grant)) {
-            // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
-            $className = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $grant)));
-            $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
-            if (! class_exists($grant)) {
-                throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
-            }
-            $grant = new $grant();
-        } elseif (! $grant instanceof GrantInterface) {
-            $message = get_class($grant).' is not an instance of League\OAuth2\Client\Grant\GrantInterface';
-            throw new \InvalidArgumentException($message);
+            $grant = $this->grantFactory->getGrant($grant);
+        } else {
+            $this->grantFactory->checkGrant($grant);
         }
 
         $defaultParams = [

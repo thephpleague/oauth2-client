@@ -32,7 +32,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
      */
     public function testInvalidGrantString()
     {
@@ -40,7 +40,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
      */
     public function testInvalidGrantObject()
     {
@@ -80,6 +80,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         foreach ($options as $key => $value) {
             $this->assertEquals($value, $mockProvider->{$key});
         }
+    }
+
+    public function testConstructorSetsGrantFactory()
+    {
+        $mockAdapter = m::mock('League\OAuth2\Client\Grant\GrantFactory');
+
+        $mockProvider = new MockProvider([], ['grantFactory' => $mockAdapter]);
+        $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
     }
 
     public function testConstructorSetsHttpAdapter()
