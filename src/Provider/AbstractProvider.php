@@ -283,18 +283,20 @@ abstract class AbstractProvider implements ProviderInterface
                 case 'GET':
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
-                    $httpResponse = $client->get($this->urlAccessToken(), [
-                        'headers' => $this->getHeaders(),
-                        'query' => $requestParams,
-                    ]);
+                    $httpResponse = $client->get(
+                        $this->urlAccessToken(),
+                        $this->getHeaders(),
+                        $requestParams
+                    );
                     $response = (string) $httpResponse->getBody();
                     break;
                     // @codeCoverageIgnoreEnd
                 case 'POST':
-                    $httpResponse = $client->post($this->urlAccessToken(), [
-                        'headers' => $this->getHeaders(),
-                        'body' => $requestParams,
-                    ]);
+                    $httpResponse = $client->post(
+                        $this->urlAccessToken(),
+                        $this->getHeaders(),
+                        $requestParams
+                    );
                     $response = (string) $httpResponse->getBody();
                     break;
                 // @codeCoverageIgnoreStart
