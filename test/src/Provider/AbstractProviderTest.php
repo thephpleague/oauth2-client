@@ -250,6 +250,51 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
     }
 
+    public function testGetAccessToken()
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $grant_name = 'mock';
+        $raw_response = ['access_token' => 'okay', 'expires_in' => 3600];
+        $token = new AccessToken($raw_response);
+
+        $contains_correct_grant_type = function ($params) use ($grant_name) {
+            return is_array($params) && $params['grant_type'] === $grant_name;
+        };
+
+        $grant = m::mock('League\OAuth2\Client\Grant\GrantInterface');
+        $grant->shouldReceive('__toString')
+              ->times(1)
+              ->andReturn($grant_name);
+        $grant->shouldReceive('prepRequestParams')
+              ->with(
+                  m::on($contains_correct_grant_type),
+                  m::type('array')
+              )
+              ->andReturn([]);
+        $grant->shouldReceive('handleResponse')
+              ->with($raw_response)
+              ->andReturn($token);
+
+        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response->shouldReceive('getBody')
+                 ->times(1)
+                 ->andReturn(json_encode($raw_response));
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')->times(1)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
+
+        $this->assertSame($result, $token);
+    }
+
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
         $provider = new MockProvider([
