@@ -286,7 +286,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->andReturn(json_encode($raw_response));
 
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $client->shouldReceive('post')
+            ->with(
+                $provider->urlAccessToken(),
+                $headers = m::type('array'),
+                $params = m::type('array')
+            )
+            ->times(1)->andReturn($response);
 
         $provider->setHttpClient($client);
 
@@ -309,7 +315,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->andReturn('{"error":"Foo error","code":1337}');
 
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $client->shouldReceive('post')
+            ->with(
+                $provider->urlAccessToken(),
+                $headers = m::type('array'),
+                $params = m::type('array')
+            )
+            ->times(1)->andReturn($response);
         $provider->setHttpClient($client);
 
         $errorMessage = '';
@@ -346,7 +358,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $exception->setResponse($response);
 
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andThrow($exception);
+        $client->shouldReceive('post')
+            ->with(
+                $provider->urlAccessToken(),
+                $headers = m::type('array'),
+                $params = m::type('array')
+            )
+            ->times(1)->andThrow($exception);
         $provider->setHttpClient($client);
 
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -369,7 +387,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->andReturn('not json');
 
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
+        $client->shouldReceive('post')
+            ->with(
+                $provider->urlAccessToken(),
+                $headers = m::type('array'),
+                $params = m::type('array')
+            )
+            ->times(1)->andReturn($response);
         $provider->setHttpClient($client);
 
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
