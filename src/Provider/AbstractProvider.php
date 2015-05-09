@@ -21,6 +21,11 @@ abstract class AbstractProvider implements ProviderInterface
     const ACCESS_TOKEN_METHOD = 'post';
 
     /**
+     * @var string Type of response expected from the provider.
+     */
+    const RESPONSE_TYPE = 'json';
+
+    /**
      * @var string Separator used for authorization scopes.
      */
     const SCOPE_SEPARATOR = ',';
@@ -54,11 +59,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @var string
      */
     protected $uidKey = 'uid';
-
-    /**
-     * @var string
-     */
-    protected $responseType = 'json';
 
     /**
      * @var GrantFactory
@@ -387,7 +387,7 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $result = [];
 
-        switch ($this->responseType) {
+        switch (static::RESPONSE_TYPE) {
             case 'json':
                 $result = json_decode($response, true);
                 if (JSON_ERROR_NONE !== json_last_error()) {
