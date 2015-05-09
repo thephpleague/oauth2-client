@@ -445,34 +445,6 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->prepareUserDetails($response, $token);
     }
 
-    public function getUserUid(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userUid($response, $token);
-    }
-
-    public function getUserEmail(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userEmail($response, $token);
-    }
-
-    public function getUserScreenName(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userScreenName($response, $token);
-    }
-
-    public function userUid($response, AccessToken $token)
-    {
-        if (!empty($response['id'])) {
-            return $response['id'];
-        }
-    }
-
     /**
      * Build HTTP the HTTP query, handling PHP version control options
      *
