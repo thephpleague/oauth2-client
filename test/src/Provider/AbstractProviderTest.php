@@ -108,9 +108,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $this->state = $provider->getState();
         };
 
-        $this->provider->setRedirectHandler($callback);
-
-        $this->provider->authorize();
+        $this->provider->authorize([], $callback);
 
         $this->assertNotFalse($this->testFunction);
         $this->assertAttributeEquals($this->state, 'state', $this->provider);

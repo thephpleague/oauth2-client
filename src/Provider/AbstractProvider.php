@@ -71,11 +71,6 @@ abstract class AbstractProvider implements ProviderInterface
     protected $randomFactory;
 
     /**
-     * @var Closure
-     */
-    protected $redirectHandler;
-
-    /**
      * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
      *          and the default encryption type for the http_build_query setup
      */
@@ -256,13 +251,11 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
-    // @codeCoverageIgnoreStart
-    public function authorize(array $options = [])
+    public function authorize(array $options = [], $redirectHandler = null)
     {
         $url = $this->getAuthorizationUrl($options);
-        if ($this->redirectHandler) {
-            $handler = $this->redirectHandler;
-            return $handler($url, $this);
+        if ($redirectHandler) {
+            return $redirectHandler($url, $this);
         }
         // @codeCoverageIgnoreStart
         header('Location: ' . $url);
@@ -517,10 +510,5 @@ abstract class AbstractProvider implements ProviderInterface
             $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
         }
         return $headers;
-    }
-
-    public function setRedirectHandler(Closure $handler)
-    {
-        $this->redirectHandler = $handler;
     }
 }
