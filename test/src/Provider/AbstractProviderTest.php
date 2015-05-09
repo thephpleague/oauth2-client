@@ -67,7 +67,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'state' => 'foo',
             'name' => 'bar',
             'uidKey' => 'mynewuid',
-            'method' => 'get',
             'responseType' => 'csv',
         ];
 

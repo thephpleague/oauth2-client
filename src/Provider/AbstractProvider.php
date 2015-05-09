@@ -16,12 +16,17 @@ use UnexpectedValueException;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
+     * @var string HTTP method used to fetch access tokens.
+     */
+    const ACCESS_TOKEN_METHOD = 'post';
+
+    /**
      * @var string Separator used for authorization scopes.
      */
     const SCOPE_SEPARATOR = ',';
 
     /**
-     * @var string Separator used for authorization scopes.
+     * @var string
      */
     protected $clientId = '';
 
@@ -49,11 +54,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @var string
      */
     protected $uidKey = 'uid';
-
-    /**
-     * @var string
-     */
-    protected $method = 'post';
 
     /**
      * @var string
@@ -294,7 +294,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         try {
             $client = $this->getHttpClient();
-            switch (strtoupper($this->method)) {
+            switch (strtoupper(static::ACCESS_TOKEN_METHOD)) {
                 case 'GET':
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
