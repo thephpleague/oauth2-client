@@ -119,6 +119,12 @@ abstract class AbstractProvider implements ProviderInterface
         $this->setRandomFactory($collaborators['randomFactory']);
     }
 
+    /**
+     * Set the grant factory instance.
+     *
+     * @param  GrantFactory $factory
+     * @return $this
+     */
     public function setGrantFactory(GrantFactory $factory)
     {
         $this->grantFactory = $factory;
@@ -126,13 +132,22 @@ abstract class AbstractProvider implements ProviderInterface
         return $this;
     }
 
+    /**
+     * Get the grant factory instance.
+     *
+     * @return GrantFactory
+     */
     public function getGrantFactory()
     {
-        $factory = $this->grantFactory;
-
-        return $factory;
+        return $this->grantFactory;
     }
 
+    /**
+     * Set the HTTP adapter instance.
+     *
+     * @param  HttpAdapterInterface $client
+     * @return $this
+     */
     public function setHttpClient(HttpAdapterInterface $client)
     {
         $this->httpClient = $client;
@@ -140,11 +155,14 @@ abstract class AbstractProvider implements ProviderInterface
         return $this;
     }
 
+    /**
+     * Get the HTTP adapter instance.
+     *
+     * @return HttpAdapterInterface
+     */
     public function getHttpClient()
     {
-        $client = $this->httpClient;
-
-        return $client;
+        return $this->httpClient;
     }
 
     /**
