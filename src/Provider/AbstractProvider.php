@@ -56,11 +56,6 @@ abstract class AbstractProvider implements ProviderInterface
     protected $state;
 
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var GrantFactory
      */
     protected $grantFactory;

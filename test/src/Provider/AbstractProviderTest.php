@@ -65,7 +65,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => '4567',
             'redirectUri' => 'http://example.org/redirect',
             'state' => 'foo',
-            'name' => 'bar',
         ];
 
         $mockProvider = new MockProvider($options);
