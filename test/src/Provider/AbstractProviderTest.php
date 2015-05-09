@@ -71,8 +71,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'method' => 'get',
             'scopeSeparator' => ';',
             'responseType' => 'csv',
-            'headers' => ['Foo' => 'Bar'],
-            'authorizationHeader' => 'Bearer',
         ];
 
         $mockProvider = new MockProvider($options);

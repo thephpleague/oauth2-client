@@ -66,16 +66,6 @@ abstract class AbstractProvider implements ProviderInterface
     protected $responseType = 'json';
 
     /**
-     * @var array
-     */
-    protected $headers = [];
-
-    /**
-     * @var string
-     */
-    protected $authorizationHeader;
-
-    /**
      * @var GrantFactory
      */
     protected $grantFactory;
@@ -491,18 +481,46 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->getResponse($request);
     }
 
-    protected function getAuthorizationHeaders($token)
+    /**
+     * Get additional headers used by this provider.
+     *
+     * Typically this is used to set Accept or Content-Type headers.
+     *
+     * @param  AccessToken $token
+     * @return array
+     */
+    protected function getDefaultHeaders($token = null)
     {
-        $headers = [];
-        if ($this->authorizationHeader) {
-            $headers['Authorization'] = $this->authorizationHeader . ' ' . $token;
-        }
-        return $headers;
+        return [];
     }
 
+    /**
+     * Get authorization headers used by this provider.
+     *
+     * Typically this is "Bearer" or "MAC". For more information see:
+     * http://tools.ietf.org/html/rfc6749#section-7.1
+     *
+     * No default is provided, providers must overload this method to activate
+     * authorization headers.
+     *
+     * @return array
+     */
+    protected function getAuthorizationHeaders($token = null)
+    {
+        return [];
+    }
+
+    /**
+     * Get the headers used by this provider for a request.
+     *
+     * If a token is passed, the request may be authenticated through headers.
+     *
+     * @param  mixed $token  object or string
+     * @return array
+     */
     public function getHeaders($token = null)
     {
-        $headers = $this->headers;
+        $headers = $this->getDefaultHeaders();
         if ($token) {
             $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
         }
