@@ -66,7 +66,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'redirectUri' => 'http://example.org/redirect',
             'state' => 'foo',
             'name' => 'bar',
-            'uidKey' => 'mynewuid',
         ];
 
         $mockProvider = new MockProvider($options);
@@ -260,7 +259,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $grant_name = 'mock';
-        $raw_response = ['access_token' => 'okay', 'expires_in' => 3600];
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
         $token = new AccessToken($raw_response);
 
         $contains_correct_grant_type = function ($params) use ($grant_name) {
@@ -300,6 +299,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertSame($result, $token);
+        $this->assertSame($raw_response['uid'], $token->uid);
+        $this->assertSame($raw_response['access_token'], $token->accessToken);
+        $this->assertSame($raw_response['expires'], $token->expires);
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()

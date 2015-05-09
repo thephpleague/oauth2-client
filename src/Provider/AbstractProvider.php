@@ -21,6 +21,11 @@ abstract class AbstractProvider implements ProviderInterface
     const ACCESS_TOKEN_METHOD = 'post';
 
     /**
+     * @var string Key used in the access token response to identify the user.
+     */
+    const ACCESS_TOKEN_UID = 'uid';
+
+    /**
      * @var string Type of response expected from the provider.
      */
     const RESPONSE_TYPE = 'json';
@@ -54,11 +59,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @var string
      */
     protected $name;
-
-    /**
-     * @var string
-     */
-    protected $uidKey = 'uid';
 
     /**
      * @var GrantFactory
@@ -414,34 +414,18 @@ abstract class AbstractProvider implements ProviderInterface
     abstract protected function checkResponse(array $response);
 
     /**
-     * Prepare the access token response for the grant. Custom mapping of
-     * expirations, etc should be done here.
+     * Prepare the access token response for the grant.
+     *
+     * Custom mapping of expirations, etc should be done here. Always call the
+     * parent method when overloading this method!
      *
      * @param  array $result
      * @return array
      */
     protected function prepareAccessTokenResult(array $result)
     {
-        $this->setResultUid($result);
+        $result['uid'] = $result[static::ACCESS_TOKEN_UID];
         return $result;
-    }
-
-    /**
-     * Sets any result keys we've received matching our provider-defined uidKey to the key "uid".
-     *
-     * @param array $result
-     */
-    protected function setResultUid(array &$result)
-    {
-        // If we're operating with the default uidKey there's nothing to do.
-        if ($this->uidKey === "uid") {
-            return;
-        }
-
-        if (isset($result[$this->uidKey])) {
-            // The AccessToken expects a "uid" to have the key "uid".
-            $result['uid'] = $result[$this->uidKey];
-        }
     }
 
     /**
