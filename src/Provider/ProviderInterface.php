@@ -33,21 +33,6 @@ interface ProviderInterface
     public function urlUserDetails(AccessToken $token);
 
     /**
-     * Get the configured scopes for this provider.
-     *
-     * @return array
-     */
-    public function getScopes();
-
-    /**
-     * Configure the scopes that will be requested by this provider.
-     *
-     * @param array $scopes
-     * @return void
-     */
-    public function setScopes(array $scopes);
-
-    /**
      * Get the URL that this provider uses to request authorization.
      *
      * Additional options such as the OAuth state and response type can be set here.

@@ -16,7 +16,12 @@ use UnexpectedValueException;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @var string
+     * @var string Separator used for authorization scopes.
+     */
+    const SCOPE_SEPARATOR = ',';
+
+    /**
+     * @var string Separator used for authorization scopes.
      */
     protected $clientId = '';
 
@@ -46,19 +51,9 @@ abstract class AbstractProvider implements ProviderInterface
     protected $uidKey = 'uid';
 
     /**
-     * @var array
-     */
-    protected $scopes = [];
-
-    /**
      * @var string
      */
     protected $method = 'post';
-
-    /**
-     * @var string
-     */
-    protected $scopeSeparator = ',';
 
     /**
      * @var string
@@ -208,16 +203,6 @@ abstract class AbstractProvider implements ProviderInterface
     abstract public function urlUserDetails(AccessToken $token);
     // End of methods to delete.
 
-    public function getScopes()
-    {
-        return $this->scopes;
-    }
-
-    public function setScopes(array $scopes)
-    {
-        $this->scopes = $scopes;
-    }
-
     /**
      * Get a new random string to use for auth state.
      *
@@ -233,26 +218,36 @@ abstract class AbstractProvider implements ProviderInterface
         return $generator->generateString($length);
     }
 
+    /**
+     * Get the default scopes used by this provider.
+     *
+     * This should not be a complete list of all scopes, but the minimum
+     * required for the provider user interface!
+     *
+     * @return array
+     */
+    abstract protected function getDefaultScopes();
+
     public function getAuthorizationUrl(array $options = [])
     {
         if (empty($options['state'])) {
             $options['state'] = $this->getRandomState();
         }
-
-        // Store the state, it may need to be accessed later.
-        $this->state = $options['state'];
+        if (empty($options['scope'])) {
+            $options['scope'] = $this->getDefaultScopes();
+        }
 
         $options += [
-            // Do not set the default state here! The random generator takes a
-            // non-trivial amount of time to run.
             'response_type'   => 'code',
             'approval_prompt' => 'auto',
-            'scope'           => $this->scopes,
         ];
 
         if (is_array($options['scope'])) {
-            $options['scope'] = implode($this->scopeSeparator, $options['scope']);
+            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
         }
+
+        // Store the state, it may need to be accessed later.
+        $this->state = $options['state'];
 
         $params = [
             'client_id'       => $this->clientId,

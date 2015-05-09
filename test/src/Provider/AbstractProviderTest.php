@@ -67,9 +67,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'state' => 'foo',
             'name' => 'bar',
             'uidKey' => 'mynewuid',
-            'scopes' => ['a', 'b', 'c'],
             'method' => 'get',
-            'scopeSeparator' => ';',
             'responseType' => 'csv',
         ];
 
@@ -213,6 +211,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testScopesOverloadedDuringAuthorize()
     {
+        $url = $this->provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('scope', $qs);
+        $this->assertSame('test', $qs['scope']);
+
         $url = $this->provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
 
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
