@@ -38,17 +38,17 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * @var string
      */
-    protected $clientId = '';
+    protected $clientId;
 
     /**
      * @var string
      */
-    protected $clientSecret = '';
+    protected $clientSecret;
 
     /**
      * @var string
      */
-    protected $redirectUri = '';
+    protected $redirectUri;
 
     /**
      * @var string
