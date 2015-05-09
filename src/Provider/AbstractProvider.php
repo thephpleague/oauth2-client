@@ -18,62 +18,62 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * @var string
      */
-    public $clientId = '';
+    protected $clientId = '';
 
     /**
      * @var string
      */
-    public $clientSecret = '';
+    protected $clientSecret = '';
 
     /**
      * @var string
      */
-    public $redirectUri = '';
+    protected $redirectUri = '';
 
     /**
      * @var string
      */
-    public $state;
+    protected $state;
 
     /**
      * @var string
      */
-    public $name;
+    protected $name;
 
     /**
      * @var string
      */
-    public $uidKey = 'uid';
+    protected $uidKey = 'uid';
 
     /**
      * @var array
      */
-    public $scopes = [];
+    protected $scopes = [];
 
     /**
      * @var string
      */
-    public $method = 'post';
+    protected $method = 'post';
 
     /**
      * @var string
      */
-    public $scopeSeparator = ',';
+    protected $scopeSeparator = ',';
 
     /**
      * @var string
      */
-    public $responseType = 'json';
+    protected $responseType = 'json';
 
     /**
      * @var array
      */
-    public $headers = [];
+    protected $headers = [];
 
     /**
      * @var string
      */
-    public $authorizationHeader;
+    protected $authorizationHeader;
 
     /**
      * @var GrantFactory
@@ -178,6 +178,18 @@ abstract class AbstractProvider implements ProviderInterface
     public function getRandomFactory()
     {
         return $this->randomFactory;
+    }
+
+    /**
+     * Get the current state of the OAuth flow.
+     *
+     * This can be accessed by the redirect handler during authorization.
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 
     // Implementing these interfaces methods should not be required, but not

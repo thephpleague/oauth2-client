@@ -78,7 +78,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $mockProvider = new MockProvider($options);
 
         foreach ($options as $key => $value) {
-            $this->assertEquals($value, $mockProvider->{$key});
+            $this->assertAttributeEquals($value, $key, $mockProvider);
         }
     }
 
@@ -113,7 +113,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $callback = function ($url, $provider) {
             $this->testFunction = $url;
-            $this->state = $provider->state;
+            $this->state = $provider->getState();
         };
 
         $this->provider->setRedirectHandler($callback);
@@ -121,7 +121,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->provider->authorize();
 
         $this->assertNotFalse($this->testFunction);
-        $this->assertEquals($this->provider->state, $this->state);
+        $this->assertAttributeEquals($this->state, 'state', $this->provider);
     }
 
     /**
@@ -403,8 +403,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $provider = clone $this->provider;
-        $provider->authorizationHeader = 'Bearer';
+        $provider = new MockProvider(['authorizationHeader' => 'Bearer']);
 
         $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
         $this->assertInstanceOf('Ivory\HttpAdapter\Message\RequestInterface', $request);
