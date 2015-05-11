@@ -64,21 +64,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'clientId' => '1234',
             'clientSecret' => '4567',
             'redirectUri' => 'http://example.org/redirect',
-            'state' => 'foo',
-            'name' => 'bar',
-            'uidKey' => 'mynewuid',
-            'scopes' => ['a', 'b', 'c'],
-            'method' => 'get',
-            'scopeSeparator' => ';',
-            'responseType' => 'csv',
-            'headers' => ['Foo' => 'Bar'],
-            'authorizationHeader' => 'Bearer',
+            'httpBuildEncType' => 4,
         ];
 
         $mockProvider = new MockProvider($options);
 
         foreach ($options as $key => $value) {
-            $this->assertEquals($value, $mockProvider->{$key});
+            $this->assertAttributeEquals($value, $key, $mockProvider);
         }
     }
 
@@ -113,15 +105,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $callback = function ($url, $provider) {
             $this->testFunction = $url;
-            $this->state = $provider->state;
+            $this->state = $provider->getState();
         };
 
-        $this->provider->setRedirectHandler($callback);
-
-        $this->provider->authorize();
+        $this->provider->authorize([], $callback);
 
         $this->assertNotFalse($this->testFunction);
-        $this->assertEquals($this->provider->state, $this->state);
+        $this->assertAttributeEquals($this->state, 'state', $this->provider);
     }
 
     /**
@@ -215,6 +205,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testScopesOverloadedDuringAuthorize()
     {
+        $url = $this->provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('scope', $qs);
+        $this->assertSame('test', $qs['scope']);
+
         $url = $this->provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
 
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
@@ -259,7 +256,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $grant_name = 'mock';
-        $raw_response = ['access_token' => 'okay', 'expires_in' => 3600];
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
         $token = new AccessToken($raw_response);
 
         $contains_correct_grant_type = function ($params) use ($grant_name) {
@@ -299,6 +296,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertSame($result, $token);
+        $this->assertSame($raw_response['uid'], $token->uid);
+        $this->assertSame($raw_response['access_token'], $token->accessToken);
+        $this->assertSame($raw_response['expires'], $token->expires);
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
@@ -403,8 +403,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $provider = clone $this->provider;
-        $provider->authorizationHeader = 'Bearer';
+        $provider = new MockProvider(['authorizationHeader' => 'Bearer']);
 
         $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
         $this->assertInstanceOf('Ivory\HttpAdapter\Message\RequestInterface', $request);
