@@ -296,9 +296,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertSame($result, $token);
-        $this->assertSame($raw_response['uid'], $token->uid);
-        $this->assertSame($raw_response['access_token'], $token->accessToken);
-        $this->assertSame($raw_response['expires'], $token->expires);
+        $this->assertSame($raw_response['uid'], $token->getUid());
+        $this->assertSame($raw_response['access_token'], $token->getToken());
+        $this->assertSame($raw_response['expires'], $token->getExpires());
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()

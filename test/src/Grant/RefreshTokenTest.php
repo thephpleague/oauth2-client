@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
+use League\OAuth2\Client\Grant\RefreshToken;
+use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use Mockery as m;
 
 class RefreshTokenTest extends \PHPUnit_Framework_TestCase
@@ -11,7 +13,7 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Test\Provider\Fake([
+        $this->provider = new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
@@ -37,10 +39,10 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
 
-        $grant = new \League\OAuth2\Client\Grant\RefreshToken();
+        $grant = new RefreshToken();
         $this->assertEquals('refresh_token', (string) $grant);
 
-        $newToken = $this->provider->getAccessToken($grant, ['refresh_token' => $token->refreshToken]);
+        $newToken = $this->provider->getAccessToken($grant, ['refresh_token' => $token->getRefreshToken()]);
         $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $newToken);
     }
 
@@ -59,7 +61,7 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
-        $grant = new \League\OAuth2\Client\Grant\RefreshToken();
-        $refreshToken = $this->provider->getAccessToken($grant, ['invalid_refresh_token' => $token->refreshToken]);
+        $grant = new RefreshToken();
+        $refreshToken = $this->provider->getAccessToken($grant, ['invalid_refresh_token' => $token->getRefreshToken()]);
     }
 }
