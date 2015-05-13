@@ -89,7 +89,7 @@ if (!isset($_GET['code'])) {
     // Use this to get a new access token if the old one expires
     echo $token->refreshToken;
 
-    // Number of seconds until the access token will expire, and need refreshing
+    // Unix timestamp of when the token will expire, and need refreshing
     echo $token->expires;
 }
 ```
