@@ -44,7 +44,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     /**
      * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
-     *          and the default encryption type for the http_build_query setup
+     *          and the default encoding type for the http_build_query setup
      */
     protected $httpBuildEncType = 1;
 
