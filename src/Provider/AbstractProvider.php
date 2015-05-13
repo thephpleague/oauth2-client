@@ -23,7 +23,7 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * @var string Key used in the access token response to identify the user.
      */
-    const ACCESS_TOKEN_UID = 'uid';
+    const ACCESS_TOKEN_UID = null;
 
     /**
      * @var string Type of response expected from the provider.
@@ -412,7 +412,9 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected function prepareAccessTokenResult(array $result)
     {
-        $result['uid'] = $result[static::ACCESS_TOKEN_UID];
+        if (static::ACCESS_TOKEN_UID) {
+            $result['uid'] = $result[static::ACCESS_TOKEN_UID];
+        }
         return $result;
     }
 
