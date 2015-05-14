@@ -81,7 +81,7 @@ abstract class AbstractProvider implements ProviderInterface
     abstract public function urlAuthorize();
 
     /**
-     * Get the URL that this provider users to request an access token.
+     * Get the URL that this provider uses to request an access token.
      *
      * @return string
      */
