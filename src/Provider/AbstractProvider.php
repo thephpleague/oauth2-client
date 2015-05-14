@@ -16,6 +16,16 @@ use UnexpectedValueException;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
+     * @var string JSON response type.
+     */
+    const RESPONSE_TYPE_JSON = 'json';
+
+    /**
+     * @var string Parameter string response type.
+     */
+    const RESPONSE_TYPE_STRING = 'string';
+
+    /**
      * @var string HTTP method used to fetch access tokens.
      */
     const ACCESS_TOKEN_METHOD = 'post';
@@ -24,11 +34,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @var string Key used in the access token response to identify the user.
      */
     const ACCESS_TOKEN_UID = null;
-
-    /**
-     * @var string Type of response expected from the provider.
-     */
-    const RESPONSE_TYPE = 'json';
 
     /**
      * @var string Separator used for authorization scopes.
@@ -365,6 +370,16 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Get the expected type of response for this provider.
+     *
+     * @return string
+     */
+    protected function getResponseType()
+    {
+        return static::RESPONSE_TYPE_JSON;
+    }
+
+    /**
      * Parse the response, according to the provider response type.
      *
      * @throws UnexpectedValueException
@@ -375,14 +390,14 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $result = [];
 
-        switch (static::RESPONSE_TYPE) {
-            case 'json':
+        switch ($this->getResponseType()) {
+            case static::RESPONSE_TYPE_JSON:
                 $result = json_decode($response, true);
                 if (JSON_ERROR_NONE !== json_last_error()) {
                     throw new UnexpectedValueException('Unable to parse client response');
                 }
                 break;
-            case 'string':
+            case static::RESPONSE_TYPE_STRING:
                 parse_str($response, $result);
                 break;
         }
