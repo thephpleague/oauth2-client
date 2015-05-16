@@ -107,6 +107,12 @@ abstract class AbstractProvider implements ProviderInterface
             $collaborators['randomFactory'] = new RandomFactory();
         }
         $this->setRandomFactory($collaborators['randomFactory']);
+
+        if (!empty($options['timeout'])) {
+            $this->getHttpClient()
+                ->getConfiguration()
+                ->setTimeout($options['timeout']);
+        }
     }
 
     /**

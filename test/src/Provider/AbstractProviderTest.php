@@ -74,6 +74,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testConstructorSetsClientOptions()
+    {
+        $timeout = rand(100, 900);
+
+        $mockProvider = new MockProvider(compact('timeout'));
+
+        $config = $mockProvider->getHttpClient()->getConfiguration();
+
+        $this->assertEquals($timeout, $config->getTimeout());
+    }
+
     public function testConstructorSetsGrantFactory()
     {
         $mockAdapter = m::mock('League\OAuth2\Client\Grant\GrantFactory');
