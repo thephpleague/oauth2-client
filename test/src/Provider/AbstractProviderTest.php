@@ -339,6 +339,27 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException \Ivory\HttpAdapter\HttpAdapterException
+     */
+    public function testClientErrorWithoutResponseFailure()
+    {
+        $provider = new MockProvider();
+
+        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client->shouldReceive('post')
+            ->with(
+                $provider->urlAccessToken(),
+                $headers = m::type('array'),
+                $params = m::type('array')
+            )
+            ->times(1)->andThrow(new HttpAdapterException);
+
+        $provider->setHttpClient($client);
+
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
+    /**
      * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
      */
     public function testClientErrorTriggersProviderException()
