@@ -313,6 +313,9 @@ abstract class AbstractProvider implements ProviderInterface
                 // @codeCoverageIgnoreEnd
             }
         } catch (HttpAdapterException $e) {
+            if (!$e->hasResponse()) {
+                throw $e;
+            }
             $response = (string) $e->getResponse()->getBody();
         }
 
@@ -361,6 +364,9 @@ abstract class AbstractProvider implements ProviderInterface
 
             $response = (string) $httpResponse->getBody();
         } catch (HttpAdapterException $e) {
+            if (!$e->hasResponse()) {
+                throw $e;
+            }
             $response = (string) $e->getResponse()->getBody();
         }
 
