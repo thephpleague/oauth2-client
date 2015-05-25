@@ -407,6 +407,15 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Check a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @param  array $response
+     * @return void
+     */
+    abstract protected function checkResponse(array $response);
+
+    /**
      * Parse the response, according to the provider response type.
      *
      * @throws UnexpectedValueException
@@ -435,13 +444,14 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * Check a provider response for errors.
+     * Get the user identifier that is defined in the access token.
      *
-     * @throws IdentityProviderException
-     * @param  array $response
-     * @return void
+     * @return string|null
      */
-    abstract protected function checkResponse(array $response);
+    protected function getAccessTokenUid()
+    {
+        // overload this if a uid is provided in the access token
+    }
 
     /**
      * Prepare the access token response for the grant.
@@ -454,8 +464,8 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected function prepareAccessTokenResult(array $result)
     {
-        if (static::ACCESS_TOKEN_UID) {
-            $result['uid'] = $result[static::ACCESS_TOKEN_UID];
+        if ($uid = $this->getAccessTokenUid()) {
+            $result['uid'] = $result[$uid];
         }
         return $result;
     }
