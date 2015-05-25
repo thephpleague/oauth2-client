@@ -24,6 +24,16 @@ abstract class AbstractProvider
     const ACCESS_TOKEN_UID = null;
 
     /**
+     * @var string HTTP method used to fetch access tokens.
+     */
+    const ACCESS_TOKEN_METHOD_GET = 'GET';
+
+    /**
+     * @var string HTTP method used to fetch access tokens.
+     */
+    const ACCESS_TOKEN_METHOD_POST = 'POST';
+
+    /**
      * @var string
      */
     protected $clientId;
@@ -345,7 +355,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenMethod()
     {
-        return 'POST';
+        return self::ACCESS_TOKEN_METHOD_POST;
     }
 
     /**
