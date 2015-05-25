@@ -36,11 +36,6 @@ abstract class AbstractProvider implements ProviderInterface
     const ACCESS_TOKEN_UID = null;
 
     /**
-     * @var string Separator used for authorization scopes.
-     */
-    const SCOPE_SEPARATOR = ',';
-
-    /**
      * @var string
      */
     protected $clientId;
@@ -229,6 +224,16 @@ abstract class AbstractProvider implements ProviderInterface
      */
     abstract protected function getDefaultScopes();
 
+    /**
+     * Get the string used to separate scopes.
+     *
+     * @return string
+     */
+    protected function getScopeSeparator()
+    {
+        return ',';
+    }
+
     public function getAuthorizationUrl(array $options = [])
     {
         if (empty($options['state'])) {
@@ -244,7 +249,7 @@ abstract class AbstractProvider implements ProviderInterface
         ];
 
         if (is_array($options['scope'])) {
-            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
+            $options['scope'] = implode($this->getScopeSeparator(), $options['scope']);
         }
 
         // Store the state, it may need to be accessed later.
