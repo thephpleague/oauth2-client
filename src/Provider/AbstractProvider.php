@@ -24,11 +24,6 @@ abstract class AbstractProvider
     const ACCESS_TOKEN_UID = null;
 
     /**
-     * @var string Separator used for authorization scopes.
-     */
-    const SCOPE_SEPARATOR = ',';
-
-    /**
      * @var string
      */
     protected $clientId;
@@ -238,6 +233,16 @@ abstract class AbstractProvider
     abstract protected function getDefaultScopes();
 
     /**
+     * Get the string used to separate scopes.
+     *
+     * @return string
+     */
+    protected function getScopeSeparator()
+    {
+        return ',';
+    }
+
+    /**
      * Returns authorization parameters based on provided options.
      *
      * @param array $options
@@ -259,7 +264,7 @@ abstract class AbstractProvider
         ];
 
         if (is_array($options['scope'])) {
-            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
+            $options['scope'] = implode($this->getScopeSeparator(), $options['scope']);
         }
 
         // Store the state, it may need to be accessed later.
