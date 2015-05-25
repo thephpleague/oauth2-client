@@ -28,12 +28,12 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * @var string HTTP method used to fetch access tokens.
      */
-    const ACCESS_TOKEN_METHOD = 'post';
+    const ACCESS_TOKEN_METHOD_GET = 'GET';
 
     /**
-     * @var string Key used in the access token response to identify the user.
+     * @var string HTTP method used to fetch access tokens.
      */
-    const ACCESS_TOKEN_UID = null;
+    const ACCESS_TOKEN_METHOD_POST = 'POST';
 
     /**
      * @var string
@@ -279,6 +279,16 @@ abstract class AbstractProvider implements ProviderInterface
         // @codeCoverageIgnoreEnd
     }
 
+    /**
+     * Get the HTTP method used to retrieve the access token.
+     *
+     * @return string
+     */
+    protected function getAccessTokenMethod()
+    {
+        return static::ACCESS_TOKEN_METHOD_POST;
+    }
+
     public function getAccessToken($grant = 'authorization_code', array $params = [])
     {
         if (is_string($grant)) {
@@ -298,8 +308,8 @@ abstract class AbstractProvider implements ProviderInterface
 
         try {
             $client = $this->getHttpClient();
-            switch (strtoupper(static::ACCESS_TOKEN_METHOD)) {
-                case 'GET':
+            switch (strtoupper($this->getAccessTokenMethod())) {
+                case static::ACCESS_TOKEN_METHOD_GET:
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
                     $httpResponse = $client->get(
@@ -310,7 +320,7 @@ abstract class AbstractProvider implements ProviderInterface
                     $response = (string) $httpResponse->getBody();
                     break;
                     // @codeCoverageIgnoreEnd
-                case 'POST':
+                case static::ACCESS_TOKEN_METHOD_POST:
                     $httpResponse = $client->post(
                         $this->urlAccessToken(),
                         $this->getHeaders(),
