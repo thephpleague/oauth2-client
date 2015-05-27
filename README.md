@@ -145,6 +145,7 @@ so please help them out with a pull request if you notice this.
 - [Square](https://packagist.org/packages/wheniwork/oauth2-square)
 - [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
 - [Uber](https://github.com/stevenmaguire/oauth2-uber)
+- [Vend](https://github.com/wheniwork/oauth2-vend)
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 - [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll)
