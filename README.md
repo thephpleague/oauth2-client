@@ -131,6 +131,7 @@ below.
 These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
 so please help them out with a pull request if you notice this.
 
+- [Amazon](https://github.com/lemonstand/oauth2-amazon/)
 - [Auth0](https://github.com/RiskioFr/oauth2-auth0)
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
 - [Clover](https://github.com/wheniwork/oauth2-clover)
