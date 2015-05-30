@@ -39,6 +39,8 @@ The following versions of PHP are supported.
 
 ### Authorization Code Flow
 
+*Note: This example code requires the Google+ API to be enabled in your developer console*
+
 ```php
 $provider = new League\OAuth2\Client\Provider\<ProviderName>([
     'clientId'      => 'XXXXXXXX',
