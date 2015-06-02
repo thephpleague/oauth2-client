@@ -232,7 +232,7 @@ abstract class AbstractProvider implements ProviderInterface
         // @codeCoverageIgnoreEnd
     }
 
-    public function getAccessToken($grant = 'authorization_code', array $params = [])
+    protected function parseGrant($grant)
     {
         if (is_string($grant)) {
             // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
@@ -247,6 +247,13 @@ abstract class AbstractProvider implements ProviderInterface
             throw new \InvalidArgumentException($message);
         }
 
+        return $grant;
+    }
+
+    public function getAccessToken($grant = 'authorization_code', array $params = [])
+    {
+        $grant = $this->parseGrant($grant);
+
         $defaultParams = [
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
@@ -258,9 +265,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         try {
             $client = $this->getHttpClient();
-            $method = $this->method;
-
-            $response = $client->$method($this->urlAccessToken(), [
+            $response = $client->{$this->method}($this->urlAccessToken(), [
                 'headers' => $this->getHeaders(),
                 'query' => $requestParams,
             ]);
@@ -281,12 +286,6 @@ abstract class AbstractProvider implements ProviderInterface
     public function getRequest($method, $url, AccessToken $token, $body = null)
     {
         return new Request($method, $url, $this->getHeaders($token), $body);
-    }
-
-    public function makeRequest($method, $url, AccessToken $token, $body = null)
-    {
-        $request = $this->getAuthenticatedRequest($method, $url, $token, $body);
-        return $this->getResponse($request);
     }
 
     /**
@@ -342,7 +341,6 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         $this->checkResponse($result);
-
         return $result;
     }
 
