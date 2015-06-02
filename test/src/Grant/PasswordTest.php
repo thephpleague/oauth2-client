@@ -2,42 +2,28 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use Mockery as m;
+use League\OAuth2\Client\Grant\Password;
 
-class PasswordTest extends \PHPUnit_Framework_TestCase
+class PasswordTest extends GrantTestCase
 {
-    /** @var \League\OAuth2\Client\Provider\AbstractProvider */
-    protected $provider;
-
-    protected function setUp()
+    public function providerGetAccessToken()
     {
-        $this->provider = new \League\OAuth2\Client\Test\Provider\Fake(array(
-            'clientId' => 'mock_client_id',
-            'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-        ));
+        return [
+            ['password', ['username' => 'mock_username', 'password' => 'mock_password']],
+        ];
     }
 
-    public function tearDown()
+    protected function getParamsExpectation()
     {
-        m::close();
-        parent::tearDown();
+        return function ($params) {
+            return !empty($params['username'])
+                && !empty($params['password']);
+        };
     }
 
-    public function testGetAccessToken()
+    public function testToString()
     {
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
-
-        $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
-
-        $this->provider->setHttpClient($client);
-
-        $token = $this->provider->getAccessToken('password', array('username' => 'mock_username', 'password' => 'mock_password'));
-        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
-
-        $grant = new \League\OAuth2\Client\Grant\Password();
+        $grant = new Password();
         $this->assertEquals('password', (string) $grant);
     }
 
@@ -46,7 +32,7 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidUsername()
     {
-        $this->provider->getAccessToken('password', array('invalid_username' => 'mock_username', 'password' => 'mock_password'));
+        $this->provider->getAccessToken('password', ['invalid_username' => 'mock_username', 'password' => 'mock_password']);
     }
 
     /**
@@ -54,6 +40,6 @@ class PasswordTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidPassword()
     {
-        $this->provider->getAccessToken('password', array('username' => 'mock_username', 'invalid_password' => 'mock_password'));
+        $this->provider->getAccessToken('password', ['username' => 'mock_username', 'invalid_password' => 'mock_password']);
     }
 }

@@ -3,11 +3,14 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class Fake extends AbstractProvider
 {
+    use BearerAuthorizationTrait;
+
     public function urlAuthorize()
     {
         return 'http://example.com/oauth/authorize';
@@ -23,9 +26,14 @@ class Fake extends AbstractProvider
         return 'http://example.com/oauth/user';
     }
 
-    public function userDetails($response, AccessToken $token)
+    protected function getDefaultScopes()
     {
-        return new Fake\User;
+        return ['test'];
+    }
+
+    protected function prepareUserDetails(array $response, AccessToken $token)
+    {
+        return new Fake\User($response);
     }
 
     protected function checkResponse(array $response)

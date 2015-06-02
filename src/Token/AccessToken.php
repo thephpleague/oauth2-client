@@ -7,38 +7,32 @@ use InvalidArgumentException;
 class AccessToken
 {
     /**
-     * @var  string  accessToken
+     * @var  string
      */
-    public $accessToken;
+    protected $accessToken;
 
     /**
-     * @var  int  expires
+     * @var  int
      */
-    public $expires;
+    protected $expires;
 
     /**
-     * @var  string  refreshToken
+     * @var  string
      */
-    public $refreshToken;
+    protected $refreshToken;
 
     /**
-     * @var  string  uid
+     * @var  string
      */
-    public $uid;
+    protected $uid;
 
     /**
-     * Sets the token, expiry, etc values.
-     *
-     * @param  array $options token options
-     * @return void
+     * @param array $options
      */
-    public function __construct(array $options = null)
+    public function __construct(array $options = [])
     {
-        if (! isset($options['access_token'])) {
-            throw new \InvalidArgumentException(
-                'Required option not passed: access_token'.PHP_EOL
-                .print_r($options, true)
-            );
+        if (empty($options['access_token'])) {
+            throw new InvalidArgumentException('Required option not passed: "access_token"');
         }
 
         $this->accessToken = $options['access_token'];
@@ -66,12 +60,52 @@ class AccessToken
     }
 
     /**
+     * Get the access token.
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * Get the refresh token, if defined.
+     *
+     * @return string|null
+     */
+    public function getRefreshToken()
+    {
+        return $this->refreshToken;
+    }
+
+    /**
+     * Get the expiration timestamp, if defined.
+     *
+     * @return integer|null
+     */
+    public function getExpires()
+    {
+        return $this->expires;
+    }
+
+    /**
+     * Get the user identifier, if defined.
+     *
+     * @return string|null
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
      * Returns the token key.
      *
      * @return string
      */
     public function __toString()
     {
-        return (string) $this->accessToken;
+        return (string) $this->getToken();
     }
 }

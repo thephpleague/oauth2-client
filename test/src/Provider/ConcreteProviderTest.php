@@ -20,7 +20,7 @@ abstract class ConcreteProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function createMockHttpClient()
     {
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock('GuzzleHttp\Client');
         $client->shouldReceive('getConfiguration')->andReturn(new \Ivory\HttpAdapter\Configuration());
 
         return $client;

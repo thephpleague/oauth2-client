@@ -10,7 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
 use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
@@ -18,64 +18,54 @@ use UnexpectedValueException;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @var string
+     * @var string JSON response type.
      */
-    public $clientId = '';
+    const RESPONSE_TYPE_JSON = 'json';
+
+    /**
+     * @var string Parameter string response type.
+     */
+    const RESPONSE_TYPE_STRING = 'string';
+
+    /**
+     * @var string HTTP method used to fetch access tokens.
+     */
+    const ACCESS_TOKEN_METHOD = 'post';
+
+    /**
+     * @var string Key used in the access token response to identify the user.
+     */
+    const ACCESS_TOKEN_UID = null;
+
+    /**
+     * @var string Separator used for authorization scopes.
+     */
+    const SCOPE_SEPARATOR = ',';
 
     /**
      * @var string
      */
-    public $clientSecret = '';
+    protected $clientId;
 
     /**
      * @var string
      */
-    public $redirectUri = '';
+    protected $clientSecret;
 
     /**
      * @var string
      */
-    public $state;
+    protected $redirectUri;
 
     /**
      * @var string
      */
-    public $name;
+    protected $state;
 
     /**
-     * @var string
+     * @var GrantFactory
      */
-    public $uidKey = 'uid';
-
-    /**
-     * @var array
-     */
-    public $scopes = [];
-
-    /**
-     * @var string
-     */
-    public $method = 'post';
-
-    /**
-     * @var string
-     */
-    public $scopeSeparator = ',';
-
-    /**
-     * @var string
-     */
-    public $responseType = 'json';
-
-    /**
-     * @var array
-     */
-    public $headers = [];
-
-    /**
-     * @var string
-     */
-    public $authorizationHeader;
+    protected $grantFactory;
 
     /**
      * @var HttpAdapterInterface
@@ -86,11 +76,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @var RandomFactory
      */
     protected $randomFactory;
-
-    /**
-     * @var Closure
-     */
-    protected $redirectHandler;
 
     /**
      * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
@@ -110,6 +95,11 @@ abstract class AbstractProvider implements ProviderInterface
             }
         }
 
+        if (empty($collaborators['grantFactory'])) {
+            $collaborators['grantFactory'] = new GrantFactory();
+        }
+        $this->setGrantFactory($collaborators['grantFactory']);
+
         if (empty($collaborators['httpClient'])) {
             $collaborators['httpClient'] = new Client();
         }
@@ -119,14 +109,54 @@ abstract class AbstractProvider implements ProviderInterface
             $collaborators['randomFactory'] = new RandomFactory();
         }
         $this->setRandomFactory($collaborators['randomFactory']);
+
+        if (!empty($options['timeout'])) {
+            $this->getHttpClient()
+                ->getConfiguration()
+                ->setTimeout($options['timeout']);
+        }
     }
 
+    /**
+     * Set the grant factory instance.
+     *
+     * @param  GrantFactory $factory
+     * @return $this
+     */
+    public function setGrantFactory(GrantFactory $factory)
+    {
+        $this->grantFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Get the grant factory instance.
+     *
+     * @return GrantFactory
+     */
+    public function getGrantFactory()
+    {
+        return $this->grantFactory;
+    }
+
+    /**
+     * Set the http client.
+     *
+     * @param  ClientInterface $client
+     * @return $this
+     */
     public function setHttpClient(ClientInterface $client)
     {
         $this->httpClient = $client;
         return $this;
     }
 
+    /**
+     * Get the HTTP adapter instance.
+     *
+     * @return HttpAdapterInterface
+     */
     public function getHttpClient()
     {
         return $this->httpClient;
@@ -154,24 +184,25 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->randomFactory;
     }
 
+    /**
+     * Get the current state of the OAuth flow.
+     *
+     * This can be accessed by the redirect handler during authorization.
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
     // Implementing these interfaces methods should not be required, but not
     // doing so will break HHVM because of https://github.com/facebook/hhvm/issues/5170
     // Once HHVM is working, delete the following abstract methods.
     abstract public function urlAuthorize();
     abstract public function urlAccessToken();
     abstract public function urlUserDetails(AccessToken $token);
-    abstract public function userDetails($response, AccessToken $token);
     // End of methods to delete.
-
-    public function getScopes()
-    {
-        return $this->scopes;
-    }
-
-    public function setScopes(array $scopes)
-    {
-        $this->scopes = $scopes;
-    }
 
     /**
      * Get a new random string to use for auth state.
@@ -188,29 +219,42 @@ abstract class AbstractProvider implements ProviderInterface
         return $generator->generateString($length);
     }
 
+    /**
+     * Get the default scopes used by this provider.
+     *
+     * This should not be a complete list of all scopes, but the minimum
+     * required for the provider user interface!
+     *
+     * @return array
+     */
+    abstract protected function getDefaultScopes();
+
     public function getAuthorizationUrl(array $options = [])
     {
         if (empty($options['state'])) {
             $options['state'] = $this->getRandomState();
         }
-
-        // Store the state, it may need to be accessed later.
-        $this->state = $options['state'];
+        if (empty($options['scope'])) {
+            $options['scope'] = $this->getDefaultScopes();
+        }
 
         $options += [
-            // Do not set the default state here! The random generator takes a
-            // non-trivial amount of time to run.
             'response_type'   => 'code',
             'approval_prompt' => 'auto',
         ];
 
-        $scopes = is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes;
+        if (is_array($options['scope'])) {
+            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
+        }
+
+        // Store the state, it may need to be accessed later.
+        $this->state = $options['state'];
 
         $params = [
             'client_id'       => $this->clientId,
             'redirect_uri'    => $this->redirectUri,
             'state'           => $this->state,
-            'scope'           => $scopes,
+            'scope'           => $options['scope'],
             'response_type'   => $options['response_type'],
             'approval_prompt' => $options['approval_prompt'],
         ];
@@ -218,13 +262,11 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
     }
 
-    // @codeCoverageIgnoreStart
-    public function authorize(array $options = [])
+    public function authorize(array $options = [], $redirectHandler = null)
     {
         $url = $this->getAuthorizationUrl($options);
-        if ($this->redirectHandler) {
-            $handler = $this->redirectHandler;
-            return $handler($url, $this);
+        if ($redirectHandler) {
+            return $redirectHandler($url, $this);
         }
         // @codeCoverageIgnoreStart
         header('Location: ' . $url);
@@ -235,16 +277,9 @@ abstract class AbstractProvider implements ProviderInterface
     protected function parseGrant($grant)
     {
         if (is_string($grant)) {
-            // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
-            $className = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $grant)));
-            $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
-            if (! class_exists($grant)) {
-                throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
-            }
-            $grant = new $grant();
-        } elseif (! $grant instanceof GrantInterface) {
-            $message = get_class($grant).' is not an instance of League\OAuth2\Client\Grant\GrantInterface';
-            throw new \InvalidArgumentException($message);
+            $grant = $this->grantFactory->getGrant($grant);
+        } else {
+            $this->grantFactory->checkGrant($grant);
         }
 
         return $grant;
@@ -258,14 +293,16 @@ abstract class AbstractProvider implements ProviderInterface
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
-            'grant_type'    => $grant,
+            'grant_type'    => (string) $grant,
         ];
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
 
         try {
             $client = $this->getHttpClient();
-            $response = $client->{$this->method}($this->urlAccessToken(), [
+            $method = self::ACCESS_TOKEN_METHOD;
+
+            $response = $client->$method($this->urlAccessToken(), [
                 'headers' => $this->getHeaders(),
                 'query' => $requestParams,
             ]);
@@ -319,6 +356,16 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Get the expected type of response for this provider.
+     *
+     * @return string
+     */
+    protected function getResponseType()
+    {
+        return static::RESPONSE_TYPE_JSON;
+    }
+
+    /**
      * Parse the response, according to the provider response type.
      *
      * @throws UnexpectedValueException
@@ -332,10 +379,10 @@ abstract class AbstractProvider implements ProviderInterface
         $body = $response->getBody();
 
         switch ($this->responseType) {
-            case 'json':
+            case static::RESPONSE_TYPE_JSON:
                 $result = $this->parseJsonResponse($body);
                 break;
-            case 'string':
+            case static::RESPONSE_TYPE_STRING:
                 $result = parse_str($response, $result);
                 break;
         }
@@ -354,83 +401,36 @@ abstract class AbstractProvider implements ProviderInterface
     abstract protected function checkResponse(array $response);
 
     /**
-     * Prepare the access token response for the grant. Custom mapping of
-     * expirations, etc should be done here.
+     * Prepare the access token response for the grant.
+     *
+     * Custom mapping of expirations, etc should be done here. Always call the
+     * parent method when overloading this method!
      *
      * @param  array $result
      * @return array
      */
     protected function prepareAccessTokenResult(array $result)
     {
-        $this->setResultUid($result);
+        if (static::ACCESS_TOKEN_UID) {
+            $result['uid'] = $result[static::ACCESS_TOKEN_UID];
+        }
         return $result;
     }
 
     /**
-     * Sets any result keys we've received matching our provider-defined uidKey to the key "uid".
+     * Generate a user object from a successful user details request.
      *
-     * @param array $result
+     * @param object $response
+     * @param AccessToken $token
+     * @return League\OAuth2\Client\Provider\UserInterface
      */
-    protected function setResultUid(array &$result)
-    {
-        // If we're operating with the default uidKey there's nothing to do.
-        if ($this->uidKey === "uid") {
-            return;
-        }
-
-        if (isset($result[$this->uidKey])) {
-            // The AccessToken expects a "uid" to have the key "uid".
-            $result['uid'] = $result[$this->uidKey];
-        }
-    }
+    abstract protected function prepareUserDetails(array $response, AccessToken $token);
 
     public function getUserDetails(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
 
-        return $this->userDetails($response, $token);
-    }
-
-    public function getUserUid(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userUid($response, $token);
-    }
-
-    public function getUserEmail(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userEmail($response, $token);
-    }
-
-    public function getUserScreenName(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userScreenName($response, $token);
-    }
-
-    public function userUid($response, AccessToken $token)
-    {
-        if (!empty($response['id'])) {
-            return $response['id'];
-        }
-    }
-
-    public function userEmail($response, AccessToken $token)
-    {
-        if (!empty($response['email'])) {
-            return $response['email'];
-        }
-    }
-
-    public function userScreenName($response, AccessToken $token)
-    {
-        if (!empty($response['name'])) {
-            return $response['name'];
-        }
+        return $this->prepareUserDetails($response, $token);
     }
 
     /**
@@ -462,31 +462,54 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $url = $this->urlUserDetails($token);
 
-        $request = $this->getAuthenticatedRequest(Request::METHOD_GET, $url, $token);
+        $request = $this->getRequest('GET', $url, $token);
 
         return $this->getResponse($request);
     }
 
-    protected function getAuthorizationHeaders($token)
+    /**
+     * Get additional headers used by this provider.
+     *
+     * Typically this is used to set Accept or Content-Type headers.
+     *
+     * @param  AccessToken $token
+     * @return array
+     */
+    protected function getDefaultHeaders($token = null)
     {
-        $headers = [];
-        if ($this->authorizationHeader) {
-            $headers['Authorization'] = $this->authorizationHeader . ' ' . $token;
-        }
-        return $headers;
+        return [];
     }
 
+    /**
+     * Get authorization headers used by this provider.
+     *
+     * Typically this is "Bearer" or "MAC". For more information see:
+     * http://tools.ietf.org/html/rfc6749#section-7.1
+     *
+     * No default is provided, providers must overload this method to activate
+     * authorization headers.
+     *
+     * @return array
+     */
+    protected function getAuthorizationHeaders($token = null)
+    {
+        return [];
+    }
+
+    /**
+     * Get the headers used by this provider for a request.
+     *
+     * If a token is passed, the request may be authenticated through headers.
+     *
+     * @param  mixed $token  object or string
+     * @return array
+     */
     public function getHeaders($token = null)
     {
-        $headers = $this->headers;
+        $headers = $this->getDefaultHeaders();
         if ($token) {
             $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
         }
         return $headers;
-    }
-
-    public function setRedirectHandler(Closure $handler)
-    {
-        $this->redirectHandler = $handler;
     }
 }
