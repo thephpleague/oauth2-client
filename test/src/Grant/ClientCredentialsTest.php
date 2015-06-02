@@ -2,43 +2,28 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use Ivory\HttpAdapter\Message\Stream\StringStream;
-use Mockery as m;
+use League\OAuth2\Client\Grant\ClientCredentials;
 
-class ClientCredentialsTest extends \PHPUnit_Framework_TestCase
+class ClientCredentialsTest extends GrantTestCase
 {
-    /** @var \League\OAuth2\Client\Provider\AbstractProvider */
-    protected $provider;
-
-    protected function setUp()
+    public function providerGetAccessToken()
     {
-        $this->provider = new \League\OAuth2\Client\Test\Provider\Fake(array(
-            'clientId' => 'mock_client_id',
-            'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-        ));
+        return [
+            ['client_credentials'],
+        ];
     }
 
-    public function tearDown()
+    protected function getParamsExpectation()
     {
-        m::close();
-        parent::tearDown();
+        return function ($params) {
+            return !empty($params['grant_type'])
+                && $params['grant_type'] === 'client_credentials';
+        };
     }
 
-    public function testGetAccessToken()
+    public function testToString()
     {
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->times(1)->andReturn(new StringStream('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'));
-
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
-        $client->shouldReceive('post')->times(1)->andReturn($response);
-
-        $this->provider->setHttpClient($client);
-
-        $token = $this->provider->getAccessToken('client_credentials');
-        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
-
-        $grant = new \League\OAuth2\Client\Grant\ClientCredentials();
+        $grant = new ClientCredentials();
         $this->assertEquals('client_credentials', (string) $grant);
     }
 }

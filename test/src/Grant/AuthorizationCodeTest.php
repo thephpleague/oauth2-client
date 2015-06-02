@@ -2,31 +2,29 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use Mockery as m;
+use League\OAuth2\Client\Grant\AuthorizationCode;
 
-class AuthorizationCodeTest extends \PHPUnit_Framework_TestCase
+class AuthorizationCodeTest extends GrantTestCase
 {
-    /** @var \League\OAuth2\Client\Provider\AbstractProvider */
-    protected $provider;
-
-    protected function setUp()
+    public function providerGetAccessToken()
     {
-        $this->provider = new \League\OAuth2\Client\Test\Provider\Fake([
-            'clientId' => 'mock_client_id',
-            'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-        ]);
+        return [
+            ['authorization_code', ['code' => 'mock_code']],
+        ];
     }
 
-    public function tearDown()
+    protected function getParamsExpectation()
     {
-        m::close();
-        parent::tearDown();
+        return function ($params) {
+            return !empty($params['grant_type'])
+                && $params['grant_type'] === 'authorization_code'
+                && !empty($params['code']);
+        };
     }
 
-    public function testGetAccessToken()
+    public function testToString()
     {
-        $grant = new \League\OAuth2\Client\Grant\AuthorizationCode();
+        $grant = new AuthorizationCode();
         $this->assertEquals('authorization_code', (string) $grant);
     }
 
