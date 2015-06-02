@@ -2,7 +2,8 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use Ivory\HttpAdapter\HttpAdapterException;
+use GuzzleHttp\Exception\RequestException;
+
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -84,7 +85,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsHttpAdapter()
     {
-        $mockAdapter = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $mockAdapter = m::mock('GuzzleHttp\ClientInterface');
 
         $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
@@ -227,12 +228,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('{"error":"Foo error","code":1337}');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $provider->setHttpClient($client);
 
@@ -261,18 +262,23 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        // $request = new \GuzzleHttp\Psr7\Request('', '');
+
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('{"error":"BadResponse","code":500}');
 
-        $exception = new HttpAdapterException();
-        $exception->setResponse($response);
+        $response->shouldReceive('getStatusCode')
+                ->times(1);
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $request = m::mock('Psr\Http\Message\RequestInterface');
+        $exception = new RequestException('', $request, $response);
+
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('post')->times(1)->andThrow($exception);
-        $provider->setHttpClient($client);
 
+        $provider->setHttpClient($client);
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
@@ -287,12 +293,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('not json');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('post')->times(1)->andReturn($response);
         $provider->setHttpClient($client);
 
@@ -306,19 +312,19 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider = clone $this->provider;
         $provider->authorizationHeader = 'Bearer';
 
-        $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
-        $this->assertInstanceOf('Ivory\HttpAdapter\Message\RequestInterface', $request);
+        $request = $provider->getRequest('get', 'https://api.example.com/v1/test', $token);
+        $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
 
         // Authorization header should contain the token
         $header = $request->getHeader('Authorization');
-        $this->assertEquals('Bearer abc', $header);
+        $this->assertEquals(['Bearer abc'], $header);
 
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('{"example":"response"}');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('sendRequest')
                ->times(1)
                ->with($request)

@@ -20,7 +20,7 @@ abstract class ConcreteProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function createMockHttpClient()
     {
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('getConfiguration')->andReturn(new \Ivory\HttpAdapter\Configuration());
 
         return $client;
@@ -28,7 +28,7 @@ abstract class ConcreteProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function createMockResponse($responseBody)
     {
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->andReturn(new StringStream($responseBody));
 
         return $response;

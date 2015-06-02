@@ -3,10 +3,12 @@
 namespace League\OAuth2\Client\Provider;
 
 use Closure;
-use Ivory\HttpAdapter\CurlHttpAdapter;
-use Ivory\HttpAdapter\HttpAdapterException;
-use Ivory\HttpAdapter\HttpAdapterInterface;
-use Ivory\HttpAdapter\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken;
@@ -109,7 +111,7 @@ abstract class AbstractProvider implements ProviderInterface
         }
 
         if (empty($collaborators['httpClient'])) {
-            $collaborators['httpClient'] = new CurlHttpAdapter();
+            $collaborators['httpClient'] = new Client();
         }
         $this->setHttpClient($collaborators['httpClient']);
 
@@ -119,18 +121,15 @@ abstract class AbstractProvider implements ProviderInterface
         $this->setRandomFactory($collaborators['randomFactory']);
     }
 
-    public function setHttpClient(HttpAdapterInterface $client)
+    public function setHttpClient(ClientInterface $client)
     {
         $this->httpClient = $client;
-
         return $this;
     }
 
     public function getHttpClient()
     {
-        $client = $this->httpClient;
-
-        return $client;
+        return $this->httpClient;
     }
 
     /**
@@ -142,7 +141,6 @@ abstract class AbstractProvider implements ProviderInterface
     public function setRandomFactory(RandomFactory $factory)
     {
         $this->randomFactory = $factory;
-
         return $this;
     }
 
@@ -260,31 +258,15 @@ abstract class AbstractProvider implements ProviderInterface
 
         try {
             $client = $this->getHttpClient();
-            switch (strtoupper($this->method)) {
-                case 'GET':
-                    // @codeCoverageIgnoreStart
-                    // No providers included with this library use get but 3rd parties may
-                    $httpResponse = $client->get($this->urlAccessToken(), [
-                        'headers' => $this->getHeaders(),
-                        'query' => $requestParams,
-                    ]);
-                    $response = (string) $httpResponse->getBody();
-                    break;
-                    // @codeCoverageIgnoreEnd
-                case 'POST':
-                    $httpResponse = $client->post($this->urlAccessToken(), [
-                        'headers' => $this->getHeaders(),
-                        'body' => $requestParams,
-                    ]);
-                    $response = (string) $httpResponse->getBody();
-                    break;
-                // @codeCoverageIgnoreStart
-                default:
-                    throw new \InvalidArgumentException('Neither GET nor POST is specified for request');
-                // @codeCoverageIgnoreEnd
-            }
-        } catch (HttpAdapterException $e) {
-            $response = (string) $e->getResponse()->getBody();
+            $method = $this->method;
+
+            $response = $client->$method($this->urlAccessToken(), [
+                'headers' => $this->getHeaders(),
+                'query' => $requestParams,
+            ]);
+
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
         }
 
         $response = $this->parseResponse($response);
@@ -295,24 +277,16 @@ abstract class AbstractProvider implements ProviderInterface
 
     /**
      * Get an authenticated request instance.
-     *
-     * Creates a PSR-7 compatible request instance that can be modified.
-     * Often used to create calls against an API that requires authentication.
-     *
-     * @param  string $method
-     * @param  string $url
-     * @param  AccessToken $token
-     * @return RequestInterface
      */
-    public function getAuthenticatedRequest($method, $url, AccessToken $token)
+    public function getRequest($method, $url, AccessToken $token, $body = null)
     {
-        $factory = $this->getHttpClient()
-            ->getConfiguration()
-            ->getMessageFactory();
+        return new Request($method, $url, $this->getHeaders($token), $body);
+    }
 
-        $request = $factory->createRequest($url, $method);
-        $request->addHeaders($this->getHeaders($token));
-        return $request;
+    public function makeRequest($method, $url, AccessToken $token, $body = null)
+    {
+        $request = $this->getAuthenticatedRequest($method, $url, $token, $body);
+        return $this->getResponse($request);
     }
 
     /**
@@ -326,18 +300,23 @@ abstract class AbstractProvider implements ProviderInterface
     public function getResponse(RequestInterface $request)
     {
         try {
-            $client = $this->getHttpClient();
+            $response = $this->getHttpClient()->sendRequest($request);
+            return $this->parseResponse($response);
 
-            $httpResponse = $client->sendRequest($request);
+        } catch (RequestException $e) {
+            return $this->parseResponse($e->getResponse());
+        }
+    }
 
-            $response = (string) $httpResponse->getBody();
-        } catch (HttpAdapterException $e) {
-            $response = (string) $e->getResponse()->getBody();
+    protected function parseJsonResponse($response)
+    {
+        $result = json_decode($response, true);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            throw new UnexpectedValueException('Unable to parse client response');
         }
 
-        $response = $this->parseResponse($response);
-
-        return $response;
+        return $result;
     }
 
     /**
@@ -347,19 +326,18 @@ abstract class AbstractProvider implements ProviderInterface
      * @param  string $response
      * @return array
      */
-    protected function parseResponse($response)
+    protected function parseResponse(ResponseInterface $response)
     {
         $result = [];
 
+        $body = $response->getBody();
+
         switch ($this->responseType) {
             case 'json':
-                $result = json_decode($response, true);
-                if (JSON_ERROR_NONE !== json_last_error()) {
-                    throw new UnexpectedValueException('Unable to parse client response');
-                }
+                $result = $this->parseJsonResponse($body);
                 break;
             case 'string':
-                parse_str($response, $result);
+                $result = parse_str($response, $result);
                 break;
         }
 

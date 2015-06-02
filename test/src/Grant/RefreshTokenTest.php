@@ -26,10 +26,10 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAccessToken()
     {
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->times(2)->andReturn(new \Ivory\HttpAdapter\Message\Stream\StringStream('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'));
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(2)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('post')->times(2)->andReturn($response);
 
         $this->provider->setHttpClient($client);
@@ -49,10 +49,10 @@ class RefreshTokenTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidRefreshToken()
     {
-        $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->times(1)->andReturn(new \Ivory\HttpAdapter\Message\Stream\StringStream('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'));
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
-        $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
+        $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('post')->times(1)->andReturn($response);
 
         $this->provider->setHttpClient($client);
