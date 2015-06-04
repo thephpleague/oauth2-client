@@ -100,6 +100,21 @@ class AccessToken
     }
 
     /**
+     * Checks if the token has expired.
+     *
+     * @return boolean true if the token has expired, false otherwise.
+     * @throws InvalidArgumentException if the expires is not set on the token.
+     */
+    public function hasExpired()
+    {
+        if (!isset($this->expires)) {
+            throw new InvalidArgumentException('"expires" is not set on the token');
+        }
+
+        return $this->expires < time();
+    }
+
+    /**
      * Returns the token key.
      *
      * @return string
