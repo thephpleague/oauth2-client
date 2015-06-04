@@ -153,6 +153,7 @@ so please help them out with a pull request if you notice this.
 - [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
 - [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
 - [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll)
+- [Envato](https://github.com/dilab/envato-oauth2-provider)
 
 ### Implementing your own provider
 
