@@ -98,6 +98,8 @@ if (!isset($_GET['code'])) {
 
 ### Refreshing a Token
 
+Once and as long as your application is authorized, you then only need to refresh an expired access token. To do so, simply reuse this refresh token from your data store to request a refresh.
+
 ```php
 $provider = new League\OAuth2\Client\Provider\<ProviderName>([
     'clientId'      => 'XXXXXXXX',
