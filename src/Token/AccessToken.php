@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class AccessToken
 {
@@ -103,7 +104,7 @@ class AccessToken
      * Checks if the token has expired.
      *
      * @return boolean true if the token has expired, false otherwise.
-     * @throws InvalidArgumentException if 'expires' is not set on the token.
+     * @throws RuntimeException if 'expires' is not set on the token.
      */
     public function hasExpired()
     {
