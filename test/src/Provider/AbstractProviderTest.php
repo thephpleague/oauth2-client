@@ -144,6 +144,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->times(1)
                  ->andReturn(json_encode(compact('id', 'name', 'email')));
 
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
+
         $factory = m::mock('Ivory\HttpAdapter\Message\MessageFactoryInterface');
         $factory->shouldReceive('createRequest')->times(1)->andReturn($request);
 
@@ -293,6 +297,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->times(1)
                  ->andReturn(json_encode($raw_response));
 
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
+
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')
             ->with(
@@ -325,6 +333,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->times(1)
                  ->andReturn('{"error":"Foo error","code":1337}');
 
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
+
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')
             ->with(
@@ -333,6 +345,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                 $params = m::type('array')
             )
             ->times(1)->andReturn($response);
+
         $provider->setHttpClient($client);
 
         $errorMessage = '';
@@ -386,6 +399,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->times(1)
                  ->andReturn('{"error":"BadResponse","code":500}');
 
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
+
         $exception = new HttpAdapterException();
         $exception->setResponse($response);
 
@@ -418,6 +435,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                  ->times(1)
                  ->andReturn('not json');
 
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
+
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')
             ->with(
@@ -448,6 +469,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')
                  ->times(1)
                  ->andReturn('{"example":"response"}');
+
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
 
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('sendRequest')

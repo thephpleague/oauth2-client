@@ -57,6 +57,10 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
         $response = m::mock('Ivory\HttpAdapter\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
+        $response->shouldReceive('getHeader')
+                 ->times(1)
+                 ->andReturn('application/json');
+
         $client = m::mock('Ivory\HttpAdapter\HttpAdapterInterface');
         $client->shouldReceive('post')->with(
             $this->provider->urlAccessToken(),

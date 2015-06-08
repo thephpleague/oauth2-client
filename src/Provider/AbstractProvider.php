@@ -7,6 +7,7 @@ use Ivory\HttpAdapter\CurlHttpAdapter;
 use Ivory\HttpAdapter\HttpAdapterException;
 use Ivory\HttpAdapter\HttpAdapterInterface;
 use Ivory\HttpAdapter\Message\RequestInterface;
+use Ivory\HttpAdapter\Message\ResponseInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
@@ -15,16 +16,6 @@ use UnexpectedValueException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
-    /**
-     * @var string JSON response type.
-     */
-    const RESPONSE_TYPE_JSON = 'json';
-
-    /**
-     * @var string Parameter string response type.
-     */
-    const RESPONSE_TYPE_STRING = 'string';
-
     /**
      * @var string HTTP method used to fetch access tokens.
      */
@@ -297,21 +288,19 @@ abstract class AbstractProvider implements ProviderInterface
                 case 'GET':
                     // @codeCoverageIgnoreStart
                     // No providers included with this library use get but 3rd parties may
-                    $httpResponse = $client->get(
+                    $response = $client->get(
                         $this->urlAccessToken(),
                         $this->getHeaders(),
                         $requestParams
                     );
-                    $response = (string) $httpResponse->getBody();
                     break;
                     // @codeCoverageIgnoreEnd
                 case 'POST':
-                    $httpResponse = $client->post(
+                    $response = $client->post(
                         $this->urlAccessToken(),
                         $this->getHeaders(),
                         $requestParams
                     );
-                    $response = (string) $httpResponse->getBody();
                     break;
                 // @codeCoverageIgnoreStart
                 default:
@@ -322,10 +311,11 @@ abstract class AbstractProvider implements ProviderInterface
             if (!$e->hasResponse()) {
                 throw $e;
             }
-            $response = (string) $e->getResponse()->getBody();
+            $response = $e->getResponse();
         }
 
         $response = $this->parseResponse($response);
+        $this->checkResponse($response);
         $response = $this->prepareAccessTokenResult($response);
 
         return $grant->handleResponse($response);
@@ -365,30 +355,33 @@ abstract class AbstractProvider implements ProviderInterface
     {
         try {
             $client = $this->getHttpClient();
-
-            $httpResponse = $client->sendRequest($request);
-
-            $response = (string) $httpResponse->getBody();
+            $response = $client->sendRequest($request);
         } catch (HttpAdapterException $e) {
             if (!$e->hasResponse()) {
                 throw $e;
             }
-            $response = (string) $e->getResponse()->getBody();
+            $response = $e->getResponse();
         }
 
         $response = $this->parseResponse($response);
 
+        $this->checkResponse($response);
+
         return $response;
     }
 
-    /**
-     * Get the expected type of response for this provider.
-     *
-     * @return string
-     */
-    protected function getResponseType()
+    protected function getContentType(ResponseInterface $response)
     {
-        return static::RESPONSE_TYPE_JSON;
+        return join(";", (array) $response->getHeader('content-type'));
+    }
+
+    protected function parseJson($content)
+    {
+        $content = json_decode($content, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new UnexpectedValueException('Unable to parse client response');
+        }
+        return $content;
     }
 
     /**
@@ -398,35 +391,32 @@ abstract class AbstractProvider implements ProviderInterface
      * @param  string $response
      * @return array
      */
-    protected function parseResponse($response)
+    protected function parseResponse(ResponseInterface $response)
     {
-        $result = [];
+        $content = (string) $response->getBody();
 
-        switch ($this->getResponseType()) {
-            case static::RESPONSE_TYPE_JSON:
-                $result = json_decode($response, true);
-                if (JSON_ERROR_NONE !== json_last_error()) {
-                    throw new UnexpectedValueException('Unable to parse client response');
-                }
-                break;
-            case static::RESPONSE_TYPE_STRING:
-                parse_str($response, $result);
-                break;
+        $contentType = $this->getContentType($response);
+
+        if (strpos($contentType, "json") !== false) {
+            return $this->parseJson($content);
         }
 
-        $this->checkResponse($result);
+        if (strpos($contentType, "urlencoded") !== false) {
+            parse_str($content, $parsed);
+            return $parsed;
+        }
 
-        return $result;
+        return $content;
     }
 
     /**
      * Check a provider response for errors.
      *
      * @throws IdentityProviderException
-     * @param  array $response
+     * @param  string $response
      * @return void
      */
-    abstract protected function checkResponse(array $response);
+    abstract protected function checkResponse($response);
 
     /**
      * Prepare the access token response for the grant.

@@ -36,7 +36,7 @@ class Fake extends AbstractProvider
         return new Fake\User($response);
     }
 
-    protected function checkResponse(array $response)
+    protected function checkResponse($response)
     {
         if (!empty($response['error'])) {
             throw new IdentityProviderException($response['error'], $response['code'], $response);
