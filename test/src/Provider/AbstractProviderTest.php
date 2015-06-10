@@ -267,27 +267,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
     }
 
-    public function testGetAccessTokenMethods()
-    {
-        $this->accessTokenTest('GET');
-        $this->accessTokenTest('POST');
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testInvalidAccessTokenMethod()
-    {
-        $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
-        ]);
-
-        $provider->setAccessTokenMethod('PUT');
-        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-    }
-
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
         $provider = new MockProvider([
@@ -494,5 +473,26 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($raw_response['uid'], $token->getUid());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
+    }
+
+    public function testGetAccessTokenMethods()
+    {
+        $this->accessTokenTest('GET');
+        $this->accessTokenTest('POST');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidAccessTokenMethod()
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $provider->setAccessTokenMethod('PUT');
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 }
