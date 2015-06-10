@@ -13,6 +13,7 @@ use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
 use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
+use InvalidArgumentException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -25,11 +26,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @var string Parameter string response type.
      */
     const RESPONSE_TYPE_STRING = 'string';
-
-    /**
-     * @var string HTTP method used to fetch access tokens.
-     */
-    const ACCESS_TOKEN_METHOD = 'POST';
 
     /**
      * @var string Key used in the access token response to identify the user.
@@ -86,6 +82,23 @@ abstract class AbstractProvider implements ProviderInterface
      *          and the default encryption type for the http_build_query setup
      */
     protected $httpBuildEncType = 1;
+
+    /**
+     * Get the default scopes used by this provider.
+     *
+     * This should not be a complete list of all scopes, but the minimum
+     * required for the provider user interface!
+     *
+     * @return array
+     */
+    abstract protected function getDefaultScopes();
+
+    /**
+     * Returns the method to use when requesting an access token.
+     *
+     * @return string HTTP method
+     */
+    abstract protected function getAccessTokenMethod();
 
     /**
      * @param array $options
@@ -250,16 +263,6 @@ abstract class AbstractProvider implements ProviderInterface
         return $generator->generateString($length);
     }
 
-    /**
-     * Get the default scopes used by this provider.
-     *
-     * This should not be a complete list of all scopes, but the minimum
-     * required for the provider user interface!
-     *
-     * @return array
-     */
-    abstract protected function getDefaultScopes();
-
     public function getAuthorizationUrl(array $options = [])
     {
         if (empty($options['state'])) {
@@ -271,7 +274,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $options += [
             'response_type'   => 'code',
-            'approval_prompt' => 'auto',
+            'approval_prompt' => 'auto'
         ];
 
         if (is_array($options['scope'])) {
@@ -299,6 +302,7 @@ abstract class AbstractProvider implements ProviderInterface
         if ($redirectHandler) {
             return $redirectHandler($url, $this);
         }
+
         // @codeCoverageIgnoreStart
         header('Location: ' . $url);
         exit;
@@ -320,26 +324,28 @@ abstract class AbstractProvider implements ProviderInterface
             'grant_type'    => (string) $grant,
         ];
 
-        $requestParams  = $this->httpBuildQuery($grant->prepRequestParams($defaultParams, $params));
-        $urlAccessToken = $this->urlAccessToken();
+        $requestParams = $grant->prepRequestParams($defaultParams, $params);
+        $requestParams = $this->httpBuildQuery($requestParams);
 
-        switch (strtoupper(static::ACCESS_TOKEN_METHOD)) {
+        $url = $this->urlAccessToken();
+        $method = strtoupper($this->getAccessTokenMethod());
+        $options = [];
+
+        switch ($method) {
             case 'GET':
-                // @codeCoverageIgnoreStart
                 // No providers included with this library use get but 3rd parties may
-                $urlAccessToken .= (strpos($urlAccessToken, '?') ? '&' : '?') . $requestParams;
+                $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . $requestParams;
                 break;
-                // @codeCoverageIgnoreEnd
             case 'POST':
                 $options['body'] = $requestParams;
                 break;
-            // @codeCoverageIgnoreStart
             default:
-                throw new \InvalidArgumentException('Neither GET nor POST is specified for request');
-            // @codeCoverageIgnoreEnd
+                throw new InvalidArgumentException(
+                    "Unsupported access token request method: '$method'"
+                );
         }
 
-        $request  = $this->getRequest(strtoupper(static::ACCESS_TOKEN_METHOD), $this->urlAccessToken(), $options);
+        $request  = $this->getRequest($method, $url, $options);
         $response = $this->getResponse($request);
         $response = $this->prepareAccessTokenResult($response);
 

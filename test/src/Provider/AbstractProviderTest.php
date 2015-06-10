@@ -267,7 +267,16 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
     }
 
-    public function testGetAccessToken()
+    public function testGetAccessTokenMethods()
+    {
+        $this->accessTokenTest('GET');
+        $this->accessTokenTest('POST');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidAccessTokenMethod()
     {
         $provider = new MockProvider([
           'clientId' => 'mock_client_id',
@@ -275,55 +284,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $grant_name = 'mock';
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
-        $token = new AccessToken($raw_response);
-
-        $contains_correct_grant_type = function ($params) use ($grant_name) {
-            return is_array($params) && $params['grant_type'] === $grant_name;
-        };
-
-        $grant = m::mock('League\OAuth2\Client\Grant\GrantInterface');
-        $grant->shouldReceive('__toString')
-              ->times(1)
-              ->andReturn($grant_name);
-        $grant->shouldReceive('prepRequestParams')
-              ->with(
-                  m::on($contains_correct_grant_type),
-                  m::type('array')
-              )
-              ->andReturn([]);
-        $grant->shouldReceive('handleResponse')
-              ->with($raw_response)
-              ->andReturn($token);
-
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            json_encode($raw_response)
-        );
-
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-
-        $method = $provider::ACCESS_TOKEN_METHOD;
-        $url = $provider->urlAccessToken();
-
-        $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andReturn($response);
-
-        $provider->setHttpClient($client);
-
-        $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
-
-        $this->assertSame($result, $token);
-        $this->assertSame($raw_response['uid'], $token->getUid());
-        $this->assertSame($raw_response['access_token'], $token->getToken());
-        $this->assertSame($raw_response['expires'], $token->getExpires());
+        $provider->setAccessTokenMethod('PUT');
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
@@ -334,6 +296,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
+
         $stream = m::mock('Psr\Http\Message\StreamInterface');
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             '{"error":"Foo error","code":1337}'
@@ -342,7 +305,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
-        $method = $provider::ACCESS_TOKEN_METHOD;
+        $method = $provider->getAccessTokenMethod();
         $url = $provider->urlAccessToken();
 
         $client = m::mock('GuzzleHttp\ClientInterface');
@@ -391,7 +354,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $exception = m::mock('GuzzleHttp\Exception\BadResponseException');
         $exception->shouldReceive('getResponse')->andReturn($response);
 
-        $method = $provider::ACCESS_TOKEN_METHOD;
+        $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
 
         $client = m::mock('GuzzleHttp\ClientInterface');
@@ -426,7 +389,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
-        $method = $provider::ACCESS_TOKEN_METHOD;
+        $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
 
         $client = m::mock('GuzzleHttp\ClientInterface');
@@ -471,5 +434,65 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         // Final result should be a parsed response
         $result = $provider->getResponse($request);
         $this->assertSame(['example' => 'response'], $result);
+    }
+
+    private function accessTokenTest($method)
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $provider->setAccessTokenMethod($method);
+
+        $grant_name = 'mock';
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
+        $token = new AccessToken($raw_response);
+
+        $contains_correct_grant_type = function ($params) use ($grant_name) {
+            return is_array($params) && $params['grant_type'] === $grant_name;
+        };
+
+        $grant = m::mock('League\OAuth2\Client\Grant\GrantInterface');
+        $grant->shouldReceive('__toString')
+              ->times(1)
+              ->andReturn($grant_name);
+        $grant->shouldReceive('prepRequestParams')
+              ->with(
+                  m::on($contains_correct_grant_type),
+                  m::type('array')
+              )
+              ->andReturn([]);
+        $grant->shouldReceive('handleResponse')
+              ->with($raw_response)
+              ->andReturn($token);
+
+        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream->shouldReceive('__toString')->times(1)->andReturn(
+            json_encode($raw_response)
+        );
+
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+
+        $url = $provider->urlAccessToken();
+
+        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->with(
+            m::on(function ($request) use ($method, $url) {
+                return $request->getMethod() === $method
+                    && (string) $request->getUri() === $url;
+            })
+        )->times(1)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
+
+        $this->assertSame($result, $token);
+        $this->assertSame($raw_response['uid'], $token->getUid());
+        $this->assertSame($raw_response['access_token'], $token->getToken());
+        $this->assertSame($raw_response['expires'], $token->getExpires());
     }
 }
