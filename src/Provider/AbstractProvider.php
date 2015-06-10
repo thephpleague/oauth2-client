@@ -84,23 +84,6 @@ abstract class AbstractProvider implements ProviderInterface
     protected $httpBuildEncType = 1;
 
     /**
-     * Get the default scopes used by this provider.
-     *
-     * This should not be a complete list of all scopes, but the minimum
-     * required for the provider user interface!
-     *
-     * @return array
-     */
-    abstract protected function getDefaultScopes();
-
-    /**
-     * Returns the method to use when requesting an access token.
-     *
-     * @return string HTTP method
-     */
-    abstract protected function getAccessTokenMethod();
-
-    /**
      * @param array $options
      * @param array $collaborators
      */
@@ -263,6 +246,16 @@ abstract class AbstractProvider implements ProviderInterface
         return $generator->generateString($length);
     }
 
+    /**
+     * Get the default scopes used by this provider.
+     *
+     * This should not be a complete list of all scopes, but the minimum
+     * required for the provider user interface!
+     *
+     * @return array
+     */
+    abstract protected function getDefaultScopes();
+
     public function getAuthorizationUrl(array $options = [])
     {
         if (empty($options['state'])) {
@@ -307,6 +300,16 @@ abstract class AbstractProvider implements ProviderInterface
         header('Location: ' . $url);
         exit;
         // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Returns the method to use when requesting an access token.
+     *
+     * @return string HTTP method
+     */
+    protected function getAccessTokenMethod()
+    {
+        return 'POST';
     }
 
     public function getAccessToken($grant = 'authorization_code', array $params = [])
