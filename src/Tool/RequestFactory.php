@@ -11,8 +11,6 @@ use GuzzleHttp\Psr7\Request;
  */
 class RequestFactory
 {
-    const DEFAULT_PROTOCOL_VERSION = '1.1';
-
     /**
      * Creates a PSR-7 Request instance.
      *
@@ -29,7 +27,7 @@ class RequestFactory
         $uri,
         array $headers = [],
         $body = null,
-        $version = self::DEFAULT_PROTOCOL_VERSION
+        $version = '1.1'
     ) {
         return new Request($method, $uri, $headers, $body, $version);
     }
@@ -47,7 +45,7 @@ class RequestFactory
         $defaults = [
             'headers' => [],
             'body'    => null,
-            'version' => self::DEFAULT_PROTOCOL_VERSION,
+            'version' => '1.1',
         ];
 
         return array_merge($defaults, $options);

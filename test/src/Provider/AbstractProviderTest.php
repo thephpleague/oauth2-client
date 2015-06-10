@@ -415,7 +415,18 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['example' => 'response'], $result);
     }
 
-    private function accessTokenTest($method)
+    public function getAccessTokenMethodProvider()
+    {
+        return [
+            ['GET'],
+            ['POST'],
+        ];
+    }
+
+    /**
+     * @dataProvider getAccessTokenMethodProvider
+     */
+    public function testGetAccessToken($method)
     {
         $provider = new MockProvider([
           'clientId' => 'mock_client_id',
@@ -473,12 +484,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($raw_response['uid'], $token->getUid());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
-    }
-
-    public function testGetAccessTokenMethods()
-    {
-        $this->accessTokenTest('GET');
-        $this->accessTokenTest('POST');
     }
 
     /**
