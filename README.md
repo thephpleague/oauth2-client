@@ -115,7 +115,6 @@ $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 This package currently has built-in support for:
 
 - Eventbrite
-- Facebook
 - Github
 - Google
 - Instagram
@@ -124,6 +123,27 @@ This package currently has built-in support for:
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
+
+#### Managing LinkedIn Scopes
+
+The LinkedIn provider included in this package does not include scopes by default. When creating your LinkedIn provider, you can specify the scopes your application may authorize.
+
+```php
+$provider = new League\OAuth2\Client\Provider\LinkedIn([
+    'clientId'          => '{linkedin-client-id}',
+    'clientSecret'      => '{linkedin-client-secret}',
+    'redirectUri'       => 'https://example.com/callback-url',
+    'scopes'            => ['r_basicprofile r_emailaddress'],
+]);
+```
+It is important to note, each scope must be space delimited and contained within one string.
+
+At the time of authoring this documentation, the following scopes are available.
+
+- r_basicprofile
+- r_emailaddress
+- rw_company_admin
+- w_share
 
 ### Third-Party Providers
 
@@ -140,6 +160,7 @@ so please help them out with a pull request if you notice this.
 - [Clover](https://github.com/wheniwork/oauth2-clover)
 - [Coinbase](https://github.com/openclerk/coinbase-oauth2)
 - [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
+- [Facebook](https://packagist.org/packages/league/oauth2-facebook)
 - [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
