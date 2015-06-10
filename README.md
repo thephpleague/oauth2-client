@@ -136,6 +136,7 @@ so please help them out with a pull request if you notice this.
 - [Amazon](https://github.com/lemonstand/oauth2-amazon/)
 - [Auth0](https://github.com/RiskioFr/oauth2-auth0)
 - [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
+- [BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php)
 - [Clover](https://github.com/wheniwork/oauth2-clover)
 - [Coinbase](https://github.com/openclerk/coinbase-oauth2)
 - [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
