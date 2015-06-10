@@ -4,15 +4,22 @@ namespace League\OAuth2\Client\Tool;
 
 use GuzzleHttp\Psr7\Request;
 
-// For history see https://github.com/guzzle/guzzle/pull/1101
+/**
+ * Used to produce PSR-7 Request instances.
+ *
+ * @see https://github.com/guzzle/guzzle/pull/1101
+ */
 class RequestFactory
 {
     /**
+     * Creates a PSR-7 Request instance.
+     *
      * @param  null|string $method HTTP method for the request.
      * @param  null|string $uri URI for the request.
-     * @param  array  $headers Headers for the message.
+     * @param  array $headers Headers for the message.
      * @param  string|resource|StreamInterface $body Message body.
-     * @param  string $protocolVersion HTTP protocol version.
+     * @param  string $version HTTP protocol version.
+     *
      * @return Request
      */
     public function getRequest(
@@ -20,36 +27,49 @@ class RequestFactory
         $uri,
         array $headers = [],
         $body = null,
-        $protocolVersion = '1.1'
+        $version = '1.1'
     ) {
-        return new Request($method, $uri, $headers, $body, $protocolVersion);
+        return new Request($method, $uri, $headers, $body, $version);
     }
 
     /**
-     * Get a request using a simplified array of options.
+     * Parses simplified options.
+     *
+     * @param array $options Simplified options.
+     *
+     * @return array Extended options for use with getRequest.
+     */
+    protected function parseOptions(array $options)
+    {
+        // Should match default values for getRequest
+        $defaults = [
+            'headers' => [],
+            'body'    => null,
+            'version' => '1.1',
+        ];
+
+        return array_merge($defaults, $options);
+    }
+
+    /**
+     * Creates a request using a simplified array of options.
      *
      * @param  null|string $method
      * @param  null|string $uri
      * @param  array $options
+     *
      * @return Request
      */
     public function getRequestWithOptions($method, $uri, array $options = [])
     {
-        $func    = new \ReflectionMethod($this, 'getRequest');
-        $params  = $func->getParameters();
-        $options = array_replace($options, compact('method', 'uri'));
-        $args    = [];
+        $options = $this->parseOptions($options);
 
-        foreach ($params as $param) {
-            $name = $param->getName();
-            if (isset($options[$name])) {
-                $value = $options[$name];
-            } else {
-                $value = $param->getDefaultValue();
-            }
-            $args[$name] = $value;
-        }
-
-        return $func->invokeArgs($this, array_values($args));
+        return $this->getRequest(
+            $method,
+            $uri,
+            $options['headers'],
+            $options['body'],
+            $options['version']
+        );
     }
 }
