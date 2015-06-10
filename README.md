@@ -161,7 +161,6 @@ so please help them out with a pull request if you notice this.
 - [Clover](https://github.com/wheniwork/oauth2-clover)
 - [Coinbase](https://github.com/openclerk/coinbase-oauth2)
 - [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
-- [Facebook](https://packagist.org/packages/league/oauth2-facebook)
 - [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
 - [Google Nest](https://github.com/JC5/nest-oauth2-provider)
 - [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
