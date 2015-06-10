@@ -232,6 +232,8 @@ abstract class AbstractProvider implements ProviderInterface
 
                 if (JSON_ERROR_NONE === json_last_error()) {
                     $result = $json;
+                } elseif(json_last_error()){                    
+                    $result['error'] = $response;
                 }
 
                 break;
