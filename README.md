@@ -115,6 +115,7 @@ $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 This package currently has built-in support for:
 
 - Eventbrite
+- Facebook
 - Github
 - Google
 - Instagram
