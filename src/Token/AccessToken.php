@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 class AccessToken
 {
@@ -103,12 +104,12 @@ class AccessToken
      * Checks if the token has expired.
      *
      * @return boolean true if the token has expired, false otherwise.
-     * @throws InvalidArgumentException if the expires is not set on the token.
+     * @throws RuntimeException if 'expires' is not set on the token.
      */
     public function hasExpired()
     {
         if (!isset($this->expires)) {
-            throw new InvalidArgumentException('"expires" is not set on the token');
+            throw new RuntimeException('"expires" is not set on the token');
         }
 
         return $this->expires < time();
