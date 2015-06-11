@@ -6,6 +6,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
+use GuzzleHttp\Exception\BadResponseException;
 use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
@@ -328,15 +329,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         );
 
         $request = m::mock('Psr\Http\Message\RequestInterface');
+        $request->shouldReceive('getUri')->times(1)->andReturn('http://test');
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getStatusCode')->times(3)->andReturn(403);
+        $response->shouldReceive('getReasonPhrase')->times(1)->andReturn('n/a');
 
-        $exception = m::mock('GuzzleHttp\Exception\BadResponseException', [
-            'message',
-            $request
-        ]);
-        $exception->shouldReceive('getResponse')->andReturn($response);
+        $exception = BadResponseException::create($request, $response);
 
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
