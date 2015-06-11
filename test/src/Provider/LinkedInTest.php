@@ -67,7 +67,7 @@ class LinkedInTest extends \PHPUnit_Framework_TestCase
 
     public function testScopes()
     {
-        $this->assertEquals(['r_basicprofile r_emailaddress r_contactinfo'], $this->provider->getScopes());
+        $this->assertEquals([], $this->provider->getScopes());
     }
 
     public function testUserData()

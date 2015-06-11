@@ -125,6 +125,27 @@ This package currently has built-in support for:
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
 
+#### Managing LinkedIn Scopes
+
+The LinkedIn provider included in this package does not include scopes by default. When creating your LinkedIn provider, you can specify the scopes your application may authorize.
+
+```php
+$provider = new League\OAuth2\Client\Provider\LinkedIn([
+    'clientId'          => '{linkedin-client-id}',
+    'clientSecret'      => '{linkedin-client-secret}',
+    'redirectUri'       => 'https://example.com/callback-url',
+    'scopes'            => ['r_basicprofile r_emailaddress'],
+]);
+```
+It is important to note, each scope must be space delimited and contained within one string.
+
+At the time of authoring this documentation, the following scopes are available.
+
+- r_basicprofile
+- r_emailaddress
+- rw_company_admin
+- w_share
+
 ### Third-Party Providers
 
 If you would like to support other providers, please make them available as a Composer package, then link to them
