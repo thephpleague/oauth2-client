@@ -387,29 +387,28 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $content = json_decode($content, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new UnexpectedValueException('Unable to parse client response');
+            throw new UnexpectedValueException('Failed to parse JSON response');
         }
         return $content;
     }
 
     /**
-     * Parse the response, according to the provider response type.
+     * Parses the response, according to the response's content-type header.
      *
      * @throws UnexpectedValueException
-     * @param  string $response
+     * @param  ResponseInterface $response
      * @return array
      */
     protected function parseResponse(ResponseInterface $response)
     {
         $content = (string) $response->getBody();
+        $type = $this->getContentType($response);
 
-        $contentType = $this->getContentType($response);
-
-        if (strpos($contentType, "json") !== false) {
+        if (strpos($type, "json") !== false) {
             return $this->parseJson($content);
         }
 
-        if (strpos($contentType, "urlencoded") !== false) {
+        if (strpos($type, "urlencoded") !== false) {
             parse_str($content, $parsed);
             return $parsed;
         }
