@@ -3,24 +3,21 @@
 namespace League\OAuth2\Client\Provider;
 
 use Closure;
-use Ivory\HttpAdapter\CurlHttpAdapter;
-use Ivory\HttpAdapter\HttpAdapterException;
-use Ivory\HttpAdapter\HttpAdapterInterface;
-use Ivory\HttpAdapter\Message\RequestInterface;
-use Ivory\HttpAdapter\Message\ResponseInterface;
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\ClientInterface as HttpClientInterface;
+use GuzzleHttp\Exception\BadResponseException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Tool\RequestFactory;
 use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
+use InvalidArgumentException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
-    /**
-     * @var string HTTP method used to fetch access tokens.
-     */
-    const ACCESS_TOKEN_METHOD = 'post';
-
     /**
      * @var string Key used in the access token response to identify the user.
      */
@@ -57,6 +54,11 @@ abstract class AbstractProvider implements ProviderInterface
     protected $grantFactory;
 
     /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    /**
      * @var HttpAdapterInterface
      */
     protected $httpClient;
@@ -89,8 +91,16 @@ abstract class AbstractProvider implements ProviderInterface
         }
         $this->setGrantFactory($collaborators['grantFactory']);
 
+        if (empty($collaborators['requestFactory'])) {
+            $collaborators['requestFactory'] = new requestFactory();
+        }
+        $this->setRequestFactory($collaborators['requestFactory']);
+
         if (empty($collaborators['httpClient'])) {
-            $collaborators['httpClient'] = new CurlHttpAdapter();
+            $client_options = ['timeout'];
+            $collaborators['httpClient'] = new HttpClient(
+                array_intersect_key($options, array_flip($client_options))
+            );
         }
         $this->setHttpClient($collaborators['httpClient']);
 
@@ -98,12 +108,6 @@ abstract class AbstractProvider implements ProviderInterface
             $collaborators['randomFactory'] = new RandomFactory();
         }
         $this->setRandomFactory($collaborators['randomFactory']);
-
-        if (!empty($options['timeout'])) {
-            $this->getHttpClient()
-                ->getConfiguration()
-                ->setTimeout($options['timeout']);
-        }
     }
 
     /**
@@ -130,12 +134,35 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * Set the HTTP adapter instance.
+     * Set the request factory instance.
      *
-     * @param  HttpAdapterInterface $client
+     * @param  RequestFactory $factory
      * @return $this
      */
-    public function setHttpClient(HttpAdapterInterface $client)
+    public function setRequestFactory(RequestFactory $factory)
+    {
+        $this->requestFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Get the request factory instance.
+     *
+     * @return RequestFactory
+     */
+    public function getRequestFactory()
+    {
+        return $this->requestFactory;
+    }
+
+    /**
+     * Set the HTTP adapter instance.
+     *
+     * @param  HttpClientInterface $client
+     * @return $this
+     */
+    public function setHttpClient(HttpClientInterface $client)
     {
         $this->httpClient = $client;
 
@@ -231,7 +258,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $options += [
             'response_type'   => 'code',
-            'approval_prompt' => 'auto',
+            'approval_prompt' => 'auto'
         ];
 
         if (is_array($options['scope'])) {
@@ -259,10 +286,21 @@ abstract class AbstractProvider implements ProviderInterface
         if ($redirectHandler) {
             return $redirectHandler($url, $this);
         }
+
         // @codeCoverageIgnoreStart
         header('Location: ' . $url);
         exit;
         // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Returns the method to use when requesting an access token.
+     *
+     * @return string HTTP method
+     */
+    protected function getAccessTokenMethod()
+    {
+        return 'POST';
     }
 
     public function getAccessToken($grant = 'authorization_code', array $params = [])
@@ -281,66 +319,67 @@ abstract class AbstractProvider implements ProviderInterface
         ];
 
         $requestParams = $grant->prepRequestParams($defaultParams, $params);
+        $requestParams = $this->httpBuildQuery($requestParams);
 
-        try {
-            $client = $this->getHttpClient();
-            switch (strtoupper(static::ACCESS_TOKEN_METHOD)) {
-                case 'GET':
-                    // @codeCoverageIgnoreStart
-                    // No providers included with this library use get but 3rd parties may
-                    $response = $client->get(
-                        $this->urlAccessToken(),
-                        $this->getHeaders(),
-                        $requestParams
-                    );
-                    break;
-                    // @codeCoverageIgnoreEnd
-                case 'POST':
-                    $response = $client->post(
-                        $this->urlAccessToken(),
-                        $this->getHeaders(),
-                        $requestParams
-                    );
-                    break;
-                // @codeCoverageIgnoreStart
-                default:
-                    throw new \InvalidArgumentException('Neither GET nor POST is specified for request');
-                // @codeCoverageIgnoreEnd
-            }
-        } catch (HttpAdapterException $e) {
-            if (!$e->hasResponse()) {
-                throw $e;
-            }
-            $response = $e->getResponse();
+        $url = $this->urlAccessToken();
+        $method = strtoupper($this->getAccessTokenMethod());
+        $options = [];
+
+        switch ($method) {
+            case 'GET':
+                // No providers included with this library use get but 3rd parties may
+                $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . $requestParams;
+                break;
+            case 'POST':
+                $options['body'] = $requestParams;
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Unsupported access token request method: '$method'"
+                );
         }
 
-        $response = $this->parseResponse($response);
-        $this->checkResponse($response);
-        $response = $this->prepareAccessTokenResult($response);
+        $request  = $this->getRequest($method, $url, $options);
+        $response = $this->getResponse($request);
 
-        return $grant->handleResponse($response);
+        $result = $this->parseResponse($response);
+
+        $result = $this->prepareAccessTokenResult($result);
+
+        return $grant->handleResponse($result);
+    }
+
+    /**
+     * Get a request instance.
+     *
+     * Creates a PSR-7 compatible request instance that can be modified.
+     * The request is not automatically authenticated.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  array  $options Any of "headers", "body", and "protocolVersion".
+     * @return RequestInterface
+     */
+    public function getRequest($method, $url, array $options = [])
+    {
+        return $this->getRequestFactory()->getRequestWithOptions($method, $url, $options);
     }
 
     /**
      * Get an authenticated request instance.
      *
      * Creates a PSR-7 compatible request instance that can be modified.
-     * Often used to create calls against an API that requires authentication.
      *
      * @param  string $method
      * @param  string $url
      * @param  AccessToken $token
+     * @param  array  $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
-    public function getAuthenticatedRequest($method, $url, AccessToken $token)
+    public function getAuthenticatedRequest($method, $url, AccessToken $token, array $options = [])
     {
-        $factory = $this->getHttpClient()
-            ->getConfiguration()
-            ->getMessageFactory();
-
-        $request = $factory->createRequest($url, $method);
-        $request->addHeaders($this->getHeaders($token));
-        return $request;
+        $options['headers'] = $this->getHeaders($token);
+        return $this->getRequest($method, $url, $options);
     }
 
     /**
@@ -352,15 +391,11 @@ abstract class AbstractProvider implements ProviderInterface
     protected function sendRequest(RequestInterface $request)
     {
         try {
-            return $this->getHttpClient()->sendRequest($request);
-
-        } catch (HttpAdapterException $e) {
-            if ($e->hasResponse()) {
-                return $e->getResponse();
-            }
-
-            throw $e;
+            $response = $this->getHttpClient()->send($request);
+        } catch (BadResponseException $e) {
+            $response = $e->getResponse();
         }
+        return $response;
     }
 
     /**
@@ -373,8 +408,7 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function getResponse(RequestInterface $request)
     {
-        $response = (string) $this->sendRequest($request)->getBody();
-
+        $response = $this->sendRequest($request);
         return $this->parseResponse($response);
     }
 
@@ -494,7 +528,7 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $url = $this->urlUserDetails($token);
 
-        $request = $this->getAuthenticatedRequest(RequestInterface::METHOD_GET, $url, $token);
+        $request = $this->getAuthenticatedRequest('GET', $url, $token);
 
         return $this->getResponse($request);
     }

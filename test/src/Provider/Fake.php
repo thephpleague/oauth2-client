@@ -11,6 +11,8 @@ class Fake extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
+    private $accessTokenMethod = 'POST';
+
     public function urlAuthorize()
     {
         return 'http://example.com/oauth/authorize';
@@ -29,6 +31,16 @@ class Fake extends AbstractProvider
     protected function getDefaultScopes()
     {
         return ['test'];
+    }
+
+    public function setAccessTokenMethod($method)
+    {
+        $this->accessTokenMethod = $method;
+    }
+
+    public function getAccessTokenMethod()
+    {
+        return $this->accessTokenMethod;
     }
 
     protected function prepareUserDetails(array $response, AccessToken $token)

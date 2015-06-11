@@ -13,11 +13,13 @@ class PasswordTest extends GrantTestCase
         ];
     }
 
-    protected function getParamsExpectation()
+    protected function getParamExpectation()
     {
-        return function ($params) {
-            return !empty($params['username'])
-                && !empty($params['password']);
+        return function ($body) {
+            return !empty($body['grant_type'])
+                && $body['grant_type'] === 'password'
+                && !empty($body['username'])
+                && !empty($body['password']);
         };
     }
 
