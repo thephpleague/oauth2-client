@@ -327,10 +327,15 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             '{"error":"Foo error","code":1337}'
         );
 
+        $request = m::mock('Psr\Http\Message\RequestInterface');
+
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
-        $exception = m::mock('GuzzleHttp\Exception\BadResponseException');
+        $exception = m::mock('GuzzleHttp\Exception\BadResponseException', [
+            'message',
+            $request
+        ]);
         $exception->shouldReceive('getResponse')->andReturn($response);
 
         $method = $provider->getAccessTokenMethod();
