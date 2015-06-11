@@ -338,6 +338,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $exception = BadResponseException::create($request, $response);
 
+
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
 
