@@ -344,6 +344,26 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * Sends a request instance and returns a response instance.
+     *
+     * @param  RequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function sendRequest(RequestInterface $request)
+    {
+        try {
+            return $this->getHttpClient()->sendRequest($request);
+
+        } catch (HttpAdapterException $e) {
+            if ($e->hasResponse()) {
+                return $e->getResponse();
+            }
+
+            throw $e;
+        }
+    }
+
+    /**
      * Get a response for a request instance.
      *
      * Processes the response according to provider response type.
@@ -353,21 +373,9 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function getResponse(RequestInterface $request)
     {
-        try {
-            $client = $this->getHttpClient();
-            $response = $client->sendRequest($request);
-        } catch (HttpAdapterException $e) {
-            if (!$e->hasResponse()) {
-                throw $e;
-            }
-            $response = $e->getResponse();
-        }
+        $response = (string) $this->sendRequest($request)->getBody();
 
-        $response = $this->parseResponse($response);
-
-        $this->checkResponse($response);
-
-        return $response;
+        return $this->parseResponse($response);
     }
 
     protected function getContentType(ResponseInterface $response)
