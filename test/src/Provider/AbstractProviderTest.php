@@ -2,11 +2,11 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
-use GuzzleHttp\Exception\BadResponseException;
 use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
@@ -277,6 +277,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
+
         $stream = m::mock('Psr\Http\Message\StreamInterface');
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             '{"error":"Foo error","code":1337}'
@@ -330,15 +331,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         );
 
         $request = m::mock('Psr\Http\Message\RequestInterface');
-        $request->shouldReceive('getUri')->times(1)->andReturn('http://test');
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getStatusCode')->times(1)->andReturn(400);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getStatusCode')->atLeast(1)->andReturn(403);
-        $response->shouldReceive('getReasonPhrase')->times(1)->andReturn('n/a');
         $response->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
 
-        $exception = BadResponseException::create($request, $response);
+        $exception = new BadResponseException(
+            'test exception',
+            $request,
+            $response
+        );
 
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
@@ -439,7 +442,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
-        $url = $provider->urlAccessToken();
+        $method = $provider->getAccessTokenMethod();
+        $url    = $provider->urlAccessToken();
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->with(
@@ -474,12 +478,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    public function getPrivateMethod($class, $name) {
-      $class = new \ReflectionClass($class);
-      $method = $class->getMethod($name);
-      $this->assertFalse($method->isPublic());
-      $method->setAccessible(true);
-      return $method;
+    public function getPrivateMethod($class, $name)
+    {
+        $class = new \ReflectionClass($class);
+        $method = $class->getMethod($name);
+        $this->assertFalse($method->isPublic());
+        $method->setAccessible(true);
+        return $method;
     }
 
     private function _testParse($body, $type, $expected = null)

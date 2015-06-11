@@ -414,14 +414,24 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
 
+    /**
+     * Parses response content as JSON.
+     *
+     * @param string $content JSON content from response body.
+     * @return array Decoded JSON data
+     * @throws UnexpectedValueException if the content could not be parsed.
+     */
     protected function parseJson($content)
     {
         $content = json_decode($content, true);
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new UnexpectedValueException(
-                "Failed to parse JSON response: ".json_last_error_msg()
-            );
+            throw new UnexpectedValueException(sprintf(
+                "Failed to parse JSON response: %s",
+                json_last_error_msg()
+            ));
         }
+
         return $content;
     }
 
@@ -429,7 +439,7 @@ abstract class AbstractProvider implements ProviderInterface
      * Returns the content type header of a response.
      *
      * @param ResponseInterface $response
-     * @return string A semi-colon separated join of content-type headers.
+     * @return string Semi-colon separated join of content-type headers.
      */
     protected function getContentType(ResponseInterface $response)
     {
