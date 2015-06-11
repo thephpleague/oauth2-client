@@ -7,6 +7,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
@@ -17,16 +18,6 @@ use InvalidArgumentException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
-    /**
-     * @var string JSON response type.
-     */
-    const RESPONSE_TYPE_JSON = 'json';
-
-    /**
-     * @var string Parameter string response type.
-     */
-    const RESPONSE_TYPE_STRING = 'string';
-
     /**
      * @var string Key used in the access token response to identify the user.
      */
@@ -350,10 +341,14 @@ abstract class AbstractProvider implements ProviderInterface
 
         $request  = $this->getRequest($method, $url, $options);
         $response = $this->getResponse($request);
+
+        $this->checkResponse($response);
+
         $response = $this->prepareAccessTokenResult($response);
 
         return $grant->handleResponse($response);
     }
+
 
     /**
      * Get a request instance.
@@ -414,56 +409,75 @@ abstract class AbstractProvider implements ProviderInterface
      */
     public function getResponse(RequestInterface $request)
     {
-        $response = (string) $this->sendRequest($request)->getBody();
+        $response = $this->sendRequest($request);
         return $this->parseResponse($response);
     }
 
+
     /**
-     * Get the expected type of response for this provider.
+     * Parses response content as JSON.
      *
-     * @return string
+     * @param string $content JSON content from response body.
+     * @return array Decoded JSON data
+     * @throws UnexpectedValueException if the content could not be parsed.
      */
-    protected function getResponseType()
+    protected function parseJson($content)
     {
-        return static::RESPONSE_TYPE_JSON;
+        $content = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new UnexpectedValueException(sprintf(
+                "Failed to parse JSON response: %s",
+                json_last_error_msg()
+            ));
+        }
+
+        return $content;
     }
 
     /**
-     * Parse the response, according to the provider response type.
+     * Returns the content type header of a response.
+     *
+     * @param ResponseInterface $response
+     * @return string Semi-colon separated join of content-type headers.
+     */
+    protected function getContentType(ResponseInterface $response)
+    {
+        return join(";", (array) $response->getHeader('content-type'));
+    }
+
+    /**
+     * Parses the response, according to the response's content-type header.
      *
      * @throws UnexpectedValueException
-     * @param  string $response
+     * @param  ResponseInterface $response
      * @return array
      */
-    protected function parseResponse($response)
+    protected function parseResponse(ResponseInterface $response)
     {
-        $result = [];
+        $content = (string) $response->getBody();
+        $type = $this->getContentType($response);
 
-        switch ($this->getResponseType()) {
-            case static::RESPONSE_TYPE_JSON:
-                $result = json_decode($response, true);
-                if (JSON_ERROR_NONE !== json_last_error()) {
-                    throw new UnexpectedValueException('Unable to parse client response');
-                }
-                break;
-            case static::RESPONSE_TYPE_STRING:
-                parse_str($response, $result);
-                break;
+        if (strpos($type, "json") !== false) {
+            return $this->parseJson($content);
         }
 
-        $this->checkResponse($result);
+        if (strpos($type, "urlencoded") !== false) {
+            parse_str($content, $parsed);
+            return $parsed;
+        }
 
-        return $result;
+        return $content;
     }
 
     /**
      * Check a provider response for errors.
      *
      * @throws IdentityProviderException
-     * @param  array $response
+     * @param  string $response
      * @return void
      */
-    abstract protected function checkResponse(array $response);
+    abstract protected function checkResponse($response);
 
     /**
      * Prepare the access token response for the grant.
@@ -507,7 +521,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @param  null|integer $enc_type
      *
      * @return string
-     * @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {
