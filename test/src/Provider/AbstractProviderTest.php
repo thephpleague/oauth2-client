@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -327,11 +328,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             '{"error":"Foo error","code":1337}'
         );
 
+        $request = m::mock('Psr\Http\Message\RequestInterface');
+
         $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getStatusCode')->times(1)->andReturn(400);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
-        $exception = m::mock('GuzzleHttp\Exception\BadResponseException');
-        $exception->shouldReceive('getResponse')->andReturn($response);
+        $exception = new BadResponseException(
+            'test exception',
+            $request,
+            $response
+        );
 
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
