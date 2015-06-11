@@ -154,7 +154,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $url = $provider->urlUserDetails($token);
 
@@ -284,6 +284,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $method = $provider->getAccessTokenMethod();
         $url = $provider->urlAccessToken();
@@ -333,11 +334,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getStatusCode')->times(3)->andReturn(403);
+        $response->shouldReceive('getStatusCode')->atLeast(1)->andReturn(403);
         $response->shouldReceive('getReasonPhrase')->times(1)->andReturn('n/a');
+        $response->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
 
         $exception = BadResponseException::create($request, $response);
-
 
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
@@ -351,41 +352,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         )->times(1)->andThrow($exception);
 
         $provider->setHttpClient($client);
-        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-    }
-
-    /**
-     * @expectedException \UnexpectedValueException
-     */
-    public function testParseResponseJsonFailure()
-    {
-        $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
-        ]);
-
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            'not json'
-        );
-
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-
-        $method = $provider->getAccessTokenMethod();
-        $url    = $provider->urlAccessToken();
-
-        $client = m::mock('GuzzleHttp\ClientInterface');
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andReturn($response);
-
-        $provider->setHttpClient($client);
-
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
@@ -409,6 +375,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $client = m::mock('GuzzleHttp\ClientInterface');
         $client->shouldReceive('send')->with($request)->andReturn($response);
@@ -470,6 +437,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $url = $provider->urlAccessToken();
 
@@ -504,5 +472,50 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $provider->setAccessTokenMethod('PUT');
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
+    public function getPrivateMethod($class, $name) {
+      $class = new \ReflectionClass($class);
+      $method = $class->getMethod($name);
+      $this->assertFalse($method->isPublic());
+      $method->setAccessible(true);
+      return $method;
+    }
+
+    private function _testParse($body, $type, $expected = null)
+    {
+        $method = $this->getPrivateMethod('League\OAuth2\Client\Provider\AbstractProvider', 'parseResponse');
+
+        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream->shouldReceive('__toString')->times(1)->andReturn($body);
+
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->andReturn($type);
+
+        $this->assertEquals($expected, $method->invoke($this->provider, $response));
+    }
+
+    public function testParseJson()
+    {
+        $this->_testParse('{"a": 1}', 'application/json', ['a' => 1]);
+    }
+
+    public function testParseUnknownType()
+    {
+        $this->_testParse('success', 'unknown/mime', 'success');
+    }
+
+    public function testParseUrlParams()
+    {
+        $this->_testParse('a=1&b=2', 'application/x-www-form-urlencoded', ['a' => 1, 'b' => 2]);
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testParseResponseJsonFailure()
+    {
+        $this->_testParse('{a: 1}', 'application/json');
     }
 }

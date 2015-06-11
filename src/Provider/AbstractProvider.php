@@ -342,12 +342,13 @@ abstract class AbstractProvider implements ProviderInterface
         $request  = $this->getRequest($method, $url, $options);
         $response = $this->getResponse($request);
 
-        $result = $this->parseResponse($response);
+        $this->checkResponse($response);
 
-        $result = $this->prepareAccessTokenResult($result);
+        $response = $this->prepareAccessTokenResult($response);
 
-        return $grant->handleResponse($result);
+        return $grant->handleResponse($response);
     }
+
 
     /**
      * Get a request instance.
@@ -417,7 +418,9 @@ abstract class AbstractProvider implements ProviderInterface
     {
         $content = json_decode($content, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new UnexpectedValueException('Failed to parse JSON response');
+            throw new UnexpectedValueException(
+                "Failed to parse JSON response: ".json_last_error_msg()
+            );
         }
         return $content;
     }
@@ -508,7 +511,6 @@ abstract class AbstractProvider implements ProviderInterface
      * @param  null|integer $enc_type
      *
      * @return string
-     * @codeCoverageIgnoreStart
      */
     protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
     {

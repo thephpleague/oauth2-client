@@ -56,6 +56,7 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
 
         $response = m::mock('Psr\Http\Message\ResponseInterface');
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $paramCheck = $this->getParamExpectation();
 
