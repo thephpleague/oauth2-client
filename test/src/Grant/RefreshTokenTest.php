@@ -13,11 +13,11 @@ class RefreshTokenTest extends GrantTestCase
         ];
     }
 
-    protected function getParamsExpectation()
+    protected function getParamExpectation()
     {
-        return function ($params) {
-            return !empty($params['grant_type'])
-                && $params['grant_type'] === 'refresh_token';
+        return function ($body) {
+            return !empty($body['grant_type'])
+                && $body['grant_type'] === 'refresh_token';
         };
     }
 
