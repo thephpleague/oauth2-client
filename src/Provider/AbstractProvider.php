@@ -378,10 +378,6 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->parseResponse($response);
     }
 
-    protected function getContentType(ResponseInterface $response)
-    {
-        return join(";", (array) $response->getHeader('content-type'));
-    }
 
     protected function parseJson($content)
     {
@@ -390,6 +386,17 @@ abstract class AbstractProvider implements ProviderInterface
             throw new UnexpectedValueException('Failed to parse JSON response');
         }
         return $content;
+    }
+
+    /**
+     * Returns the content type header of a response.
+     *
+     * @param ResponseInterface $response
+     * @return string A semi-colon separated join of content-type headers.
+     */
+    protected function getContentType(ResponseInterface $response)
+    {
+        return join(";", (array) $response->getHeader('content-type'));
     }
 
     /**
