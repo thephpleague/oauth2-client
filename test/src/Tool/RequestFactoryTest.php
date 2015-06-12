@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Test\Tool;
 
 use League\OAuth2\Client\Tool\RequestFactory;
+use Psr\Http\Message\RequestInterface;
 use Mockery as m;
 
 class RequestFactoryTest extends \PHPUnit_Framework_TestCase
@@ -19,7 +20,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 
         $request = $this->factory->getRequest($method, $uri);
 
-        $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
         $this->assertSame(strtoupper($method), $request->getMethod());
         $this->assertSame($uri, (string) $request->getUri());
 
@@ -41,7 +42,7 @@ class RequestFactoryTest extends \PHPUnit_Framework_TestCase
 
         $request = $this->factory->getRequestWithOptions($method, $uri);
 
-        $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
         $this->assertSame(strtoupper($method), $request->getMethod());
         $this->assertSame($uri, (string) $request->getUri());
 

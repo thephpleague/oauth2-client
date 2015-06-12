@@ -2,6 +2,9 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
+use GuzzleHttp\ClientInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use Mockery as m;
 
@@ -49,17 +52,17 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
      */
     public function testGetAccessToken($grant, array $params = [])
     {
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             '{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'
         );
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
         $paramCheck = $this->getParamExpectation();
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
             $request = m::on(function ($request) use ($paramCheck) {
                 parse_str((string) $request->getBody(), $body);

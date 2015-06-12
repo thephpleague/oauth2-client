@@ -2,11 +2,21 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
+use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Tool\RequestFactory;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use RandomLib\Factory as RandomFactory;
+use RandomLib\Generator as RandomGenerator;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\ClientInterface;
+
 use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
@@ -88,7 +98,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsGrantFactory()
     {
-        $mockAdapter = m::mock('League\OAuth2\Client\Grant\GrantFactory');
+        $mockAdapter = m::mock(GrantFactory::class);
 
         $mockProvider = new MockProvider([], ['grantFactory' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
@@ -96,7 +106,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsHttpAdapter()
     {
-        $mockAdapter = m::mock('GuzzleHttp\ClientInterface');
+        $mockAdapter = m::mock(ClientInterface::class);
 
         $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
@@ -112,7 +122,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsRequestFactory()
     {
-        $mockAdapter = m::mock('League\OAuth2\Client\Tool\RequestFactory');
+        $mockAdapter = m::mock(RequestFactory::class);
 
         $mockProvider = new MockProvider([], ['requestFactory' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getRequestFactory());
@@ -147,17 +157,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             json_encode(compact('id', 'name', 'email'))
         );
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
         $url = $provider->urlUserDetails($token);
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
             m::on(function ($request) use ($url) {
                 return $request->getMethod() === 'GET'
@@ -245,10 +255,10 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $xstate = str_repeat('x', 32);
 
-        $generator = m::mock('RandomLib\Generator');
+        $generator = m::mock(RandomGenerator::class);
         $generator->shouldReceive('generateString')->with(32)->times(1)->andReturn($xstate);
 
-        $factory = m::mock('RandomLib\Factory');
+        $factory = m::mock(randomFactory::class);
         $factory->shouldReceive('getMediumStrengthGenerator')->times(1)->andReturn($generator);
 
         $provider = new MockProvider([], ['randomFactory' => $factory]);
@@ -277,18 +287,18 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         ]);
 
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             '{"error":"Foo error","code":1337}'
         );
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
         $method = $provider->getAccessTokenMethod();
         $url = $provider->urlAccessToken();
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
             m::on(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method
@@ -323,14 +333,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             '{"error":"Foo error","code":1337}'
         );
 
-        $request = m::mock('Psr\Http\Message\RequestInterface');
+        $request = m::mock(RequestInterface::class);
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getStatusCode')->times(1)->andReturn(400);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
@@ -343,7 +353,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
             m::on(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method
@@ -367,18 +377,18 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             'not json'
         );
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->urlAccessToken();
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
             m::on(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method
@@ -398,21 +408,21 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
         $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
-        $this->assertInstanceOf('Psr\Http\Message\RequestInterface', $request);
+        $this->assertInstanceOf(RequestInterface::class, $request);
 
         // Authorization header should contain the token
         $header = $request->getHeader('Authorization');
         $this->assertContains('Bearer abc', $header);
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             '{"example":"response"}'
         );
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with($request)->andReturn($response);
 
         $provider->setHttpClient($client);
@@ -451,7 +461,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             return is_array($params) && $params['grant_type'] === $grant_name;
         };
 
-        $grant = m::mock('League\OAuth2\Client\Grant\GrantInterface');
+        $grant = m::mock(GrantInterface::class);
         $grant->shouldReceive('__toString')
               ->times(1)
               ->andReturn($grant_name);
@@ -465,17 +475,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
               ->with($raw_response)
               ->andReturn($token);
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
             json_encode($raw_response)
         );
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
 
         $url = $provider->urlAccessToken();
 
-        $client = m::mock('GuzzleHttp\ClientInterface');
+        $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
             m::on(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method

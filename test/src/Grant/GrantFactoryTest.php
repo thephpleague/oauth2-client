@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Test\Grant;
 
 use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Grant\InvalidGrantException;
 use League\OAuth2\Client\Test\Grant\Fake as MockGrant;
 use Mockery as m;
@@ -31,7 +32,7 @@ class GrantFactoryTest extends \PHPUnit_Framework_TestCase
     public function testGetGrantDefaults($name)
     {
         $grant = $this->factory->getGrant($name);
-        $this->assertInstanceOf('League\OAuth2\Client\Grant\GrantInterface', $grant);
+        $this->assertInstanceOf(GrantInterface::class, $grant);
     }
 
     public function providerGetGrantDefaults()
