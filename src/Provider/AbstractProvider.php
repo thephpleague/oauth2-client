@@ -522,7 +522,7 @@ abstract class AbstractProvider
      */
     protected function getContentType(ResponseInterface $response)
     {
-        return join(";", (array) $response->getHeader('content-type'));
+        return join(';', (array) $response->getHeader('content-type'));
     }
 
     /**
@@ -539,11 +539,11 @@ abstract class AbstractProvider
 
         // JSON  = application/json
         // JSONP = application/javascript
-        if (strpos($type, "json") !== false || strpos($type, "javascript") !== false) {
+        if (strpos($type, 'json') !== false || strpos($type, 'javascript') !== false) {
             return $this->parseJson($content);
         }
 
-        if (strpos($type, "urlencoded") !== false) {
+        if (strpos($type, 'urlencoded') !== false) {
             parse_str($content, $parsed);
             return $parsed;
         }
