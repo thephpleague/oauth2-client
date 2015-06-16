@@ -29,7 +29,6 @@ a patch via pull request.
 
 The following versions of PHP are supported.
 
-* PHP 5.4
 * PHP 5.5
 * PHP 5.6
 * PHP 7.0
@@ -111,44 +110,26 @@ $grant = new \League\OAuth2\Client\Grant\RefreshToken();
 $token = $provider->getAccessToken($grant, ['refresh_token' => $refreshToken]);
 ```
 
+## Providers
 
-### Built-In Providers
+All providers must extend [AbstractProvider](https://github.com/thephpleague/oauth2-client/blob/master/src/Provider/AbstractProvider.php), and implement the declared abstract methods.
 
-This package currently has built-in support for:
+The following providers are available:
 
-- Eventbrite
-- Facebook
-- Github
-- Google
-- Instagram
-- LinkedIn
-- Microsoft
+### Official providers
 
 These are as many OAuth 2 services as we plan to support officially. Maintaining a wide selection of providers
 damages our ability to make this package the best it can be, especially as we progress towards v1.0.
 
-#### Managing LinkedIn Scopes
+Gateway | Composer Package | Maintainer
+--- | --- | ---
+[Facebook](https://github.com/thephpleague/oauth2-facebook) | league/oauth2-facebook | [Sammy Kaye Powers](https://github.com/sammyk)
+[Github](https://github.com/thephpleague/oauth2-github) | league/oauth2-github | [Steven Maguire](https://github.com/stevenmaguire)
+[Google](https://github.com/thephpleague/oauth2-google) | league/oauth2-google | [Woody Gilk](https://github.com/shadowhand)
+[Instagram](https://github.com/thephpleague/oauth2-instagram) | league/oauth2-instagram | [Steven Maguire](https://github.com/stevenmaguire)
+[LinkedIn](https://github.com/thephpleague/oauth2-linkedin) | league/oauth2-linkedin | [Steven Maguire](https://github.com/stevenmaguire)
 
-The LinkedIn provider included in this package does not include scopes by default. When creating your LinkedIn provider, you can specify the scopes your application may authorize.
-
-```php
-$provider = new League\OAuth2\Client\Provider\LinkedIn([
-    'clientId'          => '{linkedin-client-id}',
-    'clientSecret'      => '{linkedin-client-secret}',
-    'redirectUri'       => 'https://example.com/callback-url',
-    'scopes'            => ['r_basicprofile r_emailaddress'],
-]);
-```
-It is important to note, each scope must be space delimited and contained within one string.
-
-At the time of authoring this documentation, the following scopes are available.
-
-- r_basicprofile
-- r_emailaddress
-- rw_company_admin
-- w_share
-
-### Third-Party Providers
+### Third party providers
 
 If you would like to support other providers, please make them available as a Composer package, then link to them
 below.
@@ -156,34 +137,42 @@ below.
 These providers allow integration with other providers not supported by `oauth2-client`. They may require an older version
 so please help them out with a pull request if you notice this.
 
-- [Amazon](https://github.com/lemonstand/oauth2-amazon/)
-- [Auth0](https://github.com/RiskioFr/oauth2-auth0)
-- [Battle.net](https://packagist.org/packages/depotwarehouse/oauth2-bnet)
-- [BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php)
-- [Clover](https://github.com/wheniwork/oauth2-clover)
-- [Coinbase](https://github.com/openclerk/coinbase-oauth2)
-- [Dropbox](https://github.com/pixelfear/oauth2-dropbox)
-- [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent)
-- [Google Nest](https://github.com/JC5/nest-oauth2-provider)
-- [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru)
-- [Meetup](https://github.com/howlowck/meetup-oauth2-provider)
-- [Naver](https://packagist.org/packages/deminoth/oauth2-naver)
-- [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki)
-- [Reddit](https://github.com/rtheunissen/oauth2-reddit)
-- [Square](https://packagist.org/packages/wheniwork/oauth2-square)
-- [Twitch.tv](https://github.com/tpavlek/oauth2-twitch)
-- [Uber](https://github.com/stevenmaguire/oauth2-uber)
-- [Vend](https://github.com/wheniwork/oauth2-vend)
-- [Vkontakte](https://packagist.org/packages/j4k/oauth2-vkontakte)
-- [Yandex](https://packagist.org/packages/aego/oauth2-yandex)
-- [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll)
-- [Envato](https://github.com/dilab/envato-oauth2-provider)
+Gateway | Composer Package | Maintainer
+--- | --- | ---
+[Amazon](https://github.com/lemonstand/oauth2-amazon/) | lemonstand/oauth2-amazon | [LemonStand](https://github.com/lemonstand)
+[Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Riskio](https://github.com/RiskioFr)
+[Battle.net](https://github.com/tpavlek/oauth2-bnet) | depotwarehouse/oauth2-bnet | [Troy Pavlek](https://github.com/tpavlek)
+[BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php) | bookingsync/oauth2-bookingsync-php | [BookingSync](https://github.com/BookingSync)
+[Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
+[Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
+[Dropbox](https://github.com/pixelfear/oauth2-dropbox) | pixelfear/oauth2-dropbox | [Jason Varga](https://github.com/jasonvarga)
+[Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
+[Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
+[FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
+[Google Nest](https://github.com/JC5/nest-oauth2-provider) | grumpydictator/nest-oauth2-provider | [James Cole](https://github.com/JC5)
+[Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
+[Meetup](https://github.com/howlowck/meetup-oauth2-provider) | howlowck/meetup-oauth2-provider | [Hao Luo](https://github.com/howlowck)
+[Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
+[Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
+[Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
+[Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
+[Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
+[Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
+[Uber](https://github.com/stevenmaguire/oauth2-uber) | stevenmaguire/oauth2-uber | [Steven Maguire](https://github.com/stevenmaguire)
+[Vend](https://github.com/wheniwork/oauth2-vend) | wheniwork/oauth2-vend | [When I Work](https://github.com/wheniwork)
+[Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
+[Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
+[ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll) | wheniwork/oauth2-zenpayroll | [Woody Gilk](https://github.com/shadowhand)
 
-### Implementing your own provider
+### Build your own providers
 
-If you are working with an oauth2 service not supported out-of-the-box or by an existing package, it is quite simple to
-implement your own. Simply extend `League\OAuth2\Client\Provider\AbstractProvider` and implement the required abstract
-methods:
+New providers can be created by cloning the layout of an existing package. When choosing a name for your package, please don’t use the `league` vendor prefix, as this implies that it is officially supported.
+
+You should use your own username as the vendor prefix, and prepend `oauth2-` to the package name to make it clear that your package works with OAuth2 Client. For example, if your GitHub username was santa, and you were implementing the giftpay OAuth2 library, a good name for your composer package would be `santa/oauth2-giftpay`.
+
+#### Implementing your own provider
+
+If you are working with an oauth2 service not supported out-of-the-box or by an existing package, it is quite simple to implement your own. Simply extend `League\OAuth2\Client\Provider\AbstractProvider` and implement the required abstract methods:
 
 ```php
 abstract public function urlAuthorize();
@@ -208,7 +197,12 @@ provider you would add a property:
 public $uidKey = 'accountId';
 ```
 
-### Client Packages
+#### Make your gateway official
+
+If you want to transfer your provider to the `thephpleague` GitHub organization and add it to the list of officially supported providers, please open a pull request on the thephpleague/oauth2-client package. Before new providers will be accepted, they must have 100% unit test code coverage, and follow the conventions and code style used in other OAuth2 Client providers.
+
+
+## Client Packages
 
 Some developers use this library as a base for their own PHP API wrappers, and that seems like a really great idea. It might make it slightly tricky to integrate their provider with an existing generic "OAuth 2.0 All the Things" login system, but it does make working with them easier.
 

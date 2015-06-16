@@ -2,63 +2,36 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use Mockery as m;
+use League\OAuth2\Client\Grant\RefreshToken;
 
-class RefreshTokenTest extends \PHPUnit_Framework_TestCase
+class RefreshTokenTest extends GrantTestCase
 {
-    protected $provider;
-
-    protected function setUp()
+    public function providerGetAccessToken()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google([
-            'clientId' => 'mock_client_id',
-            'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-        ]);
+        return [
+            ['refresh_token', ['refresh_token' => 'mock_refresh_token']],
+        ];
     }
 
-    public function tearDown()
+    protected function getParamExpectation()
     {
-        m::close();
-        parent::tearDown();
+        return function ($body) {
+            return !empty($body['grant_type'])
+                && $body['grant_type'] === 'refresh_token';
+        };
     }
 
-    public function testGetAccessToken()
+    public function testToString()
     {
-        $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(2)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
-
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(2);
-        $client->shouldReceive('post->send')->times(2)->andReturn($response);
-        $this->provider->setHttpClient($client);
-
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
-
-        $grant = new \League\OAuth2\Client\Grant\RefreshToken();
+        $grant = new RefreshToken();
         $this->assertEquals('refresh_token', (string) $grant);
-
-        $newToken = $this->provider->getAccessToken($grant, ['refresh_token' => $token->refreshToken]);
-        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $newToken);
     }
 
     /**
-     * @expectedException BadMethodCallException
+     * @expectedException \BadMethodCallException
      */
     public function testInvalidRefreshToken()
     {
-        $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
-
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
-        $this->provider->setHttpClient($client);
-
-        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-
-        $grant = new \League\OAuth2\Client\Grant\RefreshToken();
-        $refreshToken = $this->provider->getAccessToken($grant, ['invalid_refresh_token' => $token->refreshToken]);
+        $this->provider->getAccessToken('refresh_token', ['invalid_refresh_token' => 'mock_refresh_token']);
     }
 }

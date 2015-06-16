@@ -2,41 +2,28 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use Mockery as m;
+use League\OAuth2\Client\Grant\ClientCredentials;
 
-class ClientCredentialsTest extends \PHPUnit_Framework_TestCase
+class ClientCredentialsTest extends GrantTestCase
 {
-    protected $provider;
-
-    protected function setUp()
+    public function providerGetAccessToken()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google(array(
-            'clientId' => 'mock_client_id',
-            'clientSecret' => 'mock_secret',
-            'redirectUri' => 'none',
-        ));
+        return [
+            ['client_credentials'],
+        ];
     }
 
-    public function tearDown()
+    protected function getParamExpectation()
     {
-        m::close();
-        parent::tearDown();
+        return function ($body) {
+            return !empty($body['grant_type'])
+                && $body['grant_type'] === 'client_credentials';
+        };
     }
 
-    public function testGetAccessToken()
+    public function testToString()
     {
-        $response = m::mock('Guzzle\Http\Message\Response');
-        $response->shouldReceive('getBody')->times(1)->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
-
-        $client = m::mock('Guzzle\Service\Client');
-        $client->shouldReceive('setBaseUrl')->times(1);
-        $client->shouldReceive('post->send')->times(1)->andReturn($response);
-        $this->provider->setHttpClient($client);
-
-        $token = $this->provider->getAccessToken('client_credentials');
-        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
-
-        $grant = new \League\OAuth2\Client\Grant\ClientCredentials();
+        $grant = new ClientCredentials();
         $this->assertEquals('client_credentials', (string) $grant);
     }
 }

@@ -3,7 +3,20 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
+use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Tool\RequestFactory;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use RandomLib\Factory as RandomFactory;
+use RandomLib\Generator as RandomGenerator;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\ClientInterface;
+
 use Mockery as m;
 
 class AbstractProviderTest extends \PHPUnit_Framework_TestCase
@@ -15,7 +28,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->provider = new \League\OAuth2\Client\Provider\Google([
+        $this->provider = new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
@@ -29,7 +42,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
      */
     public function testInvalidGrantString()
     {
@@ -37,7 +50,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
      */
     public function testInvalidGrantObject()
     {
@@ -60,87 +73,138 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $options = [
             'clientId' => '1234',
             'clientSecret' => '4567',
-            'redirectUri' => 'http://example.org/redirect',
-            'state' => 'foo',
-            'name' => 'bar',
-            'uidKey' => 'mynewuid',
-            'scopes' => ['a', 'b', 'c'],
-            'method' => 'get',
-            'scopeSeparator' => ';',
-            'responseType' => 'csv',
-            'headers' => ['Foo' => 'Bar'],
-            'authorizationHeader' => 'Bearer',
+            'redirectUri' => 'http://example.org/redirect'
         ];
 
         $mockProvider = new MockProvider($options);
 
         foreach ($options as $key => $value) {
-            $this->assertEquals($value, $mockProvider->{$key});
+            $this->assertAttributeEquals($value, $key, $mockProvider);
         }
+    }
+
+    public function testConstructorSetsClientOptions()
+    {
+        $timeout = rand(100, 900);
+
+        $mockProvider = new MockProvider(compact('timeout'));
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('timeout', $config);
+        $this->assertEquals($timeout, $config['timeout']);
+    }
+
+    public function testConstructorSetsGrantFactory()
+    {
+        $mockAdapter = m::mock(GrantFactory::class);
+
+        $mockProvider = new MockProvider([], ['grantFactory' => $mockAdapter]);
+        $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
+    }
+
+    public function testConstructorSetsHttpAdapter()
+    {
+        $mockAdapter = m::mock(ClientInterface::class);
+
+        $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
+        $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
+    }
+
+    public function testConstructorSetsRandomFactory()
+    {
+        $mockAdapter = m::mock('RandomLib\Factory');
+
+        $mockProvider = new MockProvider([], ['randomFactory' => $mockAdapter]);
+        $this->assertSame($mockAdapter, $mockProvider->getRandomFactory());
+    }
+
+    public function testConstructorSetsRequestFactory()
+    {
+        $mockAdapter = m::mock(RequestFactory::class);
+
+        $mockProvider = new MockProvider([], ['requestFactory' => $mockAdapter]);
+        $this->assertSame($mockAdapter, $mockProvider->getRequestFactory());
     }
 
     public function testSetRedirectHandler()
     {
         $this->testFunction = false;
+        $this->state = false;
 
-        $callback = function ($url) {
+        $callback = function ($url, $provider) {
             $this->testFunction = $url;
+            $this->state = $provider->getState();
         };
 
-        $this->provider->setRedirectHandler($callback);
-
-        $this->provider->authorize('http://test.url/');
+        $this->provider->authorize([], $callback);
 
         $this->assertNotFalse($this->testFunction);
+        $this->assertAttributeEquals($this->state, 'state', $this->provider);
     }
 
     /**
-     * @param $response
-     *
      * @dataProvider userPropertyProvider
      */
     public function testGetUserProperties($response, $name = null, $email = null, $id = null)
     {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $provider = $this->getMockForAbstractClass(
-            '\League\OAuth2\Client\Provider\AbstractProvider',
-            [
-              [
-                  'clientId'     => 'mock_client_id',
-                  'clientSecret' => 'mock_secret',
-                  'redirectUri'  => 'none',
-              ]
-            ]
+        $stream = m::mock(StreamInterface::class);
+        $stream->shouldReceive('__toString')->times(1)->andReturn(
+            json_encode(compact('id', 'name', 'email'))
         );
 
-        /**
-         * @var $provider AbstractProvider
-         */
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
-        $this->assertEquals($name, $provider->userScreenName($response, $token));
-        $this->assertEquals($email, $provider->userEmail($response, $token));
-        $this->assertEquals($id, $provider->userUid($response, $token));
+        $url = $provider->urlUserDetails($token);
+
+        $client = m::mock(ClientInterface::class);
+        $client->shouldReceive('send')->with(
+            m::on(function ($request) use ($url) {
+                return $request->getMethod() === 'GET'
+                    && $request->hasHeader('Authorization')
+                    && (string) $request->getUri() === $url;
+            })
+        )->times(1)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        $user = $provider->getUserDetails($token);
+
+        $this->assertEquals($id, $user->getUserId());
+        $this->assertEquals($name, $user->getUserScreenName());
+        $this->assertEquals($email, $user->getUserEmail());
     }
 
     public function userPropertyProvider()
     {
-        $response = new \stdClass();
-        $response->id = 1;
-        $response->email = 'test@example.com';
-        $response->name = 'test';
+        $response = [
+            'id'    => 1,
+            'email' => 'test@example.com',
+            'name'  => 'test',
+        ];
 
-        $response2 = new \stdClass();
-        $response2->id = null;
-        $response2->email = null;
-        $response2->name = null;
+        $response2 = [
+            'id'    => null,
+            'email' => null,
+            'name'  => null,
+        ];
 
-        $response3 = new \stdClass();
+        $response3 = [];
 
         return [
-            [$response, 'test', 'test@example.com', 1],
-            [$response2],
-            [$response3],
+            'full response'  => [$response, 'test', 'test@example.com', 1],
+            'empty response' => [$response2],
+            'no response'    => [$response3],
         ];
     }
 
@@ -169,27 +233,323 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
         $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
     }
-}
 
-class MockProvider extends \League\OAuth2\Client\Provider\AbstractProvider
-{
-    public function urlAuthorize()
+    public function testScopesOverloadedDuringAuthorize()
     {
-        return '';
+        $url = $this->provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('scope', $qs);
+        $this->assertSame('test', $qs['scope']);
+
+        $url = $this->provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('scope', $qs);
+        $this->assertSame('foo,bar', $qs['scope']);
     }
 
-    public function urlAccessToken()
+    public function testRandomGeneratorCreatesRandomState()
     {
-        return '';
+        $xstate = str_repeat('x', 32);
+
+        $generator = m::mock(RandomGenerator::class);
+        $generator->shouldReceive('generateString')->with(32)->times(1)->andReturn($xstate);
+
+        $factory = m::mock(RandomFactory::class);
+        $factory->shouldReceive('getMediumStrengthGenerator')->times(1)->andReturn($generator);
+
+        $provider = new MockProvider([], ['randomFactory' => $factory]);
+
+        $url = $provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertArrayHasKey('state', $qs);
+        $this->assertSame($xstate, $qs['state']);
+
+        // Same test, but using the non-mock implementation
+        $url = $this->provider->getAuthorizationUrl();
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+
+        $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
     }
 
-    public function urlUserDetails(\League\OAuth2\Client\Token\AccessToken $token)
+    public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
-        return '';
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+
+        $stream = m::mock(StreamInterface::class);
+        $stream->shouldReceive('__toString')->times(1)->andReturn(
+            '{"error":"Foo error","code":1337}'
+        );
+
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+
+        $method = $provider->getAccessTokenMethod();
+        $url = $provider->urlAccessToken();
+
+        $client = m::mock(ClientInterface::class);
+        $client->shouldReceive('send')->with(
+            m::on(function ($request) use ($method, $url) {
+                return $request->getMethod() === $method
+                    && (string) $request->getUri() === $url;
+            })
+        )->times(1)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        $errorMessage = '';
+        $errorCode = 0;
+
+        try {
+            $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        } catch (IdentityProviderException $e) {
+            $errorMessage = $e->getMessage();
+            $errorCode = $e->getCode();
+        }
+
+        $this->assertEquals('Foo error', $errorMessage);
+        $this->assertEquals(1337, $errorCode);
     }
 
-    public function userDetails($response, \League\OAuth2\Client\Token\AccessToken $token)
+    /**
+     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function testClientErrorTriggersProviderException()
     {
-        return '';
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $stream = m::mock(StreamInterface::class);
+        $stream->shouldReceive('__toString')->times(1)->andReturn(
+            '{"error":"Foo error","code":1337}'
+        );
+
+        $request = m::mock(RequestInterface::class);
+
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getStatusCode')->times(1)->andReturn(400);
+        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
+
+        $exception = new BadResponseException(
+            'test exception',
+            $request,
+            $response
+        );
+
+        $method = $provider->getAccessTokenMethod();
+        $url    = $provider->urlAccessToken();
+
+        $client = m::mock(ClientInterface::class);
+        $client->shouldReceive('send')->with(
+            m::on(function ($request) use ($method, $url) {
+                return $request->getMethod() === $method
+                    && (string) $request->getUri() === $url;
+            })
+        )->times(1)->andThrow($exception);
+
+        $provider->setHttpClient($client);
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
+    public function testAuthenticatedRequestAndResponse()
+    {
+        $provider = new MockProvider();
+
+        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+
+        $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
+        $this->assertInstanceOf(RequestInterface::class, $request);
+
+        // Authorization header should contain the token
+        $header = $request->getHeader('Authorization');
+        $this->assertContains('Bearer abc', $header);
+
+        $stream = m::mock(StreamInterface::class);
+        $stream->shouldReceive('__toString')->times(1)->andReturn(
+            '{"example":"response"}'
+        );
+
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+
+        $client = m::mock(ClientInterface::class);
+        $client->shouldReceive('send')->with($request)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        // Final result should be a parsed response
+        $result = $provider->getResponse($request);
+        $this->assertSame(['example' => 'response'], $result);
+    }
+
+    public function getAccessTokenMethodProvider()
+    {
+        return [
+            ['GET'],
+            ['POST'],
+        ];
+    }
+
+    /**
+     * @dataProvider getAccessTokenMethodProvider
+     */
+    public function testGetAccessToken($method)
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $provider->setAccessTokenMethod($method);
+
+        $grant_name = 'mock';
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
+        $token = new AccessToken($raw_response);
+
+        $contains_correct_grant_type = function ($params) use ($grant_name) {
+            return is_array($params) && $params['grant_type'] === $grant_name;
+        };
+
+        $grant = m::mock(GrantInterface::class);
+        $grant->shouldReceive('__toString')
+              ->times(1)
+              ->andReturn($grant_name);
+        $grant->shouldReceive('prepRequestParams')
+              ->with(
+                  m::on($contains_correct_grant_type),
+                  m::type('array')
+              )
+              ->andReturn([]);
+        $grant->shouldReceive('handleResponse')
+              ->with($raw_response)
+              ->andReturn($token);
+
+        $stream = m::mock(StreamInterface::class);
+        $stream->shouldReceive('__toString')->times(1)->andReturn(
+            json_encode($raw_response)
+        );
+
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+
+        $method = $provider->getAccessTokenMethod();
+        $url    = $provider->urlAccessToken();
+
+        $client = m::mock(ClientInterface::class);
+        $client->shouldReceive('send')->with(
+            m::on(function ($request) use ($method, $url) {
+                return $request->getMethod() === $method
+                    && (string) $request->getUri() === $url;
+            })
+        )->times(1)->andReturn($response);
+
+        $provider->setHttpClient($client);
+
+        $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
+
+        $this->assertSame($result, $token);
+        $this->assertSame($raw_response['uid'], $token->getUid());
+        $this->assertSame($raw_response['access_token'], $token->getToken());
+        $this->assertSame($raw_response['expires'], $token->getExpires());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testInvalidAccessTokenMethod()
+    {
+        $provider = new MockProvider([
+          'clientId' => 'mock_client_id',
+          'clientSecret' => 'mock_secret',
+          'redirectUri' => 'none',
+        ]);
+
+        $provider->setAccessTokenMethod('PUT');
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
+    private function getMethod($class, $name)
+    {
+        $class = new \ReflectionClass($class);
+        $method = $class->getMethod($name);
+
+        $method->setAccessible(true);
+        return $method;
+    }
+
+    private function _testParse($body, $type, $expected = null)
+    {
+        $method = $this->getMethod('League\OAuth2\Client\Provider\AbstractProvider', 'parseResponse');
+
+        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream->shouldReceive('__toString')->times(1)->andReturn($body);
+
+        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->andReturn($stream);
+        $response->shouldReceive('getHeader')->with('content-type')->andReturn($type);
+
+        $this->assertEquals($expected, $method->invoke($this->provider, $response));
+    }
+
+    public function testParseJson()
+    {
+        $this->_testParse('{"a": 1}', 'application/json', ['a' => 1]);
+    }
+
+    public function testParseUnknownType()
+    {
+        $this->_testParse('success', 'unknown/mime', 'success');
+    }
+
+    public function testParseUrlParams()
+    {
+        $this->_testParse('a=1&b=2', 'application/x-www-form-urlencoded', ['a' => 1, 'b' => 2]);
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testParseResponseJsonFailure()
+    {
+        $this->_testParse('{a: 1}', 'application/json');
+    }
+
+    public function getAppendQueryProvider()
+    {
+        return [
+            ['test.com/?a=1', 'test.com/', '?a=1'],
+            ['test.com/?a=1', 'test.com/', '&a=1'],
+            ['test.com/?a=1', 'test.com/', 'a=1'],
+            ['test.com/?a=1', 'test.com/?a=1', '?'],
+            ['test.com/?a=1', 'test.com/?a=1', '&'],
+        ];
+    }
+
+    /**
+     * @dataProvider getAppendQueryProvider
+     */
+    public function testAppendQuery($expected, $url, $query)
+    {
+        $method = $this->getMethod('League\OAuth2\Client\Provider\AbstractProvider', 'appendQuery');
+        $this->assertEquals($expected, $method->invoke($this->provider, $url, $query));
     }
 }

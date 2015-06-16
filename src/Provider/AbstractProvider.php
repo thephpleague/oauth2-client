@@ -3,52 +3,76 @@
 namespace League\OAuth2\Client\Provider;
 
 use Closure;
-use Guzzle\Http\Exception\BadResponseException;
-use Guzzle\Service\Client as GuzzleClient;
-use League\OAuth2\Client\Exception\IDPException as IDPException;
-use League\OAuth2\Client\Grant\GrantInterface;
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\ClientInterface as HttpClientInterface;
+use GuzzleHttp\Exception\BadResponseException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Tool\RequestFactory;
+use RandomLib\Factory as RandomFactory;
+use UnexpectedValueException;
+use InvalidArgumentException;
 
-abstract class AbstractProvider implements ProviderInterface
+abstract class AbstractProvider
 {
-    public $clientId = '';
-
-    public $clientSecret = '';
-
-    public $redirectUri = '';
-
-    public $state;
-
-    public $name;
-
-    public $uidKey = 'uid';
-
-    public $scopes = [];
-
-    public $method = 'post';
-
-    public $scopeSeparator = ',';
-
-    public $responseType = 'json';
-
-    public $headers = [];
-
-    public $authorizationHeader;
+    /**
+     * @var string Key used in the access token response to identify the user.
+     */
+    const ACCESS_TOKEN_UID = null;
 
     /**
-     * @var GuzzleClient
+     * @var string Separator used for authorization scopes.
+     */
+    const SCOPE_SEPARATOR = ',';
+
+    /**
+     * @var string
+     */
+    protected $clientId;
+
+    /**
+     * @var string
+     */
+    protected $clientSecret;
+
+    /**
+     * @var string
+     */
+    protected $redirectUri;
+
+    /**
+     * @var string
+     */
+    protected $state;
+
+    /**
+     * @var GrantFactory
+     */
+    protected $grantFactory;
+
+    /**
+     * @var RequestFactory
+     */
+    protected $requestFactory;
+
+    /**
+     * @var HttpAdapterInterface
      */
     protected $httpClient;
 
-    protected $redirectHandler;
+    /**
+     * @var RandomFactory
+     */
+    protected $randomFactory;
 
     /**
-     * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
-     *          and the default encoding type for the http_build_query setup
+     * @param array $options
+     * @param array $collaborators
      */
-    protected $httpBuildEncType = 1;
-
-    public function __construct($options = [])
+    public function __construct($options = [], array $collaborators = [])
     {
         foreach ($options as $option => $value) {
             if (property_exists($this, $option)) {
@@ -56,344 +80,569 @@ abstract class AbstractProvider implements ProviderInterface
             }
         }
 
-        $this->setHttpClient(new GuzzleClient());
+        if (empty($collaborators['grantFactory'])) {
+            $collaborators['grantFactory'] = new GrantFactory();
+        }
+        $this->setGrantFactory($collaborators['grantFactory']);
+
+        if (empty($collaborators['requestFactory'])) {
+            $collaborators['requestFactory'] = new requestFactory();
+        }
+        $this->setRequestFactory($collaborators['requestFactory']);
+
+        if (empty($collaborators['httpClient'])) {
+            $client_options = ['timeout'];
+            $collaborators['httpClient'] = new HttpClient(
+                array_intersect_key($options, array_flip($client_options))
+            );
+        }
+        $this->setHttpClient($collaborators['httpClient']);
+
+        if (empty($collaborators['randomFactory'])) {
+            $collaborators['randomFactory'] = new RandomFactory();
+        }
+        $this->setRandomFactory($collaborators['randomFactory']);
     }
 
-    public function setHttpClient(GuzzleClient $client)
+    /**
+     * Set the grant factory instance.
+     *
+     * @param  GrantFactory $factory
+     * @return $this
+     */
+    public function setGrantFactory(GrantFactory $factory)
+    {
+        $this->grantFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Get the grant factory instance.
+     *
+     * @return GrantFactory
+     */
+    public function getGrantFactory()
+    {
+        return $this->grantFactory;
+    }
+
+    /**
+     * Set the request factory instance.
+     *
+     * @param  RequestFactory $factory
+     * @return $this
+     */
+    public function setRequestFactory(RequestFactory $factory)
+    {
+        $this->requestFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Get the request factory instance.
+     *
+     * @return RequestFactory
+     */
+    public function getRequestFactory()
+    {
+        return $this->requestFactory;
+    }
+
+    /**
+     * Set the HTTP adapter instance.
+     *
+     * @param  HttpClientInterface $client
+     * @return $this
+     */
+    public function setHttpClient(HttpClientInterface $client)
     {
         $this->httpClient = $client;
 
         return $this;
     }
 
+    /**
+     * Get the HTTP adapter instance.
+     *
+     * @return HttpAdapterInterface
+     */
     public function getHttpClient()
     {
-        $client = clone $this->httpClient;
-
-        return $client;
+        return $this->httpClient;
     }
 
     /**
-     * Get the URL that this provider uses to begin authorization.
+     * Set the instance of the CSPRNG random generator factory to use.
+     *
+     * @param  RandomFactory $factory
+     * @return $this
+     */
+    public function setRandomFactory(RandomFactory $factory)
+    {
+        $this->randomFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Get the instance of the CSPRNG random generatory factory.
+     *
+     * @return RandomFactory
+     */
+    public function getRandomFactory()
+    {
+        return $this->randomFactory;
+    }
+
+    /**
+     * Get the current state of the OAuth flow.
+     *
+     * This can be accessed by the redirect handler during authorization.
      *
      * @return string
      */
+    public function getState()
+    {
+        return $this->state;
+    }
+
     abstract public function urlAuthorize();
-
-    /**
-     * Get the URL that this provider uses to request an access token.
-     *
-     * @return string
-     */
     abstract public function urlAccessToken();
-
-    /**
-     * Get the URL that this provider uses to request user details.
-     *
-     * Since this URL is typically an authorized route, most providers will require you to pass the access_token as
-     * a parameter to the request. For example, the google url is:
-     *
-     * 'https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token='.$token
-     *
-     * @param AccessToken $token
-     * @return string
-     */
     abstract public function urlUserDetails(AccessToken $token);
 
     /**
-     * Given an object response from the server, process the user details into a format expected by the user
-     * of the client.
+     * Get a new random string to use for auth state.
      *
-     * @param object $response
-     * @param AccessToken $token
-     * @return mixed
+     * @param  integer $length
+     * @return string
      */
-    abstract public function userDetails($response, AccessToken $token);
-
-    public function getScopes()
+    protected function getRandomState($length = 32)
     {
-        return $this->scopes;
+        $generator = $this
+            ->getRandomFactory()
+            ->getMediumStrengthGenerator();
+
+        return $generator->generateString($length);
     }
 
-    public function setScopes(array $scopes)
-    {
-        $this->scopes = $scopes;
-    }
+    /**
+     * Get the default scopes used by this provider.
+     *
+     * This should not be a complete list of all scopes, but the minimum
+     * required for the provider user interface!
+     *
+     * @return array
+     */
+    abstract protected function getDefaultScopes();
 
-    public function getAuthorizationUrl($options = [])
+    /**
+     * Returns authorization parameters based on provided options.
+     *
+     * @param array $options
+     * @return array Authorization parameters
+     */
+    protected function getAuthorizationParameters(array $options)
     {
-        $this->state = isset($options['state']) ? $options['state'] : md5(uniqid(rand(), true));
+        if (empty($options['state'])) {
+            $options['state'] = $this->getRandomState();
+        }
 
-        $params = [
-            'client_id' => $this->clientId,
-            'redirect_uri' => $this->redirectUri,
-            'state' => $this->state,
-            'scope' => is_array($this->scopes) ? implode($this->scopeSeparator, $this->scopes) : $this->scopes,
-            'response_type' => isset($options['response_type']) ? $options['response_type'] : 'code',
-            'approval_prompt' => isset($options['approval_prompt']) ? $options['approval_prompt'] : 'auto',
+        if (empty($options['scope'])) {
+            $options['scope'] = $this->getDefaultScopes();
+        }
+
+        $options += [
+            'response_type'   => 'code',
+            'approval_prompt' => 'auto'
         ];
 
-        return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
+        if (is_array($options['scope'])) {
+            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
+        }
+
+        // Store the state, it may need to be accessed later.
+        $this->state = $options['state'];
+
+        return [
+            'client_id'       => $this->clientId,
+            'redirect_uri'    => $this->redirectUri,
+            'state'           => $this->state,
+            'scope'           => $options['scope'],
+            'response_type'   => $options['response_type'],
+            'approval_prompt' => $options['approval_prompt'],
+        ];
     }
 
-    // @codeCoverageIgnoreStart
-    public function authorize($options = [])
+    /**
+     * Builds the authorization URL's query string.
+     *
+     * @param array $params Query parameters
+     * @return string Query string
+     */
+    protected function getAuthorizationQuery(array $params)
+    {
+        return http_build_query($params);
+    }
+
+    /**
+     * Returns the authorization URL for given options.
+     *
+     * @param array $options
+     * @return string
+     */
+    public function getAuthorizationUrl(array $options = [])
+    {
+        $base   = $this->urlAuthorize();
+        $params = $this->getAuthorizationParameters($options);
+        $query  = $this->getAuthorizationQuery($params);
+
+        return $this->appendQuery($base, $query);
+    }
+
+    public function authorize(array $options = [], $redirectHandler = null)
     {
         $url = $this->getAuthorizationUrl($options);
-        if ($this->redirectHandler) {
-            $handler = $this->redirectHandler;
-            return $handler($url);
+        if ($redirectHandler) {
+            return $redirectHandler($url, $this);
         }
+
         // @codeCoverageIgnoreStart
         header('Location: ' . $url);
         exit;
         // @codeCoverageIgnoreEnd
     }
 
-    public function getAccessToken($grant = 'authorization_code', $params = [])
+    /**
+     * Appends a query string to a URL.
+     *
+     * @param string $url The URL to append the query to
+     * @param string $query The HTTP query string
+     *
+     * @return string
+     */
+    protected function appendQuery($url, $query)
     {
-        if (is_string($grant)) {
-            // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
-            $className = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $grant)));
-            $grant = 'League\\OAuth2\\Client\\Grant\\'.$className;
-            if (! class_exists($grant)) {
-                throw new \InvalidArgumentException('Unknown grant "'.$grant.'"');
-            }
-            $grant = new $grant();
-        } elseif (! $grant instanceof GrantInterface) {
-            $message = get_class($grant).' is not an instance of League\OAuth2\Client\Grant\GrantInterface';
-            throw new \InvalidArgumentException($message);
+        $query = trim($query, '?&');
+
+        if ($query) {
+            return $url.'?'.$query;
         }
 
-        $defaultParams = [
+        return $url;
+    }
+
+    /**
+     * Returns the method to use when requesting an access token.
+     *
+     * @return string HTTP method
+     */
+    protected function getAccessTokenMethod()
+    {
+        return 'POST';
+    }
+
+    /**
+     * Builds the access token URL's query string.
+     *
+     * @param array $params Query parameters
+     * @return string Query string
+     */
+    protected function getAccessTokenQuery(array $params)
+    {
+        return http_build_query($params);
+    }
+
+    /**
+     * Checks that a provided grant is valid, or attempts to produce one if the
+     * provided grant is a string.
+     *
+     * @param mixed $grant
+     * @return GrantInterface
+     */
+    protected function verifyGrant($grant)
+    {
+        if (is_string($grant)) {
+            return $this->grantFactory->getGrant($grant);
+        }
+
+        $this->grantFactory->checkGrant($grant);
+        return $grant;
+    }
+
+    /**
+     * Returns a prepared request for requesting an access token.
+     *
+     * @param array $params Query string parameters
+     */
+    protected function getAccessTokenRequest(array $params)
+    {
+        $url = $this->urlAccessToken();
+        $query = $this->getAccessTokenQuery($params);
+        $method = strtoupper($this->getAccessTokenMethod());
+
+        $options = [];
+
+        switch ($method) {
+            case 'GET':
+                $url = $this->appendQuery($url, $query);
+                break;
+            case 'POST':
+                $options['body'] = $query;
+                break;
+            default:
+                throw new InvalidArgumentException(
+                    "Unsupported access token request method: '$method'"
+                );
+        }
+
+        return $this->getRequest($method, $url, $options);
+    }
+
+    /**
+     * Requests an access token.
+     *
+     * @param mixed $grant
+     * @param array $options
+     */
+    public function getAccessToken($grant, array $options = [])
+    {
+        $grant = $this->verifyGrant($grant);
+
+        $params = [
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
-            'grant_type'    => $grant,
+            'grant_type'    => (string) $grant,
         ];
 
-        $requestParams = $grant->prepRequestParams($defaultParams, $params);
+        $params   = $grant->prepRequestParams($params, $options);
+        $request  = $this->getAccessTokenRequest($params);
+        $response = $this->getResponse($request);
 
-        try {
-            switch (strtoupper($this->method)) {
-                case 'GET':
-                    // @codeCoverageIgnoreStart
-                    // No providers included with this library use get but 3rd parties may
-                    $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken() . '?' . $this->httpBuildQuery($requestParams, '', '&'));
-                    $request = $client->get(null, $this->getHeaders(), $requestParams)->send();
-                    $response = $request->getBody();
-                    break;
-                    // @codeCoverageIgnoreEnd
-                case 'POST':
-                    $client = $this->getHttpClient();
-                    $client->setBaseUrl($this->urlAccessToken());
-                    $request = $client->post(null, $this->getHeaders(), $requestParams)->send();
-                    $response = $request->getBody();
-                    break;
-                // @codeCoverageIgnoreStart
-                default:
-                    throw new \InvalidArgumentException('Neither GET nor POST is specified for request');
-                // @codeCoverageIgnoreEnd
-            }
-        } catch (BadResponseException $e) {
-            // @codeCoverageIgnoreStart
-            $response = $e->getResponse()->getBody();
-            // @codeCoverageIgnoreEnd
-        }
+        $this->checkResponse($response);
 
-        $result = $this->prepareResponse($response);
+        $response = $this->prepareAccessTokenResponse($response);
 
-        if (isset($result['error']) && ! empty($result['error'])) {
-            // @codeCoverageIgnoreStart
-            throw new IDPException($result);
-            // @codeCoverageIgnoreEnd
-        }
+        return $grant->handleResponse($response);
+    }
 
-        $result = $this->prepareAccessTokenResult($result);
 
-        return $grant->handleResponse($result);
+    /**
+     * Get a request instance.
+     *
+     * Creates a PSR-7 compatible request instance that can be modified.
+     * The request is not automatically authenticated.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  array  $options Any of "headers", "body", and "protocolVersion".
+     * @return RequestInterface
+     */
+    public function getRequest($method, $url, array $options = [])
+    {
+        return $this->getRequestFactory()->getRequestWithOptions($method, $url, $options);
     }
 
     /**
-     * Prepare the response, parsing according to configuration and returning
-     * the response as an array.
+     * Get an authenticated request instance.
      *
-     * @param  string $response
+     * Creates a PSR-7 compatible request instance that can be modified.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  AccessToken $token
+     * @param  array  $options Any of "headers", "body", and "protocolVersion".
+     * @return RequestInterface
+     */
+    public function getAuthenticatedRequest($method, $url, AccessToken $token, array $options = [])
+    {
+        $options['headers'] = $this->getHeaders($token);
+        return $this->getRequest($method, $url, $options);
+    }
+
+    /**
+     * Sends a request instance and returns a response instance.
+     *
+     * @param  RequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function sendRequest(RequestInterface $request)
+    {
+        try {
+            $response = $this->getHttpClient()->send($request);
+        } catch (BadResponseException $e) {
+            $response = $e->getResponse();
+        }
+        return $response;
+    }
+
+    /**
+     * Get a response for a request instance.
+     *
+     * Processes the response according to provider response type.
+     *
+     * @param  RequestInterface $request
+     * @return mixed
+     */
+    public function getResponse(RequestInterface $request)
+    {
+        $response = $this->sendRequest($request);
+        return $this->parseResponse($response);
+    }
+
+
+    /**
+     * Parses response content as JSON.
+     *
+     * @param string $content JSON content from response body.
+     * @return array Decoded JSON data
+     * @throws UnexpectedValueException if the content could not be parsed.
+     */
+    protected function parseJson($content)
+    {
+        $content = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new UnexpectedValueException(sprintf(
+                "Failed to parse JSON response: %s",
+                json_last_error_msg()
+            ));
+        }
+
+        return $content;
+    }
+
+    /**
+     * Returns the content type header of a response.
+     *
+     * @param ResponseInterface $response
+     * @return string Semi-colon separated join of content-type headers.
+     */
+    protected function getContentType(ResponseInterface $response)
+    {
+        return join(";", (array) $response->getHeader('content-type'));
+    }
+
+    /**
+     * Parses the response, according to the response's content-type header.
+     *
+     * @throws UnexpectedValueException
+     * @param  ResponseInterface $response
      * @return array
      */
-    protected function prepareResponse($response)
+    protected function parseResponse(ResponseInterface $response)
     {
-        $result = [];
+        $content = (string) $response->getBody();
+        $type = $this->getContentType($response);
 
-        switch ($this->responseType) {
-            case 'json':
-                $json = json_decode($response, true);
-
-                if (JSON_ERROR_NONE === json_last_error()) {
-                    $result = $json;
-                }
-
-                break;
-            case 'string':
-                parse_str($response, $result);
-                break;
+        if (strpos($type, "json") !== false) {
+            return $this->parseJson($content);
         }
 
-        return $result;
+        if (strpos($type, "urlencoded") !== false) {
+            parse_str($content, $parsed);
+            return $parsed;
+        }
+
+        return $content;
     }
 
     /**
-     * Prepare the access token response for the grant. Custom mapping of
-     * expirations, etc should be done here.
+     * Check a provider response for errors.
+     *
+     * @throws IdentityProviderException
+     * @param  string $response
+     * @return void
+     */
+    abstract protected function checkResponse($response);
+
+    /**
+     * Prepare the access token response for the grant.
+     *
+     * Custom mapping of expirations, etc should be done here. Always call the
+     * parent method when overloading this method!
      *
      * @param  array $result
      * @return array
      */
-    protected function prepareAccessTokenResult(array $result)
+    protected function prepareAccessTokenResponse(array $result)
     {
-        $this->setResultUid($result);
+        if (static::ACCESS_TOKEN_UID) {
+            $result['uid'] = $result[static::ACCESS_TOKEN_UID];
+        }
         return $result;
     }
 
     /**
-     * Sets any result keys we've received matching our provider-defined uidKey to the key "uid".
+     * Generate a user object from a successful user details request.
      *
-     * @param array $result
+     * @param object $response
+     * @param AccessToken $token
+     * @return League\OAuth2\Client\Provider\UserInterface
      */
-    protected function setResultUid(array &$result)
-    {
-        // If we're operating with the default uidKey there's nothing to do.
-        if ($this->uidKey === "uid") {
-            return;
-        }
-
-        if (isset($result[$this->uidKey])) {
-            // The AccessToken expects a "uid" to have the key "uid".
-            $result['uid'] = $result[$this->uidKey];
-        }
-    }
+    abstract protected function prepareUserDetails(array $response, AccessToken $token);
 
     public function getUserDetails(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
 
-        return $this->userDetails(json_decode($response), $token);
-    }
-
-    public function getUserUid(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userUid(json_decode($response), $token);
-    }
-
-    public function getUserEmail(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userEmail(json_decode($response), $token);
-    }
-
-    public function getUserScreenName(AccessToken $token)
-    {
-        $response = $this->fetchUserDetails($token, true);
-
-        return $this->userScreenName(json_decode($response), $token);
-    }
-
-    public function userUid($response, AccessToken $token)
-    {
-        return isset($response->id) && $response->id ? $response->id : null;
-    }
-
-    public function userEmail($response, AccessToken $token)
-    {
-        return isset($response->email) && $response->email ? $response->email : null;
-    }
-
-    public function userScreenName($response, AccessToken $token)
-    {
-        return isset($response->name) && $response->name ? $response->name : null;
-    }
-
-    /**
-     * Build HTTP the HTTP query, handling PHP version control options
-     *
-     * @param  array        $params
-     * @param  integer      $numeric_prefix
-     * @param  string       $arg_separator
-     * @param  null|integer $enc_type
-     *
-     * @return string
-     * @codeCoverageIgnoreStart
-     */
-    protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
-    {
-        if (version_compare(PHP_VERSION, '5.4.0', '>=') && !defined('HHVM_VERSION')) {
-            if ($enc_type === null) {
-                $enc_type = $this->httpBuildEncType;
-            }
-            $url = http_build_query($params, $numeric_prefix, $arg_separator, $enc_type);
-        } else {
-            $url = http_build_query($params, $numeric_prefix, $arg_separator);
-        }
-
-        return $url;
+        return $this->prepareUserDetails($response, $token);
     }
 
     protected function fetchUserDetails(AccessToken $token)
     {
         $url = $this->urlUserDetails($token);
 
-        $headers = $this->getHeaders($token);
+        $request = $this->getAuthenticatedRequest('GET', $url, $token);
 
-        return $this->fetchProviderData($url, $headers);
+        return $this->getResponse($request);
     }
 
-    protected function fetchProviderData($url, array $headers = [])
+    /**
+     * Get additional headers used by this provider.
+     *
+     * Typically this is used to set Accept or Content-Type headers.
+     *
+     * @param  AccessToken $token
+     * @return array
+     */
+    protected function getDefaultHeaders($token = null)
     {
-        try {
-            $client = $this->getHttpClient();
-            $client->setBaseUrl($url);
-
-            if ($headers) {
-                $client->setDefaultOption('headers', $headers);
-            }
-
-            $request = $client->get()->send();
-            $response = $request->getBody();
-        } catch (BadResponseException $e) {
-            // @codeCoverageIgnoreStart
-            $response = $e->getResponse()->getBody();
-            $result = $this->prepareResponse($response);
-            throw new IDPException($result);
-            // @codeCoverageIgnoreEnd
-        }
-
-        return $response;
+        return [];
     }
 
-    protected function getAuthorizationHeaders($token)
+    /**
+     * Get authorization headers used by this provider.
+     *
+     * Typically this is "Bearer" or "MAC". For more information see:
+     * http://tools.ietf.org/html/rfc6749#section-7.1
+     *
+     * No default is provided, providers must overload this method to activate
+     * authorization headers.
+     *
+     * @return array
+     */
+    protected function getAuthorizationHeaders($token = null)
     {
-        $headers = [];
-        if ($this->authorizationHeader) {
-            $headers['Authorization'] = $this->authorizationHeader . ' ' . $token;
-        }
-        return $headers;
+        return [];
     }
 
+    /**
+     * Get the headers used by this provider for a request.
+     *
+     * If a token is passed, the request may be authenticated through headers.
+     *
+     * @param  mixed $token  object or string
+     * @return array
+     */
     public function getHeaders($token = null)
     {
-        $headers = $this->headers;
+        $headers = $this->getDefaultHeaders();
         if ($token) {
             $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
         }
         return $headers;
-    }
-
-    public function setRedirectHandler(Closure $handler)
-    {
-        $this->redirectHandler = $handler;
     }
 }
