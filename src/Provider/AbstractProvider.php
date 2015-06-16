@@ -69,12 +69,6 @@ abstract class AbstractProvider
     protected $randomFactory;
 
     /**
-     * @var int This represents: PHP_QUERY_RFC1738, which is the default value for php 5.4
-     *          and the default encoding type for the http_build_query setup
-     */
-    protected $httpBuildEncType = 1;
-
-    /**
      * @param array $options
      * @param array $collaborators
      */
@@ -243,11 +237,18 @@ abstract class AbstractProvider
      */
     abstract protected function getDefaultScopes();
 
-    public function getAuthorizationUrl(array $options = [])
+    /**
+     * Returns authorization parameters based on provided options.
+     *
+     * @param array $options
+     * @return array Authorization parameters
+     */
+    protected function getAuthorizationParameters(array $options)
     {
         if (empty($options['state'])) {
             $options['state'] = $this->getRandomState();
         }
+
         if (empty($options['scope'])) {
             $options['scope'] = $this->getDefaultScopes();
         }
@@ -264,7 +265,7 @@ abstract class AbstractProvider
         // Store the state, it may need to be accessed later.
         $this->state = $options['state'];
 
-        $params = [
+        return [
             'client_id'       => $this->clientId,
             'redirect_uri'    => $this->redirectUri,
             'state'           => $this->state,
@@ -272,8 +273,32 @@ abstract class AbstractProvider
             'response_type'   => $options['response_type'],
             'approval_prompt' => $options['approval_prompt'],
         ];
+    }
 
-        return $this->urlAuthorize().'?'.$this->httpBuildQuery($params, '', '&');
+    /**
+     * Builds the authorization URL's query string.
+     *
+     * @param array $params Query parameters
+     * @return string Query string
+     */
+    protected function getAuthorizationQuery(array $params)
+    {
+        return http_build_query($params);
+    }
+
+    /**
+     * Returns the authorization URL for given options.
+     *
+     * @param array $options
+     * @return string
+     */
+    public function getAuthorizationUrl(array $options = [])
+    {
+        $base   = $this->urlAuthorize();
+        $params = $this->getAuthorizationParameters($options);
+        $query  = $this->getAuthorizationQuery($params);
+
+        return $this->appendQuery($base, $query);
     }
 
     public function authorize(array $options = [], $redirectHandler = null)
@@ -290,6 +315,25 @@ abstract class AbstractProvider
     }
 
     /**
+     * Appends a query string to a URL.
+     *
+     * @param string $url The URL to append the query to
+     * @param string $query The HTTP query string
+     *
+     * @return string
+     */
+    protected function appendQuery($url, $query)
+    {
+        $query = trim($query, '?&');
+
+        if ($query) {
+            return $url.'?'.$query;
+        }
+
+        return $url;
+    }
+
+    /**
      * Returns the method to use when requesting an access token.
      *
      * @return string HTTP method
@@ -299,35 +343,53 @@ abstract class AbstractProvider
         return 'POST';
     }
 
-    public function getAccessToken($grant = 'authorization_code', array $params = [])
+    /**
+     * Builds the access token URL's query string.
+     *
+     * @param array $params Query parameters
+     * @return string Query string
+     */
+    protected function getAccessTokenQuery(array $params)
+    {
+        return http_build_query($params);
+    }
+
+    /**
+     * Checks that a provided grant is valid, or attempts to produce one if the
+     * provided grant is a string.
+     *
+     * @param mixed $grant
+     * @return GrantInterface
+     */
+    protected function verifyGrant($grant)
     {
         if (is_string($grant)) {
-            $grant = $this->grantFactory->getGrant($grant);
-        } else {
-            $this->grantFactory->checkGrant($grant);
+            return $this->grantFactory->getGrant($grant);
         }
 
-        $defaultParams = [
-            'client_id'     => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'redirect_uri'  => $this->redirectUri,
-            'grant_type'    => (string) $grant,
-        ];
+        $this->grantFactory->checkGrant($grant);
+        return $grant;
+    }
 
-        $requestParams = $grant->prepRequestParams($defaultParams, $params);
-        $requestParams = $this->httpBuildQuery($requestParams);
-
+    /**
+     * Returns a prepared request for requesting an access token.
+     *
+     * @param array $params Query string parameters
+     */
+    protected function getAccessTokenRequest(array $params)
+    {
         $url = $this->urlAccessToken();
+        $query = $this->getAccessTokenQuery($params);
         $method = strtoupper($this->getAccessTokenMethod());
+
         $options = [];
 
         switch ($method) {
             case 'GET':
-                // No providers included with this library use get but 3rd parties may
-                $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . $requestParams;
+                $url = $this->appendQuery($url, $query);
                 break;
             case 'POST':
-                $options['body'] = $requestParams;
+                $options['body'] = $query;
                 break;
             default:
                 throw new InvalidArgumentException(
@@ -335,12 +397,33 @@ abstract class AbstractProvider
                 );
         }
 
-        $request  = $this->getRequest($method, $url, $options);
+        return $this->getRequest($method, $url, $options);
+    }
+
+    /**
+     * Requests an access token.
+     *
+     * @param mixed $grant
+     * @param array $options
+     */
+    public function getAccessToken($grant, array $options = [])
+    {
+        $grant = $this->verifyGrant($grant);
+
+        $params = [
+            'client_id'     => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'redirect_uri'  => $this->redirectUri,
+            'grant_type'    => (string) $grant,
+        ];
+
+        $params   = $grant->prepRequestParams($params, $options);
+        $request  = $this->getAccessTokenRequest($params);
         $response = $this->getResponse($request);
 
         $this->checkResponse($response);
 
-        $response = $this->prepareAccessTokenResult($response);
+        $response = $this->prepareAccessTokenResponse($response);
 
         return $grant->handleResponse($response);
     }
@@ -484,7 +567,7 @@ abstract class AbstractProvider
      * @param  array $result
      * @return array
      */
-    protected function prepareAccessTokenResult(array $result)
+    protected function prepareAccessTokenResponse(array $result)
     {
         if (static::ACCESS_TOKEN_UID) {
             $result['uid'] = $result[static::ACCESS_TOKEN_UID];
@@ -506,30 +589,6 @@ abstract class AbstractProvider
         $response = $this->fetchUserDetails($token);
 
         return $this->prepareUserDetails($response, $token);
-    }
-
-    /**
-     * Build HTTP the HTTP query, handling PHP version control options
-     *
-     * @param  array        $params
-     * @param  integer      $numeric_prefix
-     * @param  string       $arg_separator
-     * @param  null|integer $enc_type
-     *
-     * @return string
-     */
-    protected function httpBuildQuery($params, $numeric_prefix = 0, $arg_separator = '&', $enc_type = null)
-    {
-        if (version_compare(PHP_VERSION, '5.4.0', '>=') && !defined('HHVM_VERSION')) {
-            if ($enc_type === null) {
-                $enc_type = $this->httpBuildEncType;
-            }
-            $url = http_build_query($params, $numeric_prefix, $arg_separator, $enc_type);
-        } else {
-            $url = http_build_query($params, $numeric_prefix, $arg_separator);
-        }
-
-        return $url;
     }
 
     protected function fetchUserDetails(AccessToken $token)
