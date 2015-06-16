@@ -258,7 +258,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $generator = m::mock(RandomGenerator::class);
         $generator->shouldReceive('generateString')->with(32)->times(1)->andReturn($xstate);
 
-        $factory = m::mock(randomFactory::class);
+        $factory = m::mock(RandomFactory::class);
         $factory->shouldReceive('getMediumStrengthGenerator')->times(1)->andReturn($generator);
 
         $provider = new MockProvider([], ['randomFactory' => $factory]);
