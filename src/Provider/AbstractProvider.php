@@ -420,6 +420,9 @@ abstract class AbstractProvider
         $params   = $grant->prepRequestParams($params, $options);
         $request  = $this->getAccessTokenRequest($params);
         $response = $this->getResponse($request);
+
+        $this->checkResponse($response);
+
         $response = $this->prepareAccessTokenResponse($response);
 
         return $grant->handleResponse($response);
