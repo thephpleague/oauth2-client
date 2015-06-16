@@ -15,7 +15,7 @@ use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
 use InvalidArgumentException;
 
-abstract class AbstractProvider implements ProviderInterface
+abstract class AbstractProvider
 {
     /**
      * @var string JSON response type.
@@ -223,13 +223,9 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->state;
     }
 
-    // Implementing these interfaces methods should not be required, but not
-    // doing so will break HHVM because of https://github.com/facebook/hhvm/issues/5170
-    // Once HHVM is working, delete the following abstract methods.
     abstract public function urlAuthorize();
     abstract public function urlAccessToken();
     abstract public function urlUserDetails(AccessToken $token);
-    // End of methods to delete.
 
     /**
      * Get a new random string to use for auth state.
