@@ -2,23 +2,18 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Token\AccessToken;
 
-class Fake implements GrantInterface
+class Fake extends AbstractGrant
 {
-    public function __toString()
+    protected function getName()
     {
         return 'fake';
     }
 
-    public function prepareRequestParameters(array $defaultParams, array $params)
+    protected function getRequiredRequestParameters()
     {
-        return array_merge($defaultParams, $params);
-    }
-
-    public function createAccessToken(array $response = [])
-    {
-        return new AccessToken($response);
+        return [];
     }
 }

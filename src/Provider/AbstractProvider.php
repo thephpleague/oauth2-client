@@ -359,7 +359,7 @@ abstract class AbstractProvider
      * provided grant is a string.
      *
      * @param mixed $grant
-     * @return GrantInterface
+     * @return AbstractGrant
      */
     protected function verifyGrant($grant)
     {
@@ -414,7 +414,6 @@ abstract class AbstractProvider
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
             'redirect_uri'  => $this->redirectUri,
-            'grant_type'    => (string) $grant,
         ];
 
         $params   = $grant->prepareRequestParameters($params, $options);

@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Grant;
 
 class ClientCredentials extends AbstractGrant
 {
-    public function __toString()
+    protected function getName()
     {
         return 'client_credentials';
     }

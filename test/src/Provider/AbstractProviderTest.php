@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
-use League\OAuth2\Client\Grant\GrantInterface;
+use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
@@ -42,7 +42,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
+     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
      */
     public function testInvalidGrantString()
     {
@@ -50,7 +50,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException League\OAuth2\Client\Grant\InvalidGrantException
+     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
      */
     public function testInvalidGrantObject()
     {
@@ -424,20 +424,19 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
         $token = new AccessToken($raw_response);
 
-        $contains_correct_grant_type = function ($params) use ($grant_name) {
-            return is_array($params) && $params['grant_type'] === $grant_name;
-        };
+        $grant = m::mock(AbstractGrant::class);
+        $grant->shouldAllowMockingProtectedMethods();
 
-        $grant = m::mock(GrantInterface::class);
-        $grant->shouldReceive('__toString')
-              ->times(1)
+        $grant->shouldReceive('getName')
               ->andReturn($grant_name);
+
         $grant->shouldReceive('prepareRequestParameters')
               ->with(
-                  m::on($contains_correct_grant_type),
+                  m::type('array'),
                   m::type('array')
               )
               ->andReturn([]);
+
         $grant->shouldReceive('createAccessToken')
               ->with($raw_response)
               ->andReturn($token);
@@ -498,12 +497,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     private function _testParse($body, $type, $expected = null)
     {
-        $method = $this->getMethod('League\OAuth2\Client\Provider\AbstractProvider', 'parseResponse');
+        $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
 
-        $stream = m::mock('Psr\Http\Message\StreamInterface');
+        $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn($body);
 
-        $response = m::mock('Psr\Http\Message\ResponseInterface');
+        $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->andReturn($type);
 
@@ -549,7 +548,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testAppendQuery($expected, $url, $query)
     {
-        $method = $this->getMethod('League\OAuth2\Client\Provider\AbstractProvider', 'appendQuery');
+        $method = $this->getMethod(AbstractProvider::class, 'appendQuery');
         $this->assertEquals($expected, $method->invoke($this->provider, $url, $query));
     }
 }

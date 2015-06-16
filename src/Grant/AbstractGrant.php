@@ -5,15 +5,17 @@ namespace League\OAuth2\Client\Grant;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequiredParameterTrait;
 
-abstract class AbstractGrant implements GrantInterface
+abstract class AbstractGrant
 {
     use RequiredParameterTrait;
 
-    // Implementing these interfaces methods should not be required, but not
-    // doing so will break HHVM because of https://github.com/facebook/hhvm/issues/5170
-    // Once HHVM is working, delete the following abstract methods.
-    abstract public function __toString();
-    // End of methods to delete.
+    /**
+     * Returns the name of this grant, eg. 'grant_name', which is used as the
+     * grant type when encoding URL query parameters.
+     *
+     * @return string
+     */
+    abstract protected function getName();
 
     /**
      * Get a list of all required request parameters.
@@ -22,18 +24,45 @@ abstract class AbstractGrant implements GrantInterface
      */
     abstract protected function getRequiredRequestParameters();
 
-    public function prepareRequestParameters(array $defaults, array $params)
+    /**
+     * Returns this grant's name as its string representation. This allows for
+     * string interpolation when building URL query parameters.
+     */
+    public function __toString()
     {
-        $this->checkRequiredParameters(
-            $this->getRequiredRequestParameters(),
-            $params
-        );
-
-        return array_merge($defaults, $params);
+        return $this->getName();
     }
 
+    /**
+     * Converts the result from a response into an `AccessToken`.
+     *
+     * @param array $response
+     *
+     * @return AccessToken
+     */
     public function createAccessToken(array $response)
     {
         return new AccessToken($response);
+    }
+
+    /**
+     * Prepares an access token request's parameters by checking that all
+     * required parameters are set, then merging with any given defaults.
+     *
+     * @param array $defaults
+     * @param array $options
+     *
+     * @return array
+     */
+    public function prepareRequestParameters(array $defaults, array $options)
+    {
+        $defaults['grant_type'] = $this->getName();
+
+        $required = $this->getRequiredRequestParameters();
+        $provided = array_merge($defaults, $options);
+
+        $this->checkRequiredParameters($required, $provided);
+
+        return $provided;
     }
 }

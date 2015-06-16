@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Test\Grant;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use Mockery as m;
 
@@ -74,6 +75,6 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
         $this->provider->setHttpClient($client);
 
         $token = $this->provider->getAccessToken($grant, $params);
-        $this->assertInstanceOf('League\OAuth2\Client\Token\AccessToken', $token);
+        $this->assertInstanceOf(AccessToken::class, $token);
     }
 }
