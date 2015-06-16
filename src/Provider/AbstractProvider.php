@@ -537,7 +537,9 @@ abstract class AbstractProvider
         $content = (string) $response->getBody();
         $type = $this->getContentType($response);
 
-        if (strpos($type, "json") !== false) {
+        // JSON  = application/json
+        // JSONP = application/javascript
+        if (strpos($type, "json") !== false || strpos($type, "javascript") !== false) {
             return $this->parseJson($content);
         }
 
