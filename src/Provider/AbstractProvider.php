@@ -259,7 +259,7 @@ abstract class AbstractProvider
         ];
 
         if (is_array($options['scope'])) {
-            $options['scope'] = join(static::SCOPE_SEPARATOR, $options['scope']);
+            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
         }
 
         // Store the state, it may need to be accessed later.
@@ -298,7 +298,7 @@ abstract class AbstractProvider
         $params = $this->getAuthorizationParameters($options);
         $query  = $this->getAuthorizationQuery($params);
 
-        return $base.'?'.$query;
+        return $this->appendQuery($base, $query);
     }
 
     public function authorize(array $options = [], $redirectHandler = null)
@@ -312,6 +312,25 @@ abstract class AbstractProvider
         header('Location: ' . $url);
         exit;
         // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Appends a query string to a URL.
+     *
+     * @param string $url The URL to append the query to
+     * @param string $query The HTTP query string
+     *
+     * @return string
+     */
+    protected function appendQuery($url, $query)
+    {
+        $query = trim($query, '?&');
+
+        if ($query) {
+            return $url.'?'.$query;
+        }
+
+        return $url;
     }
 
     /**
@@ -367,7 +386,7 @@ abstract class AbstractProvider
 
         switch ($method) {
             case 'GET':
-                $url .= $query;
+                $url = $this->appendQuery($url, $query);
                 break;
             case 'POST':
                 $options['body'] = $query;

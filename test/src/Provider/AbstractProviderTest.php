@@ -487,18 +487,18 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    public function getPrivateMethod($class, $name)
+    private function getMethod($class, $name)
     {
         $class = new \ReflectionClass($class);
         $method = $class->getMethod($name);
-        $this->assertFalse($method->isPublic());
+
         $method->setAccessible(true);
         return $method;
     }
 
     private function _testParse($body, $type, $expected = null)
     {
-        $method = $this->getPrivateMethod('League\OAuth2\Client\Provider\AbstractProvider', 'parseResponse');
+        $method = $this->getMethod('League\OAuth2\Client\Provider\AbstractProvider', 'parseResponse');
 
         $stream = m::mock('Psr\Http\Message\StreamInterface');
         $stream->shouldReceive('__toString')->times(1)->andReturn($body);
@@ -531,5 +531,25 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testParseResponseJsonFailure()
     {
         $this->_testParse('{a: 1}', 'application/json');
+    }
+
+    public function getAppendQueryProvider()
+    {
+        return [
+            ['test.com/?a=1', 'test.com/', '?a=1'],
+            ['test.com/?a=1', 'test.com/', '&a=1'],
+            ['test.com/?a=1', 'test.com/', 'a=1'],
+            ['test.com/?a=1', 'test.com/?a=1', '?'],
+            ['test.com/?a=1', 'test.com/?a=1', '&'],
+        ];
+    }
+
+    /**
+     * @dataProvider getAppendQueryProvider
+     */
+    public function testAppendQuery($expected, $url, $query)
+    {
+        $method = $this->getMethod('League\OAuth2\Client\Provider\AbstractProvider', 'appendQuery');
+        $this->assertEquals($expected, $method->invoke($this->provider, $url, $query));
     }
 }
