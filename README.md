@@ -1,5 +1,7 @@
 # OAuth 2.0 Client
 
+[![Join the chat at https://gitter.im/thephpleague/oauth2-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/thephpleague/oauth2-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/thephpleague/oauth2-client.svg?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
 [![Coverage Status](https://coveralls.io/repos/thephpleague/oauth2-client/badge.svg?branch=master)](https://coveralls.io/r/thephpleague/oauth2-client?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable)](https://packagist.org/packages/league/oauth2-client)
@@ -35,6 +37,8 @@ The following versions of PHP are supported.
 ## Usage
 
 ### Authorization Code Flow
+
+*Note: This example code requires the Google+ API to be enabled in your developer console*
 
 ```php
 $provider = new League\OAuth2\Client\Provider\<ProviderName>([
@@ -86,12 +90,14 @@ if (!isset($_GET['code'])) {
     // Use this to get a new access token if the old one expires
     echo $token->refreshToken;
 
-    // Number of seconds until the access token will expire, and need refreshing
+    // Unix timestamp of when the token will expire, and need refreshing
     echo $token->expires;
 }
 ```
 
 ### Refreshing a Token
+
+Once and as long as your application is authorized, you then only need to refresh an expired access token. To do so, simply reuse this refresh token from your data store to request a refresh.
 
 ```php
 $provider = new League\OAuth2\Client\Provider\<ProviderName>([
@@ -133,8 +139,14 @@ so please help them out with a pull request if you notice this.
 
 Gateway | Composer Package | Maintainer
 --- | --- | ---
+[Amazon](https://github.com/lemonstand/oauth2-amazon/) | lemonstand/oauth2-amazon | [LemonStand](https://github.com/lemonstand)
+[Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Riskio](https://github.com/RiskioFr)
 [Battle.net](https://github.com/tpavlek/oauth2-bnet) | depotwarehouse/oauth2-bnet | [Troy Pavlek](https://github.com/tpavlek)
+[BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php) | bookingsync/oauth2-bookingsync-php | [BookingSync](https://github.com/BookingSync)
+[Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
+[Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [Dropbox](https://github.com/pixelfear/oauth2-dropbox) | pixelfear/oauth2-dropbox | [Jason Varga](https://github.com/jasonvarga)
+[Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
 [Google Nest](https://github.com/JC5/nest-oauth2-provider) | grumpydictator/nest-oauth2-provider | [James Cole](https://github.com/JC5)
@@ -143,9 +155,11 @@ Gateway | Composer Package | Maintainer
 [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
+[Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
 [Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
 [Uber](https://github.com/stevenmaguire/oauth2-uber) | stevenmaguire/oauth2-uber | [Steven Maguire](https://github.com/stevenmaguire)
+[Vend](https://github.com/wheniwork/oauth2-vend) | wheniwork/oauth2-vend | [When I Work](https://github.com/wheniwork)
 [Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
 [Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
 [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll) | wheniwork/oauth2-zenpayroll | [Woody Gilk](https://github.com/shadowhand)
