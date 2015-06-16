@@ -9,7 +9,7 @@ class AuthorizationCode extends AbstractGrant
         return 'authorization_code';
     }
 
-    protected function getRequiredRequestParams()
+    protected function getRequiredRequestParameters()
     {
         return [
             'code',

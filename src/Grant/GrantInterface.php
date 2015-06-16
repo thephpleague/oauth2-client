@@ -18,11 +18,11 @@ interface GrantInterface
      * If required parameters are not defined, an exception should be thrown.
      *
      * @throws BadMethodCallException
-     * @param  array $defaultParams
+     * @param  array $defaults
      * @param  array $params
      * @return array
      */
-    public function prepRequestParams(array $defaultParams, array $params);
+    public function prepareRequestParameters(array $defaults, array $params);
 
     /**
      * Generate an access token from a successful authorization request.
@@ -30,5 +30,5 @@ interface GrantInterface
      * @param  array $response
      * @return League\OAuth2\Client\Token\AccessToken
      */
-    public function handleResponse(array $response);
+    public function createAccessToken(array $response);
 }

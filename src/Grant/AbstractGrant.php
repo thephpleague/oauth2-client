@@ -20,19 +20,19 @@ abstract class AbstractGrant implements GrantInterface
      *
      * @return array
      */
-    abstract protected function getRequiredRequestParams();
+    abstract protected function getRequiredRequestParameters();
 
-    public function prepRequestParams(array $defaultParams, array $params)
+    public function prepareRequestParameters(array $defaults, array $params)
     {
         $this->checkRequiredParameters(
-            $this->getRequiredRequestParams(),
+            $this->getRequiredRequestParameters(),
             $params
         );
 
-        return array_merge($defaultParams, $params);
+        return array_merge($defaults, $params);
     }
 
-    public function handleResponse(array $response)
+    public function createAccessToken(array $response)
     {
         return new AccessToken($response);
     }

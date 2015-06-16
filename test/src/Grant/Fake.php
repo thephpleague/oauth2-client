@@ -12,12 +12,12 @@ class Fake implements GrantInterface
         return 'fake';
     }
 
-    public function prepRequestParams(array $defaultParams, array $params)
+    public function prepareRequestParameters(array $defaultParams, array $params)
     {
         return array_merge($defaultParams, $params);
     }
 
-    public function handleResponse(array $response = [])
+    public function createAccessToken(array $response = [])
     {
         return new AccessToken($response);
     }
