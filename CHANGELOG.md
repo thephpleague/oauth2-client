@@ -1,6 +1,16 @@
 # OAuth 2.0 Client Changelog
 
 
+## 0.12.0
+
+_Released: 2015-06-15_
+
+* BREAK: LinkedIn Provider: Default scopes removed from LinkedIn Provider. See "[Managing LinkedIn Scopes](https://github.com/thephpleague/oauth2-client/blob/9cea9864c2e89bce1b922d1e37ba5378b3b0b264/README.md#managing-linkedin-scopes)" in the README for information on how to set scopes. See [#327](https://github.com/thephpleague/oauth2-client/pull/327) and [#307](https://github.com/thephpleague/oauth2-client/pull/307) for details on this change.
+* FIX: LinkedIn Provider: A scenario existed in which `publicProfileUrl` was not set, generating a PHP notice; this has been fixed.
+* FIX: Instagram Provider: Fixed scope separator.
+* Documentation updates and corrections.
+
+
 ## 0.11.0
 
 _Released: 2015-04-25_
