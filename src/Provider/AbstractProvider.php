@@ -208,9 +208,9 @@ abstract class AbstractProvider
         return $this->state;
     }
 
-    abstract public function urlAuthorize();
-    abstract public function urlAccessToken();
-    abstract public function urlUserDetails(AccessToken $token);
+    abstract public function getBaseAuthorizationUrl();
+    abstract public function getBaseAccessTokenUrl();
+    abstract public function getUserDetailsUrl(AccessToken $token);
 
     /**
      * Get a new random string to use for auth state.
@@ -294,7 +294,7 @@ abstract class AbstractProvider
      */
     public function getAuthorizationUrl(array $options = [])
     {
-        $base   = $this->urlAuthorize();
+        $base   = $this->getBaseAuthorizationUrl();
         $params = $this->getAuthorizationParameters($options);
         $query  = $this->getAuthorizationQuery($params);
 
@@ -378,7 +378,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenRequest(array $params)
     {
-        $url = $this->urlAccessToken();
+        $url = $this->getBaseAccessTokenUrl();
         $query = $this->getAccessTokenQuery($params);
         $method = strtoupper($this->getAccessTokenMethod());
 
@@ -417,7 +417,7 @@ abstract class AbstractProvider
             'grant_type'    => (string) $grant,
         ];
 
-        $params   = $grant->prepRequestParams($params, $options);
+        $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
         $response = $this->getResponse($request);
 
@@ -425,7 +425,7 @@ abstract class AbstractProvider
 
         $response = $this->prepareAccessTokenResponse($response);
 
-        return $grant->handleResponse($response);
+        return $grant->createAccessToken($response);
     }
 
 
@@ -593,7 +593,7 @@ abstract class AbstractProvider
 
     protected function fetchUserDetails(AccessToken $token)
     {
-        $url = $this->urlUserDetails($token);
+        $url = $this->getUserDetailsUrl($token);
 
         $request = $this->getAuthenticatedRequest('GET', $url, $token);
 

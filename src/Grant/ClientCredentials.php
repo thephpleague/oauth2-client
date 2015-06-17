@@ -9,7 +9,7 @@ class ClientCredentials extends AbstractGrant
         return 'client_credentials';
     }
 
-    protected function getRequiredRequestParams()
+    protected function getRequiredRequestParameters()
     {
         return [];
     }

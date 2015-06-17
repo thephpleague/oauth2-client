@@ -9,7 +9,7 @@ class RefreshToken extends AbstractGrant
         return 'refresh_token';
     }
 
-    protected function getRequiredRequestParams()
+    protected function getRequiredRequestParameters()
     {
         return [
             'refresh_token',

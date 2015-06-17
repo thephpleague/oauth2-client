@@ -13,17 +13,17 @@ class Fake extends AbstractProvider
 
     private $accessTokenMethod = 'POST';
 
-    public function urlAuthorize()
+    public function getBaseAuthorizationUrl()
     {
         return 'http://example.com/oauth/authorize';
     }
 
-    public function urlAccessToken()
+    public function getBaseAccessTokenUrl()
     {
         return 'http://example.com/oauth/token';
     }
 
-    public function urlUserDetails(AccessToken $token)
+    public function getUserDetailsUrl(AccessToken $token)
     {
         return 'http://example.com/oauth/user';
     }

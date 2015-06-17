@@ -165,7 +165,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
-        $url = $provider->urlUserDetails($token);
+        $url = $provider->getUserDetailsUrl($token);
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
@@ -297,7 +297,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $method = $provider->getAccessTokenMethod();
-        $url = $provider->urlAccessToken();
+        $url = $provider->getBaseAccessTokenUrl();
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
@@ -353,7 +353,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         );
 
         $method = $provider->getAccessTokenMethod();
-        $url    = $provider->urlAccessToken();
+        $url    = $provider->getBaseAccessTokenUrl();
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
@@ -432,13 +432,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $grant->shouldReceive('__toString')
               ->times(1)
               ->andReturn($grant_name);
-        $grant->shouldReceive('prepRequestParams')
+        $grant->shouldReceive('prepareRequestParameters')
               ->with(
                   m::on($contains_correct_grant_type),
                   m::type('array')
               )
               ->andReturn([]);
-        $grant->shouldReceive('handleResponse')
+        $grant->shouldReceive('createAccessToken')
               ->with($raw_response)
               ->andReturn($token);
 
@@ -452,7 +452,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $method = $provider->getAccessTokenMethod();
-        $url    = $provider->urlAccessToken();
+        $url    = $provider->getBaseAccessTokenUrl();
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(

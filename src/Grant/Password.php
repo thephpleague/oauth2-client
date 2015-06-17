@@ -9,7 +9,7 @@ class Password extends AbstractGrant
         return 'password';
     }
 
-    protected function getRequiredRequestParams()
+    protected function getRequiredRequestParameters()
     {
         return [
             'username',
