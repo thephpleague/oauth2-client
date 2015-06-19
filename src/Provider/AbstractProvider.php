@@ -522,7 +522,7 @@ abstract class AbstractProvider
      */
     protected function getContentType(ResponseInterface $response)
     {
-        return join(";", (array) $response->getHeader('content-type'));
+        return join(';', (array) $response->getHeader('content-type'));
     }
 
     /**
@@ -537,11 +537,11 @@ abstract class AbstractProvider
         $content = (string) $response->getBody();
         $type = $this->getContentType($response);
 
-        if (strpos($type, "json") !== false) {
+        if (strpos($type, 'json') !== false) {
             return $this->parseJson($content);
         }
 
-        if (strpos($type, "urlencoded") !== false) {
+        if (strpos($type, 'urlencoded') !== false) {
             parse_str($content, $parsed);
             return $parsed;
         }
