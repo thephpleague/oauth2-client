@@ -136,10 +136,9 @@ $provider = new League\OAuth2\Client\Provider\LinkedIn([
     'clientId'          => '{linkedin-client-id}',
     'clientSecret'      => '{linkedin-client-secret}',
     'redirectUri'       => 'https://example.com/callback-url',
-    'scopes'            => ['r_basicprofile r_emailaddress'],
+    'scopes'            => ['r_basicprofile','r_emailaddress'],
 ]);
 ```
-It is important to note, each scope must be space delimited and contained within one string.
 
 At the time of authoring this documentation, the following scopes are available.
 

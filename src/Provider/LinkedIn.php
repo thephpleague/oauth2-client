@@ -8,6 +8,7 @@ use League\OAuth2\Client\Token\AccessToken;
 class LinkedIn extends AbstractProvider
 {
     public $scopes = [];
+    public $scopeSeparator = ' ';
     public $responseType = 'json';
     public $authorizationHeader = 'Bearer';
     public $fields = [
