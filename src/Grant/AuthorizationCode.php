@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Grant;
 
 class AuthorizationCode extends AbstractGrant
 {
-    public function __toString()
+    protected function getName()
     {
         return 'authorization_code';
     }

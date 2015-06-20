@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Grant;
 
 class RefreshToken extends AbstractGrant
 {
-    public function __toString()
+    protected function getName()
     {
         return 'refresh_token';
     }

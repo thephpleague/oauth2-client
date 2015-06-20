@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Grant;
 
+use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
+
 class GrantFactory
 {
     /**
@@ -13,10 +15,10 @@ class GrantFactory
      * Define a grant singleton in the registry.
      *
      * @param  string $name
-     * @param  GrantInterface $class
+     * @param  AbstractGrant $class
      * @return $this
      */
-    public function setGrant($name, GrantInterface $grant)
+    public function setGrant($name, AbstractGrant $grant)
     {
         $this->registry[$name] = $grant;
 
@@ -29,7 +31,7 @@ class GrantFactory
      * If the grant has not be registered, a default grant will be loaded.
      *
      * @param  string $name
-     * @return GrantInterface
+     * @return AbstractGrant
      */
     public function getGrant($name)
     {
@@ -65,7 +67,7 @@ class GrantFactory
      */
     public function isGrant($class)
     {
-        return is_subclass_of($class, GrantInterface::class);
+        return is_subclass_of($class, AbstractGrant::class);
     }
 
     /**
@@ -79,7 +81,7 @@ class GrantFactory
     {
         if (!$this->isGrant($class)) {
             throw new InvalidGrantException(sprintf(
-                'Grant "%s" must implement GrantInterface',
+                'Grant "%s" must extend AbstractGrant',
                 is_object($class) ? get_class($class) : $class
             ));
         }

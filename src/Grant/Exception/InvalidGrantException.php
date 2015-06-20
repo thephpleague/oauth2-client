@@ -1,6 +1,6 @@
 <?php
 
-namespace League\OAuth2\Client\Grant;
+namespace League\OAuth2\Client\Grant\Exception;
 
 use InvalidArgumentException;
 
