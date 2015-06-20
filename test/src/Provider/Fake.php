@@ -6,6 +6,7 @@ use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Psr\Http\Message\ResponseInterface;
 
 class Fake extends AbstractProvider
 {
@@ -48,10 +49,10 @@ class Fake extends AbstractProvider
         return new Fake\User($response);
     }
 
-    protected function checkResponse($response)
+    protected function checkResponse(ResponseInterface $response, $data)
     {
-        if (!empty($response['error'])) {
-            throw new IdentityProviderException($response['error'], $response['code'], $response);
+        if (!empty($data['error'])) {
+            throw new IdentityProviderException($data['error'], $data['code'], $data);
         }
     }
 }
