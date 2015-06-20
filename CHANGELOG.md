@@ -1,5 +1,10 @@
 # OAuth 2.0 Client Changelog
 
+## 0.12.1
+
+_Released: 2015-06-20_
+
+* FIX: Scope separators for LinkedIn and Instagram are now correctly a single space
 
 ## 0.12.0
 
