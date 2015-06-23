@@ -108,11 +108,13 @@ class AccessToken
      */
     public function hasExpired()
     {
-        if (!isset($this->expires)) {
+        $expires = $this->getExpires();
+
+        if (empty($expires)) {
             throw new RuntimeException('"expires" is not set on the token');
         }
 
-        return $this->expires < time();
+        return $expires < time();
     }
 
     /**
