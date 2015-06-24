@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Grant;
 
-use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface as AccessToken;
 
 class RefreshToken implements GrantInterface
 {
@@ -22,8 +22,8 @@ class RefreshToken implements GrantInterface
         return array_merge($defaultParams, $params);
     }
 
-    public function handleResponse($response = [])
+    public function handleResponse(AccessToken $token, array $response = null)
     {
-        return new AccessToken($response);
+        return $token;
     }
 }

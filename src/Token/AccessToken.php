@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
 
-class AccessToken
+class AccessToken implements AccessTokenInterface
 {
     /**
      * @var  string  accessToken
