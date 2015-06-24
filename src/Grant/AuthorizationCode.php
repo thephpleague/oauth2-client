@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Grant;
 
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 class AuthorizationCode implements GrantInterface
 {
@@ -20,8 +20,8 @@ class AuthorizationCode implements GrantInterface
         return array_merge($defaultParams, $params);
     }
 
-    public function handleResponse($response = [])
+    public function handleResponse(AccessTokenInterface $token, array $response = null)
     {
-        return new AccessToken($response);
+        return $token;
     }
 }

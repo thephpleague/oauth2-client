@@ -8,6 +8,7 @@ use Guzzle\Service\Client as GuzzleClient;
 use League\OAuth2\Client\Exception\IDPException as IDPException;
 use League\OAuth2\Client\Grant\GrantInterface;
 use League\OAuth2\Client\Token\AccessToken as AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -109,6 +110,17 @@ abstract class AbstractProvider implements ProviderInterface
      * @return mixed
      */
     abstract public function userDetails($response, AccessToken $token);
+    
+    /**
+     * Create a new AccessToken
+     * 
+     * @param array $response
+     * @return AccessTokenInterface
+     */
+    public function factoryAccessToken($response = [])
+    {
+        return new AccessToken($response);
+    }
 
     public function getScopes()
     {
@@ -212,7 +224,7 @@ abstract class AbstractProvider implements ProviderInterface
 
         $result = $this->prepareAccessTokenResult($result);
 
-        return $grant->handleResponse($result);
+        return $grant->handleResponse($this->factoryAccessToken($result), $result);
     }
 
     /**
