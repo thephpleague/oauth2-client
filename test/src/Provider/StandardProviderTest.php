@@ -8,6 +8,7 @@ use League\OAuth2\Client\Provider\StandardUser;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
 use Mockery as m;
 
@@ -63,6 +64,25 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         foreach ($options as $key => $expected) {
             $this->assertAttributeEquals($expected, $key, $provider);
         }
+
+        $this->assertEquals($options['urlAuthorize'], $provider->getBaseAuthorizationUrl());
+        $this->assertEquals($options['urlAccessToken'], $provider->getBaseAccessTokenUrl());
+        $this->assertEquals($options['urlUserDetails'], $provider->getUserDetailsUrl(new AccessToken(['access_token' => '1234'])));
+        $this->assertEquals($options['scopes'], $provider->getDefaultScopes());
+
+        $reflection = new \ReflectionClass(get_class($provider));
+
+        $getAccessTokenMethod = $reflection->getMethod('getAccessTokenMethod');
+        $getAccessTokenMethod->setAccessible(true);
+        $this->assertEquals($options['accessTokenMethod'], $getAccessTokenMethod->invoke($provider));
+
+        $getAccessTokenUid = $reflection->getMethod('getAccessTokenUid');
+        $getAccessTokenUid->setAccessible(true);
+        $this->assertEquals($options['accessTokenUid'], $getAccessTokenUid->invoke($provider));
+
+        $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
+        $getScopeSeparator->setAccessible(true);
+        $this->assertEquals($options['scopeSeparator'], $getScopeSeparator->invoke($provider));
     }
 
     public function testUserDetails()
@@ -87,5 +107,50 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('email', $data);
         $this->assertSame('testmock', $data['username']);
         $this->assertSame('mock@example.com', $data['email']);
+    }
+
+    public function testCheckResponse()
+    {
+        $response = new HtmlResponse('foo');
+
+        $options = [
+            'urlAuthorize'      => 'http://example.com/authorize',
+            'urlAccessToken'    => 'http://example.com/token',
+            'urlUserDetails'    => 'http://example.com/user',
+        ];
+
+        $provider = new StandardProvider($options);
+
+        $reflection = new \ReflectionClass(get_class($provider));
+
+        $checkResponse = $reflection->getMethod('checkResponse');
+        $checkResponse->setAccessible(true);
+
+        $this->assertNull($checkResponse->invokeArgs($provider, [$response, []]));
+    }
+
+    /**
+     * @expectedException League\Oauth2\Client\Provider\Exception\IdentityProviderException
+     */
+    public function testCheckResponseThrowsException()
+    {
+        $response = new HtmlResponse('foo');
+
+        $options = [
+            'urlAuthorize'      => 'http://example.com/authorize',
+            'urlAccessToken'    => 'http://example.com/token',
+            'urlUserDetails'    => 'http://example.com/user',
+        ];
+
+        $provider = new StandardProvider($options);
+
+        $reflection = new \ReflectionClass(get_class($provider));
+
+        $checkResponse = $reflection->getMethod('checkResponse');
+        $checkResponse->setAccessible(true);
+
+        $checkResponse->invokeArgs($provider, [$response, [
+            'error' => 'foobar',
+        ]]);
     }
 }
