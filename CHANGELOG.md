@@ -4,7 +4,7 @@
 
 _Released: 2015-06-25_
 
-This release contains numerous BC breaks from the 0.x series. Please note these breaks and refer to the [upgrade guide][GUIDE-UPGRADE.md].
+This release contains numerous BC breaks from the 0.x series. Please note these breaks and refer to the [upgrade guide](GUIDE-UPGRADING.md).
 
 * BREAK: Requires PHP 5.5.0 and greater.
 * BREAK: All providers have been moved to separate repositories, one for each provider.
