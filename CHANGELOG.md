@@ -1,5 +1,21 @@
 # OAuth 2.0 Client Changelog
 
+## 1.0.0-alpha1
+
+_Released: 2015-06-25_
+
+This release contains numerous BC breaks from the 0.x series. Please note these breaks and refer to the [upgrade guide][GUIDE-UPGRADE.md].
+
+* BREAK: Requires PHP 5.5.0 and greater.
+* BREAK: All providers have been moved to separate repositories, one for each provider.
+* BREAK: All `public` properties have been set as `protected` or `private` and getters/setters have been introduced for access to these properties.
+* BREAK: The `Provider\ProviderInterface` has been removed. Please extend from and override `Provider\AbstractProvider`.
+* BREAK: The `Entity\User` has been removed. Providers should implement the `Provider\UserInterface` and provide user functionality instead of expecting it in this base library.
+* BREAK: The `Grant\GrantInterface` has been removed. Providers needing to provide a new grant type should extend from and override `Grant\AbstractGrant`.
+* A generic `Provider\StandardProvider` has been introduced, which may be used as a client to integrate with most OAuth 2.0 compatible servers.
+* A `Grant\GrantFactory` has been introduced as a means to register and retrieve singleton grants from a registry.
+* Introduced traits for bearer and MAC authorization (`Tool\BearerAuthorizationTrait` and `Tool\MacAuthorizationTrait`), which providers may use to enable these header authorization types.
+
 ## 0.12.1
 
 _Released: 2015-06-20_
