@@ -24,9 +24,14 @@ abstract class AbstractProvider
     const ACCESS_TOKEN_UID = null;
 
     /**
-     * @var string Separator used for authorization scopes.
+     * @var string HTTP method used to fetch access tokens.
      */
-    const SCOPE_SEPARATOR = ',';
+    const ACCESS_TOKEN_METHOD_GET = 'GET';
+
+    /**
+     * @var string HTTP method used to fetch access tokens.
+     */
+    const ACCESS_TOKEN_METHOD_POST = 'POST';
 
     /**
      * @var string
@@ -238,6 +243,16 @@ abstract class AbstractProvider
     abstract protected function getDefaultScopes();
 
     /**
+     * Get the string used to separate scopes.
+     *
+     * @return string
+     */
+    protected function getScopeSeparator()
+    {
+        return ',';
+    }
+
+    /**
      * Returns authorization parameters based on provided options.
      *
      * @param array $options
@@ -259,7 +274,7 @@ abstract class AbstractProvider
         ];
 
         if (is_array($options['scope'])) {
-            $options['scope'] = implode(static::SCOPE_SEPARATOR, $options['scope']);
+            $options['scope'] = implode($this->getScopeSeparator(), $options['scope']);
         }
 
         // Store the state, it may need to be accessed later.
@@ -340,7 +355,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenMethod()
     {
-        return 'POST';
+        return self::ACCESS_TOKEN_METHOD_POST;
     }
 
     /**
