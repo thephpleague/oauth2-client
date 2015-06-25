@@ -32,13 +32,20 @@ trait MacAuthorizationTrait
     // AbstractProvider
     abstract protected function getRandomState($length);
 
+    /**
+     * Get authorization headers
+     *
+     * @param  AccessToken $token
+     *
+     * @return array
+     * @codeCoverageIgnore
+     *
+     * @todo This is currently untested and provided only as an example. If you
+     * complete the implementation, please create a pull request for
+     * https://github.com/thephpleague/oauth2-client
+     */
     protected function getAuthorizationHeaders($token = null)
     {
-        // This is currently untested and provided only as an example. If you
-        // complete the implementation, please create a pull request for
-        // https://github.com/thephpleague/oauth2-client
-
-        // @codeCoverageIgnoreStart
         $ts    = time();
         $id    = $this->getTokenId($token);
         $nonce = $this->getRandomState(16);
@@ -50,6 +57,5 @@ trait MacAuthorizationTrait
         }
 
         return ['Authorization' => 'MAC ' . implode(",\n", $parts)];
-        // @codeCoverageIgnoreEnd
     }
 }

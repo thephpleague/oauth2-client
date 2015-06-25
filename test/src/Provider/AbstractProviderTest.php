@@ -286,11 +286,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
+        $error = ["error" => "Foo error", "code" => 1337];
+        $errorJson = json_encode($error);
 
         $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            '{"error":"Foo error","code":1337}'
-        );
+        $stream->shouldReceive('__toString')->times(1)->andReturn($errorJson);
 
         $response = m::mock(ResponseInterface::class);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
@@ -317,10 +317,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         } catch (IdentityProviderException $e) {
             $errorMessage = $e->getMessage();
             $errorCode = $e->getCode();
+            $errorBody = $e->getResponseBody();
         }
 
-        $this->assertEquals('Foo error', $errorMessage);
-        $this->assertEquals(1337, $errorCode);
+        $this->assertEquals($error['error'], $errorMessage);
+        $this->assertEquals($error['code'], $errorCode);
+        $this->assertEquals($error, $errorBody);
     }
 
     /**
@@ -550,5 +552,40 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $method = $this->getMethod(AbstractProvider::class, 'appendQuery');
         $this->assertEquals($expected, $method->invoke($this->provider, $url, $query));
+    }
+
+    protected function getAbstractProviderMock()
+    {
+        return m::mock(AbstractProvider::class);
+    }
+
+    public function testDefaultAccessTokenMethod()
+    {
+        $provider = $this->getAbstractProviderMock();
+        $expectedMethod = 'POST';
+
+        $method = $provider->getAccessTokenMethod();
+
+        $this->assertEquals($expectedMethod, $method);
+    }
+
+    public function testDefaultPrepareAccessTokenResponse()
+    {
+        $provider = m::mock(Fake\ProviderWithAccessTokenUid::class);
+        $result = ['user_id' => uniqid()];
+
+        $newResult = $provider->prepareAccessTokenResponse($result);
+
+        $this->assertTrue(isset($newResult['uid']));
+        $this->assertEquals($result['user_id'], $newResult['uid']);
+    }
+
+    public function testDefaultAuthorizationHeaders()
+    {
+        $provider = $this->getAbstractProviderMock();
+
+        $headers = $provider->getAuthorizationHeaders();
+
+        $this->assertEquals([], $headers);
     }
 }
