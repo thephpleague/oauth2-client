@@ -56,6 +56,6 @@ trait MacAuthorizationTrait
             $parts[] = sprintf('%s="%s"', $key, $value);
         }
 
-        return ['Authorization' => 'MAC ' . implode(",\n", $parts)];
+        return ['Authorization' => 'MAC ' . implode(', ', $parts)];
     }
 }
