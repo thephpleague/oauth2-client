@@ -656,7 +656,7 @@ abstract class AbstractProvider
      */
     public function getHeaders($token = null)
     {
-        $headers = $this->getDefaultHeaders();
+        $headers = $this->getDefaultHeaders($token);
         if ($token) {
             $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
         }
