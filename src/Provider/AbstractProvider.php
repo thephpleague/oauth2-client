@@ -622,10 +622,10 @@ abstract class AbstractProvider
      *
      * Typically this is used to set Accept or Content-Type headers.
      *
-     * @param  AccessToken $token
+     * @param  AccessToken|null $token
      * @return array
      */
-    protected function getDefaultHeaders($token = null)
+    protected function getDefaultHeaders(AccessToken $token = null)
     {
         return [];
     }
@@ -638,10 +638,10 @@ abstract class AbstractProvider
      *
      * No default is provided, providers must overload this method to activate
      * authorization headers.
-     *
+     * @param AccessToken|null $token
      * @return array
      */
-    protected function getAuthorizationHeaders($token = null)
+    protected function getAuthorizationHeaders(AccessToken $token = null)
     {
         return [];
     }
@@ -651,10 +651,10 @@ abstract class AbstractProvider
      *
      * If a token is passed, the request may be authenticated through headers.
      *
-     * @param  mixed $token  object or string
+     * @param  AccessToken|null $token  object or string
      * @return array
      */
-    public function getHeaders($token = null)
+    public function getHeaders(AccessToken $token = null)
     {
         $headers = $this->getDefaultHeaders($token);
         if ($token) {

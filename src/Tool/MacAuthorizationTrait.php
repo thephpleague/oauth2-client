@@ -44,7 +44,7 @@ trait MacAuthorizationTrait
      * complete the implementation, please create a pull request for
      * https://github.com/thephpleague/oauth2-client
      */
-    protected function getAuthorizationHeaders($token = null)
+    protected function getAuthorizationHeaders(AccessToken $token = null)
     {
         $ts    = time();
         $id    = $this->getTokenId($token);
