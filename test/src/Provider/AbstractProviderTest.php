@@ -178,7 +178,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $provider->setHttpClient($client);
 
-        $user = $provider->getUserDetails($token);
+        $user = $provider->getUser($token);
 
         $this->assertEquals($id, $user->getUserId());
         $this->assertEquals($name, $user->getUserScreenName());

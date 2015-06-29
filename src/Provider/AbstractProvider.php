@@ -599,13 +599,13 @@ abstract class AbstractProvider
      * @param AccessToken $token
      * @return League\OAuth2\Client\Provider\UserInterface
      */
-    abstract protected function prepareUserDetails(array $response, AccessToken $token);
+    abstract protected function createUser(array $response, AccessToken $token);
 
-    public function getUserDetails(AccessToken $token)
+    public function getUser(AccessToken $token)
     {
         $response = $this->fetchUserDetails($token);
 
-        return $this->prepareUserDetails($response, $token);
+        return $this->createUser($response, $token);
     }
 
     protected function fetchUserDetails(AccessToken $token)
