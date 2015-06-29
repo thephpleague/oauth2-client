@@ -375,7 +375,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
+        $request = $provider->getRequest('get', 'https://api.example.com/v1/test', $token);
         $this->assertInstanceOf(RequestInterface::class, $request);
 
         // Authorization header should contain the token
@@ -471,21 +471,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($raw_response['uid'], $token->getUid());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testInvalidAccessTokenMethod()
-    {
-        $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
-        ]);
-
-        $provider->setAccessTokenMethod('PUT');
-        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
     private function getMethod($class, $name)
