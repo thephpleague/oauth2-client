@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Tool;
 
+use League\OAuth2\Client\Token\AccessToken;
+
 /**
  * Enables `Bearer` header authorization for providers.
  *
@@ -9,7 +11,7 @@ namespace League\OAuth2\Client\Tool;
  */
 trait BearerAuthorizationTrait
 {
-    protected function getAuthorizationHeaders($token = null)
+    protected function getAuthorizationHeaders(AccessToken $token = null)
     {
         return ['Authorization' => 'Bearer ' . $token];
     }
