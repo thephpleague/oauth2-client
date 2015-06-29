@@ -44,7 +44,7 @@ class Fake extends AbstractProvider
         return $this->accessTokenMethod;
     }
 
-    protected function prepareUserDetails(array $response, AccessToken $token)
+    protected function createUser(array $response, AccessToken $token)
     {
         return new Fake\User($response);
     }

@@ -169,7 +169,7 @@ class StandardProvider extends AbstractProvider
         }
     }
 
-    protected function prepareUserDetails(array $response, AccessToken $token)
+    protected function createUser(array $response, AccessToken $token)
     {
         return new StandardUser($response, $this->responseUid);
     }

@@ -96,7 +96,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             'responseUid'    => 'mock_response_uid',
         ]);
 
-        $user = $provider->getUserDetails($token);
+        $user = $provider->getUser($token);
 
         $this->assertInstanceOf(StandardUser::class, $user);
         $this->assertSame(1, $user->getUserId());
