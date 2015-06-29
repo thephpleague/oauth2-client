@@ -8,7 +8,6 @@ use League\OAuth2\Client\Provider\StandardUser;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 
 use Mockery as m;
 
@@ -111,7 +110,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckResponse()
     {
-        $response = new HtmlResponse('foo');
+        $response = m::mock(ResponseInterface::class);
 
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
@@ -134,7 +133,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckResponseThrowsException()
     {
-        $response = new HtmlResponse('foo');
+        $response = m::mock(ResponseInterface::class);
 
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
