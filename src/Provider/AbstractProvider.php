@@ -442,7 +442,7 @@ abstract class AbstractProvider
         $url     = $this->getAccessTokenUrl($params);
         $options = $this->getAccessTokenOptions($params);
 
-        return $this->getRequest($method, $url, null, $options);
+        return $this->getRequest($method, $url, $options);
     }
 
     /**
@@ -471,26 +471,53 @@ abstract class AbstractProvider
 
 
     /**
-     * Get a request instance, optionally authenticated using an access token.
+     * Returns a PSR-7 request instance which is not already authenticated.
      *
-     * Creates a PSR-7 compatible request instance that can be modified.
+     * @param  string $method
+     * @param  string $url
+     * @param  array $options Any of "headers", "body", and "protocolVersion".
+     * @return RequestInterface
+     */
+    public function getRequest($method, $url, array $options = [])
+    {
+        return $this->createRequest($method, $url, null, $options);
+    }
+
+    /**
+     * Returns a PSR-7 request instance which is already authenticated.
      *
      * @param  string $method
      * @param  string $url
      * @param  AccessToken|string $token
-     * @param  array  $options Any of "headers", "body", and "protocolVersion".
+     * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
-    public function getRequest($method, $url, $token = null, array $options = [])
+    public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
-        $options = array_merge_recursive($options, [
-            'headers' => $this->getHeaders($token),
-        ]);
+        return $this->createRequest($method, $url, $token, $options);
+    }
 
+    /**
+     * Creates a PSR-7 request instance.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  AccessToken|string|null $token
+     * @param  array $options
+     * @return RequestInterface
+     */
+    protected function createRequest($method, $url, $token, array $options)
+    {
+        $defaults = [
+            'headers' => $this->getHeaders($token),
+        ];
+
+        $options = array_merge_recursive($defaults, $options);
         $factory = $this->getRequestFactory();
 
         return $factory->getRequestWithOptions($method, $url, $options);
     }
+
 
     /**
      * Sends a request instance and returns a response instance.
@@ -630,7 +657,7 @@ abstract class AbstractProvider
     {
         $url = $this->getUserDetailsUrl($token);
 
-        $request = $this->getRequest(self::METHOD_GET, $url, $token);
+        $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
         return $this->getResponse($request);
     }
@@ -673,10 +700,13 @@ abstract class AbstractProvider
      */
     public function getHeaders($token = null)
     {
-        $headers = $this->getDefaultHeaders();
         if ($token) {
-            $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
+            return array_merge(
+                $this->getDefaultHeaders(),
+                $this->getAuthorizationHeaders($token)
+            );
         }
-        return $headers;
+
+        return $this->getDefaultHeaders();
     }
 }

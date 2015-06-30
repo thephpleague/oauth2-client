@@ -375,7 +375,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $request = $provider->getRequest('get', 'https://api.example.com/v1/test', $token);
+        $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
         $this->assertInstanceOf(RequestInterface::class, $request);
 
         // Authorization header should contain the token
