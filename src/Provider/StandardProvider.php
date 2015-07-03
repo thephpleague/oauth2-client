@@ -130,7 +130,7 @@ class StandardProvider extends AbstractProvider
         return $this->urlAuthorize;
     }
 
-    public function getBaseAccessTokenUrl()
+    public function getBaseAccessTokenUrl(array $params)
     {
         return $this->urlAccessToken;
     }

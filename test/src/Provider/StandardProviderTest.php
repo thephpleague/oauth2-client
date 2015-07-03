@@ -65,7 +65,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals($options['urlAuthorize'], $provider->getBaseAuthorizationUrl());
-        $this->assertEquals($options['urlAccessToken'], $provider->getBaseAccessTokenUrl());
+        $this->assertEquals($options['urlAccessToken'], $provider->getBaseAccessTokenUrl([]));
         $this->assertEquals($options['urlUserDetails'], $provider->getUserDetailsUrl(new AccessToken(['access_token' => '1234'])));
         $this->assertEquals($options['scopes'], $provider->getDefaultScopes());
 

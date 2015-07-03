@@ -214,7 +214,7 @@ abstract class AbstractProvider
     }
 
     abstract public function getBaseAuthorizationUrl();
-    abstract public function getBaseAccessTokenUrl();
+    abstract public function getBaseAccessTokenUrl(array $params);
     abstract public function getUserDetailsUrl(AccessToken $token);
 
     /**
@@ -393,7 +393,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenRequest(array $params)
     {
-        $url = $this->getBaseAccessTokenUrl();
+        $url = $this->getBaseAccessTokenUrl($params);
         $query = $this->getAccessTokenQuery($params);
         $method = strtoupper($this->getAccessTokenMethod());
 
