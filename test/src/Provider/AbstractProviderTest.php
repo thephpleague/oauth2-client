@@ -297,7 +297,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $method = $provider->getAccessTokenMethod();
-        $url = $provider->getBaseAccessTokenUrl();
+        $url = $provider->getBaseAccessTokenUrl([]);
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
@@ -355,7 +355,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         );
 
         $method = $provider->getAccessTokenMethod();
-        $url    = $provider->getBaseAccessTokenUrl();
+        $url    = $provider->getBaseAccessTokenUrl([]);
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
@@ -453,7 +453,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
         $method = $provider->getAccessTokenMethod();
-        $url    = $provider->getBaseAccessTokenUrl();
+        $url    = $provider->getBaseAccessTokenUrl([]);
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(

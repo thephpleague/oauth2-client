@@ -19,7 +19,7 @@ class Fake extends AbstractProvider
         return 'http://example.com/oauth/authorize';
     }
 
-    public function getBaseAccessTokenUrl()
+    public function getBaseAccessTokenUrl(array $params)
     {
         return 'http://example.com/oauth/token';
     }
