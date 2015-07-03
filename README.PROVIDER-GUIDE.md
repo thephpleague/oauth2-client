@@ -16,7 +16,7 @@ good name for your composer package would be `santa/oauth2-giftpay`.
 
 If you are working with an oauth2 service not supported out-of-the-box or by an
 existing package, it is quite simple to implement your own. Simply extend
-`[League\OAuth2\Client\Provider\AbstractProvider](src/Provider/AbstractProvider.php)`
+[`League\OAuth2\Client\Provider\AbstractProvider`](src/Provider/AbstractProvider.php)
 and implement the required abstract methods:
 
 ```php
@@ -59,7 +59,7 @@ The next step is to implement the `AbstractProvider::createUser()` method. This
 method accepts as parameters a response array and an `AccessToken`. You may use
 this information in order to request user details from your service and
 construct and return an object that implements
-`[League\OAuth2\Client\Provider\UserInterface](src/Provider/UserInterface.php)`.
+[`League\OAuth2\Client\Provider\UserInterface`](src/Provider/UserInterface.php).
 This object is returned when calling `AbstractProvider::getUser()`.
 
 ### Make your gateway official
