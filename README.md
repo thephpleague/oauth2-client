@@ -127,8 +127,12 @@ $ composer require league/oauth2-client
 
 ## Testing
 
+The following tests must pass for a build to be considered successful. If contributing, please ensure these pass before submitting a pull request.
+
 ``` bash
-$ ./vendor/bin/phpunit
+$ ./vendor/bin/parallel-lint src test
+$ ./vendor/bin/phpunit --coverage-text
+$ ./vendor/bin/phpcs src --standard=psr2 -sp
 ```
 
 ## Contributing
