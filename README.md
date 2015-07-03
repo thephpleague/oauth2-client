@@ -1,15 +1,15 @@
 # OAuth 2.0 Client
 
-[![Join the chat at https://gitter.im/thephpleague/oauth2-client](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/thephpleague/oauth2-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter Chat](https://img.shields.io/badge/gitter-join_chat-brightgreen.svg?style=flat-square)](https://gitter.im/thephpleague/oauth2-client)
+[![Source Code](http://img.shields.io/badge/source-thephpleague/oauth2--client-blue.svg?style=flat-square)](https://github.com/thephpleague/oauth2-client)
+[![Latest Version](https://img.shields.io/github/release/thephpleague/oauth2-client.svg?style=flat-square)](https://github.com/thephpleague/oauth2-client/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE)
+[![Build Status](https://img.shields.io/travis/thephpleague/oauth2-client/master.svg?style=flat-square)](https://travis-ci.org/thephpleague/oauth2-client)
+[![HHVM Status](https://img.shields.io/hhvm/league/oauth2-client.svg?style=flat-square)](http://hhvm.h4cc.de/package/league/oauth2-client)
+[![Coverage Status](https://img.shields.io/coveralls/thephpleague/oauth2-client/master.svg?style=flat-square)](https://coveralls.io/r/thephpleague/oauth2-client?branch=master)
+[![Total Downloads](https://img.shields.io/packagist/dt/league/oauth2-client.svg?style=flat-square)](https://packagist.org/packages/league/oauth2-client)
 
-[![Build Status](https://travis-ci.org/thephpleague/oauth2-client.svg?branch=master)](https://travis-ci.org/thephpleague/oauth2-client)
-[![Coverage Status](https://coveralls.io/repos/thephpleague/oauth2-client/badge.svg?branch=master)](https://coveralls.io/r/thephpleague/oauth2-client?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/league/oauth2-client/v/stable)](https://packagist.org/packages/league/oauth2-client)
-[![Total Downloads](https://poser.pugx.org/league/oauth2-client/downloads)](https://packagist.org/packages/league/oauth2-client)
-[![Latest Unstable Version](https://poser.pugx.org/league/oauth2-client/v/unstable)](https://packagist.org/packages/league/oauth2-client)
-[![License](https://poser.pugx.org/league/oauth2-client/license)](https://packagist.org/packages/league/oauth2-client)
-
-This package makes it stupidly simple to integrate your application with OAuth 2.0 identity providers.
+This package makes it simple to integrate your application with OAuth 2.0 identity providers.
 
 Everyone is used to seeing those "Connect with Facebook/Google/etc" buttons around the Internet and social network
 integration is an important feature of most web-apps these days. Many of these sites use an Authentication and Authorization standard called OAuth 2.0.
