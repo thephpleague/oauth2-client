@@ -14,10 +14,10 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use InvalidArgumentException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
-use InvalidArgumentException;
 
 class StandardProvider extends AbstractProvider
 {

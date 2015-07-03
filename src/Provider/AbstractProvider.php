@@ -18,15 +18,15 @@ use Closure;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use InvalidArgumentException;
 use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
-use InvalidArgumentException;
 
 abstract class AbstractProvider
 {
