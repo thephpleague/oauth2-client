@@ -139,20 +139,6 @@ $ ./vendor/bin/phpcs src --standard=psr2 -sp
 
 Please see [CONTRIBUTING](https://github.com/thephpleague/oauth2-client/blob/master/CONTRIBUTING.md) for details.
 
-
-## Credits
-
-- [Alex Bilbie](https://github.com/alexbilbie)
-- [Ben Corlett](https://github.com/bencorlett)
-- [Ben Ramsey](https://github.com/ramsey)
-- [James Mills](https://github.com/jamesmills)
-- [Phil Sturgeon](https://github.com/philsturgeon)
-- [Rudi Theunissen](https://github.com/rtheunissen)
-- [Tom Anderson](https://github.com/TomHAnderson)
-- [Woody Gilk](https://github.com/shadowhand)
-- [All Contributors](https://github.com/thephpleague/oauth2-client/contributors)
-
-
 ## License
 
 The MIT License (MIT). Please see [License File](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE) for more information.
