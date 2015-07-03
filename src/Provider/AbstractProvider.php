@@ -26,12 +26,12 @@ abstract class AbstractProvider
     /**
      * @var string HTTP method used to fetch access tokens.
      */
-    const ACCESS_TOKEN_METHOD_GET = 'GET';
+    const METHOD_GET = 'GET';
 
     /**
      * @var string HTTP method used to fetch access tokens.
      */
-    const ACCESS_TOKEN_METHOD_POST = 'POST';
+    const METHOD_POST = 'POST';
 
     /**
      * @var string
@@ -355,7 +355,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenMethod()
     {
-        return self::ACCESS_TOKEN_METHOD_POST;
+        return self::METHOD_POST;
     }
 
     /**
@@ -387,30 +387,60 @@ abstract class AbstractProvider
     }
 
     /**
+     * Returns the full URL to use when requesting an access token.
+     *
+     * @param array $params Query parameters
+     */
+    protected function getAccessTokenUrl(array $params)
+    {
+        $url = $this->getBaseAccessTokenUrl($params);
+
+        if ($this->getAccessTokenMethod() === self::METHOD_GET) {
+            $query = $this->getAccessTokenQuery($params);
+            return $this->appendQuery($url, $query);
+        }
+
+        return $url;
+    }
+
+    /**
+     * Returns the request body for requesting an access token.
+     *
+     * @param  array $params
+     * @return string
+     */
+    protected function getAccessTokenBody(array $params)
+    {
+        return http_build_query($params);
+    }
+
+    /**
+     * Builds request options used for requesting an access token.
+     *
+     * @param  array $params
+     * @return array
+     */
+    protected function getAccessTokenOptions(array $params)
+    {
+        $options = [];
+
+        if ($this->getAccessTokenMethod() === self::METHOD_POST) {
+            $options['body'] = $this->getAccessTokenBody($params);
+        }
+
+        return $options;
+    }
+
+    /**
      * Returns a prepared request for requesting an access token.
      *
      * @param array $params Query string parameters
      */
     protected function getAccessTokenRequest(array $params)
     {
-        $url = $this->getBaseAccessTokenUrl($params);
-        $query = $this->getAccessTokenQuery($params);
-        $method = strtoupper($this->getAccessTokenMethod());
-
-        $options = [];
-
-        switch ($method) {
-            case 'GET':
-                $url = $this->appendQuery($url, $query);
-                break;
-            case 'POST':
-                $options['body'] = $query;
-                break;
-            default:
-                throw new InvalidArgumentException(
-                    "Unsupported access token request method: '$method'"
-                );
-        }
+        $method  = $this->getAccessTokenMethod();
+        $url     = $this->getAccessTokenUrl($params);
+        $options = $this->getAccessTokenOptions($params);
 
         return $this->getRequest($method, $url, $options);
     }
@@ -434,7 +464,6 @@ abstract class AbstractProvider
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
         $response = $this->getResponse($request);
-
         $prepared = $this->prepareAccessTokenResponse($response);
 
         return $grant->createAccessToken($prepared);
@@ -442,37 +471,53 @@ abstract class AbstractProvider
 
 
     /**
-     * Get a request instance.
-     *
-     * Creates a PSR-7 compatible request instance that can be modified.
-     * The request is not automatically authenticated.
+     * Returns a PSR-7 request instance which is not already authenticated.
      *
      * @param  string $method
      * @param  string $url
-     * @param  array  $options Any of "headers", "body", and "protocolVersion".
+     * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
     public function getRequest($method, $url, array $options = [])
     {
-        return $this->getRequestFactory()->getRequestWithOptions($method, $url, $options);
+        return $this->createRequest($method, $url, null, $options);
     }
 
     /**
-     * Get an authenticated request instance.
-     *
-     * Creates a PSR-7 compatible request instance that can be modified.
+     * Returns a PSR-7 request instance which is already authenticated.
      *
      * @param  string $method
      * @param  string $url
-     * @param  AccessToken $token
-     * @param  array  $options Any of "headers", "body", and "protocolVersion".
+     * @param  AccessToken|string $token
+     * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
-    public function getAuthenticatedRequest($method, $url, AccessToken $token, array $options = [])
+    public function getAuthenticatedRequest($method, $url, $token, array $options = [])
     {
-        $options['headers'] = $this->getHeaders($token);
-        return $this->getRequest($method, $url, $options);
+        return $this->createRequest($method, $url, $token, $options);
     }
+
+    /**
+     * Creates a PSR-7 request instance.
+     *
+     * @param  string $method
+     * @param  string $url
+     * @param  AccessToken|string|null $token
+     * @param  array $options
+     * @return RequestInterface
+     */
+    protected function createRequest($method, $url, $token, array $options)
+    {
+        $defaults = [
+            'headers' => $this->getHeaders($token),
+        ];
+
+        $options = array_merge_recursive($defaults, $options);
+        $factory = $this->getRequestFactory();
+
+        return $factory->getRequestWithOptions($method, $url, $options);
+    }
+
 
     /**
      * Sends a request instance and returns a response instance.
@@ -581,7 +626,7 @@ abstract class AbstractProvider
      * Custom mapping of expirations, etc should be done here. Always call the
      * parent method when overloading this method!
      *
-     * @param  array $result
+     * @param  mixed $result
      * @return array
      */
     protected function prepareAccessTokenResponse(array $result)
@@ -612,7 +657,7 @@ abstract class AbstractProvider
     {
         $url = $this->getUserDetailsUrl($token);
 
-        $request = $this->getAuthenticatedRequest('GET', $url, $token);
+        $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
         return $this->getResponse($request);
     }
@@ -622,10 +667,9 @@ abstract class AbstractProvider
      *
      * Typically this is used to set Accept or Content-Type headers.
      *
-     * @param  AccessToken $token
      * @return array
      */
-    protected function getDefaultHeaders($token = null)
+    protected function getDefaultHeaders()
     {
         return [];
     }
@@ -656,10 +700,13 @@ abstract class AbstractProvider
      */
     public function getHeaders($token = null)
     {
-        $headers = $this->getDefaultHeaders($token);
         if ($token) {
-            $headers = array_merge($headers, $this->getAuthorizationHeaders($token));
+            return array_merge(
+                $this->getDefaultHeaders(),
+                $this->getAuthorizationHeaders($token)
+            );
         }
-        return $headers;
+
+        return $this->getDefaultHeaders();
     }
 }

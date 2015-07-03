@@ -473,21 +473,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($raw_response['expires'], $token->getExpires());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testInvalidAccessTokenMethod()
-    {
-        $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
-        ]);
-
-        $provider->setAccessTokenMethod('PUT');
-        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
-    }
-
     private function getMethod($class, $name)
     {
         $class = new \ReflectionClass($class);
