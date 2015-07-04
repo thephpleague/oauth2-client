@@ -1,5 +1,20 @@
 # OAuth 2.0 Client Changelog
 
+## 1.0.0-alpha2
+
+_Released: 2015-07-04_
+
+* BREAK: Renamed `AbstractProvider::ACCESS_TOKEN_METHOD_GET` to `AbstractProvider::METHOD_GET`.
+* BREAK: Renamed `AbstractProvider::ACCESS_TOKEN_METHOD_POST` to `AbstractProvider::METHOD_POST`.
+* BREAK: Renamed `AbstractProvider::prepareUserDetails()` to `AbstractProvider::createUser()`.
+* BREAK: Renamed `AbstractProvider::getUserDetails()` to `AbstractProvider::getUser()`.
+* BREAK: Removed `$token` parameter from `AbstractProvider::getDefaultHeaders()`.
+* BREAK: Modify `AbstractProvider::getBaseAccessTokenUrl()` to accept a required array of parameters, allowing providers the ability to vary the access token URL, based on the parameters.
+* Removed newline characters from MAC Authorization header.
+* Documentation updates, notably:
+  - Moved list of providers to `README.PROVIDERS.md`.
+  - Moved provider creation notes to `README.PROVIDER-GUIDE.md`.
+
 ## 1.0.0-alpha1
 
 _Released: 2015-06-25_
