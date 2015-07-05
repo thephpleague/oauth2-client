@@ -15,9 +15,10 @@
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
+use JsonSerializable;
 use RuntimeException;
 
-class AccessToken
+class AccessToken implements JsonSerializable
 {
     /**
      * @var  string
@@ -137,5 +138,30 @@ class AccessToken
     public function __toString()
     {
         return (string) $this->getToken();
+    }
+
+    /**
+     * Returns an array of parameters to serialize when this is serialized with
+     * json_encode().
+     *
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $parameters = [];
+
+        if ($this->accessToken) {
+            $parameters['access_token'] = $this->accessToken;
+        }
+
+        if ($this->refreshToken) {
+            $parameters['refresh_token'] = $this->refreshToken;
+        }
+
+        if ($this->expires) {
+            $parameters['expires_in'] = $this->expires - time();
+        }
+
+        return $parameters;
     }
 }
