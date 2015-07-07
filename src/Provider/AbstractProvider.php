@@ -31,9 +31,9 @@ use UnexpectedValueException;
 abstract class AbstractProvider
 {
     /**
-     * @var string Key used in the access token response to identify the user.
+     * @var string Key used in the access token response to identify the resource owner.
      */
-    const ACCESS_TOKEN_UID = null;
+    const ACCESS_TOKEN_OID = null;
 
     /**
      * @var string HTTP method used to fetch access tokens.
@@ -227,7 +227,7 @@ abstract class AbstractProvider
 
     abstract public function getBaseAuthorizationUrl();
     abstract public function getBaseAccessTokenUrl(array $params);
-    abstract public function getUserDetailsUrl(AccessToken $token);
+    abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
 
     /**
      * Get a new random string to use for auth state.
@@ -368,6 +368,16 @@ abstract class AbstractProvider
     protected function getAccessTokenMethod()
     {
         return self::METHOD_POST;
+    }
+
+    /**
+     * Returns the key used in the access token response to identify the resource owner.
+     *
+     * @return string Resource owner identifier key
+     */
+    protected function getAccessTokenOid()
+    {
+        return static::ACCESS_TOKEN_OID;
     }
 
     /**
@@ -643,31 +653,31 @@ abstract class AbstractProvider
      */
     protected function prepareAccessTokenResponse(array $result)
     {
-        if (static::ACCESS_TOKEN_UID) {
-            $result['uid'] = $result[static::ACCESS_TOKEN_UID];
+        if ($this->getAccessTokenOid()) {
+            $result['oid'] = $result[$this->getAccessTokenOid()];
         }
         return $result;
     }
 
     /**
-     * Generate a user object from a successful user details request.
+     * Generate a resource owner object from a successful resource owner details request.
      *
      * @param object $response
      * @param AccessToken $token
-     * @return League\OAuth2\Client\Provider\UserInterface
+     * @return League\OAuth2\Client\Provider\ResourceOwnerInterface
      */
-    abstract protected function createUser(array $response, AccessToken $token);
+    abstract protected function createResourceOwner(array $response, AccessToken $token);
 
-    public function getUser(AccessToken $token)
+    public function getResourceOwner(AccessToken $token)
     {
-        $response = $this->fetchUserDetails($token);
+        $response = $this->fetchResourceOwnerDetails($token);
 
-        return $this->createUser($response, $token);
+        return $this->createResourceOwner($response, $token);
     }
 
-    protected function fetchUserDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token)
     {
-        $url = $this->getUserDetailsUrl($token);
+        $url = $this->getResourceOwnerDetailsUrl($token);
 
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 

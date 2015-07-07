@@ -14,12 +14,36 @@
 
 namespace League\OAuth2\Client\Provider;
 
-interface UserInterface
+class StandardResourceOwner implements ResourceOwnerInterface
 {
     /**
-     * Get the identifier of the authorized user.
-     *
-     * @return mixed
+     * @var array
      */
-    public function getUserId();
+    protected $response;
+
+    /**
+     * @var string
+     */
+    protected $oid;
+
+    public function __construct(array $response, $oid)
+    {
+        $this->response = $response;
+        $this->oid = $oid;
+    }
+
+    public function getId()
+    {
+        return $this->response[$this->oid];
+    }
+
+    /**
+     * Get the raw resource owner response.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->response;
+    }
 }

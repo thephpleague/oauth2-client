@@ -24,7 +24,7 @@ class Fake extends AbstractProvider
         return 'http://example.com/oauth/token';
     }
 
-    public function getUserDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         return 'http://example.com/oauth/user';
     }
@@ -44,7 +44,7 @@ class Fake extends AbstractProvider
         return $this->accessTokenMethod;
     }
 
-    protected function createUser(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new Fake\User($response);
     }

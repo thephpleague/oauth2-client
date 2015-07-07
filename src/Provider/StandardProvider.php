@@ -34,7 +34,7 @@ class StandardProvider extends AbstractProvider
     /**
      * @var string
      */
-    private $urlUserDetails;
+    private $urlResourceOwnerDetails;
 
     /**
      * @var string
@@ -44,7 +44,7 @@ class StandardProvider extends AbstractProvider
     /**
      * @var string
      */
-    private $accessTokenUid;
+    private $accessTokenOid;
 
     /**
      * @var array|null
@@ -69,7 +69,7 @@ class StandardProvider extends AbstractProvider
     /**
      * @var string
      */
-    private $responseUid = 'id';
+    private $responseOid = 'id';
 
     public function __construct($options = [], array $collaborators = [])
     {
@@ -97,11 +97,11 @@ class StandardProvider extends AbstractProvider
     {
         return array_merge($this->getRequiredOptions(), [
             'accessTokenMethod',
-            'accessTokenUid',
+            'accessTokenOid',
             'scopeSeparator',
             'responseError',
             'responseCode',
-            'responseUid',
+            'responseOid',
             'scopes',
         ]);
     }
@@ -116,7 +116,7 @@ class StandardProvider extends AbstractProvider
         return [
             'urlAuthorize',
             'urlAccessToken',
-            'urlUserDetails',
+            'urlResourceOwnerDetails',
         ];
     }
 
@@ -147,9 +147,9 @@ class StandardProvider extends AbstractProvider
         return $this->urlAccessToken;
     }
 
-    public function getUserDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return $this->urlUserDetails;
+        return $this->urlResourceOwnerDetails;
     }
 
     public function getDefaultScopes()
@@ -162,9 +162,9 @@ class StandardProvider extends AbstractProvider
         return $this->accessTokenMethod ?: parent::getAccessTokenMethod();
     }
 
-    protected function getAccessTokenUid()
+    protected function getAccessTokenOid()
     {
-        return $this->accessTokenUid ?: parent::getAccessTokenUid();
+        return $this->accessTokenOid ?: parent::getAccessTokenOid();
     }
 
     protected function getScopeSeparator()
@@ -181,8 +181,8 @@ class StandardProvider extends AbstractProvider
         }
     }
 
-    protected function createUser(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new StandardUser($response, $this->responseUid);
+        return new StandardResourceOwner($response, $this->responseOid);
     }
 }

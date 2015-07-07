@@ -21,7 +21,7 @@ class Standard extends StandardProvider
         parent::__construct($options);
     }
 
-    protected function fetchUserDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         return [
             'mock_response_uid' => 1,

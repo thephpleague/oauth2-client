@@ -22,45 +22,48 @@ and implement the required abstract methods:
 ```php
 abstract public function getBaseAuthorizationUrl();
 abstract public function getBaseAccessTokenUrl(array $params);
-abstract public function getUserDetailsUrl(AccessToken $token);
+abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
 abstract protected function getDefaultScopes();
 abstract protected function checkResponse(ResponseInterface $response, $data);
-abstract protected function createUser(array $response, AccessToken $token);
+abstract protected function createResourceOwner(array $response, AccessToken $token);
 ```
 
 Each of these abstract methods contain a docblock defining their expectations
 and typical behavior. Once you have extended this class, you can simply follow
 the [usage example in the README](README.md#usage) using your new `Provider`.
 
-### Account identifiers in access token responses
+### Resource owner identifiers in access token responses
 
-We have decided to abstract away as much of the user details as possible, since
-these are not part of the OAuth 2.0 specification and are very specific to each
+In services where the resource owner is a person, the resource owner is sometimes
+referred to as an end-user.
+
+We have decided to abstract away as much of the resource owner details as possible,
+since these are not part of the OAuth 2.0 specification and are very specific to each
 service provider. This provides greater flexibility to each provider, allowing
-them to handle the implementation details for service users.
+them to handle the implementation details for resource owners.
 
-The `AbstractProvider` does not specify an access token user identifier. It is
-the responsibility of the provider class to set the `ACCESS_TOKEN_UID` constant
+The `AbstractProvider` does not specify an access token resource owner identifier. It is
+the responsibility of the provider class to set the `ACCESS_TOKEN_OID` constant
 to the string value of the key used in the access token response to identify the
-user.
+resource owner.
 
 ```php
 /**
- * @var string Key used in the access token response to identify the user.
+ * @var string Key used in the access token response to identify the resource owner.
  */
-const ACCESS_TOKEN_UID = null;
+const ACCESS_TOKEN_OID = null;
 ```
 
 Once this is set on your provider, when calling `AbstractProvider::getAccessToken()`,
-the `AccessToken` returned will have its `$uid` property set, which you may
-retrieve by calling `AccessToken::getUid()`.
+the `AccessToken` returned will have its `$oid` property set, which you may
+retrieve by calling `AccessToken::getOid()`.
 
-The next step is to implement the `AbstractProvider::createUser()` method. This
+The next step is to implement the `AbstractProvider::createResourceOwner()` method. This
 method accepts as parameters a response array and an `AccessToken`. You may use
-this information in order to request user details from your service and
+this information in order to request resource owner details from your service and
 construct and return an object that implements
-[`League\OAuth2\Client\Provider\UserInterface`](src/Provider/UserInterface.php).
-This object is returned when calling `AbstractProvider::getUser()`.
+[`League\OAuth2\Client\Provider\ResourceOwnerInterface`](src/Provider/ResourceOwnerInterface.php).
+This object is returned when calling `AbstractProvider::getResourceOwner()`.
 
 ### Make your gateway official
 

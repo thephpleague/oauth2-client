@@ -165,7 +165,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
-        $url = $provider->getUserDetailsUrl($token);
+        $url = $provider->getResourceOwnerDetailsUrl($token);
 
         $client = m::mock(ClientInterface::class);
         $client->shouldReceive('send')->with(
@@ -178,9 +178,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $provider->setHttpClient($client);
 
-        $user = $provider->getUser($token);
+        $user = $provider->getResourceOwner($token);
 
-        $this->assertEquals($id, $user->getUserId());
+        $this->assertEquals($id, $user->getId());
         $this->assertEquals($name, $user->getUserScreenName());
         $this->assertEquals($email, $user->getUserEmail());
     }
@@ -423,7 +423,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->setAccessTokenMethod($method);
 
         $grant_name = 'mock';
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'uid' => 3];
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'oid' => 3];
         $token = new AccessToken($raw_response);
 
         $grant = m::mock(AbstractGrant::class);
@@ -468,7 +468,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertSame($result, $token);
-        $this->assertSame($raw_response['uid'], $token->getUid());
+        $this->assertSame($raw_response['oid'], $token->getOid());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
     }
@@ -556,13 +556,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultPrepareAccessTokenResponse()
     {
-        $provider = m::mock(Fake\ProviderWithAccessTokenUid::class);
+        $provider = m::mock(Fake\ProviderWithAccessTokenOid::class);
         $result = ['user_id' => uniqid()];
 
         $newResult = $provider->prepareAccessTokenResponse($result);
 
-        $this->assertTrue(isset($newResult['uid']));
-        $this->assertEquals($result['user_id'], $newResult['uid']);
+        $this->assertTrue(isset($newResult['oid']));
+        $this->assertEquals($result['user_id'], $newResult['oid']);
     }
 
     public function testDefaultAuthorizationHeaders()
