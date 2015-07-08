@@ -3,11 +3,11 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Provider\StandardProvider;
+use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use Psr\Http\Message\ResponseInterface;
 
-class Standard extends StandardProvider
+class Generic extends GenericProvider
 {
     public function __construct($options = [], array $collaborators = [])
     {

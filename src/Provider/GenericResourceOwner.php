@@ -14,7 +14,7 @@
 
 namespace League\OAuth2\Client\Provider;
 
-class StandardResourceOwner implements ResourceOwnerInterface
+class GenericResourceOwner implements ResourceOwnerInterface
 {
     /**
      * @var array
