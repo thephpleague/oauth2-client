@@ -46,18 +46,6 @@ abstract class AbstractGrant
     }
 
     /**
-     * Converts the result from a response into an `AccessToken`.
-     *
-     * @param array $response
-     *
-     * @return AccessToken
-     */
-    public function createAccessToken(array $response)
-    {
-        return new AccessToken($response);
-    }
-
-    /**
      * Prepares an access token request's parameters by checking that all
      * required parameters are set, then merging with any given defaults.
      *
