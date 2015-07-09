@@ -19,7 +19,7 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 
-class StandardProvider extends AbstractProvider
+class GenericProvider extends AbstractProvider
 {
     /**
      * @var string
@@ -183,6 +183,6 @@ class StandardProvider extends AbstractProvider
 
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new StandardResourceOwner($response, $this->responseResourceOwnerId);
+        return new GenericResourceOwner($response, $this->responseResourceOwnerId);
     }
 }

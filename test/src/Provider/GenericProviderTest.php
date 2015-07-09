@@ -2,20 +2,20 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use League\OAuth2\Client\Test\Provider\Standard as MockProvider;
-use League\OAuth2\Client\Provider\StandardProvider;
-use League\OAuth2\Client\Provider\StandardResourceOwner;
+use League\OAuth2\Client\Test\Provider\Generic as MockProvider;
+use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 
 use Mockery as m;
 
-class StandardProviderTest extends \PHPUnit_Framework_TestCase
+class GenericProviderTest extends \PHPUnit_Framework_TestCase
 {
     public function testRequiredOptions()
     {
-        // Additionally, these options are required by the StandardProvider
+        // Additionally, these options are required by the GenericProvider
         $required = [
             'urlAuthorize'   => 'http://example.com/authorize',
             'urlAccessToken' => 'http://example.com/token',
@@ -29,13 +29,13 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             unset($options[$key]);
 
             try {
-                $provider = new StandardProvider($options);
+                $provider = new GenericProvider($options);
             } catch (\Exception $e) {
                 $this->assertInstanceOf('\InvalidArgumentException', $e);
             }
         }
 
-        $provider = new StandardProvider($required + [
+        $provider = new GenericProvider($required + [
         ]);
     }
 
@@ -54,7 +54,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             'scopes'            => ['mock', 'scopes'],
         ];
 
-        $provider = new StandardProvider($options + [
+        $provider = new GenericProvider($options + [
             'clientId'       => 'mock_client_id',
             'clientSecret'   => 'mock_secret',
             'redirectUri'    => 'none',
@@ -97,7 +97,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
 
         $user = $provider->getResourceOwner($token);
 
-        $this->assertInstanceOf(StandardResourceOwner::class, $user);
+        $this->assertInstanceOf(GenericResourceOwner::class, $user);
         $this->assertSame(1, $user->getId());
 
         $data = $user->toArray();
@@ -118,7 +118,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new StandardProvider($options);
+        $provider = new GenericProvider($options);
 
         $reflection = new \ReflectionClass(get_class($provider));
 
@@ -141,7 +141,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new StandardProvider($options);
+        $provider = new GenericProvider($options);
 
         $reflection = new \ReflectionClass(get_class($provider));
 
