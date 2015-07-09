@@ -46,11 +46,11 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             'urlAccessToken'    => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
             'accessTokenMethod' => 'mock_method',
-            'accessTokenOid'    => 'mock_token_uid',
+            'accessTokenResourceOwnerId' => 'mock_token_uid',
             'scopeSeparator'    => 'mock_separator',
             'responseError'     => 'mock_error',
             'responseCode'      => 'mock_code',
-            'responseOid'       => 'mock_response_uid',
+            'responseResourceOwnerId' => 'mock_response_uid',
             'scopes'            => ['mock', 'scopes'],
         ];
 
@@ -75,9 +75,9 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $getAccessTokenMethod->setAccessible(true);
         $this->assertEquals($options['accessTokenMethod'], $getAccessTokenMethod->invoke($provider));
 
-        $getAccessTokenOid = $reflection->getMethod('getAccessTokenOid');
-        $getAccessTokenOid->setAccessible(true);
-        $this->assertEquals($options['accessTokenOid'], $getAccessTokenOid->invoke($provider));
+        $getAccessTokenResourceOwnerId = $reflection->getMethod('getAccessTokenResourceOwnerId');
+        $getAccessTokenResourceOwnerId->setAccessible(true);
+        $this->assertEquals($options['accessTokenResourceOwnerId'], $getAccessTokenResourceOwnerId->invoke($provider));
 
         $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
         $getScopeSeparator->setAccessible(true);
@@ -92,7 +92,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
             'urlAuthorize'   => 'http://example.com/authorize',
             'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
-            'responseOid'    => 'mock_response_uid',
+            'responseResourceOwnerId' => 'mock_response_uid',
         ]);
 
         $user = $provider->getResourceOwner($token);

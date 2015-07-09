@@ -33,7 +33,7 @@ abstract class AbstractProvider
     /**
      * @var string Key used in the access token response to identify the resource owner.
      */
-    const ACCESS_TOKEN_OID = null;
+    const ACCESS_TOKEN_RESOURCE_OWNER_ID = null;
 
     /**
      * @var string HTTP method used to fetch access tokens.
@@ -375,9 +375,9 @@ abstract class AbstractProvider
      *
      * @return string Resource owner identifier key
      */
-    protected function getAccessTokenOid()
+    protected function getAccessTokenResourceOwnerId()
     {
-        return static::ACCESS_TOKEN_OID;
+        return static::ACCESS_TOKEN_RESOURCE_OWNER_ID;
     }
 
     /**
@@ -653,8 +653,8 @@ abstract class AbstractProvider
      */
     protected function prepareAccessTokenResponse(array $result)
     {
-        if ($this->getAccessTokenOid()) {
-            $result['oid'] = $result[$this->getAccessTokenOid()];
+        if ($this->getAccessTokenResourceOwnerId()) {
+            $result['resource_owner_id'] = $result[$this->getAccessTokenResourceOwnerId()];
         }
         return $result;
     }

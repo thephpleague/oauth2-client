@@ -44,7 +44,7 @@ class StandardProvider extends AbstractProvider
     /**
      * @var string
      */
-    private $accessTokenOid;
+    private $accessTokenResourceOwnerId;
 
     /**
      * @var array|null
@@ -69,7 +69,7 @@ class StandardProvider extends AbstractProvider
     /**
      * @var string
      */
-    private $responseOid = 'id';
+    private $responseResourceOwnerId = 'id';
 
     public function __construct($options = [], array $collaborators = [])
     {
@@ -97,11 +97,11 @@ class StandardProvider extends AbstractProvider
     {
         return array_merge($this->getRequiredOptions(), [
             'accessTokenMethod',
-            'accessTokenOid',
+            'accessTokenResourceOwnerId',
             'scopeSeparator',
             'responseError',
             'responseCode',
-            'responseOid',
+            'responseResourceOwnerId',
             'scopes',
         ]);
     }
@@ -162,9 +162,9 @@ class StandardProvider extends AbstractProvider
         return $this->accessTokenMethod ?: parent::getAccessTokenMethod();
     }
 
-    protected function getAccessTokenOid()
+    protected function getAccessTokenResourceOwnerId()
     {
-        return $this->accessTokenOid ?: parent::getAccessTokenOid();
+        return $this->accessTokenResourceOwnerId ?: parent::getAccessTokenResourceOwnerId();
     }
 
     protected function getScopeSeparator()
@@ -183,6 +183,6 @@ class StandardProvider extends AbstractProvider
 
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new StandardResourceOwner($response, $this->responseOid);
+        return new StandardResourceOwner($response, $this->responseResourceOwnerId);
     }
 }

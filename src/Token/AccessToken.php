@@ -38,7 +38,7 @@ class AccessToken implements JsonSerializable
     /**
      * @var  string
      */
-    protected $oid;
+    protected $resourceOwnerId;
 
     /**
      * @param array $options
@@ -51,8 +51,8 @@ class AccessToken implements JsonSerializable
 
         $this->accessToken = $options['access_token'];
 
-        if (!empty($options['oid'])) {
-            $this->oid = $options['oid'];
+        if (!empty($options['resource_owner_id'])) {
+            $this->resourceOwnerId = $options['resource_owner_id'];
         }
 
         if (!empty($options['refresh_token'])) {
@@ -108,9 +108,9 @@ class AccessToken implements JsonSerializable
      *
      * @return string|null
      */
-    public function getOid()
+    public function getResourceOwnerId()
     {
-        return $this->oid;
+        return $this->resourceOwnerId;
     }
 
     /**

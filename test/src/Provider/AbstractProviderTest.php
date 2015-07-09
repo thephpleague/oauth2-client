@@ -423,7 +423,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->setAccessTokenMethod($method);
 
         $grant_name = 'mock';
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'oid' => 3];
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
         $token = new AccessToken($raw_response);
 
         $grant = m::mock(AbstractGrant::class);
@@ -468,7 +468,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertSame($result, $token);
-        $this->assertSame($raw_response['oid'], $token->getOid());
+        $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
     }
@@ -556,13 +556,13 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultPrepareAccessTokenResponse()
     {
-        $provider = m::mock(Fake\ProviderWithAccessTokenOid::class);
+        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
         $result = ['user_id' => uniqid()];
 
         $newResult = $provider->prepareAccessTokenResponse($result);
 
-        $this->assertTrue(isset($newResult['oid']));
-        $this->assertEquals($result['user_id'], $newResult['oid']);
+        $this->assertTrue(isset($newResult['resource_owner_id']));
+        $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
     }
 
     public function testDefaultAuthorizationHeaders()

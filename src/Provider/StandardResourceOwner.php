@@ -24,17 +24,17 @@ class StandardResourceOwner implements ResourceOwnerInterface
     /**
      * @var string
      */
-    protected $oid;
+    protected $resourceOwnerId;
 
-    public function __construct(array $response, $oid)
+    public function __construct(array $response, $resourceOwnerId)
     {
         $this->response = $response;
-        $this->oid = $oid;
+        $this->resourceOwnerId = $resourceOwnerId;
     }
 
     public function getId()
     {
-        return $this->response[$this->oid];
+        return $this->response[$this->resourceOwnerId];
     }
 
     /**

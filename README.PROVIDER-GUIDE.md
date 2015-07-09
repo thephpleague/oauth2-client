@@ -43,7 +43,7 @@ service provider. This provides greater flexibility to each provider, allowing
 them to handle the implementation details for resource owners.
 
 The `AbstractProvider` does not specify an access token resource owner identifier. It is
-the responsibility of the provider class to set the `ACCESS_TOKEN_OID` constant
+the responsibility of the provider class to set the `ACCESS_TOKEN_RESOURCE_OWNER_ID` constant
 to the string value of the key used in the access token response to identify the
 resource owner.
 
@@ -51,12 +51,12 @@ resource owner.
 /**
  * @var string Key used in the access token response to identify the resource owner.
  */
-const ACCESS_TOKEN_OID = null;
+const ACCESS_TOKEN_RESOURCE_OWNER_ID = null;
 ```
 
 Once this is set on your provider, when calling `AbstractProvider::getAccessToken()`,
-the `AccessToken` returned will have its `$oid` property set, which you may
-retrieve by calling `AccessToken::getOid()`.
+the `AccessToken` returned will have its `$resourceOwnerId` property set, which you may
+retrieve by calling `AccessToken::getResourceOwnerId()`.
 
 The next step is to implement the `AbstractProvider::createResourceOwner()` method. This
 method accepts as parameters a response array and an `AccessToken`. You may use
