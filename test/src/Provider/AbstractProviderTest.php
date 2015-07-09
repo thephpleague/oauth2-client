@@ -424,7 +424,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $grant_name = 'mock';
         $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
-        $token = new AccessToken($raw_response);
 
         $grant = m::mock(AbstractGrant::class);
         $grant->shouldAllowMockingProtectedMethods();
@@ -438,10 +437,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
                   m::type('array')
               )
               ->andReturn([]);
-
-        $grant->shouldReceive('createAccessToken')
-              ->with($raw_response)
-              ->andReturn($token);
 
         $stream = m::mock(StreamInterface::class);
         $stream->shouldReceive('__toString')->times(1)->andReturn(
@@ -465,9 +460,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $provider->setHttpClient($client);
 
-        $result = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
+        $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
-        $this->assertSame($result, $token);
+        $this->assertInstanceOf(AccessToken::class, $token);
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());

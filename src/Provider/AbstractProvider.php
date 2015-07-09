@@ -19,6 +19,7 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use InvalidArgumentException;
+use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
@@ -472,6 +473,7 @@ abstract class AbstractProvider
      *
      * @param mixed $grant
      * @param array $options
+     * @return AccessToken
      */
     public function getAccessToken($grant, array $options = [])
     {
@@ -487,8 +489,9 @@ abstract class AbstractProvider
         $request  = $this->getAccessTokenRequest($params);
         $response = $this->getResponse($request);
         $prepared = $this->prepareAccessTokenResponse($response);
+        $token    = $this->createAccessToken($prepared, $grant);
 
-        return $grant->createAccessToken($prepared);
+        return $token;
     }
 
 
@@ -657,6 +660,21 @@ abstract class AbstractProvider
             $result['resource_owner_id'] = $result[$this->getAccessTokenResourceOwnerId()];
         }
         return $result;
+    }
+
+    /**
+     * Creates an access token from a response.
+     *
+     * The grant that was used to fetch the response can be used to provide
+     * additional context.
+     *
+     * @param array $response
+     * @param AbstractGrant $grant
+     * @return AccessToken
+     */
+    protected function createAccessToken(array $response, AbstractGrant $grant)
+    {
+        return new AccessToken($response);
     }
 
     /**
