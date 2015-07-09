@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Test\Provider\Standard as MockProvider;
 use League\OAuth2\Client\Provider\StandardProvider;
-use League\OAuth2\Client\Provider\StandardUser;
+use League\OAuth2\Client\Provider\StandardResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
@@ -19,7 +19,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $required = [
             'urlAuthorize'   => 'http://example.com/authorize',
             'urlAccessToken' => 'http://example.com/token',
-            'urlUserDetails' => 'http://example.com/user',
+            'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
         foreach ($required as $key => $value) {
@@ -44,13 +44,13 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
             'urlAccessToken'    => 'http://example.com/token',
-            'urlUserDetails'    => 'http://example.com/user',
+            'urlResourceOwnerDetails' => 'http://example.com/user',
             'accessTokenMethod' => 'mock_method',
-            'accessTokenUid'    => 'mock_token_uid',
+            'accessTokenResourceOwnerId' => 'mock_token_uid',
             'scopeSeparator'    => 'mock_separator',
             'responseError'     => 'mock_error',
             'responseCode'      => 'mock_code',
-            'responseUid'       => 'mock_response_uid',
+            'responseResourceOwnerId' => 'mock_response_uid',
             'scopes'            => ['mock', 'scopes'],
         ];
 
@@ -66,7 +66,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($options['urlAuthorize'], $provider->getBaseAuthorizationUrl());
         $this->assertEquals($options['urlAccessToken'], $provider->getBaseAccessTokenUrl([]));
-        $this->assertEquals($options['urlUserDetails'], $provider->getUserDetailsUrl(new AccessToken(['access_token' => '1234'])));
+        $this->assertEquals($options['urlResourceOwnerDetails'], $provider->getResourceOwnerDetailsUrl(new AccessToken(['access_token' => '1234'])));
         $this->assertEquals($options['scopes'], $provider->getDefaultScopes());
 
         $reflection = new \ReflectionClass(get_class($provider));
@@ -75,30 +75,30 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $getAccessTokenMethod->setAccessible(true);
         $this->assertEquals($options['accessTokenMethod'], $getAccessTokenMethod->invoke($provider));
 
-        $getAccessTokenUid = $reflection->getMethod('getAccessTokenUid');
-        $getAccessTokenUid->setAccessible(true);
-        $this->assertEquals($options['accessTokenUid'], $getAccessTokenUid->invoke($provider));
+        $getAccessTokenResourceOwnerId = $reflection->getMethod('getAccessTokenResourceOwnerId');
+        $getAccessTokenResourceOwnerId->setAccessible(true);
+        $this->assertEquals($options['accessTokenResourceOwnerId'], $getAccessTokenResourceOwnerId->invoke($provider));
 
         $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
         $getScopeSeparator->setAccessible(true);
         $this->assertEquals($options['scopeSeparator'], $getScopeSeparator->invoke($provider));
     }
 
-    public function testUserDetails()
+    public function testResourceOwnerDetails()
     {
         $token = new AccessToken(['access_token' => 'mock_token']);
 
         $provider = new MockProvider([
             'urlAuthorize'   => 'http://example.com/authorize',
             'urlAccessToken' => 'http://example.com/token',
-            'urlUserDetails' => 'http://example.com/user',
-            'responseUid'    => 'mock_response_uid',
+            'urlResourceOwnerDetails' => 'http://example.com/user',
+            'responseResourceOwnerId' => 'mock_response_uid',
         ]);
 
-        $user = $provider->getUser($token);
+        $user = $provider->getResourceOwner($token);
 
-        $this->assertInstanceOf(StandardUser::class, $user);
-        $this->assertSame(1, $user->getUserId());
+        $this->assertInstanceOf(StandardResourceOwner::class, $user);
+        $this->assertSame(1, $user->getId());
 
         $data = $user->toArray();
 
@@ -115,7 +115,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
             'urlAccessToken'    => 'http://example.com/token',
-            'urlUserDetails'    => 'http://example.com/user',
+            'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
         $provider = new StandardProvider($options);
@@ -138,7 +138,7 @@ class StandardProviderTest extends \PHPUnit_Framework_TestCase
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
             'urlAccessToken'    => 'http://example.com/token',
-            'urlUserDetails'    => 'http://example.com/user',
+            'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
         $provider = new StandardProvider($options);

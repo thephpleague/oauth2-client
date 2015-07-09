@@ -2,9 +2,9 @@
 
 namespace League\OAuth2\Client\Test\Provider\Fake;
 
-use League\OAuth2\Client\Provider\UserInterface;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 
-class User implements UserInterface
+class User implements ResourceOwnerInterface
 {
     /**
      * @var array
@@ -16,7 +16,7 @@ class User implements UserInterface
         $this->response = $response;
     }
 
-    public function getUserId()
+    public function getId()
     {
         return $this->response['id'];
     }

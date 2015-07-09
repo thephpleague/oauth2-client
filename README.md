@@ -68,7 +68,7 @@ if (!isset($_GET['code'])) {
     try {
 
         // We got an access token, let's now get the user's details
-        $userDetails = $provider->getUserDetails($token);
+        $userDetails = $provider->getResourceOwner($token);
 
         // Use these details to create a new profile
         printf('Hello %s!', $userDetails->firstName);
