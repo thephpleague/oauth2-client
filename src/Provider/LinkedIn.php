@@ -34,6 +34,8 @@ class LinkedIn extends AbstractProvider
 
     public function userDetails($response, AccessToken $token)
     {
+        $this->providerResponse=$response;
+
         $user = new User();
 
         $email = (isset($response->emailAddress)) ? $response->emailAddress : null;
