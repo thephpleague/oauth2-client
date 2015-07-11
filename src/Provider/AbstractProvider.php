@@ -35,6 +35,8 @@ abstract class AbstractProvider implements ProviderInterface
 
     public $authorizationHeader;
 
+    public $providerResponse;
+    
     /**
      * @var GuzzleClient
      */
