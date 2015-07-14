@@ -563,9 +563,14 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     public function testDefaultAuthorizationHeaders()
     {
         $provider = $this->getAbstractProviderMock();
-
         $headers = $provider->getAuthorizationHeaders();
-
         $this->assertEquals([], $headers);
+    }
+
+    public function testAccessTokenRequestHeaders()
+    {
+      $method = $this->getMethod(AbstractProvider::class, 'getAccessTokenRequest');
+      $request = $method->invoke($this->provider, []);
+      $this->assertEquals(['application/x-www-form-urlencoded'], $request->getHeader('content-type'));
     }
 }
