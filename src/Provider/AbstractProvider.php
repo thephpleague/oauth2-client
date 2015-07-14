@@ -445,7 +445,9 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenOptions(array $params)
     {
-        $options = [];
+        $options = [
+          'headers' => $this->getAccessTokenRequestHeaders($params),
+        ];
 
         if ($this->getAccessTokenMethod() === self::METHOD_POST) {
             $options['body'] = $this->getAccessTokenBody($params);
@@ -700,6 +702,17 @@ abstract class AbstractProvider
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
         return $this->getResponse($request);
+    }
+
+    /**
+     * Returns the headers used when requesting an access token.
+     *
+     * @param  array $params
+     * @return array
+     */
+    protected function getAccessTokenRequestHeaders(array $params)
+    {
+        return [];
     }
 
     /**
