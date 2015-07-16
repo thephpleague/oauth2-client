@@ -1,5 +1,16 @@
 # OAuth 2.0 Client Changelog
 
+## 1.0.0-beta1
+
+_Released: 2015-07-16_
+
+* API for 1.0 is now frozen!
+* BREAK: Convert all uses of "User" to "ResourceOwner" to more closely match the OAuth 2.0 specification.
+* BREAK: Rename `StandardProvider` to `GenericProvider`.
+* BREAK: Move access token creation to the `AbstractProvider`. It was previously handled in the `AbstractGrant`.
+* FIX: Add `Content-Type` header with value of `application/x-www-form-urlencoded` to the request header when retrieving access tokens. This adheres to the OAuth 2.0 specification and fixes issues where certain OAuth servers expect this header.
+* Enhanced `json_encode()` serialization of AccessToken; when using `json_encode()` on an AccessToken, it will return a JSON object with these properties: `access_token`, `refresh_token`, and `expires_in`.
+
 ## 1.0.0-alpha2
 
 _Released: 2015-07-04_
