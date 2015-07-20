@@ -560,6 +560,48 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
     }
 
+    public function testPrepareAccessTokenResponseWithDotNotation()
+    {
+        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $result = ['user' => ['id' => uniqid()]];
+        $provider->shouldReceive('getAccessTokenResourceOwnerId')->andReturn('user.id');
+
+        $newResult = $provider->prepareAccessTokenResponse($result);
+
+        $this->assertTrue(isset($newResult['resource_owner_id']));
+        $this->assertEquals($result['user']['id'], $newResult['resource_owner_id']);
+    }
+
+    public function testPrepareAccessTokenResponseWithInvalidKeyType()
+    {
+        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $result = ['user_id' => uniqid()];
+
+        $provider->shouldReceive('getAccessTokenResourceOwnerId')->andReturn(new \stdClass);
+
+        $newResult = $provider->prepareAccessTokenResponse($result);
+
+        $this->assertFalse(isset($newResult['resource_owner_id']));
+    }
+
+    public function testPrepareAccessTokenResponseWithInvalidKeyPath()
+    {
+        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+        $result = ['user' => ['id' => uniqid()]];
+
+        $provider->shouldReceive('getAccessTokenResourceOwnerId')->andReturn('user.name');
+
+        $newResult = $provider->prepareAccessTokenResponse($result);
+
+        $this->assertFalse(isset($newResult['resource_owner_id']));
+    }
+
     public function testDefaultAuthorizationHeaders()
     {
         $provider = $this->getAbstractProviderMock();
