@@ -318,6 +318,7 @@ abstract class AbstractProvider
      * Returns the authorization URL for given options.
      *
      * @param array $options
+     *
      * @return string
      */
     public function getAuthorizationUrl(array $options = [])
@@ -329,7 +330,15 @@ abstract class AbstractProvider
         return $this->appendQuery($base, $query);
     }
 
-    public function authorize(array $options = [], $redirectHandler = null)
+    /**
+     * Authorize.
+     *
+     * @param array         $options
+     * @param callable|null $redirectHandler
+     *
+     * @return mixed
+     */
+    public function authorize(array $options = [], callable $redirectHandler = null)
     {
         $url = $this->getAuthorizationUrl($options);
         if ($redirectHandler) {
@@ -648,7 +657,7 @@ abstract class AbstractProvider
     /**
      * Prepare the access token response for the grant.
      *
-     * Custom mapping of expirations, etc should be done here. Always call the
+     * Custom mapping of expiration, etc should be done here. Always call the
      * parent method when overloading this method!
      *
      * @param  mixed $result
@@ -683,9 +692,10 @@ abstract class AbstractProvider
     /**
      * Generate a resource owner object from a successful resource owner details request.
      *
-     * @param object $response
-     * @param AccessToken $token
-     * @return League\OAuth2\Client\Provider\ResourceOwnerInterface
+     * @param array $response
+     * @param AccessToken  $token
+     *
+     * @return ResourceOwnerInterface
      */
     abstract protected function createResourceOwner(array $response, AccessToken $token);
 

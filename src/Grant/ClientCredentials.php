@@ -16,11 +16,17 @@ namespace League\OAuth2\Client\Grant;
 
 class ClientCredentials extends AbstractGrant
 {
+    /**
+     * @inheritdoc
+     */
     protected function getName()
     {
         return 'client_credentials';
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getRequiredRequestParameters()
     {
         return [];
