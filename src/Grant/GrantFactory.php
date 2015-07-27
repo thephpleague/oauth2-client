@@ -27,7 +27,7 @@ class GrantFactory
      * Define a grant singleton in the registry.
      *
      * @param  string $name
-     * @param  AbstractGrant $class
+     * @param  AbstractGrant $grant
      * @return $this
      */
     public function setGrant($name, AbstractGrant $grant)
