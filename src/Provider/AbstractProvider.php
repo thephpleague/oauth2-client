@@ -641,7 +641,13 @@ abstract class AbstractProvider
             return $parsed;
         }
 
-        return $content;
+        // Attempt to parse the string as JSON anyway,
+        // since some providers use non-standard content types.
+        try {
+            return $this->parseJson($content);
+        } catch (UnexpectedValueException $e) {
+            return $content;
+        }
     }
 
     /**
