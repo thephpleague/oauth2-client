@@ -104,7 +104,7 @@ abstract class AbstractProvider
         $this->setGrantFactory($collaborators['grantFactory']);
 
         if (empty($collaborators['requestFactory'])) {
-            $collaborators['requestFactory'] = new requestFactory();
+            $collaborators['requestFactory'] = new RequestFactory();
         }
         $this->setRequestFactory($collaborators['requestFactory']);
 
