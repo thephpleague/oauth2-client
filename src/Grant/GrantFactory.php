@@ -24,7 +24,7 @@ class GrantFactory
     protected $registry = [];
 
     /**
-     * Define a grant singleton in the registry.
+     * Defines a grant singleton in the registry.
      *
      * @param  string $name
      * @param  AbstractGrant $grant
@@ -38,7 +38,7 @@ class GrantFactory
     }
 
     /**
-     * Get a grant singleton by name.
+     * Returns a grant singleton by name.
      *
      * If the grant has not be registered, a default grant will be loaded.
      *
@@ -55,7 +55,7 @@ class GrantFactory
     }
 
     /**
-     * Register a default grant singleton by name.
+     * Registers a default grant singleton by name.
      *
      * @param  string $name
      * @return $this
@@ -72,7 +72,7 @@ class GrantFactory
     }
 
     /**
-     * Determine if a variable is a valid grant.
+     * Determines if a variable is a valid grant.
      *
      * @param  mixed $class
      * @return boolean
@@ -83,7 +83,7 @@ class GrantFactory
     }
 
     /**
-     * Check if a variable is a valid grant.
+     * Checks if a variable is a valid grant.
      *
      * @throws InvalidGrantException
      * @param  mixed $class

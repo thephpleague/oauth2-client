@@ -14,6 +14,9 @@
 
 namespace League\OAuth2\Client\Provider\Exception;
 
+/**
+ *
+ */
 class IdentityProviderException extends \Exception
 {
     /**
@@ -28,6 +31,11 @@ class IdentityProviderException extends \Exception
         parent::__construct($message, $code);
     }
 
+    /**
+     * Returns the exception's response body.
+     *
+     * @return ResponseInterface
+     */
     public function getResponseBody()
     {
         return $this->response;

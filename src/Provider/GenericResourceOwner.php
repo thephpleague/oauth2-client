@@ -14,6 +14,9 @@
 
 namespace League\OAuth2\Client\Provider;
 
+/**
+ *
+ */
 class GenericResourceOwner implements ResourceOwnerInterface
 {
     /**
@@ -26,19 +29,28 @@ class GenericResourceOwner implements ResourceOwnerInterface
      */
     protected $resourceOwnerId;
 
+    /**
+     * @param array $response
+     * @param string $resourceOwnerId
+     */
     public function __construct(array $response, $resourceOwnerId)
     {
         $this->response = $response;
         $this->resourceOwnerId = $resourceOwnerId;
     }
 
+    /**
+     * Returns the identifier of the authorized resource owner.
+     *
+     * @return mixed
+     */
     public function getId()
     {
         return $this->response[$this->resourceOwnerId];
     }
 
     /**
-     * Get the raw resource owner response.
+     * Returns the raw resource owner response.
      *
      * @return array
      */

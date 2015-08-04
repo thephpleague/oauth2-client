@@ -14,10 +14,13 @@
 
 namespace League\OAuth2\Client\Provider;
 
+/**
+ *
+ */
 interface ResourceOwnerInterface
 {
     /**
-     * Get the identifier of the authorized resource owner.
+     * Returns the identifier of the authorized resource owner.
      *
      * @return mixed
      */

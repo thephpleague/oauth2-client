@@ -24,7 +24,7 @@ use League\OAuth2\Client\Token\AccessToken;
 trait MacAuthorizationTrait
 {
     /**
-     * Get the id of this token for MAC generation.
+     * Returns the id of this token for MAC generation.
      *
      * @param  AccessToken $token
      * @return string
@@ -32,7 +32,7 @@ trait MacAuthorizationTrait
     abstract protected function getTokenId(AccessToken $token);
 
     /**
-     * Get the MAC signature for the current request.
+     * Returns the MAC signature for the current request.
      *
      * @param  string $id
      * @param  integer $ts
@@ -41,11 +41,17 @@ trait MacAuthorizationTrait
      */
     abstract protected function getMacSignature($id, $ts, $nonce);
 
-    // AbstractProvider
+    /**
+     * Returns a new random string to use as the state parameter in an
+     * authorization flow.
+     *
+     * @param  int $length Length of the random string to be generated.
+     * @return string
+     */
     abstract protected function getRandomState($length);
 
     /**
-     * Get authorization headers
+     * Returns the authorization headers for the 'mac' grant.
      *
      * @param  AccessToken $token
      *

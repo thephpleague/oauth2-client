@@ -32,7 +32,7 @@ use UnexpectedValueException;
 abstract class AbstractProvider
 {
     /**
-     * @var string Key used in the access token response to identify the resource owner.
+     * @var string Key used in a token response to identify the resource owner.
      */
     const ACCESS_TOKEN_RESOURCE_OWNER_ID = null;
 
@@ -123,7 +123,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Set the grant factory instance.
+     * Sets the grant factory instance.
      *
      * @param  GrantFactory $factory
      * @return $this
@@ -136,7 +136,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the grant factory instance.
+     * Returns the current grant factory instance.
      *
      * @return GrantFactory
      */
@@ -146,7 +146,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Set the request factory instance.
+     * Sets the request factory instance.
      *
      * @param  RequestFactory $factory
      * @return $this
@@ -159,7 +159,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the request factory instance.
+     * Returns the request factory instance.
      *
      * @return RequestFactory
      */
@@ -169,7 +169,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Set the HTTP adapter instance.
+     * Sets the HTTP client instance.
      *
      * @param  HttpClientInterface $client
      * @return $this
@@ -182,9 +182,9 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the HTTP adapter instance.
+     * Returns the HTTP client instance.
      *
-     * @return HttpAdapterInterface
+     * @return HttpClientInterface
      */
     public function getHttpClient()
     {
@@ -192,7 +192,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Set the instance of the CSPRNG random generator factory to use.
+     * Sets the instance of the CSPRNG random generator factory.
      *
      * @param  RandomFactory $factory
      * @return $this
@@ -205,7 +205,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the instance of the CSPRNG random generatory factory.
+     * Returns the current CSPRNG random generator factory instance.
      *
      * @return RandomFactory
      */
@@ -215,7 +215,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the current state of the OAuth flow.
+     * Returns the current value of the state parameter.
      *
      * This can be accessed by the redirect handler during authorization.
      *
@@ -226,14 +226,38 @@ abstract class AbstractProvider
         return $this->state;
     }
 
+    /**
+     * Returns the base URL for authorizing a client.
+     *
+     * Eg. https://oauth.service.com/authorize
+     *
+     * @return string
+     */
     abstract public function getBaseAuthorizationUrl();
+
+    /**
+     * Returns the base URL for requesting an access token.
+     *
+     * Eg. https://oauth.service.com/token
+     *
+     * @param array $params
+     * @return string
+     */
     abstract public function getBaseAccessTokenUrl(array $params);
+
+    /**
+     * Returns the URL for requesting the resource owner's details.
+     *
+     * @param AccessToken $token
+     * @return string
+     */
     abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
 
     /**
-     * Get a new random string to use for auth state.
+     * Returns a new random string to use as the state parameter in an
+     * authorization flow.
      *
-     * @param  integer $length
+     * @param  int $length Length of the random string to be generated.
      * @return string
      */
     protected function getRandomState($length = 32)
@@ -246,19 +270,20 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the default scopes used by this provider.
+     * Returns the default scopes used by this provider.
      *
-     * This should not be a complete list of all scopes, but the minimum
-     * required for the provider user interface!
+     * This should only be the scopes that are required to request the details
+     * of the resource owner, rather than all the available scopes.
      *
      * @return array
      */
     abstract protected function getDefaultScopes();
 
     /**
-     * Get the string used to separate scopes.
+     * Returns the string that should be used to separate scopes when building
+     * the URL for requesting an access token.
      *
-     * @return string
+     * @return string Scope separator, defaults to ','
      */
     protected function getScopeSeparator()
     {
@@ -268,7 +293,7 @@ abstract class AbstractProvider
     /**
      * Returns authorization parameters based on provided options.
      *
-     * @param array $options
+     * @param  array $options
      * @return array Authorization parameters
      */
     protected function getAuthorizationParameters(array $options)
@@ -287,10 +312,11 @@ abstract class AbstractProvider
         ];
 
         if (is_array($options['scope'])) {
-            $options['scope'] = implode($this->getScopeSeparator(), $options['scope']);
+            $separator = $this->getScopeSeparator();
+            $options['scope'] = implode($separator, $options['scope']);
         }
 
-        // Store the state, it may need to be accessed later.
+        // Store the state as it may need to be accessed later on.
         $this->state = $options['state'];
 
         return [
@@ -306,7 +332,7 @@ abstract class AbstractProvider
     /**
      * Builds the authorization URL's query string.
      *
-     * @param array $params Query parameters
+     * @param  array $params Query parameters
      * @return string Query string
      */
     protected function getAuthorizationQuery(array $params)
@@ -315,11 +341,10 @@ abstract class AbstractProvider
     }
 
     /**
-     * Returns the authorization URL for given options.
+     * Builds the authorization URL.
      *
-     * @param array $options
-     *
-     * @return string
+     * @param  array $options
+     * @return string Authorization URL
      */
     public function getAuthorizationUrl(array $options = [])
     {
@@ -331,15 +356,16 @@ abstract class AbstractProvider
     }
 
     /**
-     * Authorize.
+     * Redirects the client for authorization.
      *
-     * @param array         $options
-     * @param callable|null $redirectHandler
-     *
+     * @param  array $options
+     * @param  callable|null $redirectHandler
      * @return mixed
      */
-    public function authorize(array $options = [], callable $redirectHandler = null)
-    {
+    public function authorize(
+        array $options = [],
+        callable $redirectHandler = null
+    ) {
         $url = $this->getAuthorizationUrl($options);
         if ($redirectHandler) {
             return $redirectHandler($url, $this);
@@ -354,10 +380,9 @@ abstract class AbstractProvider
     /**
      * Appends a query string to a URL.
      *
-     * @param string $url The URL to append the query to
-     * @param string $query The HTTP query string
-     *
-     * @return string
+     * @param  string $url The URL to append the query to
+     * @param  string $query The HTTP query string
+     * @return string The resulting URL
      */
     protected function appendQuery($url, $query)
     {
@@ -393,7 +418,7 @@ abstract class AbstractProvider
     /**
      * Builds the access token URL's query string.
      *
-     * @param array $params Query parameters
+     * @param  array $params Query parameters
      * @return string Query string
      */
     protected function getAccessTokenQuery(array $params)
@@ -405,7 +430,7 @@ abstract class AbstractProvider
      * Checks that a provided grant is valid, or attempts to produce one if the
      * provided grant is a string.
      *
-     * @param mixed $grant
+     * @param  mixed $grant
      * @return AbstractGrant
      */
     protected function verifyGrant($grant)
@@ -478,10 +503,10 @@ abstract class AbstractProvider
     }
 
     /**
-     * Requests an access token.
+     * Requests an access token using a specified grant and option set.
      *
-     * @param mixed $grant
-     * @param array $options
+     * @param  mixed $grant
+     * @param  array $options
      * @return AccessToken
      */
     public function getAccessToken($grant, array $options = [])
@@ -505,11 +530,11 @@ abstract class AbstractProvider
 
 
     /**
-     * Returns a PSR-7 request instance which is not already authenticated.
+     * Returns a PSR-7 request instance that is not authenticated.
      *
      * @param  string $method
      * @param  string $url
-     * @param  array $options Any of "headers", "body", and "protocolVersion".
+     * @param  array $options
      * @return RequestInterface
      */
     public function getRequest($method, $url, array $options = [])
@@ -518,7 +543,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Returns a PSR-7 request instance which is already authenticated.
+     * Returns an authenticated PSR-7 request instance.
      *
      * @param  string $method
      * @param  string $url
@@ -570,9 +595,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get a response for a request instance.
-     *
-     * Processes the response according to provider response type.
+     * Sends a request and returns the parsed response.
      *
      * @param  RequestInterface $request
      * @return mixed
@@ -589,11 +612,11 @@ abstract class AbstractProvider
 
 
     /**
-     * Parses response content as JSON.
+     * Attempts to parse a JSON response.
      *
-     * @param string $content JSON content from response body.
-     * @return array Decoded JSON data
-     * @throws UnexpectedValueException if the content could not be parsed.
+     * @param  string $content JSON content from response body
+     * @return array Parsed JSON data
+     * @throws UnexpectedValueException if the content could not be parsed
      */
     protected function parseJson($content)
     {
@@ -612,7 +635,7 @@ abstract class AbstractProvider
     /**
      * Returns the content type header of a response.
      *
-     * @param ResponseInterface $response
+     * @param  ResponseInterface $response
      * @return string Semi-colon separated join of content-type headers.
      */
     protected function getContentType(ResponseInterface $response)
@@ -621,7 +644,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Parses the response, according to the response's content-type header.
+     * Parses the response according to its content-type header.
      *
      * @throws UnexpectedValueException
      * @param  ResponseInterface $response
@@ -651,7 +674,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Check a provider response for errors.
+     * Checks a provider response for errors.
      *
      * @throws IdentityProviderException
      * @param  ResponseInterface $response
@@ -661,10 +684,10 @@ abstract class AbstractProvider
     abstract protected function checkResponse(ResponseInterface $response, $data);
 
     /**
-     * Prepare the access token response for the grant.
+     * Prepares an parsed access token response for a grant.
      *
      * Custom mapping of expiration, etc should be done here. Always call the
-     * parent method when overloading this method!
+     * parent method when overloading this method.
      *
      * @param  mixed $result
      * @return array
@@ -686,8 +709,8 @@ abstract class AbstractProvider
      * The grant that was used to fetch the response can be used to provide
      * additional context.
      *
-     * @param array $response
-     * @param AbstractGrant $grant
+     * @param  array $response
+     * @param  AbstractGrant $grant
      * @return AccessToken
      */
     protected function createAccessToken(array $response, AbstractGrant $grant)
@@ -696,15 +719,21 @@ abstract class AbstractProvider
     }
 
     /**
-     * Generate a resource owner object from a successful resource owner details request.
+     * Generates a resource owner object from a successful resource owner
+     * details request.
      *
-     * @param array $response
-     * @param AccessToken  $token
-     *
+     * @param  array $response
+     * @param  AccessToken $token
      * @return ResourceOwnerInterface
      */
     abstract protected function createResourceOwner(array $response, AccessToken $token);
 
+    /**
+     * Requests and returns the resource owner of given access token.
+     *
+     * @param  AccessToken $token
+     * @return ResourceOwnerInterface
+     */
     public function getResourceOwner(AccessToken $token)
     {
         $response = $this->fetchResourceOwnerDetails($token);
@@ -712,6 +741,12 @@ abstract class AbstractProvider
         return $this->createResourceOwner($response, $token);
     }
 
+    /**
+     * Requests resource owner details.
+     *
+     * @param  AccessToken $token
+     * @return mixed
+     */
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         $url = $this->getResourceOwnerDetailsUrl($token);
@@ -722,9 +757,9 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get additional headers used by this provider.
+     * Returns the default headers used by this provider.
      *
-     * Typically this is used to set Accept or Content-Type headers.
+     * Typically this is used to set 'Accept' or 'Content-Type' headers.
      *
      * @return array
      */
@@ -734,7 +769,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get authorization headers used by this provider.
+     * Returns the authorization headers used by this provider.
      *
      * Typically this is "Bearer" or "MAC". For more information see:
      * http://tools.ietf.org/html/rfc6749#section-7.1
@@ -742,6 +777,7 @@ abstract class AbstractProvider
      * No default is provided, providers must overload this method to activate
      * authorization headers.
      *
+     * @param  mixed|null $token Either a string or an access token instance
      * @return array
      */
     protected function getAuthorizationHeaders($token = null)
@@ -750,11 +786,11 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get the headers used by this provider for a request.
+     * Returns all headers used by this provider for a request.
      *
-     * If a token is passed, the request may be authenticated through headers.
+     * The request will be authenticated if an access token is provided.
      *
-     * @param  mixed $token  object or string
+     * @param  mixed|null $token object or string
      * @return array
      */
     public function getHeaders($token = null)
@@ -770,12 +806,11 @@ abstract class AbstractProvider
     }
 
     /**
-     * Get value by key with dot notation.
+     * Returns a value by key using dot notation.
      *
-     * @param  string  $key
-     * @param  array   $data
-     * @param  mixed   $default Optional
-     *
+     * @param  string $key
+     * @param  array $data
+     * @param  mixed|null $default
      * @return mixed
      */
     protected function getValueByKey($key, array $data, $default = null)
