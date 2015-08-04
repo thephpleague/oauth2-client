@@ -21,6 +21,12 @@ namespace League\OAuth2\Client\Tool;
  */
 trait BearerAuthorizationTrait
 {
+    /**
+     * Returns authorization headers for the 'bearer' grant.
+     *
+     * @param  mixed|null $token Either a string or an access token instance
+     * @return array
+     */
     protected function getAuthorizationHeaders($token = null)
     {
         return ['Authorization' => 'Bearer ' . $token];

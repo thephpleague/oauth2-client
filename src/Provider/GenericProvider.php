@@ -74,6 +74,10 @@ class GenericProvider extends AbstractProvider
      */
     private $responseResourceOwnerId = 'id';
 
+    /**
+     * @param array $options
+     * @param array $collaborators
+     */
     public function __construct($options = [], array $collaborators = [])
     {
         $this->assertRequiredOptions($options);
@@ -92,7 +96,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * Get all options that can be configured.
+     * Returns all options that can be configured.
      *
      * @return array
      */
@@ -110,7 +114,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * Get all options that are required.
+     * Returns all options that are required.
      *
      * @return array
      */
@@ -124,7 +128,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * Verify that all required options have been passed.
+     * Verifies that all required options have been passed.
      *
      * @param  array $options
      * @return void
@@ -140,41 +144,65 @@ class GenericProvider extends AbstractProvider
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getBaseAuthorizationUrl()
     {
         return $this->urlAuthorize;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getBaseAccessTokenUrl(array $params)
     {
         return $this->urlAccessToken;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         return $this->urlResourceOwnerDetails;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getDefaultScopes()
     {
         return $this->scopes;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getAccessTokenMethod()
     {
         return $this->accessTokenMethod ?: parent::getAccessTokenMethod();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getAccessTokenResourceOwnerId()
     {
         return $this->accessTokenResourceOwnerId ?: parent::getAccessTokenResourceOwnerId();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function getScopeSeparator()
     {
         return $this->scopeSeparator ?: parent::getScopeSeparator();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if (!empty($data[$this->responseError])) {
@@ -184,6 +212,9 @@ class GenericProvider extends AbstractProvider
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);

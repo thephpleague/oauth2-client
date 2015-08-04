@@ -21,22 +21,22 @@ use RuntimeException;
 class AccessToken implements JsonSerializable
 {
     /**
-     * @var  string
+     * @var string
      */
     protected $accessToken;
 
     /**
-     * @var  int
+     * @var int
      */
     protected $expires;
 
     /**
-     * @var  string
+     * @var string
      */
     protected $refreshToken;
 
     /**
-     * @var  string
+     * @var string
      */
     protected $resourceOwnerId;
 
@@ -74,7 +74,7 @@ class AccessToken implements JsonSerializable
     }
 
     /**
-     * Get the access token.
+     * Returns the access token string of this instance.
      *
      * @return string
      */
@@ -84,7 +84,7 @@ class AccessToken implements JsonSerializable
     }
 
     /**
-     * Get the refresh token, if defined.
+     * Returns the refresh token, if defined.
      *
      * @return string|null
      */
@@ -94,7 +94,7 @@ class AccessToken implements JsonSerializable
     }
 
     /**
-     * Get the expiration timestamp, if defined.
+     * Returns the expiration timestamp, if defined.
      *
      * @return integer|null
      */
@@ -104,7 +104,7 @@ class AccessToken implements JsonSerializable
     }
 
     /**
-     * Get the resource owner identifier, if defined.
+     * Returns the resource owner identifier, if defined.
      *
      * @return string|null
      */
@@ -114,7 +114,7 @@ class AccessToken implements JsonSerializable
     }
 
     /**
-     * Checks if the token has expired.
+     * Checks if this token has expired.
      *
      * @return boolean true if the token has expired, false otherwise.
      * @throws RuntimeException if 'expires' is not set on the token.
