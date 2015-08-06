@@ -655,16 +655,12 @@ abstract class AbstractProvider
         $content = (string) $response->getBody();
         $type = $this->getContentType($response);
 
-        if (strpos($type, 'json') !== false) {
-            return $this->parseJson($content);
-        }
-
         if (strpos($type, 'urlencoded') !== false) {
             parse_str($content, $parsed);
             return $parsed;
         }
 
-        // Attempt to parse the string as JSON anyway,
+        // Attempt to parse the string as JSON regardless of content type,
         // since some providers use non-standard content types.
         try {
             return $this->parseJson($content);
