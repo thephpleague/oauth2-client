@@ -183,6 +183,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($id, $user->getId());
         $this->assertEquals($name, $user->getUserScreenName());
         $this->assertEquals($email, $user->getUserEmail());
+
+        $this->assertArrayHasKey('name', $user->toArray());
+        $this->assertArrayHasKey('email', $user->toArray());
     }
 
     public function userPropertyProvider()

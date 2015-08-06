@@ -25,4 +25,11 @@ interface ResourceOwnerInterface
      * @return mixed
      */
     public function getId();
+    
+    /**
+     * Return all of the owner details available as an array.
+     *
+     * @return array
+     */
+    public function toArray();
 }
