@@ -90,7 +90,7 @@ abstract class AbstractProvider
      * @param array $options
      * @param array $collaborators
      */
-    public function __construct($options = [], array $collaborators = [])
+    public function __construct(array $options = [], array $collaborators = [])
     {
         foreach ($options as $option => $value) {
             if (property_exists($this, $option)) {
