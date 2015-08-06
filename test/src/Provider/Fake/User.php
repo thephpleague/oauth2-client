@@ -30,4 +30,9 @@ class User implements ResourceOwnerInterface
     {
         return $this->response['name'];
     }
+
+    public function toArray()
+    {
+        return $this->response;
+    }
 }
