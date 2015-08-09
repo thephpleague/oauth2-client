@@ -480,7 +480,31 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         return $method;
     }
 
-    private function _testParse($body, $type, $expected = null)
+    public function parseResponseProvider()
+    {
+        return [
+            [
+                'body'    => '{"a": 1}',
+                'type'    => 'application/json',
+                'parsed'  => ['a' => 1]
+            ],
+            [
+                'body'    => 'string',
+                'type'    => 'unknown',
+                'parsed'  => 'string'
+            ],
+            [
+                'body'    => 'a=1&b=2',
+                'type'    => 'application/x-www-form-urlencoded',
+                'parsed'  => ['a' => 1, 'b' => 2]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider parseResponseProvider
+     */
+    public function testParseResponse($body, $type, $parsed)
     {
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
 
@@ -491,22 +515,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->andReturn($type);
 
-        $this->assertEquals($expected, $method->invoke($this->provider, $response));
-    }
-
-    public function testParseJson()
-    {
-        $this->_testParse('{"a": 1}', 'application/json', ['a' => 1]);
-    }
-
-    public function testParseUnknownType()
-    {
-        $this->_testParse('success', 'unknown/mime', 'success');
-    }
-
-    public function testParseUrlParams()
-    {
-        $this->_testParse('a=1&b=2', 'application/x-www-form-urlencoded', ['a' => 1, 'b' => 2]);
+        $this->assertEquals($parsed, $method->invoke($this->provider, $response));
     }
 
     /**
@@ -514,7 +523,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseResponseJsonFailure()
     {
-        $this->_testParse('{a: 1}', 'application/json');
+        $this->testParseResponse('{a: 1}', 'application/json', null);
     }
 
     public function getAppendQueryProvider()

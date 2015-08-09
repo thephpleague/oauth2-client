@@ -661,10 +661,15 @@ abstract class AbstractProvider
         }
 
         // Attempt to parse the string as JSON regardless of content type,
-        // since some providers use non-standard content types.
+        // since some providers use non-standard content types. Only throw an
+        // exception if the JSON could not be parsed when it was expected to.
         try {
             return $this->parseJson($content);
         } catch (UnexpectedValueException $e) {
+            if (strpos($type, 'json') !== false) {
+                throw $e;
+            }
+
             return $content;
         }
     }
