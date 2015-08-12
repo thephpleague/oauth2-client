@@ -14,8 +14,6 @@
 
 namespace League\OAuth2\Client\Provider\Exception;
 
-use Psr\Http\Message\ResponseInterface;
-
 /**
  *
  */
