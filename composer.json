@@ -1,6 +1,6 @@
 {
     "name": "league/oauth2-client",
-    "description": "OAuth 2.0 Client Library",
+    "description": "This package makes it simple to integrate your application with OAuth 2.0 service providers.",
     "license": "MIT",
     "require": {
         "php": ">=5.5.0",
