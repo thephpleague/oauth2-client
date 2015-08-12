@@ -44,7 +44,7 @@ Take a look at [README.PROVIDERS.md](README.PROVIDERS.md) to see a list of provi
 
 If using Composer to require a specific provider client library, you **do not need to also require this library**. Composer will handle the dependencies for you.
 
-### Authorization Code Flow
+### Authorization Code Grant
 
 The following example uses the out-of-the-box `GenericProvider` provided by this library. If you're looking for a specific provider (i.e. Facebook, Google, GitHub, etc.), take a look at our [list of provider client libraries](README.PROVIDERS.md). **HINT: You're probably looking for a specific provider.**
 
@@ -150,6 +150,79 @@ if ($existingAccessToken->hasExpired()) {
     ]);
 
     // Purge old access token and store new access token to your data store.
+}
+```
+
+### Resource Owner Password Credentials Grant
+
+Some service providers allow you to skip the authorization code step to exchange a user's credentials (username and password) for an access token. This is referred to as the "resource owner password credentials" grant type.
+
+According to [section 1.3.3](http://tools.ietf.org/html/rfc6749#section-1.3.3) of the OAuth 2.0 standard (emphasis added):
+
+> The credentials **should only be used when there is a high degree of trust**
+> between the resource owner and the client (e.g., the client is part of the
+> device operating system or a highly privileged application), and when other
+> authorization grant types are not available (such as an authorization code).
+
+**We do not advise using this grant type if the service provider supports the authorization code grant type (see above), as this reinforces the [password anti-pattern](https://agentile.com/the-password-anti-pattern) by allowing users to think it's okay to trust third-party applications with their usernames and passwords.**
+
+That said, there are use-cases where the resource owner password credentials grant is acceptable and useful. Here's an example using it with [Brent Shaffer's](https://github.com/bshaffer) demo OAuth 2.0 application named **Lock'd In**. See authorization code example above, for more details about the Lock'd In demo application.
+
+``` php
+$provider = new \League\OAuth2\Client\Provider\GenericProvider([
+    'clientId'                => 'demoapp',    // The client ID assigned to you by the provider
+    'clientSecret'            => 'demopass',   // The client password assigned to you by the provider
+    'redirectUri'             => 'http://example.com/your-redirect-url/',
+    'urlAuthorize'            => 'http://brentertainment.com/oauth2/lockdin/authorize',
+    'urlAccessToken'          => 'http://brentertainment.com/oauth2/lockdin/token',
+    'urlResourceOwnerDetails' => 'http://brentertainment.com/oauth2/lockdin/resource'
+]);
+
+try {
+
+    // Try to get an access token using the resource owner password credentials grant.
+    $accessToken = $provider->getAccessToken('password', [
+        'username' => 'demouser',
+        'password' => 'testpass'
+    ]);
+
+} catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+
+    // Failed to get the access token
+    exit($e->getMessage());
+
+}
+```
+
+### Client Credentials Grant
+
+When your application is acting on its own behalf to access resources it controls/owns in a service provider, it may use the client credentials grant type. This is best used when the credentials for your application are stored privately and never exposed (e.g. through the web browser, etc.) to end-users. This grant type functions similarly to the resource owner password credentials grant type, but it does not request a user's username or password. It uses only the client ID and secret issued to your client by the service provider.
+
+Unlike earlier examples, the following does not work against a functioning demo service provider. It is provided for the sake of example only.
+
+``` php
+// Note: the GenericProvider requires the `urlAuthorize` option, even though
+// it's not used in the OAuth 2.0 client credentials grant type.
+
+$provider = new \League\OAuth2\Client\Provider\GenericProvider([
+    'clientId'                => 'XXXXXX',    // The client ID assigned to you by the provider
+    'clientSecret'            => 'XXXXXX',    // The client password assigned to you by the provider
+    'redirectUri'             => 'http://my.example.com/your-redirect-url/',
+    'urlAuthorize'            => 'http://service.example.com/authorize',
+    'urlAccessToken'          => 'http://service.example.com/token',
+    'urlResourceOwnerDetails' => 'http://service.example.com/resource'
+]);
+
+try {
+
+    // Try to get an access token using the client credentials grant.
+    $accessToken = $provider->getAccessToken('client_credentials');
+
+} catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+
+    // Failed to get the access token
+    exit($e->getMessage());
+
 }
 ```
 
