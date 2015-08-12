@@ -679,7 +679,7 @@ abstract class AbstractProvider
      *
      * @throws IdentityProviderException
      * @param  ResponseInterface $response
-     * @param  string $data Parsed response data
+     * @param  array|string $data Parsed response data
      * @return void
      */
     abstract protected function checkResponse(ResponseInterface $response, $data);

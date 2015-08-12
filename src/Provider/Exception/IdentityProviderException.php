@@ -24,6 +24,11 @@ class IdentityProviderException extends \Exception
      */
     protected $response;
 
+    /**
+     * @param string $message
+     * @param int $code
+     * @param array|string $response The response body
+     */
     public function __construct($message, $code, $response)
     {
         $this->response = $response;
@@ -34,7 +39,7 @@ class IdentityProviderException extends \Exception
     /**
      * Returns the exception's response body.
      *
-     * @return ResponseInterface
+     * @return array|string
      */
     public function getResponseBody()
     {
