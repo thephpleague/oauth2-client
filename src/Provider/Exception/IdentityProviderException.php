@@ -14,6 +14,8 @@
 
 namespace League\OAuth2\Client\Provider\Exception;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  *
  */
@@ -24,7 +26,12 @@ class IdentityProviderException extends \Exception
      */
     protected $response;
 
-    public function __construct($message, $code, $response)
+    /**
+     * @param string $message
+     * @param int $code
+     * @param ResponseInterface $response
+     */
+    public function __construct($message, $code, ResponseInterface $response)
     {
         $this->response = $response;
 
