@@ -19,7 +19,7 @@ use League\OAuth2\Client\Token\AccessToken;
 /**
  * Enables `MAC` header authorization for providers.
  *
- * http://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-05
+ * @link http://tools.ietf.org/html/draft-ietf-oauth-v2-http-mac-05 Message Authentication Code (MAC) Tokens
  */
 trait MacAuthorizationTrait
 {

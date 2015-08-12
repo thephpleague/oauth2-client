@@ -17,7 +17,7 @@ namespace League\OAuth2\Client\Tool;
 /**
  * Enables `Bearer` header authorization for providers.
  *
- * http://tools.ietf.org/html/rfc6750
+ * @link http://tools.ietf.org/html/rfc6750 Bearer Token Usage (RFC 6750)
  */
 trait BearerAuthorizationTrait
 {

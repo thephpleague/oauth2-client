@@ -16,6 +16,9 @@ namespace League\OAuth2\Client\Tool;
 
 use BadMethodCallException;
 
+/**
+ * Provides functionality to check for required parameters.
+ */
 trait RequiredParameterTrait
 {
     /**

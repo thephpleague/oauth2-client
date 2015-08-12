@@ -15,7 +15,7 @@
 namespace League\OAuth2\Client\Provider;
 
 /**
- *
+ * Represents a generic resource owner for use with the GenericProvider.
  */
 class GenericResourceOwner implements ResourceOwnerInterface
 {

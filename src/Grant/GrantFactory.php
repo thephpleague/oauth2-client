@@ -16,6 +16,9 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 
+/**
+ * Represents a factory used when retrieving an authorization grant type.
+ */
 class GrantFactory
 {
     /**
@@ -28,7 +31,7 @@ class GrantFactory
      *
      * @param  string $name
      * @param  AbstractGrant $grant
-     * @return $this
+     * @return self
      */
     public function setGrant($name, AbstractGrant $grant)
     {
@@ -58,7 +61,7 @@ class GrantFactory
      * Registers a default grant singleton by name.
      *
      * @param  string $name
-     * @return $this
+     * @return self
      */
     protected function registerDefaultGrant($name)
     {

@@ -18,6 +18,11 @@ use InvalidArgumentException;
 use JsonSerializable;
 use RuntimeException;
 
+/**
+ * Represents an access token.
+ *
+ * @link http://tools.ietf.org/html/rfc6749#section-1.4 Access Token (RFC 6749, §1.4)
+ */
 class AccessToken implements JsonSerializable
 {
     /**
@@ -41,7 +46,11 @@ class AccessToken implements JsonSerializable
     protected $resourceOwnerId;
 
     /**
-     * @param array $options
+     * Constructs an access token.
+     *
+     * @param array $options An array of options returned by the service provider
+     *     in the access token request. The `access_token` option is required.
+     * @throws InvalidArgumentException if `access_token` is not provided in `$options`.
      */
     public function __construct(array $options = [])
     {

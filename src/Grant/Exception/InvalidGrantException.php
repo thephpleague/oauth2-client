@@ -16,6 +16,11 @@ namespace League\OAuth2\Client\Grant\Exception;
 
 use InvalidArgumentException;
 
+/**
+ * Exception thrown if the grant does not extend from AbstractGrant.
+ *
+ * @see League\OAuth2\Client\Grant\AbstractGrant
+ */
 class InvalidGrantException extends InvalidArgumentException
 {
 }
