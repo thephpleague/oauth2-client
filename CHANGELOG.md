@@ -1,5 +1,15 @@
 # OAuth 2.0 Client Changelog
 
+## 1.0.0-beta2
+
+_Released: 2015-08-12_
+
+* BREAK: Add toArray() to ResourceOwnerInterface.
+* Always attempt to parse responses as JSON and fallback on failure.
+* Add dot notation support to access token resource owner ID.
+* Use the Bearer authorization header for the generic provider.
+* Documentation updates.
+
 ## 1.0.0-beta1
 
 _Released: 2015-07-16_
