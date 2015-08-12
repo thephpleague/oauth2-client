@@ -1,6 +1,6 @@
 # OAuth 2.0 Client
 
-## Providers
+## Provider Client Libraries
 
 All providers must extend [AbstractProvider](https://github.com/thephpleague/oauth2-client/blob/master/src/Provider/AbstractProvider.php), and implement the declared abstract methods.
 
