@@ -15,7 +15,8 @@
 namespace League\OAuth2\Client\Provider;
 
 /**
- *
+ * Classes implementing `ResourceOwnerInterface` may be used to represent
+ * the resource owner authenticated with a service provider.
  */
 interface ResourceOwnerInterface
 {
@@ -25,7 +26,7 @@ interface ResourceOwnerInterface
      * @return mixed
      */
     public function getId();
-    
+
     /**
      * Return all of the owner details available as an array.
      *

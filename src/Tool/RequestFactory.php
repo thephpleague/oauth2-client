@@ -19,7 +19,7 @@ use GuzzleHttp\Psr7\Request;
 /**
  * Used to produce PSR-7 Request instances.
  *
- * @see https://github.com/guzzle/guzzle/pull/1101
+ * @link https://github.com/guzzle/guzzle/pull/1101
  */
 class RequestFactory
 {

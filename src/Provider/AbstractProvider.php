@@ -29,6 +29,11 @@ use Psr\Http\Message\ResponseInterface;
 use RandomLib\Factory as RandomFactory;
 use UnexpectedValueException;
 
+/**
+ * Represents a service provider (authorization server).
+ *
+ * @link http://tools.ietf.org/html/rfc6749#section-1.1 Roles (RFC 6749, §1.1)
+ */
 abstract class AbstractProvider
 {
     /**
@@ -87,8 +92,15 @@ abstract class AbstractProvider
     protected $randomFactory;
 
     /**
-     * @param array $options
-     * @param array $collaborators
+     * Constructs an OAuth 2.0 service provider.
+     *
+     * @param array $options An array of options to set on this provider.
+     *     Options include `clientId`, `clientSecret`, `redirectUri`, and `state`.
+     *     Individual providers may introduce more options, as needed.
+     * @param array $collaborators An array of collaborators that may be used to
+     *     override this provider's default behavior. Collaborators include
+     *     `grantFactory`, `requestFactory`, `httpClient`, and `randomFactory`.
+     *     Individual providers may introduce more collaborators, as needed.
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
@@ -126,7 +138,7 @@ abstract class AbstractProvider
      * Sets the grant factory instance.
      *
      * @param  GrantFactory $factory
-     * @return $this
+     * @return self
      */
     public function setGrantFactory(GrantFactory $factory)
     {
@@ -149,7 +161,7 @@ abstract class AbstractProvider
      * Sets the request factory instance.
      *
      * @param  RequestFactory $factory
-     * @return $this
+     * @return self
      */
     public function setRequestFactory(RequestFactory $factory)
     {
@@ -172,7 +184,7 @@ abstract class AbstractProvider
      * Sets the HTTP client instance.
      *
      * @param  HttpClientInterface $client
-     * @return $this
+     * @return self
      */
     public function setHttpClient(HttpClientInterface $client)
     {
@@ -195,7 +207,7 @@ abstract class AbstractProvider
      * Sets the instance of the CSPRNG random generator factory.
      *
      * @param  RandomFactory $factory
-     * @return $this
+     * @return self
      */
     public function setRandomFactory(RandomFactory $factory)
     {
