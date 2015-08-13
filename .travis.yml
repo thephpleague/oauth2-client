@@ -6,6 +6,8 @@ php:
   - 7.0
   - hhvm
 
+sudo: false
+
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source
