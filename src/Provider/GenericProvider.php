@@ -96,7 +96,7 @@ class GenericProvider extends AbstractProvider
         // Remove all options that are only used locally
         $options = array_diff_key($options, $configured);
 
-        return parent::__construct($options, $collaborators);
+        parent::__construct($options, $collaborators);
     }
 
     /**
