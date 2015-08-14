@@ -82,7 +82,7 @@ abstract class AbstractProvider
     protected $requestFactory;
 
     /**
-     * @var HttpAdapterInterface
+     * @var HttpClientInterface
      */
     protected $httpClient;
 
