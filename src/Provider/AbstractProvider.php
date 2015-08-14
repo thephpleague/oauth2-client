@@ -442,7 +442,7 @@ abstract class AbstractProvider
      * Checks that a provided grant is valid, or attempts to produce one if the
      * provided grant is a string.
      *
-     * @param  mixed $grant
+     * @param  AbstractGrant|string $grant
      * @return AbstractGrant
      */
     protected function verifyGrant($grant)
