@@ -329,6 +329,16 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testNonArrayThrowsExceptionWhenPreparingAccessTokenResponse()
+    {
+        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
+        $provider->prepareAccessTokenResponse('string');
+    }
+
+
+    /**
      * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
      */
     public function testClientErrorTriggersProviderException()
@@ -400,7 +410,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider->setHttpClient($client);
 
         // Final result should be a parsed response
-        $result = $provider->getResponse($request);
+        $result = $provider->getParsedResponse($request);
         $this->assertSame(['example' => 'response'], $result);
     }
 
