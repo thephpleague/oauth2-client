@@ -420,7 +420,7 @@ abstract class AbstractProvider
     /**
      * Returns the key used in the access token response to identify the resource owner.
      *
-     * @return string Resource owner identifier key
+     * @return string|null Resource owner identifier key
      */
     protected function getAccessTokenResourceOwnerId()
     {

@@ -26,7 +26,7 @@ trait MacAuthorizationTrait
     /**
      * Returns the id of this token for MAC generation.
      *
-     * @param  AccessToken|null $token
+     * @param  AccessToken $token
      * @return string
      */
     abstract protected function getTokenId(AccessToken $token);
@@ -53,7 +53,7 @@ trait MacAuthorizationTrait
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
-     * @param  AccessToken|null $token
+     * @param  AccessToken $token
      * @return array
      * @codeCoverageIgnore
      *
@@ -61,7 +61,7 @@ trait MacAuthorizationTrait
      * complete the implementation, please create a pull request for
      * https://github.com/thephpleague/oauth2-client
      */
-    protected function getAuthorizationHeaders($token = null)
+    protected function getAuthorizationHeaders($token)
     {
         $ts    = time();
         $id    = $this->getTokenId($token);
