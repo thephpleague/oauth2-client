@@ -141,7 +141,8 @@ class GenericProvider extends AbstractProvider
     private function assertRequiredOptions(array $options)
     {
         $missing = array_diff_key(array_flip($this->getRequiredOptions()), $options);
-        if ($missing) {
+
+        if (!empty($missing)) {
             throw new InvalidArgumentException(
                 'Required options not defined: ' . implode(', ', array_keys($missing))
             );
