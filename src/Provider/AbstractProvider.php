@@ -707,7 +707,7 @@ abstract class AbstractProvider
      */
     protected function prepareAccessTokenResponse(array $result)
     {
-        if ($this->getAccessTokenResourceOwnerId()) {
+        if ($this->getAccessTokenResourceOwnerId() !== null) {
             $result['resource_owner_id'] = $this->getValueByKey(
                 $this->getAccessTokenResourceOwnerId(),
                 $result
