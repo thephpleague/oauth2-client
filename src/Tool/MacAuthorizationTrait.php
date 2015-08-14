@@ -26,7 +26,7 @@ trait MacAuthorizationTrait
     /**
      * Returns the id of this token for MAC generation.
      *
-     * @param  AccessToken $token
+     * @param  AccessToken|null $token
      * @return string
      */
     abstract protected function getTokenId(AccessToken $token);
@@ -53,8 +53,7 @@ trait MacAuthorizationTrait
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
-     * @param  AccessToken $token
-     *
+     * @param  AccessToken|null $token
      * @return array
      * @codeCoverageIgnore
      *
