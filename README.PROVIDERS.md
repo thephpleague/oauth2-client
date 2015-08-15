@@ -38,6 +38,7 @@ Gateway | Composer Package | Maintainer
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [Dropbox](https://github.com/pixelfear/oauth2-dropbox) | pixelfear/oauth2-dropbox | [Jason Varga](https://github.com/jasonvarga)
+[Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
