@@ -12,9 +12,6 @@
     {% if site.data.project.description %}
         <meta name="description" content="{{ site.data.project.description }}">
     {% endif %}
-    {% if site.data.project.base_href %}
-        <base href="{{ site.data.project.base_href }}">
-    {% endif %}
     {% if site.data.images.favicon %}
         <link rel="icon" type="image/x-icon" href="{{ site.data.images.favicon }}" />
     {% else %}
@@ -83,9 +80,9 @@
     <span>Site design by <a href="http://reinink.ca">Jonathan Reinink</a>.</span>
 </footer>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script src="http://theme.thephpleague.com/js/scripts.js"></script>
-<script src="http://theme.thephpleague.com/js/prism.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//theme.thephpleague.com/js/scripts.js"></script>
+<script src="//theme.thephpleague.com/js/prism.js"></script>
 
 {% if site.data.project.google_analytics_tracking_id %}
     <script>
