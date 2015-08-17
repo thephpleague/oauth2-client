@@ -1,5 +1,4 @@
-title:
-tagline:
-description:
+title: OAuth2 Client
+tagline: OAuth 2.0 Client Library
+description: 'A package to make it simple to integrate your application with OAuth 2.0 service providers.'
 google_analytics_tracking_id:
-base_href:

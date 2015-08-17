@@ -1,2 +1,8 @@
 Getting Started:
     Introduction: '/'
+    Simple Example: '/simple-example/'
+    Installation: '/installation/'
+Providers:
+    Official: '/providers/'
+    Generic: '/providers/generic/'
+    Writing Your Own: '/providers/custom/'
