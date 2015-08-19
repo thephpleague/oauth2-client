@@ -1,5 +1,13 @@
 # OAuth 2.0 Client Changelog
 
+## 1.0.0
+
+_Released: 2015-08-19_
+
+* We are running code-quality builds through Scrutinizer, and we are running unit test builds on the new Travis CI container-based infrastructure.
+* Cleaned up code, as recommended by Scrutinizer.
+* Documentation updates.
+
 ## 1.0.0-beta2
 
 _Released: 2015-08-12_
