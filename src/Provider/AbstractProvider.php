@@ -82,7 +82,7 @@ abstract class AbstractProvider
     protected $requestFactory;
 
     /**
-     * @var HttpAdapterInterface
+     * @var HttpClientInterface
      */
     protected $httpClient;
 
@@ -420,7 +420,7 @@ abstract class AbstractProvider
     /**
      * Returns the key used in the access token response to identify the resource owner.
      *
-     * @return string Resource owner identifier key
+     * @return string|null Resource owner identifier key
      */
     protected function getAccessTokenResourceOwnerId()
     {
@@ -442,7 +442,7 @@ abstract class AbstractProvider
      * Checks that a provided grant is valid, or attempts to produce one if the
      * provided grant is a string.
      *
-     * @param  mixed $grant
+     * @param  AbstractGrant|string $grant
      * @return AbstractGrant
      */
     protected function verifyGrant($grant)
@@ -707,7 +707,7 @@ abstract class AbstractProvider
      */
     protected function prepareAccessTokenResponse(array $result)
     {
-        if ($this->getAccessTokenResourceOwnerId()) {
+        if ($this->getAccessTokenResourceOwnerId() !== null) {
             $result['resource_owner_id'] = $this->getValueByKey(
                 $this->getAccessTokenResourceOwnerId(),
                 $result
