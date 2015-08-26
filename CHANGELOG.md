@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 1.0.1
+
+_Released: 2015-08-26_
+
+* Allow required parameters checked using the `RequiredParameterTrait` to be set as `false`, `null`, `"0"`, etc.
+
 ## 1.0.0
 
 _Released: 2015-08-19_
