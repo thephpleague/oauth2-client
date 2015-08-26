@@ -31,7 +31,7 @@ trait RequiredParameterTrait
      */
     private function checkRequiredParameter($name, array $params)
     {
-        if (empty($params[$name])) {
+        if (!isset($params[$name])) {
             throw new BadMethodCallException(sprintf(
                 'Required parameter not passed: "%s"',
                 $name
