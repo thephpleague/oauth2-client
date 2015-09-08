@@ -43,6 +43,7 @@ Gateway | Composer Package | Maintainer
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
 [Google Nest](https://github.com/JC5/nest-oauth2-provider) | grumpydictator/nest-oauth2-provider | [James Cole](https://github.com/JC5)
+[Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
 [Meetup](https://github.com/howlowck/meetup-oauth2-provider) | howlowck/meetup-oauth2-provider | [Hao Luo](https://github.com/howlowck)
