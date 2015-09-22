@@ -32,6 +32,19 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
         $this->assertLessThan(time() + 200, $expires);
     }
 
+    public function testExpiresPastTimestamp()
+    {
+        $options = ['access_token' => 'access_token', 'expires' => strtotime('5 days ago')];
+        $token = $this->getAccessToken($options);
+
+        $this->assertTrue($token->hasExpired());
+
+        $options = ['access_token' => 'access_token', 'expires' => 3600];
+        $token = $this->getAccessToken($options);
+
+        $this->assertFalse($token->hasExpired());
+    }
+
     public function testGetRefreshToken()
     {
         $options = [
