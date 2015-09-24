@@ -53,6 +53,7 @@ Gateway | Composer Package | Maintainer
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
 [Spotify](https://packagist.org/packages/audeio/spotify-web-api) | audeio/spotify-web-api | [Jonjo McKay](https://github.com/jonjomckay)
+[Stripe](https://github.com/adam-paterson/oauth2-stripe) | adam-paterson/oauth2-stripe | [Adam Paterson](https://github.com/adam-paterson)
 [Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
 [Uber](https://github.com/stevenmaguire/oauth2-uber) | stevenmaguire/oauth2-uber | [Steven Maguire](https://github.com/stevenmaguire)
