@@ -531,7 +531,7 @@ abstract class AbstractProvider
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
-        $response = $this->getResponse($request);
+        $response = $this->getParsedResponse($request);
         $prepared = $this->prepareAccessTokenResponse($response);
         $token    = $this->createAccessToken($prepared, $grant);
 
@@ -594,7 +594,7 @@ abstract class AbstractProvider
      * @param  RequestInterface $request
      * @return ResponseInterface
      */
-    protected function sendRequest(RequestInterface $request)
+    protected function getResponse(RequestInterface $request)
     {
         try {
             $response = $this->getHttpClient()->send($request);
@@ -608,11 +608,11 @@ abstract class AbstractProvider
      * Sends a request and returns the parsed response.
      *
      * @param  RequestInterface $request
-     * @return mixed
+     * @return array|string
      */
-    public function getResponse(RequestInterface $request)
+    public function getParsedResponse(RequestInterface $request)
     {
-        $response = $this->sendRequest($request);
+        $response = $this->getResponse($request);
         $parsed = $this->parseResponse($response);
 
         $this->checkResponse($response, $parsed);
@@ -658,7 +658,7 @@ abstract class AbstractProvider
      *
      * @throws UnexpectedValueException
      * @param  ResponseInterface $response
-     * @return array
+     * @return array|string
      */
     protected function parseResponse(ResponseInterface $response)
     {
@@ -700,18 +700,26 @@ abstract class AbstractProvider
      * Custom mapping of expiration, etc should be done here. Always call the
      * parent method when overloading this method.
      *
-     * @param  mixed $result
-     * @return array
+     * @param  array|string $response
+     * @return array|string
+     * @throws UnexpectedValueException
      */
-    protected function prepareAccessTokenResponse(array $result)
+    protected function prepareAccessTokenResponse($response)
     {
         if ($this->getAccessTokenResourceOwnerId() !== null) {
-            $result['resource_owner_id'] = $this->getValueByKey(
+            if (!is_array($response)) {
+                throw new UnexpectedValueException(
+                    "Array type expected for access token response"
+                );
+            }
+
+            $response['resource_owner_id'] = $this->getValueByKey(
                 $this->getAccessTokenResourceOwnerId(),
-                $result
+                $response
             );
         }
-        return $result;
+
+        return $response;
     }
 
     /**
@@ -764,7 +772,7 @@ abstract class AbstractProvider
 
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
-        return $this->getResponse($request);
+        return $this->getParsedResponse($request);
     }
 
     /**
