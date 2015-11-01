@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the league/oauth2-client library
+ * This file is part of the league/oauth2-client library.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
  * @license http://opensource.org/licenses/MIT MIT
+ *
  * @link http://thephpleague.com/oauth2-client/ Documentation
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
@@ -21,7 +22,7 @@ use League\OAuth2\Client\Tool\RequiredParameterTrait;
  *
  * An authorization grant is a credential representing the resource
  * owner's authorization (to access its protected resources) used by the
- * client to obtain an access token.  OAuth 2.0 defines four
+ * client to obtain an access token. OAuth 2.0 defines four
  * grant types -- authorization code, implicit, resource owner password
  * credentials, and client credentials -- as well as an extensibility
  * mechanism for defining additional types.
@@ -62,8 +63,9 @@ abstract class AbstractGrant
      * Prepares an access token request's parameters by checking that all
      * required parameters are set, then merging with any given defaults.
      *
-     * @param  array $defaults
-     * @param  array $options
+     * @param array $defaults
+     * @param array $options
+     *
      * @return array
      */
     public function prepareRequestParameters(array $defaults, array $options)

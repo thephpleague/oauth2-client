@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the league/oauth2-client library
+ * This file is part of the league/oauth2-client library.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
  * @license http://opensource.org/licenses/MIT MIT
+ *
  * @link http://thephpleague.com/oauth2-client/ Documentation
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
@@ -49,7 +50,8 @@ class AccessToken implements JsonSerializable
      * Constructs an access token.
      *
      * @param array $options An array of options returned by the service provider
-     *     in the access token request. The `access_token` option is required.
+     *                       in the access token request. The `access_token` option is required.
+     *
      * @throws InvalidArgumentException if `access_token` is not provided in `$options`.
      */
     public function __construct(array $options = [])
@@ -89,7 +91,8 @@ class AccessToken implements JsonSerializable
     /**
      * Check if a value is an expiration timestamp or second value.
      *
-     * @param integer $value
+     * @param int $value
+     *
      * @return bool
      */
     protected function isExpirationTimestamp($value)
@@ -123,7 +126,7 @@ class AccessToken implements JsonSerializable
     /**
      * Returns the expiration timestamp, if defined.
      *
-     * @return integer|null
+     * @return int|null
      */
     public function getExpires()
     {
@@ -143,8 +146,9 @@ class AccessToken implements JsonSerializable
     /**
      * Checks if this token has expired.
      *
-     * @return boolean true if the token has expired, false otherwise.
      * @throws RuntimeException if 'expires' is not set on the token.
+     *
+     * @return bool true if the token has expired, false otherwise.
      */
     public function hasExpired()
     {

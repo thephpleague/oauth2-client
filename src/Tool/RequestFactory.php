@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the league/oauth2-client library
+ * This file is part of the league/oauth2-client library.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
  * @license http://opensource.org/licenses/MIT MIT
+ *
  * @link http://thephpleague.com/oauth2-client/ Documentation
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
@@ -26,11 +27,11 @@ class RequestFactory
     /**
      * Creates a PSR-7 Request instance.
      *
-     * @param  null|string $method HTTP method for the request.
-     * @param  null|string $uri URI for the request.
-     * @param  array $headers Headers for the message.
-     * @param  string|resource|StreamInterface $body Message body.
-     * @param  string $version HTTP protocol version.
+     * @param null|string                     $method  HTTP method for the request.
+     * @param null|string                     $uri     URI for the request.
+     * @param array                           $headers Headers for the message.
+     * @param string|resource|StreamInterface $body    Message body.
+     * @param string                          $version HTTP protocol version.
      *
      * @return Request
      */
@@ -66,9 +67,9 @@ class RequestFactory
     /**
      * Creates a request using a simplified array of options.
      *
-     * @param  null|string $method
-     * @param  null|string $uri
-     * @param  array $options
+     * @param null|string $method
+     * @param null|string $uri
+     * @param array       $options
      *
      * @return Request
      */

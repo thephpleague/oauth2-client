@@ -7,6 +7,7 @@
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
  * @license http://opensource.org/licenses/MIT MIT
+ *
  * @link http://thephpleague.com/oauth2-client/ Documentation
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
@@ -29,8 +30,9 @@ class GrantFactory
     /**
      * Defines a grant singleton in the registry.
      *
-     * @param  string $name
-     * @param  AbstractGrant $grant
+     * @param string        $name
+     * @param AbstractGrant $grant
+     *
      * @return self
      */
     public function setGrant($name, AbstractGrant $grant)
@@ -45,7 +47,8 @@ class GrantFactory
      *
      * If the grant has not be registered, a default grant will be loaded.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return AbstractGrant
      */
     public function getGrant($name)
@@ -60,14 +63,15 @@ class GrantFactory
     /**
      * Registers a default grant singleton by name.
      *
-     * @param  string $name
+     * @param string $name
+     *
      * @return self
      */
     protected function registerDefaultGrant($name)
     {
         // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
         $class = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
-        $class = 'League\\OAuth2\\Client\\Grant\\' . $class;
+        $class = 'League\\OAuth2\\Client\\Grant\\'.$class;
 
         $this->checkGrant($class);
 
@@ -77,8 +81,9 @@ class GrantFactory
     /**
      * Determines if a variable is a valid grant.
      *
-     * @param  mixed $class
-     * @return boolean
+     * @param mixed $class
+     *
+     * @return bool
      */
     public function isGrant($class)
     {
@@ -88,17 +93,21 @@ class GrantFactory
     /**
      * Checks if a variable is a valid grant.
      *
+     * @param mixed $class
+     *
      * @throws InvalidGrantException
-     * @param  mixed $class
+     *
      * @return void
      */
     public function checkGrant($class)
     {
         if (!$this->isGrant($class)) {
-            throw new InvalidGrantException(sprintf(
-                'Grant "%s" must extend AbstractGrant',
-                is_object($class) ? get_class($class) : $class
-            ));
+            throw new InvalidGrantException(
+                sprintf(
+                    'Grant "%s" must extend AbstractGrant',
+                    is_object($class) ? get_class($class) : $class
+                )
+            );
         }
     }
 }
