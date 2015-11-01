@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the league/oauth2-client library
+ * This file is part of the league/oauth2-client library.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.

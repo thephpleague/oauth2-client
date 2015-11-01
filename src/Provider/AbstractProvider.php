@@ -565,7 +565,6 @@ abstract class AbstractProvider
         return $token;
     }
 
-
     /**
      * Returns a PSR-7 request instance that is not authenticated.
      *
@@ -617,7 +616,6 @@ abstract class AbstractProvider
         return $factory->getRequestWithOptions($method, $url, $options);
     }
 
-
     /**
      * Sends a request instance and returns a response instance.
      *
@@ -632,6 +630,7 @@ abstract class AbstractProvider
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
         }
+
         return $response;
     }
 
@@ -651,7 +650,6 @@ abstract class AbstractProvider
 
         return $parsed;
     }
-
 
     /**
      * Attempts to parse a JSON response.
@@ -704,6 +702,7 @@ abstract class AbstractProvider
 
         if (strpos($type, 'urlencoded') !== false) {
             parse_str($content, $parsed);
+
             return $parsed;
         }
 
