@@ -1,12 +1,13 @@
 <?php
 /**
- * This file is part of the league/oauth2-client library
+ * This file is part of the league/oauth2-client library.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
  * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
  * @license http://opensource.org/licenses/MIT MIT
+ *
  * @link http://thephpleague.com/oauth2-client/ Documentation
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
@@ -134,9 +135,11 @@ class GenericProvider extends AbstractProvider
     /**
      * Verifies that all required options have been passed.
      *
-     * @param  array $options
-     * @return void
+     * @param array $options
+     *
      * @throws InvalidArgumentException
+     *
+     * @return void
      */
     private function assertRequiredOptions(array $options)
     {
@@ -150,7 +153,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getBaseAuthorizationUrl()
     {
@@ -158,7 +161,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getBaseAccessTokenUrl(array $params)
     {
@@ -166,7 +169,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
@@ -174,7 +177,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getDefaultScopes()
     {
@@ -182,7 +185,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getAccessTokenMethod()
     {
@@ -190,7 +193,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getAccessTokenResourceOwnerId()
     {
@@ -198,7 +201,7 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getScopeSeparator()
     {
@@ -206,19 +209,19 @@ class GenericProvider extends AbstractProvider
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if (!empty($data[$this->responseError])) {
             $error = $data[$this->responseError];
-            $code  = $this->responseCode ? $data[$this->responseCode] : 0;
+            $code = $this->responseCode ? $data[$this->responseCode] : 0;
             throw new IdentityProviderException($error, $code, $data);
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
