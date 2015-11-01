@@ -89,7 +89,8 @@ class AccessToken implements JsonSerializable
     /**
      * Check if a value is an expiration timestamp or second value.
      *
-     * @return boolean
+     * @param integer $value
+     * @return bool
      */
     protected function isExpirationTimestamp($value)
     {

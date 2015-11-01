@@ -460,6 +460,7 @@ abstract class AbstractProvider
      * Returns the full URL to use when requesting an access token.
      *
      * @param array $params Query parameters
+     * @return string
      */
     protected function getAccessTokenUrl(array $params)
     {
@@ -505,6 +506,7 @@ abstract class AbstractProvider
      * Returns a prepared request for requesting an access token.
      *
      * @param array $params Query string parameters
+     * @return RequestInterface
      */
     protected function getAccessTokenRequest(array $params)
     {
