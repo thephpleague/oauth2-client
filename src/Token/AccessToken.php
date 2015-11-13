@@ -186,7 +186,7 @@ class AccessToken implements JsonSerializable
         }
 
         if ($this->expires) {
-            $parameters['expires_in'] = $this->expires - time();
+            $parameters['expires'] = $this->expires;
         }
 
         return $parameters;

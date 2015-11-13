@@ -106,7 +106,7 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
         $options = [
             'access_token' => 'mock_access_token',
             'refresh_token' => 'mock_refresh_token',
-            'expires_in' => 100,
+            'expires' => time(),
         ];
 
         $token = $this->getAccessToken($options);
