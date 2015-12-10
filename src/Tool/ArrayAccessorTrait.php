@@ -37,7 +37,7 @@ trait ArrayAccessorTrait
             $keys = explode('.', $key);
 
             foreach ($keys as $innerKey) {
-                if (!array_key_exists($innerKey, $data)) {
+                if (!is_array($data) || !array_key_exists($innerKey, $data)) {
                     return $default;
                 }
 
