@@ -189,6 +189,10 @@ class AccessToken implements JsonSerializable
             $parameters['expires'] = $this->expires;
         }
 
+        if ($this->resourceOwnerId) {
+            $params['resource_owner_id'] = $this->resourceOwnerId;
+        }
+
         return $parameters;
     }
 }
