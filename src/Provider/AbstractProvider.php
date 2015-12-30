@@ -536,7 +536,7 @@ abstract class AbstractProvider
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
-        $response = $this->getResponse($request);
+        $response = $this->getAccessTokenResponse($request);
         $prepared = $this->prepareAccessTokenResponse($response);
         $token    = $this->createAccessToken($prepared, $grant);
 
@@ -625,6 +625,22 @@ abstract class AbstractProvider
         return $parsed;
     }
 
+    /**
+     * Sends a request and returns the parsed access token response.
+     *
+     * @param  RequestInterface $request
+     * @return mixed
+     */
+    public function getAccessTokenResponse(RequestInterface $request)
+    {
+        $response = $this->sendRequest($request);
+        $parsed = $this->parseResponse($response);
+
+        $this->checkAccessTokenResponse($response, $parsed);
+
+        return $parsed;
+    }
+
 
     /**
      * Attempts to parse a JSON response.
@@ -698,6 +714,16 @@ abstract class AbstractProvider
      * @return void
      */
     abstract protected function checkResponse(ResponseInterface $response, $data);
+
+    /**
+     * Checks a provider response for access token request errors.
+     *
+     * @throws IdentityProviderException
+     * @param  ResponseInterface $response
+     * @param  array|string $data Parsed response data
+     * @return void
+     */
+    abstract protected function checkAccessTokenResponse(ResponseInterface $response, $data);
 
     /**
      * Prepares an parsed access token response for a grant.
