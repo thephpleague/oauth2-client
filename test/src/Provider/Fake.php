@@ -55,4 +55,11 @@ class Fake extends AbstractProvider
             throw new IdentityProviderException($data['error'], $data['code'], $data);
         }
     }
+
+    protected function checkAccessTokenResponse(ResponseInterface $response, $data)
+    {
+        if (!empty($data['error'])) {
+            throw new IdentityProviderException($data['error'], $data['code'], $data);
+        }
+    }
 }

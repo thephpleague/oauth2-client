@@ -220,6 +220,14 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
+    protected function checkAccessTokenResponse(ResponseInterface $response, $data)
+    {
+        self::checkResponse($response, $data);
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);
