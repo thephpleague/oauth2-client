@@ -190,7 +190,7 @@ class AccessToken implements JsonSerializable
         }
 
         if ($this->resourceOwnerId) {
-            $params['resource_owner_id'] = $this->resourceOwnerId;
+            $parameters['resource_owner_id'] = $this->resourceOwnerId;
         }
 
         return $parameters;

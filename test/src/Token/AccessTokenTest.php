@@ -101,12 +101,13 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
         $hasExpired = $token->hasExpired();
     }
 
-    public function testJsonSerialzable()
+    public function testJsonSerializable()
     {
         $options = [
             'access_token' => 'mock_access_token',
             'refresh_token' => 'mock_refresh_token',
             'expires' => time(),
+            'resource_owner_id' => 'mock_resource_owner_id',
         ];
 
         $token = $this->getAccessToken($options);
