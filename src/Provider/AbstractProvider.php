@@ -332,14 +332,11 @@ abstract class AbstractProvider
         // Store the state as it may need to be accessed later on.
         $this->state = $options['state'];
 
-        return [
-            'client_id'       => $this->clientId,
-            'redirect_uri'    => $this->redirectUri,
-            'state'           => $this->state,
-            'scope'           => $options['scope'],
-            'response_type'   => $options['response_type'],
-            'approval_prompt' => $options['approval_prompt'],
-        ];
+        $options['client_id'] = $this->clientId;
+        $options['redirect_uri'] = $this->redirectUri;
+        $options['state'] = $this->state;
+        
+        return $options;
     }
 
     /**
