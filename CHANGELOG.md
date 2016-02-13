@@ -1,5 +1,12 @@
 # OAuth 2.0 Client Changelog
 
+## 1.3.0
+
+_Released: 2016-02-13_
+
+* Enable dynamic parameters being passed into the authorization URL
+* Minor documentation updates
+
 ## 1.2.0
 
 _Released: 2016-01-23_
