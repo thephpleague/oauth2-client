@@ -70,7 +70,9 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCustomAuthorizationUrlOptions()
     {
-        $url = $this->provider->getAuthorizationUrl(...);
+        $url = $this->provider->getAuthorizationUrl([
+            'foo' => 'BAR'
+        ]);
         $query = parse_url($url, PHP_URL_QUERY);
         $this->assertNotEmpty($query);
         
