@@ -64,6 +64,20 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'state' => 'XXX'
         ]));
     }
+    
+    /**
+     * Tests https://github.com/thephpleague/oauth2-client/pull/485
+     */
+    public function testCustomAuthorizationUrlOptions()
+    {
+        $url = $this->provider->getAuthorizationUrl(...);
+        $query = parse_url($url, PHP_URL_QUERY);
+        $this->assertNotEmpty($query);
+        
+        parse_str($query, $params);
+        $this->assertArrayHasKey('foo', $params);
+        $this->assertSame('BAR', $params['foo']);
+    }
 
     /**
      * Tests https://github.com/thephpleague/oauth2-client/issues/134
