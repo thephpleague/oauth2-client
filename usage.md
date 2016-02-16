@@ -22,6 +22,8 @@ The following example illustrates this using [Brent Shaffer's](https://github.co
 Now, you don't really have an account on Lock'd In, but for the sake of this example, imagine that you are already logged in on Lock'd In when you are redirected there.
 
 ~~~ php
+<?php
+
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => 'demoapp',    // The client ID assigned to you by the provider
     'clientSecret'            => 'demopass',   // The client password assigned to you by the provider
@@ -101,6 +103,8 @@ Once your application is authorized, you can refresh an expired token using a re
 _This example uses [Brent Shaffer's](https://github.com/bshaffer) demo OAuth 2.0 application named **Lock'd In**. See authorization code example above, for more details._
 
 ~~~ php
+<?php
+
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => 'demoapp',    // The client ID assigned to you by the provider
     'clientSecret'            => 'demopass',   // The client password assigned to you by the provider
