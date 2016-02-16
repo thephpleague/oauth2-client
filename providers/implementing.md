@@ -23,6 +23,8 @@ existing package, it is quite simple to implement your own. Simply extend
 and implement the required abstract methods:
 
 ~~~ php
+<?php
+
 abstract public function getBaseAuthorizationUrl();
 abstract public function getBaseAccessTokenUrl(array $params);
 abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
@@ -52,6 +54,8 @@ to the string value of the key used in the access token response to identify the
 resource owner.
 
 ~~~ php
+<?php
+
 /**
  * @var string Key used in the access token response to identify the resource owner.
  */
