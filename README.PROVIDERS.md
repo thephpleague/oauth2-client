@@ -78,4 +78,6 @@ Gateway | Composer Package | Maintainer
 
 Some developers use this library as a base for their own PHP API wrappers, and that seems like a really great idea. It might make it slightly tricky to integrate their provider with an existing generic "OAuth 2.0 All the Things" login system, but it does make working with them easier.
 
+- [OAuth2 PSR7 Middleware](https://github.com/gsomoza/oauth2-middleware)
 - [Sniply](https://github.com/younes0/sniply)
+
