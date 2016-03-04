@@ -32,6 +32,31 @@ Each of these abstract methods contain a docblock defining their expectations
 and typical behavior. Once you have extended this class, you can simply follow
 the [usage example in the README](README.md#usage) using your new `Provider`.
 
+If you wish to use the `Provider` to make authenticated requests to the 
+service, you will also need to define how you provide the token to the
+service. If this is done via headers, you should override this method:
+
+```php
+protected function getAuthorizationHeaders($token = null);
+```
+
+This method takes an `AccessToken` instance, an access token
+string or `null`, and by default returns an empty array. If the oauth2 
+service requires a `Bearer` header in the request header for an 
+authenticated request, you could implement something like this:
+
+```php
+protected function getAuthorizationHeaders($token = null)
+{
+    return array(
+         "Authorization" => "Bearer " . $token->getToken()
+    );
+}
+```
+
+With this in place, any call to `YourProvider::getAuthenticatedRequest()`
+will automatically include the token in the request header.
+
 ### Resource owner identifiers in access token responses
 
 In services where the resource owner is a person, the resource owner is sometimes
