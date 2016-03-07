@@ -40,22 +40,19 @@ service. If this is done via headers, you should override this method:
 protected function getAuthorizationHeaders($token = null);
 ```
 
-This method takes an `AccessToken` instance, an access token
-string or `null`, and by default returns an empty array. If the oauth2 
-service requires a `Bearer` header in the request header for an 
-authenticated request, you could implement something like this:
-
+This package comes with a trait for implementing `Bearer` authorization. 
+To use this, you just need to include the trait in your `Provider` class:
+ 
 ```php
-protected function getAuthorizationHeaders($token = null)
+<?php
+class SomeProvider extends AbstractProvider
 {
-    return array(
-         "Authorization" => "Bearer " . $token->getToken()
-    );
+    use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
+    
+    /** ... **/
 }
 ```
 
-With this in place, any call to `YourProvider::getAuthenticatedRequest()`
-will automatically include the token in the request header.
 
 ### Resource owner identifiers in access token responses
 
