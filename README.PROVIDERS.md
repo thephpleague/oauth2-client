@@ -30,7 +30,7 @@ so please help them out with a pull request if you notice this.
 Gateway | Composer Package | Maintainer
 --- | --- | ---
 [Amazon](https://github.com/lemonstand/oauth2-amazon/) | lemonstand/oauth2-amazon | [LemonStand](https://github.com/lemonstand)
-[Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Riskio](https://github.com/RiskioFr)
+[Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Nicolas Eeckeloo](https://github.com/neeckeloo)
 [Azure Active Directory](https://github.com/thenetworg/oauth2-azure) | thenetworg/oauth2-azure | [Jan Hajek](https://github.com/hajekj)
 [Battle.net](https://github.com/tpavlek/oauth2-bnet) | depotwarehouse/oauth2-bnet | [Troy Pavlek](https://github.com/tpavlek)
 [Betaseries](https://github.com/florentsorel/oauth2-betaseries) | rtransat/oauth2-betaseries | [Florent Sorel](https://github.com/florentsorel)
