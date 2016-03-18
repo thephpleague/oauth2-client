@@ -76,6 +76,7 @@ Gateway | Composer Package | Maintainer
 [Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
 [Yahoo](https://packagist.org/packages/hayageek/oauth2-yahoo) | hayageek/oauth2-yahoo | [Ravishanker Kusuma](https://github.com/hayageek)
 [Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
+[Zendesk](https://github.com/stevenmaguire/oauth2-zendesk) | stevenmaguire/oauth2-zendesk | [Steven Maguire](https://github.com/stevenmaguire)
 [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll) | wheniwork/oauth2-zenpayroll | [Woody Gilk](https://github.com/shadowhand)
 
 ## Client Packages
