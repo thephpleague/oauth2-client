@@ -45,6 +45,7 @@ Gateway | Composer Package | Maintainer
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
 [Eve Online](https://github.com/EvELabs/oauth2-eveonline) | evelabs/oauth2-eveonline | [Oleg Krasavin](https://github.com/okwinza)
+[Exact Online (NL)](https://packagist.org/packages/pbxg33k/oauth2-exact-provider) | pbxg33k/oauth2-exact-provider | [Oguzhan Uysal](https://github.com/PBXg33k/)
 [Fitbit](https://github.com/djchen/oauth2-fitbit) | djchen/oauth2-fitbit | [Dan Chen](https://github.com/djchen)
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
