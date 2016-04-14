@@ -227,6 +227,23 @@ try {
 }
 ```
 
+### Using a proxy
+
+It is possible to use a proxy to debug HTTP calls made to a provider. All you need to do is set the `proxy` and `verify` options when creating your Provider instance. Make sure you enable SSL proxying in your proxy.
+
+``` php
+$provider = new \League\OAuth2\Client\Provider\GenericProvider([
+    'clientId'                => 'XXXXXX',    // The client ID assigned to you by the provider
+    'clientSecret'            => 'XXXXXX',    // The client password assigned to you by the provider
+    'redirectUri'             => 'http://my.example.com/your-redirect-url/',
+    'urlAuthorize'            => 'http://service.example.com/authorize',
+    'urlAccessToken'          => 'http://service.example.com/token',
+    'urlResourceOwnerDetails' => 'http://service.example.com/resource',
+    'proxy'                   => '192.168.0.1:8888',
+    'verify'                  => false
+]);
+```
+
 ## Install
 
 Via Composer
