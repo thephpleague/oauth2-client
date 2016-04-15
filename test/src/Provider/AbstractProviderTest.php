@@ -111,6 +111,38 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($timeout, $config['timeout']);
     }
 
+    public function testCanSetAProxy()
+    {
+        $proxy = '192.168.0.1:8888';
+
+        $mockProvider = new MockProvider(['proxy' => $proxy]);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('proxy', $config);
+        $this->assertEquals($proxy, $config['proxy']);
+    }
+
+    public function testCannotDisableVerifyIfNoProxy()
+    {
+        $mockProvider = new MockProvider(['verify' => false]);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('verify', $config);
+        $this->assertTrue($config['verify']);
+    }
+
+    public function testCanDisableVerificationIfThereIsAProxy()
+    {
+        $mockProvider = new MockProvider(['proxy' => '192.168.0.1:8888', 'verify' => false]);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('verify', $config);
+        $this->assertFalse($config['verify']);
+    }
+
     public function testConstructorSetsGrantFactory()
     {
         $mockAdapter = m::mock(GrantFactory::class);
