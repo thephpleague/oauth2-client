@@ -1,11 +1,17 @@
 # OAuth 2.0 Client Changelog
 
+## 1.4.0
+
+_Released: 2016-04-19_
+
+* Add `AccessToken::getValues()` to access additional vendor data provided with tokens.
+
 ## 1.3.0
 
 _Released: 2016-02-13_
 
-* Enable dynamic parameters being passed into the authorization URL
-* Minor documentation updates
+* Enable dynamic parameters being passed into the authorization URL.
+* Minor documentation updates.
 
 ## 1.2.0
 
