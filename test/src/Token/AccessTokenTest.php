@@ -115,4 +115,23 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($options, json_decode($jsonToken, true));
     }
+
+    public function testValues()
+    {
+        $options = [
+            'access_token' => 'mock_access_token',
+            'refresh_token' => 'mock_refresh_token',
+            'expires' => time(),
+            'resource_owner_id' => 'mock_resource_owner_id',
+            'custom_thing' => 'i am a test!',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $values = $token->getValues();
+
+        $this->assertTrue(is_array($values));
+        $this->assertArrayHasKey('custom_thing', $values);
+        $this->assertSame($options['custom_thing'], $values['custom_thing']);
+    }
 }
