@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 1.4.1
+
+_Released: 2016-04-29_
+
+* Add `QueryBuilderTrait` to standardize query string generation.
+
 ## 1.4.0
 
 _Released: 2016-04-19_

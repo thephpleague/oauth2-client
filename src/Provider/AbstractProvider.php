@@ -21,8 +21,9 @@ use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
+use League\OAuth2\Client\Tool\QueryBuilderTrait;
+use League\OAuth2\Client\Tool\RequestFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RandomLib\Factory as RandomFactory;
@@ -36,6 +37,7 @@ use UnexpectedValueException;
 abstract class AbstractProvider
 {
     use ArrayAccessorTrait;
+    use QueryBuilderTrait;
 
     /**
      * @var string Key used in a token response to identify the resource owner.
@@ -368,7 +370,7 @@ abstract class AbstractProvider
      */
     protected function getAuthorizationQuery(array $params)
     {
-        return http_build_query($params);
+        return $this->buildQueryString($params);
     }
 
     /**
@@ -454,7 +456,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenQuery(array $params)
     {
-        return http_build_query($params);
+        return $this->buildQueryString($params);
     }
 
     /**
@@ -500,7 +502,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenBody(array $params)
     {
-        return http_build_query($params);
+        return $this->buildQueryString($params);
     }
 
     /**
