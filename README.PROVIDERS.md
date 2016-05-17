@@ -48,6 +48,7 @@ Gateway | Composer Package | Maintainer
 [Fitbit](https://github.com/djchen/oauth2-fitbit) | djchen/oauth2-fitbit | [Dan Chen](https://github.com/djchen)
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
+[GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
 [Google Nest](https://github.com/JC5/nest-oauth2-provider) | grumpydictator/nest-oauth2-provider | [James Cole](https://github.com/JC5)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
