@@ -76,6 +76,9 @@ class AccessToken implements JsonSerializable
         // We need to know when the token expires. Show preference to
         // 'expires_in' since it is defined in RFC6749 Section 5.1.
         // Defer to 'expires' if it is provided instead.
+        // Initialize 'expires' to false, meaning that it is not known
+        // or doesn't expire
+        $this->expires = false;
         if (!empty($options['expires_in'])) {
             $this->expires = time() + ((int) $options['expires_in']);
         } elseif (!empty($options['expires'])) {
