@@ -20,6 +20,16 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
         return new AccessToken($options);
     }
 
+    public function testExpiresWhenItIsNotInOptions()
+    {
+        $options = ['access_token' => 'access_token'];
+        $token = $this->getAccessToken($options);
+
+        $expires = $token->getExpires();
+
+        $this->assertFalse($expires);
+    }
+
     public function testExpiresInCorrection()
     {
         $options = ['access_token' => 'access_token', 'expires_in' => 100];
