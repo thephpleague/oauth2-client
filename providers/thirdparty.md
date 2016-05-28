@@ -47,6 +47,7 @@ Gateway | Composer Package | Maintainer
 [Mollie](https://github.com/mollie/oauth2-mollie-php) | mollie/oauth2-mollie-php | [Mollie](https://github.com/mollie)
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
+[Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
 [PayPal](https://github.com/stevenmaguire/oauth2-paypal) | stevenmaguire/oauth2-paypal | [Steven Maguire](https://github.com/stevenmaguire)
 [PSN](https://github.com/larabros/oauth2-psn) | larabros/oauth2-psn | [Hassan Khan](https://github.com/hassankhan)
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
