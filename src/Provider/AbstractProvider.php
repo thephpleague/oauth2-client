@@ -422,7 +422,8 @@ abstract class AbstractProvider
         $query = trim($query, '?&');
 
         if ($query) {
-            return $url . '?' . $query;
+            $glue = strstr($url, '?') === false ? '?' : '&';
+            return $url . $glue . $query;
         }
 
         return $url;
