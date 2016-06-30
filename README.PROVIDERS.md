@@ -38,6 +38,7 @@ Gateway | Composer Package | Maintainer
 [BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php) | bookingsync/oauth2-bookingsync-php | [BookingSync](https://github.com/BookingSync)
 [Box](https://github.com/stevenmaguire/oauth2-box) | stevenmaguire/oauth2-box | [Steven Maguire](https://github.com/stevenmaguire)
 [Buffer](https://github.com/tgallice/oauth2-buffer) | tgallice/oauth2-buffer | [Thomas Gallice](https://github.com/tgallice)
+[Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [Discord](https://github.com/teamreflex/oauth2-discord) | team-reflex/oauth2-discord | [David Cole](https://github.com/uniquoooo)
