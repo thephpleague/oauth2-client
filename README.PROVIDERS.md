@@ -53,6 +53,7 @@ Gateway | Composer Package | Maintainer
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
 [GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
 [Google Nest](https://github.com/JC5/nest-oauth2-provider) | grumpydictator/nest-oauth2-provider | [James Cole](https://github.com/JC5)
+[Harvest](https://github.com/nilesuan/oauth2-harvest) | nilesuan/oauth2-harvest | [Nile Suan](https://github.com/nilesuan)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [MailChimp](https://github.com/cfreear/oauth2-mailchimp) | cfreear/oauth2-mailchimp | [Christian Freear](https://github.com/cfreear)
@@ -91,4 +92,3 @@ Some developers use this library as a base for their own PHP API wrappers, and t
 
 - [OAuth2 PSR7 Middleware](https://github.com/gsomoza/oauth2-middleware)
 - [Sniply](https://github.com/younes0/sniply)
-
