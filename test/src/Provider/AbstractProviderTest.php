@@ -2,6 +2,8 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use GuzzleHttp\Client as GuzzleClient;
+use Http\Client\HttpClient;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -14,7 +16,6 @@ use RandomLib\Generator as RandomGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\ClientInterface;
 
 use Mockery as m;
@@ -105,8 +106,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $mockProvider = new MockProvider(compact('timeout'));
 
-        $config = $mockProvider->getHttpClient()->getConfig();
+        $config = $this->getGuzzle6Config($mockProvider->getHttplugClient());
+        $this->assertContains('timeout', $config);
+        $this->assertEquals($timeout, $config['timeout']);
 
+        $config = $mockProvider->getHttpClient()->getConfig();
         $this->assertContains('timeout', $config);
         $this->assertEquals($timeout, $config['timeout']);
     }
@@ -117,8 +121,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $mockProvider = new MockProvider(['proxy' => $proxy]);
 
-        $config = $mockProvider->getHttpClient()->getConfig();
+        $config = $this->getGuzzle6Config($mockProvider->getHttplugClient());
+        $this->assertContains('proxy', $config);
+        $this->assertEquals($proxy, $config['proxy']);
 
+        $config = $mockProvider->getHttpClient()->getConfig();
         $this->assertContains('proxy', $config);
         $this->assertEquals($proxy, $config['proxy']);
     }
@@ -127,8 +134,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $mockProvider = new MockProvider(['verify' => false]);
 
-        $config = $mockProvider->getHttpClient()->getConfig();
+        $config = $this->getGuzzle6Config($mockProvider->getHttplugClient());
+        $this->assertContains('verify', $config);
+        $this->assertTrue($config['verify']);
 
+        $config = $mockProvider->getHttpClient()->getConfig();
         $this->assertContains('verify', $config);
         $this->assertTrue($config['verify']);
     }
@@ -137,8 +147,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
     {
         $mockProvider = new MockProvider(['proxy' => '192.168.0.1:8888', 'verify' => false]);
 
-        $config = $mockProvider->getHttpClient()->getConfig();
+        $config = $this->getGuzzle6Config($mockProvider->getHttplugClient());
+        $this->assertContains('verify', $config);
+        $this->assertFalse($config['verify']);
 
+        $config = $mockProvider->getHttpClient()->getConfig();
         $this->assertContains('verify', $config);
         $this->assertFalse($config['verify']);
     }
@@ -215,8 +228,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $url = $provider->getResourceOwnerDetailsUrl($token);
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
+        $client = m::mock(HttpClient::class);
+        $client->shouldReceive('sendRequest')->with(
             m::on(function ($request) use ($url) {
                 return $request->getMethod() === 'GET'
                     && $request->hasHeader('Authorization')
@@ -350,8 +363,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $method = $provider->getAccessTokenMethod();
         $url = $provider->getBaseAccessTokenUrl([]);
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
+        $client = m::mock(HttpClient::class);
+        $client->shouldReceive('sendRequest')->with(
             m::on(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method
                     && (string) $request->getUri() === $url;
@@ -392,29 +405,12 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             '{"error":"Foo error","code":1337}'
         );
 
-        $request = m::mock(RequestInterface::class);
-
         $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getStatusCode')->times(1)->andReturn(400);
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
 
-        $exception = new BadResponseException(
-            'test exception',
-            $request,
-            $response
-        );
-
-        $method = $provider->getAccessTokenMethod();
-        $url    = $provider->getBaseAccessTokenUrl([]);
-
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andThrow($exception);
+        $client = m::mock(HttpClient::class);
+        $client->shouldReceive('sendRequest')->times(1)->andReturn($response);
 
         $provider->setHttpClient($client);
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -442,8 +438,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $response->shouldReceive('getBody')->times(1)->andReturn($stream);
         $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with($request)->andReturn($response);
+        $client = m::mock(HttpClient::class);
+        $client->shouldReceive('sendRequest')->with($request)->andReturn($response);
 
         $provider->setHttpClient($client);
 
@@ -501,8 +497,8 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $method = $provider->getAccessTokenMethod();
         $url    = $provider->getBaseAccessTokenUrl([]);
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
+        $client = m::mock(HttpClient::class);
+        $client->shouldReceive('sendRequest')->with(
             m::on(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method
                     && (string) $request->getUri() === $url;
@@ -669,5 +665,63 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $headers = $provider->getAuthorizationHeaders();
 
         $this->assertEquals([], $headers);
+    }
+
+    public function testSetHttpClientWithGuzzleClient()
+    {
+        $provider = new MockProvider();
+        $provider->setHttpClient(new GuzzleClient([]));
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testSetHttpClientWithBogusData()
+    {
+        $provider = new MockProvider();
+        $provider->setHttpClient('foo');
+    }
+
+    public function testGetHttpClientFromOptions()
+    {
+        $provider = new MockProvider();
+        $method = new \ReflectionMethod($provider, 'getHttpClientFromOptions');
+        $method->setAccessible(true);
+
+        $expected = 'foo';
+        $result = $method->invoke($provider, [], ['httplugClient'=> $expected]);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetHttpClientFromOptionsWithBogusData()
+    {
+        $provider = new MockProvider();
+        $method = new \ReflectionMethod($provider, 'getHttpClientFromOptions');
+        $method->setAccessible(true);
+
+        $method->invoke($provider, [], ['httpClient'=> 'foo']);
+    }
+
+    /**
+     * Helper method to get config from Guzzle6.
+     *
+     * @param HttpClient $httplugGuzzle6
+     *
+     * @return array
+     */
+    private function getGuzzle6Config(HttpClient $httplugGuzzle6)
+    {
+        $reflectionClass = new \ReflectionClass($httplugGuzzle6);
+        $reflectionProperty = $reflectionClass->getProperty('client');
+        $reflectionProperty->setAccessible(true);
+
+        $reflectionGuzzle = $reflectionProperty->getValue($httplugGuzzle6);
+
+        $config = $reflectionGuzzle->getConfig();
+
+        return $config;
     }
 }

@@ -4,16 +4,23 @@
     "license": "MIT",
     "require": {
         "php": ">=5.5.0",
+        "psr/http-message": "^1.0",
         "ext-curl": "*",
         "ircmaxell/random-lib": "~1.1",
-        "guzzlehttp/guzzle": "~6.0"
+        "php-http/httplug": "^1.0",
+        "php-http/client-implementation": "^1.0",
+        "php-http/message-factory": "^1.0.2",
+        "php-http/discovery": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
         "mockery/mockery": "~0.9",
         "squizlabs/php_codesniffer": "~2.0",
         "satooshi/php-coveralls": "0.6.*",
-        "jakub-onderka/php-parallel-lint": "0.8.*"
+        "php-http/message": "^1.0",
+        "php-http/guzzle6-adapter": "^1.0",
+        "jakub-onderka/php-parallel-lint": "0.8.*",
+        "symfony/phpunit-bridge": "^3.1"
     },
     "keywords": [
         "oauth",

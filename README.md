@@ -249,8 +249,16 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
 Via Composer
 
 ``` bash
-$ composer require league/oauth2-client
+$ composer require league/oauth2-client php-http/guzzle6-adapter php-http/message
 ```
+
+The two extra packages from `php-http` is part of the [HTTPlug](http://httplug.io/) organisation. It helps us not to 
+be coupled to Guzzle. That is why you need to install the `php-http/guzzle6-adapter` or any other library providing the virtual 
+[php-http/client-implementation](https://packagist.org/providers/php-http/client-implementation) package. The 
+`php-http/message` package contains factory classes to create Guzzle and Diactoros PSR-7 requests. 
+
+You can read more about HTTPlug and how to use it in 
+[their documentation](http://docs.php-http.org/en/latest/httplug/users.html).
 
 ## Contributing
 
