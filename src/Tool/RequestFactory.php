@@ -18,7 +18,6 @@ use Http\Discovery\MessageFactoryDiscovery;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 
-
 /**
  * Used to produce PSR-7 Request instances.
  *
