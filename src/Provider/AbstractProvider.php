@@ -355,8 +355,13 @@ abstract class AbstractProvider
         // Store the state as it may need to be accessed later on.
         $this->state = $options['state'];
 
+        // Business code layer might set a different redirect_uri parameter
+        // depending on the context, leave it as-is
+        if (!isset($options['redirect_uri'])) {
+            $options['redirect_uri'] = $this->redirectUri;
+        }
+
         $options['client_id'] = $this->clientId;
-        $options['redirect_uri'] = $this->redirectUri;
         $options['state'] = $this->state;
         
         return $options;
