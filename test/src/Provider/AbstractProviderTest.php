@@ -64,7 +64,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'state' => 'XXX'
         ]));
     }
-    
+
     /**
      * Tests https://github.com/thephpleague/oauth2-client/pull/485
      */
@@ -75,7 +75,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         ]);
         $query = parse_url($url, PHP_URL_QUERY);
         $this->assertNotEmpty($query);
-        
+
         parse_str($query, $params);
         $this->assertArrayHasKey('foo', $params);
         $this->assertSame('BAR', $params['foo']);
@@ -307,7 +307,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $xstate = str_repeat('x', 32);
 
         $generator = m::mock(RandomGenerator::class);
-        $generator->shouldReceive('generateString')->with(32)->times(1)->andReturn($xstate);
+        $generator->shouldReceive('generateString')->with(32, 7)->times(1)->andReturn($xstate);
 
         $factory = m::mock(RandomFactory::class);
         $factory->shouldReceive('getMediumStrengthGenerator')->times(1)->andReturn($generator);
