@@ -1,0 +1,9 @@
+.DS_Store
+_site
+build
+composer.lock
+composer.phar
+nbproject/private/
+test/log
+testing/
+vendor/
