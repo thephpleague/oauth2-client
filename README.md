@@ -18,7 +18,7 @@ We are all used to seeing those "Connect with Facebook/Google/etc." buttons arou
 
 This OAuth 2.0 client library will work with any OAuth provider that conforms to the OAuth 2.0 standard. Out-of-the-box, we provide a `GenericProvider` that may be used to connect to any service provider that uses [Bearer tokens](http://tools.ietf.org/html/rfc6750) (see example below).
 
-Many service providers provide additional functionality above and beyond the OAuth 2.0 standard. For this reason, this library may be easily extended and wrapped to support this additional behavior. We provide links to [all known provider clients extending this library](README.PROVIDERS.md) (i.e. Facebook, GitHub, Google, Instagram, LinkedIn, etc.). If your provider isn't in the list, feel free to add it.
+Many service providers provide additional functionality above and beyond the OAuth 2.0 standard. For this reason, this library may be easily extended and wrapped to support this additional behavior. We provide links to [all known provider clients extending this library](docs/providers/thirdparty.md) (i.e. Facebook, GitHub, Google, Instagram, LinkedIn, etc.). If your provider isn't in the list, feel free to add it.
 
 This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. If you notice compliance oversights, please send a patch via pull request. If you're interesting in contributing to this library, please take a look at our [contributing guidelines](CONTRIBUTING.md).
 
@@ -33,7 +33,7 @@ The following versions of PHP are supported.
 
 ## Providers
 
-A list of official PHP League providers, as well as third-party providers, may be found in the [providers list README](README.PROVIDERS.md).
+A list of official PHP League providers, as well as third-party providers, may be found in the [providers list README](docs/providers/thirdparty.md).
 
 To build your own provider, please refer to the [provider guide README](README.PROVIDER-GUIDE.md).
 
@@ -41,13 +41,13 @@ To build your own provider, please refer to the [provider guide README](README.P
 
 **In most cases, you'll want to use a specific provider client library rather than this base library.**
 
-Take a look at [README.PROVIDERS.md](README.PROVIDERS.md) to see a list of provider client libraries.
+Take a look at [providers list README](docs/providers/thirdparty.md) to see a list of provider client libraries.
 
 If using Composer to require a specific provider client library, you **do not need to also require this library**. Composer will handle the dependencies for you.
 
 ### Authorization Code Grant
 
-The following example uses the out-of-the-box `GenericProvider` provided by this library. If you're looking for a specific provider (i.e. Facebook, Google, GitHub, etc.), take a look at our [list of provider client libraries](README.PROVIDERS.md). **HINT: You're probably looking for a specific provider.**
+The following example uses the out-of-the-box `GenericProvider` provided by this library. If you're looking for a specific provider (i.e. Facebook, Google, GitHub, etc.), take a look at our [list of provider client libraries](docs/providers/thirdparty.md). **HINT: You're probably looking for a specific provider.**
 
 The authorization code grant type is the most common grant type used when authenticating users with a third-party service. This grant type utilizes a client (this library), a server (the service provider), and a resource owner (the user with credentials to a protected—or owned—resource) to request access to resources owned by the user. This is often referred to as _3-legged OAuth_, since there are three parties involved.
 
