@@ -90,7 +90,7 @@ class AccessToken implements JsonSerializable
             $this->expires = $expires;
         }
 
-        // Capure any additional values that might exist in the token but are
+        // Capture any additional values that might exist in the token but are
         // not part of the standard response. Vendors will sometimes pass
         // additional user data this way.
         $this->values = array_diff_key($options, array_flip([
