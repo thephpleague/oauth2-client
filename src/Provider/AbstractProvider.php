@@ -140,7 +140,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Return the list of options that can be passed to the HttpClient
+     * Returns the list of options that can be passed to the HttpClient
      *
      * @param array $options An array of options to set on this provider.
      *     Options include `clientId`, `clientSecret`, `redirectUri`, and `state`.
@@ -569,7 +569,6 @@ abstract class AbstractProvider
         return $token;
     }
 
-
     /**
      * Returns a PSR-7 request instance that is not authenticated.
      *
@@ -618,7 +617,6 @@ abstract class AbstractProvider
         return $factory->getRequestWithOptions($method, $url, $options);
     }
 
-
     /**
      * Sends a request instance and returns a response instance.
      *
@@ -650,7 +648,6 @@ abstract class AbstractProvider
 
         return $parsed;
     }
-
 
     /**
      * Attempts to parse a JSON response.
