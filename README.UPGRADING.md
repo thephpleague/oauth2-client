@@ -2,6 +2,6 @@
 
 ## Upgrade Guide
 
-### Upgrading to Version 1.0.0
+### Upgrading to Version 1.5
 
-TBD
+You need to install `php-http/guzzle6-adapter` and ` php-http/message`, then use the libaray as normal.

@@ -14,9 +14,11 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\ClientInterface as HttpClientInterface;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
+use GuzzleHttp\Client as GuzzleClient;
+use Http\Adapter\Guzzle6\Client as HttplugGuzzle6;
+use Http\Client\HttpClient;
+use Http\Discovery\HttpClientDiscovery;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -86,7 +88,7 @@ abstract class AbstractProvider
     protected $requestFactory;
 
     /**
-     * @var HttpClientInterface
+     * @var \Http\Client\HttpClient
      */
     protected $httpClient;
 
@@ -94,6 +96,20 @@ abstract class AbstractProvider
      * @var RandomFactory
      */
     protected $randomFactory;
+
+    /**
+     * The options given to the Guzzle6 client
+     * @var array
+     * @deprecated These are to be removed in the next major release.
+     *      These options are only used in getHttpClient to keep BC.
+     */
+    private $guzzle6Options = [];
+
+    /**
+     * @var GuzzleClientInterface
+     * @deprecated This client is only used in getHttpClient to keep BC.
+     */
+    private $guzzleClient;
 
     /**
      * Constructs an OAuth 2.0 service provider.
@@ -124,14 +140,7 @@ abstract class AbstractProvider
         }
         $this->setRequestFactory($collaborators['requestFactory']);
 
-        if (empty($collaborators['httpClient'])) {
-            $client_options = $this->getAllowedClientOptions($options);
-
-            $collaborators['httpClient'] = new HttpClient(
-                array_intersect_key($options, array_flip($client_options))
-            );
-        }
-        $this->setHttpClient($collaborators['httpClient']);
+        $this->setHttpClient($this->getHttpClientFromOptions($options, $collaborators));
 
         if (empty($collaborators['randomFactory'])) {
             $collaborators['randomFactory'] = new RandomFactory();
@@ -208,11 +217,44 @@ abstract class AbstractProvider
     /**
      * Sets the HTTP client instance.
      *
-     * @param  HttpClientInterface $client
+     * @param  HttpClient $client
      * @return self
      */
-    public function setHttpClient(HttpClientInterface $client)
+    public function setHttpClient($client)
     {
+        if ($client instanceof GuzzleClientInterface) {
+            @trigger_error(
+                sprintf(
+                    'Passing a "%s" to "%s::setHttpClient" is deprecated. Use a "Http\Client\HttpClient" instead.',
+                    GuzzleClientInterface::class,
+                    static::class
+                ),
+                E_USER_DEPRECATED
+            );
+            if (!class_exists(HttplugGuzzle6::class)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'You must install "php-http/guzzle6-adapter" to be able to pass a "%s" to "%s::setHttpClient".',
+                        GuzzleClientInterface::class,
+                        static::class
+                    )
+                );
+            }
+            $client = new HttplugGuzzle6($client);
+        }
+
+        if (!$client instanceof HttpClient) {
+            $type = is_object($client) ? get_class($client) : gettype($client);
+            throw new \RuntimeException(
+                sprintf(
+                    'First parameter to "%s::setHttpClient" was expected to be a "%s", you provided a "%s"',
+                    static::class,
+                    HttpClient::class,
+                    $type
+                )
+            );
+        }
+
         $this->httpClient = $client;
 
         return $this;
@@ -221,11 +263,41 @@ abstract class AbstractProvider
     /**
      * Returns the HTTP client instance.
      *
-     * @return HttpClientInterface
+     * @return HttpClient
+     */
+    public function getHttplugClient()
+    {
+        return $this->httpClient;
+    }
+
+    /**
+     * Returns the HTTP client instance.
+     *
+     * @return GuzzleClientInterface
      */
     public function getHttpClient()
     {
-        return $this->httpClient;
+        @trigger_error(
+            sprintf(
+                'Using "%s::getHttpClient" is deprecated in favor for "%s::getHttplugClient".',
+                static::class,
+                static::class
+            ),
+            E_USER_DEPRECATED
+        );
+
+        if ($this->guzzleClient !== null) {
+            return $this->guzzleClient;
+        }
+
+        if (!class_exists(GuzzleClient::class)) {
+            throw new \RuntimeException(
+                'You must install "php-http/guzzle6-adapter" to be able to use "%s::getHttplugClient".',
+                static::class
+            );
+        }
+
+        return new GuzzleClient($this->guzzle6Options);
     }
 
     /**
@@ -625,12 +697,7 @@ abstract class AbstractProvider
      */
     protected function sendRequest(RequestInterface $request)
     {
-        try {
-            $response = $this->getHttpClient()->send($request);
-        } catch (BadResponseException $e) {
-            $response = $e->getResponse();
-        }
-        return $response;
+        return $this->getHttplugClient()->sendRequest($request);
     }
 
     /**
@@ -842,5 +909,63 @@ abstract class AbstractProvider
         }
 
         return $this->getDefaultHeaders();
+    }
+
+    /**
+     * Get a HttpClient from constructor options
+     *
+     * @param array $options
+     * @param array $collaborators
+     *
+     * @return HttpClient
+     */
+    private function getHttpClientFromOptions(array $options, array $collaborators)
+    {
+        if (!empty($collaborators['httplugClient'])) {
+            // Use provided client
+            return $collaborators['httplugClient'];
+        }
+
+        if (empty($collaborators['httpClient'])) {
+            $client_options = $this->getAllowedClientOptions($options);
+            $guzzle6Options = array_intersect_key($options, array_flip($client_options));
+
+            if (empty($guzzle6Options)) {
+                return HttpClientDiscovery::find();
+            } else {
+                @trigger_error(
+                    'Passing options to Guzzle6 client is deprecated. Use "httplugClient" instead',
+                    E_USER_DEPRECATED
+                );
+                if (!class_exists(HttplugGuzzle6::class)) {
+                    throw new \RuntimeException(
+                        'You must install "php-http/guzzle6-adapter" to be able to pass options to the Guzzle6 client.'
+                    );
+                }
+                $this->guzzle6Options = $guzzle6Options;
+
+                return HttplugGuzzle6::createWithConfig($guzzle6Options);
+            }
+        }
+
+        @trigger_error('The "httpClient" option is deprecated. Use "httplugClient" instead', E_USER_DEPRECATED);
+        $client = $collaborators['httpClient'];
+        if (!$client instanceof GuzzleClientInterface) {
+            throw new \RuntimeException(
+                sprintf(
+                    'The value provided with option "HttpClient" must be instance of "%s".',
+                    GuzzleClientInterface::class
+                )
+            );
+        }
+
+        if (!class_exists(HttplugGuzzle6::class)) {
+            throw new \RuntimeException(
+                'You must install "php-http/guzzle6-adapter" to pass a Guzzle6 client with the "httpClient" option.'
+            );
+        }
+
+        $this->guzzleClient = $client;
+        return new HttplugGuzzle6($client);
     }
 }

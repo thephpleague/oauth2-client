@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use GuzzleHttp\ClientInterface;
+use Http\Client\HttpClient;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use League\OAuth2\Client\Token\AccessToken;
@@ -44,7 +44,7 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
     /**
      * Callback to test access token request parameters.
      *
-     * @return Closure
+     * @return \Closure
      */
     abstract protected function getParamExpectation();
 
@@ -64,8 +64,8 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
 
         $paramCheck = $this->getParamExpectation();
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
+        $client = m::mock(HttpClient::class);
+        $client->shouldReceive('sendRequest')->with(
             $request = m::on(function ($request) use ($paramCheck) {
                 parse_str((string) $request->getBody(), $body);
                 return $paramCheck($body);
