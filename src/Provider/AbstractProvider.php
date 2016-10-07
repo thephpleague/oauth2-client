@@ -151,7 +151,7 @@ abstract class AbstractProvider
     {
         $client_options = ['timeout', 'proxy'];
 
-        // Only allow turning off ssl verification is it's for a proxy
+        // Only allow turning off ssl verification if it's for a proxy
         if (!empty($options['proxy'])) {
             $client_options[] = 'verify';
         }
