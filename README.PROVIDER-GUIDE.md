@@ -3,7 +3,7 @@
 ## Provider Guide
 
 New providers may be created by copying the layout of an existing package. See
-the [list of providers](README.PROVIDERS.md) for good examples.
+the [list of providers](docs/providers/thirdparty.md) for good examples.
 
 When choosing a name for your package, please don’t use the `league` vendor
 prefix, as this implies that it is officially supported. You should use your own
@@ -32,7 +32,7 @@ Each of these abstract methods contain a docblock defining their expectations
 and typical behavior. Once you have extended this class, you can simply follow
 the [usage example in the README](README.md#usage) using your new `Provider`.
 
-If you wish to use the `Provider` to make authenticated requests to the 
+If you wish to use the `Provider` to make authenticated requests to the
 service, you will also need to define how you provide the token to the
 service. If this is done via headers, you should override this method:
 
@@ -40,15 +40,15 @@ service. If this is done via headers, you should override this method:
 protected function getAuthorizationHeaders($token = null);
 ```
 
-This package comes with a trait for implementing `Bearer` authorization. 
+This package comes with a trait for implementing `Bearer` authorization.
 To use this, you just need to include the trait in your `Provider` class:
- 
+
 ```php
 <?php
 class SomeProvider extends AbstractProvider
 {
     use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
-    
+
     /** ... **/
 }
 ```
