@@ -27,6 +27,7 @@ use League\OAuth2\Client\Tool\RequestFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RandomLib\Factory as RandomFactory;
+use RandomLib\Generator as RandomGenerator;
 use UnexpectedValueException;
 
 /**
@@ -139,7 +140,7 @@ abstract class AbstractProvider
     }
 
     /**
-     * Return the list of options that can be passed to the HttpClient
+     * Returns the list of options that can be passed to the HttpClient
      *
      * @param array $options An array of options to set on this provider.
      *     Options include `clientId`, `clientSecret`, `redirectUri`, and `state`.
@@ -150,7 +151,7 @@ abstract class AbstractProvider
     {
         $client_options = ['timeout', 'proxy'];
 
-        // Only allow turning off ssl verification is it's for a proxy
+        // Only allow turning off ssl verification if it's for a proxy
         if (!empty($options['proxy'])) {
             $client_options[] = 'verify';
         }
@@ -302,7 +303,7 @@ abstract class AbstractProvider
             ->getRandomFactory()
             ->getMediumStrengthGenerator();
 
-        return $generator->generateString($length);
+        return $generator->generateString($length, RandomGenerator::CHAR_ALNUM);
     }
 
     /**
@@ -355,10 +356,15 @@ abstract class AbstractProvider
         // Store the state as it may need to be accessed later on.
         $this->state = $options['state'];
 
+        // Business code layer might set a different redirect_uri parameter
+        // depending on the context, leave it as-is
+        if (!isset($options['redirect_uri'])) {
+            $options['redirect_uri'] = $this->redirectUri;
+        }
+
         $options['client_id'] = $this->clientId;
-        $options['redirect_uri'] = $this->redirectUri;
         $options['state'] = $this->state;
-        
+
         return $options;
     }
 
@@ -563,7 +569,6 @@ abstract class AbstractProvider
         return $token;
     }
 
-
     /**
      * Returns a PSR-7 request instance that is not authenticated.
      *
@@ -612,7 +617,6 @@ abstract class AbstractProvider
         return $factory->getRequestWithOptions($method, $url, $options);
     }
 
-
     /**
      * Sends a request instance and returns a response instance.
      *
@@ -644,7 +648,6 @@ abstract class AbstractProvider
 
         return $parsed;
     }
-
 
     /**
      * Attempts to parse a JSON response.
