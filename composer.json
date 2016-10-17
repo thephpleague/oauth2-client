@@ -5,7 +5,7 @@
     "require": {
         "php": ">=5.5.0",
         "ext-curl": "*",
-        "ircmaxell/random-lib": "~1.1",
+        "ircmaxell/random-lib": "~1.2",
         "guzzlehttp/guzzle": "~6.0"
     },
     "require-dev": {
