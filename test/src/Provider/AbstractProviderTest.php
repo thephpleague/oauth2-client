@@ -64,7 +64,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'state' => 'XXX'
         ]));
     }
-    
+
     /**
      * Tests https://github.com/thephpleague/oauth2-client/pull/485
      */
@@ -75,7 +75,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         ]);
         $query = parse_url($url, PHP_URL_QUERY);
         $this->assertNotEmpty($query);
-        
+
         parse_str($query, $params);
         $this->assertArrayHasKey('foo', $params);
         $this->assertSame('BAR', $params['foo']);
@@ -582,6 +582,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             ['test.com/?a=1', 'test.com/', 'a=1'],
             ['test.com/?a=1', 'test.com/?a=1', '?'],
             ['test.com/?a=1', 'test.com/?a=1', '&'],
+            ['test.com/?a=1&b=2', 'test.com/?a=1', '&b=2'],
+            ['test.com/?a=1&b=2', 'test.com/?a=1', 'b=2'],
+            ['test.com/?a=1&b=2', 'test.com/?a=1', '?b=2'],
+            ['test.com/?a=1&b=1&b=2', 'test.com/?a=1&b=1', 'b=2'],
+            ['test.com/?a=1&b=2&b=2', 'test.com/?a=1&b=2', 'b=2'],
         ];
     }
 
