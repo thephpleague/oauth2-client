@@ -519,7 +519,8 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenOptions(array $params)
     {
-        $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
+        $defaultHeaders = ['content-type' => 'application/x-www-form-urlencoded'];
+        $options = ['headers' => array_merge($defaultHeaders, $params['headers'])];
 
         if ($this->getAccessTokenMethod() === self::METHOD_POST) {
             $options['body'] = $this->getAccessTokenBody($params);
