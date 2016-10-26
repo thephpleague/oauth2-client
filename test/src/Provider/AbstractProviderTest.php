@@ -670,4 +670,30 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([], $headers);
     }
+
+    public function testGetAccessTokenOptionsWithNewHeader()
+    {
+        $provider = $this->getAbstractProviderMock();
+        $params = [
+            'headers' => [
+                'ExampleHeader' => 'ExampleContent',
+            ]
+        ];
+
+        $options = $provider->getAccessTokenOptions($params);
+        $this->assertEquals('ExampleContent', $options['headers']['ExampleHeader']);
+    }
+
+    public function testGetAccessTokenOptionsWithContentTypeHeader()
+    {
+        $provider = $this->getAbstractProviderMock();
+        $params = [
+            'headers' => [
+                'content-type' => 'ExampleContentType',
+            ]
+        ];
+
+        $options = $provider->getAccessTokenOptions($params);
+        $this->assertEquals('ExampleContentType', $options['headers']['content-type']);
+    }
 }

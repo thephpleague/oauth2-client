@@ -521,7 +521,7 @@ abstract class AbstractProvider
     {
         $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
         if (isset($params['headers']) && is_array($params['headers'])) {
-            $options['headers'] = array_merge($params['headers'], $options['headers']);
+            $options['headers'] = array_merge($options['headers'], $params['headers']);
         }
 
         if ($this->getAccessTokenMethod() === self::METHOD_POST) {
