@@ -641,12 +641,25 @@ abstract class AbstractProvider
      */
     public function getResponse(RequestInterface $request)
     {
-        $response = $this->sendRequest($request);
+        $response = $this->getRawResponse($request);
         $parsed = $this->parseResponse($response);
 
         $this->checkResponse($response, $parsed);
 
         return $parsed;
+    }
+
+    /**
+     * Sends a request and returns the raw response object.
+     *
+     * @param  RequestInterface $request
+     * @return ResponseInterface
+     */
+    public function getRawResponse(RequestInterface $request)
+    {
+        $response = $this->sendRequest($request);
+
+        return $response;
     }
 
     /**
