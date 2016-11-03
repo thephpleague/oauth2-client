@@ -6,10 +6,7 @@ php:
   - 7.0
   - hhvm
 
-sudo: false
-
 before_script:
-  - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source
 
 script:
@@ -18,9 +15,6 @@ script:
   - ./vendor/bin/phpunit --coverage-text
   - ./vendor/bin/phpcs src --standard=psr2 -sp
 
-after_script:
-  - php vendor/bin/coveralls
-
-branches:
-  except:
-    - gh-pages
+after_success:
+  - wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
+  - php coveralls.phar
