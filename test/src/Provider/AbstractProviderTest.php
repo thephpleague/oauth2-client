@@ -159,14 +159,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
     }
 
-    public function testConstructorSetsRandomFactory()
-    {
-        $mockAdapter = m::mock('RandomLib\Factory');
-
-        $mockProvider = new MockProvider([], ['randomFactory' => $mockAdapter]);
-        $this->assertSame($mockAdapter, $mockProvider->getRandomFactory());
-    }
-
     public function testConstructorSetsRequestFactory()
     {
         $mockAdapter = m::mock(RequestFactory::class);
@@ -302,31 +294,21 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('foo,bar', $qs['scope']);
     }
 
-    public function testRandomGeneratorCreatesRandomState()
+    public function testAuthorizationStateIsRandom()
     {
-        $xstate = str_repeat('x', 32);
+        $last = null;
 
-        $generator = m::mock(RandomGenerator::class);
-        $generator->shouldReceive('generateString')->with(32, 7)->times(1)->andReturn($xstate);
+        for ($i = 0; $i < 5; $i++) {
+            // Repeat the test multiple times to verify state changes
+            $url = $this->provider->getAuthorizationUrl();
 
-        $factory = m::mock(RandomFactory::class);
-        $factory->shouldReceive('getMediumStrengthGenerator')->times(1)->andReturn($generator);
+            parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
-        $provider = new MockProvider([], ['randomFactory' => $factory]);
+            $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
+            $this->assertNotSame($qs['state'], $last);
 
-        $url = $provider->getAuthorizationUrl();
-
-        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
-
-        $this->assertArrayHasKey('state', $qs);
-        $this->assertSame($xstate, $qs['state']);
-
-        // Same test, but using the non-mock implementation
-        $url = $this->provider->getAuthorizationUrl();
-
-        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
-
-        $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
+            $last = $qs['state'];
+        }
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
