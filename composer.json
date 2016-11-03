@@ -31,7 +31,13 @@
             "email": "hello@alexbilbie.com",
             "homepage": "http://www.alexbilbie.com",
             "role": "Developer"
+        },
+        {
+            "name": "Woody Gilk",
+            "homepage": "https://github.com/shadowhand",
+            "role": "Contributor"
         }
+
     ],
     "autoload": {
         "psr-4": {
