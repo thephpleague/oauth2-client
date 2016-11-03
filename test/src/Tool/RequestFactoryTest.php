@@ -3,10 +3,10 @@
 namespace League\OAuth2\Client\Test\Tool;
 
 use League\OAuth2\Client\Tool\RequestFactory;
+use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\RequestInterface;
-use Mockery as m;
 
-class RequestFactoryTest extends \PHPUnit_Framework_TestCase
+class RequestFactoryTest extends TestCase
 {
     public function setUp()
     {

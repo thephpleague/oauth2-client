@@ -2,6 +2,10 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use Eloquent\Liberator\Liberator;
+use Eloquent\Phony\Phpunit\Phony;
+use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -9,17 +13,14 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use RandomLib\Factory as RandomFactory;
-use RandomLib\Generator as RandomGenerator;
+use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\ClientInterface;
+use RandomLib\Factory as RandomFactory;
+use RandomLib\Generator as RandomGenerator;
 
-use Mockery as m;
-
-class AbstractProviderTest extends \PHPUnit_Framework_TestCase
+class AbstractProviderTest extends TestCase
 {
     /**
      * @var AbstractProvider
@@ -33,12 +34,6 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ]);
-    }
-
-    public function tearDown()
-    {
-        m::close();
-        parent::tearDown();
     }
 
     /**
@@ -145,7 +140,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsGrantFactory()
     {
-        $mockAdapter = m::mock(GrantFactory::class);
+        $mockAdapter = Phony::mock(GrantFactory::class)->get();
 
         $mockProvider = new MockProvider([], ['grantFactory' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
@@ -153,7 +148,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsHttpAdapter()
     {
-        $mockAdapter = m::mock(ClientInterface::class);
+        $mockAdapter = Phony::mock(ClientInterface::class)->get();
 
         $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
@@ -161,7 +156,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testConstructorSetsRequestFactory()
     {
-        $mockAdapter = m::mock(RequestFactory::class);
+        $mockAdapter = Phony::mock(RequestFactory::class)->get();
 
         $mockProvider = new MockProvider([], ['requestFactory' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getRequestFactory());
@@ -188,6 +183,7 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUserProperties($response, $name = null, $email = null, $id = null)
     {
+        // Mock
         $provider = new MockProvider([
           'clientId' => 'mock_client_id',
           'clientSecret' => 'mock_secret',
@@ -196,36 +192,41 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            json_encode(compact('id', 'name', 'email'))
-        );
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns(json_encode(compact('id', 'name', 'email')));
 
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
 
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
+
+        // Run
+        $provider->setHttpClient($client->get());
+        $user = $provider->getResourceOwner($token);
         $url = $provider->getResourceOwnerDetailsUrl($token);
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($url) {
-                return $request->getMethod() === 'GET'
-                    && $request->hasHeader('Authorization')
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andReturn($response);
-
-        $provider->setHttpClient($client);
-
-        $user = $provider->getResourceOwner($token);
-
+        // Verify
         $this->assertEquals($id, $user->getId());
         $this->assertEquals($name, $user->getUserScreenName());
         $this->assertEquals($email, $user->getUserEmail());
 
         $this->assertArrayHasKey('name', $user->toArray());
         $this->assertArrayHasKey('email', $user->toArray());
+
+        Phony::inOrder(
+            $client->send->calledWith(
+                $this->callback(function ($request) use ($url) {
+                    return $request->getMethod() === 'GET'
+                        && $request->hasHeader('Authorization')
+                        && (string) $request->getUri() === $url;
+                })
+            ),
+            $response->getBody->called(),
+            $stream->__toString->called(),
+            $response->getHeader->called()
+        );
     }
 
     public function userPropertyProvider()
@@ -322,25 +323,18 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $error = ["error" => "Foo error", "code" => 1337];
         $errorJson = json_encode($error);
 
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn($errorJson);
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns($errorJson);
 
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
 
-        $method = $provider->getAccessTokenMethod();
-        $url = $provider->getBaseAccessTokenUrl([]);
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andReturn($response);
-
-        $provider->setHttpClient($client);
+        // Run
+        $provider->setHttpClient($client->get());
 
         $errorMessage = '';
         $errorCode = 0;
@@ -353,9 +347,25 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
             $errorBody = $e->getResponseBody();
         }
 
+        $method = $provider->getAccessTokenMethod();
+        $url = $provider->getBaseAccessTokenUrl([]);
+
+        // Verify
         $this->assertEquals($error['error'], $errorMessage);
         $this->assertEquals($error['code'], $errorCode);
         $this->assertEquals($error, $errorBody);
+
+        Phony::inOrder(
+            $client->send->calledWith(
+                $this->callback(function ($request) use ($method, $url) {
+                    return $request->getMethod() === $method
+                        && (string) $request->getUri() === $url;
+                })
+            ),
+            $response->getBody->called(),
+            $stream->__toString->called(),
+            $response->getHeader->called()
+        );
     }
 
     /**
@@ -369,36 +379,25 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
           'redirectUri' => 'none',
         ]);
 
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            '{"error":"Foo error","code":1337}'
-        );
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns('{"error":"Foo error","code":1337}');
 
-        $request = m::mock(RequestInterface::class);
+        $request = Phony::mock(RequestInterface::class);
 
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getStatusCode')->times(1)->andReturn(400);
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->andReturn('application/json');
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getStatusCode->returns(400);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
 
-        $exception = new BadResponseException(
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->throws(new BadResponseException(
             'test exception',
-            $request,
-            $response
-        );
+            $request->get(),
+            $response->get()
+        ));
 
-        $method = $provider->getAccessTokenMethod();
-        $url    = $provider->getBaseAccessTokenUrl([]);
-
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andThrow($exception);
-
-        $provider->setHttpClient($client);
+        // Run
+        $provider->setHttpClient($client->get());
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
@@ -407,31 +406,37 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $provider = new MockProvider();
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
-
         $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
+
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns('{"example":"response"}');
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->with($request)->returns($response->get());
+
+        // Run
+        $provider->setHttpClient($client->get());
+        $result = $provider->getResponse($request);
+
+        // Verify
+        $this->assertSame(['example' => 'response'], $result);
+
         $this->assertInstanceOf(RequestInterface::class, $request);
 
         // Authorization header should contain the token
         $header = $request->getHeader('Authorization');
         $this->assertContains('Bearer abc', $header);
 
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            '{"example":"response"}'
+        Phony::inOrder(
+            $client->send->called(),
+            $response->getBody->called(),
+            $stream->__toString->called(),
+            $response->getHeader->called()
         );
-
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
-
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with($request)->andReturn($response);
-
-        $provider->setHttpClient($client);
-
-        // Final result should be a parsed response
-        $result = $provider->getResponse($request);
-        $this->assertSame(['example' => 'response'], $result);
     }
 
     public function getAccessTokenMethodProvider()
@@ -458,47 +463,42 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
         $grant_name = 'mock';
         $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
 
-        $grant = m::mock(AbstractGrant::class);
-        $grant->shouldAllowMockingProtectedMethods();
+        $grant = Phony::mock(AbstractGrant::class);
+        $grant->prepareRequestParameters->returns([]);
 
-        $grant->shouldReceive('getName')
-              ->andReturn($grant_name);
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns(json_encode($raw_response));
 
-        $grant->shouldReceive('prepareRequestParameters')
-              ->with(
-                  m::type('array'),
-                  m::type('array')
-              )
-              ->andReturn([]);
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
 
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
-            json_encode($raw_response)
-        );
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
 
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+        // Run
+        $provider->setHttpClient($client->get());
+        $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
 
-        $method = $provider->getAccessTokenMethod();
-        $url    = $provider->getBaseAccessTokenUrl([]);
-
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
-            m::on(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            })
-        )->times(1)->andReturn($response);
-
-        $provider->setHttpClient($client);
-
-        $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
-
+        // Verify
         $this->assertInstanceOf(AccessToken::class, $token);
+
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
+
+        Phony::inOrder(
+            $grant->prepareRequestParameters->calledWith('~', '~'),
+            $client->send->calledWith(
+                $this->callback(function ($request) use ($provider) {
+                    return $request->getMethod() === $provider->getAccessTokenMethod()
+                        && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]);
+                })
+            ),
+            $response->getBody->called(),
+            $stream->__toString->called(),
+            $response->getHeader->called()
+        );
     }
 
     private function getMethod($class, $name)
@@ -536,16 +536,17 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseResponse($body, $type, $parsed)
     {
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns($body);
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns($type);
+
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
+        $result = $method->invoke($this->provider, $response->get());
 
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn($body);
-
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->andReturn($type);
-
-        $this->assertEquals($parsed, $method->invoke($this->provider, $response));
+        $this->assertEquals($parsed, $result);
     }
 
     /**
@@ -578,24 +579,26 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function getAbstractProviderMock()
     {
-        return m::mock(AbstractProvider::class);
+        $mock = Phony::partialMock(AbstractProvider::class);
+        return Liberator::liberate($mock->get());
     }
 
     public function testDefaultAccessTokenMethod()
     {
         $provider = $this->getAbstractProviderMock();
-        $expectedMethod = 'POST';
 
         $method = $provider->getAccessTokenMethod();
 
+        $expectedMethod = 'POST';
         $this->assertEquals($expectedMethod, $method);
     }
 
     public function testDefaultPrepareAccessTokenResponse()
     {
-        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
-        $result = ['user_id' => uniqid()];
+        $provider = Phony::partialMock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
+        $provider = Liberator::liberate($provider->get());
 
+        $result = ['user_id' => uniqid()];
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertTrue(isset($newResult['resource_owner_id']));
@@ -604,12 +607,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testPrepareAccessTokenResponseWithDotNotation()
     {
-        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
-        $result = ['user' => ['id' => uniqid()]];
-        $provider->shouldReceive('getAccessTokenResourceOwnerId')->andReturn('user.id');
+        $provider = Phony::partialMock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
+        $provider->getAccessTokenResourceOwnerId->returns('user.id');
+        $provider = Liberator::liberate($provider->get());
 
+        $result = ['user' => ['id' => uniqid()]];
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertTrue(isset($newResult['resource_owner_id']));
@@ -618,13 +620,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testPrepareAccessTokenResponseWithInvalidKeyType()
     {
-        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
+        $provider = Phony::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
+        $provider->getAccessTokenResourceOwnerId->returns(new \stdClass);
+        $provider = Liberator::liberate($provider->get());
+
         $result = ['user_id' => uniqid()];
-
-        $provider->shouldReceive('getAccessTokenResourceOwnerId')->andReturn(new \stdClass);
-
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertFalse(isset($newResult['resource_owner_id']));
@@ -632,13 +632,11 @@ class AbstractProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testPrepareAccessTokenResponseWithInvalidKeyPath()
     {
-        $provider = m::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)
-            ->shouldAllowMockingProtectedMethods()
-            ->makePartial();
+        $provider = Phony::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
+        $provider->getAccessTokenResourceOwnerId->returns('user.name');
+        $provider = Liberator::liberate($provider->get());
+
         $result = ['user' => ['id' => uniqid()]];
-
-        $provider->shouldReceive('getAccessTokenResourceOwnerId')->andReturn('user.name');
-
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertFalse(isset($newResult['resource_owner_id']));
