@@ -2,16 +2,19 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
+use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\ClientInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
-use Mockery as m;
 
-abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
+abstract class GrantTestCase extends TestCase
 {
-    /** @var \League\OAuth2\Client\Provider\AbstractProvider */
+    /**
+     * @var \League\OAuth2\Client\Provider\AbstractProvider
+     */
     protected $provider;
 
     protected function setUp()
@@ -21,12 +24,6 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ));
-    }
-
-    public function tearDown()
-    {
-        m::close();
-        parent::tearDown();
     }
 
     /**
@@ -53,28 +50,36 @@ abstract class GrantTestCase extends \PHPUnit_Framework_TestCase
      */
     public function testGetAccessToken($grant, array $params = [])
     {
-        $stream = m::mock(StreamInterface::class);
-        $stream->shouldReceive('__toString')->times(1)->andReturn(
+        // Mock
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns(
             '{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'
         );
 
-        $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getBody')->times(1)->andReturn($stream);
-        $response->shouldReceive('getHeader')->with('content-type')->times(1)->andReturn('application/json');
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
 
-        $paramCheck = $this->getParamExpectation();
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
 
-        $client = m::mock(ClientInterface::class);
-        $client->shouldReceive('send')->with(
-            $request = m::on(function ($request) use ($paramCheck) {
-                parse_str((string) $request->getBody(), $body);
-                return $paramCheck($body);
-            })
-        )->times(1)->andReturn($response);
-
-        $this->provider->setHttpClient($client);
-
+        // Execute
+        $this->provider->setHttpClient($client->get());
         $token = $this->provider->getAccessToken($grant, $params);
+
+        // Verify
         $this->assertInstanceOf(AccessToken::class, $token);
+
+        Phony::inOrder(
+            $client->send->times(1)->calledWith(
+                $this->callback(function ($request) {
+                    parse_str((string) $request->getBody(), $body);
+                    return call_user_func($this->getParamExpectation(), $body);
+                })
+            ),
+            $response->getBody->times(1)->called(),
+            $stream->__toString->times(1)->called(),
+            $response->getHeader->times(1)->called()
+        );
     }
 }
