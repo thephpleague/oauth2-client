@@ -1,10 +1,36 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
-  - 7.1
-  - hhvm
+matrix:
+    include:
+        - php: 5.6
+        - php: 7.0
+        - php: 7.1
+        - php: nightly
+        - php: hhvm-3.6
+          sudo: required
+          dist: trusty
+          group: edge
+        - php: hhvm-3.9
+          sudo: required
+          dist: trusty
+          group: edge
+        - php: hhvm-3.12
+          sudo: required
+          dist: trusty
+          group: edge
+        - php: hhvm-3.15
+          sudo: required
+          dist: trusty
+          group: edge
+        - php: hhvm-nightly
+          sudo: required
+          dist: trusty
+          group: edge
+    fast_finish: true
+    allow_failures:
+        - php: 7.1
+        - php: nightly
+        - php: hhvm-nightly
 
 before_script:
   - travis_retry composer install --no-interaction --prefer-source
