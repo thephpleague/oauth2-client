@@ -401,6 +401,24 @@ class AbstractProviderTest extends TestCase
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
+    public function testGetResponse()
+    {
+        $provider = new MockProvider();
+
+        $request = Phony::mock(RequestInterface::class)->get();
+        $response = Phony::mock(ResponseInterface::class)->get();
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->with($request)->returns($response);
+
+        // Run
+        $provider->setHttpClient($client->get());
+        $output = $provider->getResponse($request);
+
+        // Verify
+        $this->assertSame($output, $response);
+    }
+
     public function testAuthenticatedRequestAndResponse()
     {
         $provider = new MockProvider();
@@ -420,7 +438,7 @@ class AbstractProviderTest extends TestCase
 
         // Run
         $provider->setHttpClient($client->get());
-        $result = $provider->getResponse($request);
+        $result = $provider->getParsedResponse($request);
 
         // Verify
         $this->assertSame(['example' => 'response'], $result);

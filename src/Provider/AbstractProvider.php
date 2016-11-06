@@ -527,7 +527,7 @@ abstract class AbstractProvider
 
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
-        $response = $this->getResponse($request);
+        $response = $this->getParsedResponse($request);
         $prepared = $this->prepareAccessTokenResponse($response);
         $token    = $this->createAccessToken($prepared, $grant);
 
@@ -585,17 +585,15 @@ abstract class AbstractProvider
     /**
      * Sends a request instance and returns a response instance.
      *
+     * WARNING: This method does not attempt to catch exceptions caused by HTTP
+     * errors! It is recommended to wrap this method in a try/catch block.
+     *
      * @param  RequestInterface $request
      * @return ResponseInterface
      */
-    protected function sendRequest(RequestInterface $request)
+    public function getResponse(RequestInterface $request)
     {
-        try {
-            $response = $this->getHttpClient()->send($request);
-        } catch (BadResponseException $e) {
-            $response = $e->getResponse();
-        }
-        return $response;
+        return $this->getHttpClient()->send($request);
     }
 
     /**
@@ -604,9 +602,14 @@ abstract class AbstractProvider
      * @param  RequestInterface $request
      * @return mixed
      */
-    public function getResponse(RequestInterface $request)
+    public function getParsedResponse(RequestInterface $request)
     {
-        $response = $this->sendRequest($request);
+        try {
+            $response = $this->getResponse($request);
+        } catch (BadResponseException $e) {
+            $response = $e->getResponse();
+        }
+
         $parsed = $this->parseResponse($response);
 
         $this->checkResponse($response, $parsed);
@@ -757,7 +760,7 @@ abstract class AbstractProvider
 
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
-        return $this->getResponse($request);
+        return $this->getParsedResponse($request);
     }
 
     /**
