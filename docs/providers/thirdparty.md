@@ -34,6 +34,7 @@ Gateway | Composer Package | Maintainer
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
 [Discord](https://github.com/teamreflex/oauth2-discord) | team-reflex/oauth2-discord | [David Cole](https://github.com/uniquoooo)
+[Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
 [Dropbox](https://github.com/pixelfear/oauth2-dropbox) | pixelfear/oauth2-dropbox | [Jason Varga](https://github.com/jasonvarga)
 [Drupal](https://github.com/chrishemmings/oauth2-drupal) | chrishemmings/oauth2-drupal | [Chris Hemmings](https://github.com/chrishemmings)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
