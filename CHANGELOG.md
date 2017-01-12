@@ -1,5 +1,13 @@
 # OAuth 2.0 Client Changelog
 
+## 2.0.0
+
+_Released: 2017-01-12_
+
+* Rename `getResponse()` to `getParsedResponse()`
+* Add `getResponse()` method that returns the unparsed PSR-7 `Response` instance
+* Removed `RandomFactory`, switched to native random functions
+
 ## 1.4.1
 
 _Released: 2016-04-29_
