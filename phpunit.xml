@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="./test/Bootstrap.php">
-	<testsuites>
-		<testsuite name="all">
-			<directory>./test</directory>
-		</testsuite>
-	</testsuites>
+<phpunit colors="true" bootstrap="./vendor/autoload.php">
+    <testsuites>
+        <testsuite name="all">
+            <directory>./test</directory>
+        </testsuite>
+    </testsuites>
 
-	<filter>
-		<whitelist>
+    <filter>
+        <whitelist>
             <directory suffix=".php">src/</directory>
         </whitelist>
-	</filter>
+    </filter>
 
-	<logging>
-        <log type="tap" target="build/report.tap"/>
+    <logging>
         <log type="junit" target="build/report.junit.xml"/>
         <log type="coverage-text" target="php://stdout"/>
         <log type="coverage-html" target="build/coverage" charset="UTF-8" yui="true" highlight="true"/>
