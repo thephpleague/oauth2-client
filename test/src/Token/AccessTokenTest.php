@@ -2,10 +2,11 @@
 
 namespace League\OAuth2\Client\Test\Token;
 
+use Eloquent\Phony\Phpunit\Phony;
 use League\OAuth2\Client\Token\AccessToken;
-use Mockery as m;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class AccessTokenTest extends \PHPUnit_Framework_TestCase
+class AccessTokenTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
@@ -60,32 +61,44 @@ class AccessTokenTest extends \PHPUnit_Framework_TestCase
 
     public function testHasNotExpiredWhenPropertySetInFuture()
     {
+        // Mock
         $options = [
             'access_token' => 'access_token'
         ];
 
         $expectedExpires = strtotime('+1 day');
-        $token = m::mock(AccessToken::class, [$options])->makePartial();
-        $token->shouldReceive('getExpires')->once()->andReturn($expectedExpires);
 
-        $hasExpired = $token->hasExpired();
+        $token = Phony::partialMock(AccessToken::class, [$options]);
+        $token->getExpires->returns($expectedExpires);
 
+        // Run
+        $hasExpired = $token->get()->hasExpired();
+
+        // Verify
         $this->assertFalse($hasExpired);
+
+        $token->getExpires->called();
     }
 
     public function testHasExpiredWhenPropertySetInPast()
     {
+        // Mock
         $options = [
             'access_token' => 'access_token'
         ];
 
         $expectedExpires = strtotime('-1 day');
-        $token = m::mock(AccessToken::class, [$options])->makePartial();
-        $token->shouldReceive('getExpires')->once()->andReturn($expectedExpires);
 
-        $hasExpired = $token->hasExpired();
+        $token = Phony::partialMock(AccessToken::class, [$options]);
+        $token->getExpires->returns($expectedExpires);
 
+        // Run
+        $hasExpired = $token->get()->hasExpired();
+
+        // Verify
         $this->assertTrue($hasExpired);
+
+        $token->getExpires->called();
     }
 
     /**

@@ -2,16 +2,16 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use Eloquent\Phony\Phpunit\Phony;
 use League\OAuth2\Client\Test\Provider\Generic as MockProvider;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
+use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 
-use Mockery as m;
-
-class GenericProviderTest extends \PHPUnit_Framework_TestCase
+class GenericProviderTest extends TestCase
 {
     public function testRequiredOptions()
     {
@@ -110,7 +110,7 @@ class GenericProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckResponse()
     {
-        $response = m::mock(ResponseInterface::class);
+        $response = Phony::mock(ResponseInterface::class);
 
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
@@ -125,7 +125,7 @@ class GenericProviderTest extends \PHPUnit_Framework_TestCase
         $checkResponse = $reflection->getMethod('checkResponse');
         $checkResponse->setAccessible(true);
 
-        $this->assertNull($checkResponse->invokeArgs($provider, [$response, []]));
+        $this->assertNull($checkResponse->invokeArgs($provider, [$response->get(), []]));
     }
 
     /**
@@ -133,7 +133,7 @@ class GenericProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckResponseThrowsException()
     {
-        $response = m::mock(ResponseInterface::class);
+        $response = Phony::mock(ResponseInterface::class);
 
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
@@ -148,7 +148,7 @@ class GenericProviderTest extends \PHPUnit_Framework_TestCase
         $checkResponse = $reflection->getMethod('checkResponse');
         $checkResponse->setAccessible(true);
 
-        $checkResponse->invokeArgs($provider, [$response, [
+        $checkResponse->invokeArgs($provider, [$response->get(), [
             'error' => 'foobar',
         ]]);
     }
