@@ -77,14 +77,11 @@ class AccessToken implements JsonSerializable
         // 'expires_in' since it is defined in RFC6749 Section 5.1.
         // Defer to 'expires' if it is provided instead.
         if (isset($options['expires_in'])) {
-
             if (!is_numeric($options['expires_in'])) {
                 throw new \InvalidArgumentException('expires_in value must be an integer');
             }
 
             $this->expires = $options['expires_in'] != 0 ? time() + $options['expires_in'] : 0;
-
- 
         } elseif (!empty($options['expires'])) {
             // Some providers supply the seconds until expiration rather than
             // the exact timestamp. Take a best guess at which we received.
