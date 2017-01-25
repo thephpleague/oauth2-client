@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 2.1.0
+
+_Released: 2017-01-24_
+
+* Allow `expires_in` with a value of `0`
+
 ## 2.0.0
 
 _Released: 2017-01-12_
