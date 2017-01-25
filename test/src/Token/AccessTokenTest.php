@@ -114,6 +114,19 @@ class AccessTokenTest extends TestCase
         $hasExpired = $token->hasExpired();
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testInvalidExpiresIn()
+    {
+	 $options = [
+            'access_token' => 'access_token',
+            'expires_in' => 'TEXT',
+         ];
+         $token = $this->getAccessToken($options);
+    }
+
+
     public function testJsonSerializable()
     {
         $options = [
