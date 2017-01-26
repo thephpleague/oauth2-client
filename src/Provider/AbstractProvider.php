@@ -328,7 +328,6 @@ abstract class AbstractProvider
         }
 
         $options['client_id'] = $this->clientId;
-        $options['state'] = $this->state;
 
         return $options;
     }
