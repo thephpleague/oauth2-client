@@ -583,6 +583,11 @@ class AbstractProviderTest extends TestCase
             ['test.com/?a=1', 'test.com/', 'a=1'],
             ['test.com/?a=1', 'test.com/?a=1', '?'],
             ['test.com/?a=1', 'test.com/?a=1', '&'],
+            ['test.com/?a=1&b=2', 'test.com/?a=1', '&b=2'],
+            ['test.com/?a=1&b=2', 'test.com/?a=1', 'b=2'],
+            ['test.com/?a=1&b=2', 'test.com/?a=1', '?b=2'],
+            ['test.com/?a=1&b=1&b=2', 'test.com/?a=1&b=1', 'b=2'],
+            ['test.com/?a=1&b=2&b=2', 'test.com/?a=1&b=2', 'b=2'],
         ];
     }
 
