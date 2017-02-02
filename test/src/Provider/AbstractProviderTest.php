@@ -17,8 +17,6 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
-use RandomLib\Factory as RandomFactory;
-use RandomLib\Generator as RandomGenerator;
 
 class AbstractProviderTest extends TestCase
 {
@@ -299,7 +297,7 @@ class AbstractProviderTest extends TestCase
     {
         $last = null;
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             // Repeat the test multiple times to verify state changes
             $url = $this->provider->getAuthorizationUrl();
 
