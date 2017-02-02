@@ -1,5 +1,14 @@
 # OAuth 2.0 Client Changelog
 
+## 2.2.0
+
+_Released: 2017-02-01_
+
+* Allow base URLs to contain query parameters
+* Protect against `+` being improperly encoded in URL parameters
+* Remove misleading `state` option from authorization parameters
+* Stop generating more random bytes than necessary
+
 ## 2.1.0
 
 _Released: 2017-01-24_
