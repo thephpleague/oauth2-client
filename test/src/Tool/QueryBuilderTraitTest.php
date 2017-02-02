@@ -19,10 +19,11 @@ class QueryBuilderTraitTest extends PHPUnit_Framework_TestCase
         $params = [
             'a' => 'foo',
             'b' => 'bar',
+            'c' => '+',
         ];
 
         $query = $this->buildQueryString($params);
 
-        $this->assertSame('a=foo&b=bar', $query);
+        $this->assertSame('a=foo&b=bar&c=%2B', $query);
     }
 }
