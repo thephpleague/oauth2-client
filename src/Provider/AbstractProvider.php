@@ -674,6 +674,14 @@ abstract class AbstractProvider
                 throw $e;
             }
 
+            if ($response->getStatusCode() == 500) {
+                throw new UnexpectedValueException(
+                    'An OAuth server error was encountered that did not contain a JSON body',
+                    0,
+                    $e
+                );
+            }
+
             return $content;
         }
     }
