@@ -81,9 +81,12 @@ if (!isset($_GET['code'])) {
     exit;
 
 // Check given state against previously stored one to mitigate CSRF attack
-} elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+} elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
 
-    unset($_SESSION['oauth2state']);
+    if (isset($_SESSION['oauth2state'])) {
+        unset($_SESSION['oauth2state']);
+    }
+    
     exit('Invalid state');
 
 } else {
@@ -97,10 +100,10 @@ if (!isset($_GET['code'])) {
 
         // We have an access token, which we may use in authenticated
         // requests against the service provider's API.
-        echo $accessToken->getToken() . "\n";
-        echo $accessToken->getRefreshToken() . "\n";
-        echo $accessToken->getExpires() . "\n";
-        echo ($accessToken->hasExpired() ? 'expired' : 'not expired') . "\n";
+        echo 'Access Token: ' . $accessToken->getToken() . "<br>";
+        echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
+        echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
+        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
         // Using the access token, we may look up details about the
         // resource owner.
