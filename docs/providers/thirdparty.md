@@ -46,6 +46,7 @@ Gateway | Composer Package | Maintainer
 [GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
 [Harvest](https://github.com/nilesuan/oauth2-harvest) | nilesuan/oauth2-harvest | [Nile Suan](https://github.com/nilesuan)
 [HeadHunter](https://packagist.org/packages/alexmasterov/oauth2-headhunter) | alexmasterov/oauth2-headhunter | [Alex Masterov](https://github.com/AlexMasterov)
+[Heroku](https://github.com/stevenmaguire/oauth2-heroku) | stevenmaguire/oauth2-heroku | [Steven Maguire](https://github.com/stevenmaguire)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
