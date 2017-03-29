@@ -65,7 +65,7 @@ Gateway | Composer Package | Maintainer
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
 [Resource Guru](https://github.com/adam-paterson/oauth2-resource-guru) | adam-paterson/oauth2-resource-guru | [Adam Paterson](https://github.com/adam-paterson)
 [Salesforce](https://github.com/stevenmaguire/oauth2-salesforce) | stevenmaguire/oauth2-salesforce | [Steven Maguire](https://github.com/stevenmaguire)
-[Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
+[Shopify](https://github.com/pizdata/oauth2-shopify-php) | pizdata/oauth2-shopify-php | [Pizdata](https://github.com/pizdata)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
 [Spotify](https://packagist.org/packages/audeio/spotify-web-api) | audeio/spotify-web-api | [Jonjo McKay](https://github.com/jonjomckay)
 [Stripe](https://github.com/adam-paterson/oauth2-stripe) | adam-paterson/oauth2-stripe | [Adam Paterson](https://github.com/adam-paterson)
