@@ -77,6 +77,7 @@ Gateway | Composer Package | Maintainer
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
 [Uber](https://github.com/stevenmaguire/oauth2-uber) | stevenmaguire/oauth2-uber | [Steven Maguire](https://github.com/stevenmaguire)
+[Unsplash](https://github.com/hughbertd/oauth2-unsplash) | hughbertd/oauth2-unsplash | [Hugh Downer](https://github.com/hughbertd)
 [Untappd](https://github.com/shadowhand/oauth2-untappd) | shadowhand/oauth2-untappd | [Woody Gilk](https://github.com/shadowhand)
 [Vend](https://github.com/wheniwork/oauth2-vend) | wheniwork/oauth2-vend | [When I Work](https://github.com/wheniwork)
 [Vimeo](https://github.com/saf33r/oauth2-vimeo) | saf33r/oauth2-vimeo | [Safeer Ahmed](https://github.com/saf33r)
