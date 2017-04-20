@@ -33,7 +33,7 @@ class IdentityProviderException extends \Exception
     {
         $this->response = $response;
 
-        parent::__construct($message, $code);
+        parent::__construct($message['message'], $message['code']);
     }
 
     /**
