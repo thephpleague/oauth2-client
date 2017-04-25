@@ -1,5 +1,12 @@
 # OAuth 2.0 Client Changelog
 
+## 2.2.1
+
+_Released: 2017-04-25_
+
+* Fix potential type error when HTTP 500 errors are encountered
+* Allow broader range of `random_compat` versions
+
 ## 2.2.0
 
 _Released: 2017-02-01_
