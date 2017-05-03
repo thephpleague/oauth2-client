@@ -28,7 +28,7 @@ class AccessToken implements JsonSerializable
     /**
      * @var string
      */
-    protected $accessToken;
+    protected $access_token;
 
     /**
      * @var int
@@ -38,7 +38,7 @@ class AccessToken implements JsonSerializable
     /**
      * @var string
      */
-    protected $refreshToken;
+    protected $refresh_token;
 
     /**
      * @var string
