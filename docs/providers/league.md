@@ -10,9 +10,9 @@ Official Providers
 Due to the vast (and ever-growing) number of OAuth 2.0 services that exist, it would be impossible to maintain first-party
 support for every OAuth 2 provider without damaging our ability to make this package the best it can be. Therefore we will only accept
 very high-quality providers into the `league` namespace on a case-by-case basis. You can find some of the criteria on the 
-[third-party providers page](/providers/thirdparty)
+[third-party providers page][providers_thirdparty].
 
-There are a [large number of community packages](/providers/thirdparty) that interface with other systems.
+There are a [large number of community packages][providers_thirdparty] that interface with other systems.
 
 Installation of any of these packages can be done with composer:
 
@@ -27,3 +27,6 @@ Gateway | Composer Package | Maintainer
 [Google](https://github.com/thephpleague/oauth2-google) | league/oauth2-google | [Woody Gilk](https://github.com/shadowhand)
 [Instagram](https://github.com/thephpleague/oauth2-instagram) | league/oauth2-instagram | [Steven Maguire](https://github.com/stevenmaguire)
 [LinkedIn](https://github.com/thephpleague/oauth2-linkedin) | league/oauth2-linkedin | [Steven Maguire](https://github.com/stevenmaguire)
+
+
+[providers_thirdparty]: https://github.com/thephpleague/oauth2-client/blob/master/docs/providers/thirdparty.md
