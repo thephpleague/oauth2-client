@@ -227,6 +227,37 @@ class AbstractProviderTest extends TestCase
         );
     }
 
+    /**
+     * @dataProvider userPropertyProvider
+     */
+    public function testGetUserPropertiesThrowsExceptionWhenNonJsonResponseIsReceived()
+    {
+        $this->expectException(\UnexpectedValueException::class);
+// Mock
+        $provider = new MockProvider([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+        ]);
+
+        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns("<html><body>some unexpected response.</body></html>");
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('text/html');
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
+
+        // Run
+        $provider->setHttpClient($client->get());
+
+        $user = $provider->getResourceOwner($token);
+    }
+
     public function userPropertyProvider()
     {
         $response = [
