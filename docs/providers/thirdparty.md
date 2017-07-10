@@ -33,6 +33,7 @@ Gateway | Composer Package | Maintainer
 [Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
+[DeviantArt](https://github.com/SeinopSys/oauth2-deviantart) | seinopsys/oauth2-deviantart | [SeinopSys](https://github.com/SeinopSys)
 [DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
 [Discord](https://github.com/teamreflex/oauth2-discord) | team-reflex/oauth2-discord | [David Cole](https://github.com/uniquoooo)
 [Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
