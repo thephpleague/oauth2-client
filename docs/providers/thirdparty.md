@@ -39,6 +39,7 @@ Gateway | Composer Package | Maintainer
 [Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
 [Drupal](https://github.com/chrishemmings/oauth2-drupal) | chrishemmings/oauth2-drupal | [Chris Hemmings](https://github.com/chrishemmings)
+[Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
