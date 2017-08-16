@@ -34,7 +34,7 @@ Gateway | Composer Package | Maintainer
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [DeviantArt](https://github.com/SeinopSys/oauth2-deviantart) | seinopsys/oauth2-deviantart | [SeinopSys](https://github.com/SeinopSys)
-[DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
+[DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/oauth2-digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
 [Discord](https://github.com/teamreflex/oauth2-discord) | team-reflex/oauth2-discord | [David Cole](https://github.com/uniquoooo)
 [Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
