@@ -6,6 +6,7 @@ use Eloquent\Liberator\Liberator;
 use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\ClientInterface;
+use function GuzzleHttp\Psr7\parse_query;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -540,6 +541,107 @@ class AbstractProviderTest extends TestCase
                 $this->callback(function ($request) use ($provider) {
                     return $request->getMethod() === $provider->getAccessTokenMethod()
                         && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]);
+                })
+            ),
+            $response->getBody->called(),
+            $stream->__toString->called(),
+            $response->getHeader->called()
+        );
+    }
+
+    public function testBasicAuth()
+    {
+        $options = [
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+            'authType' => AbstractProvider::AUTH_BASIC
+        ];
+        $provider = new MockProvider($options);
+
+        $grant_name = 'mock';
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+
+        $grant = Phony::mock(AbstractGrant::class);
+        $grant->prepareRequestParameters->returns(['client_id' => $options['clientId'], 'client_secret' => $options['clientSecret']]);
+
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns(json_encode($raw_response));
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
+
+        // Run
+        $provider->setHttpClient($client->get());
+        $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
+
+        // Verify
+        $this->assertInstanceOf(AccessToken::class, $token);
+
+        $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
+        $this->assertSame($raw_response['access_token'], $token->getToken());
+        $this->assertSame($raw_response['expires'], $token->getExpires());
+
+        $expectedHeader = 'Basic ' . base64_encode(urlencode($options['clientId']) . ':' . urlencode($options['clientSecret']));
+        Phony::inOrder(
+            $grant->prepareRequestParameters->calledWith('~', '~'),
+            $client->send->calledWith(
+                $this->callback(function ($request) use ($provider, $expectedHeader) {
+                    return current($request->getHeader('authorization')) == $expectedHeader;
+                })
+            ),
+            $response->getBody->called(),
+            $stream->__toString->called(),
+            $response->getHeader->called()
+        );
+    }
+
+    public function testDefaultAuth()
+    {
+        $options = [
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none'
+        ];
+        $provider = new MockProvider($options);
+
+        $grant_name = 'mock';
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+
+        $grant = Phony::mock(AbstractGrant::class);
+        $grant->prepareRequestParameters->returns(['client_id' => $options['clientId'], 'client_secret' => $options['clientSecret']]);
+
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns(json_encode($raw_response));
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('application/json');
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
+
+        // Run
+        $provider->setHttpClient($client->get());
+        $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
+
+        // Verify
+        $this->assertInstanceOf(AccessToken::class, $token);
+
+        $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
+        $this->assertSame($raw_response['access_token'], $token->getToken());
+        $this->assertSame($raw_response['expires'], $token->getExpires());
+
+        Phony::inOrder(
+            $grant->prepareRequestParameters->calledWith('~', '~'),
+            $client->send->calledWith(
+                $this->callback(function ($request) use ($provider, $options) {
+                    $query = parse_query((string)$request->getBody());
+                    return $query['client_id'] == $options['clientId'] && $query['client_secret'] == $options['clientSecret'];
                 })
             ),
             $response->getBody->called(),
