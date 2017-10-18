@@ -591,7 +591,8 @@ class AbstractProviderTest extends TestCase
             $grant->prepareRequestParameters->calledWith('~', '~'),
             $client->send->calledWith(
                 $this->callback(function ($request) use ($provider, $expectedHeader) {
-                    return current($request->getHeader('authorization')) == $expectedHeader;
+                    $query = parse_query((string)$request->getBody());
+                    return current($request->getHeader('authorization')) == $expectedHeader && !isset($query['client_id']) && !isset($query['client_secret']);
                 })
             ),
             $response->getBody->called(),
@@ -641,7 +642,7 @@ class AbstractProviderTest extends TestCase
             $client->send->calledWith(
                 $this->callback(function ($request) use ($provider, $options) {
                     $query = parse_query((string)$request->getBody());
-                    return $query['client_id'] == $options['clientId'] && $query['client_secret'] == $options['clientSecret'];
+                    return empty($request->getHeader('authorization')) && $query['client_id'] == $options['clientId'] && $query['client_secret'] == $options['clientSecret'];
                 })
             ),
             $response->getBody->called(),
