@@ -563,7 +563,9 @@ class AbstractProviderTest extends TestCase
         $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
 
         $grant = Phony::mock(AbstractGrant::class);
-        $grant->prepareRequestParameters->returns(['client_id' => $options['clientId'], 'client_secret' => $options['clientSecret']]);
+        $grant->prepareRequestParameters->returns(
+            ['client_id' => $options['clientId'], 'client_secret' => $options['clientSecret']]
+        );
 
         $stream = Phony::mock(StreamInterface::class);
         $stream->__toString->returns(json_encode($raw_response));
@@ -586,7 +588,8 @@ class AbstractProviderTest extends TestCase
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
 
-        $expectedHeader = 'Basic ' . base64_encode(urlencode($options['clientId']) . ':' . urlencode($options['clientSecret']));
+        $expectedHeader = 'Basic ' .
+            base64_encode(urlencode($options['clientId']) . ':' . urlencode($options['clientSecret']));
         Phony::inOrder(
             $grant->prepareRequestParameters->calledWith('~', '~'),
             $client->send->calledWith(

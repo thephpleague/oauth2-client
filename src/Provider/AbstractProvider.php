@@ -490,7 +490,8 @@ abstract class AbstractProvider
         $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
 
         if ($this->authType === self::AUTH_BASIC && isset($params['client_id']) && isset($params['client_secret'])) {
-            $options['headers']['authorization'] = 'Basic ' . base64_encode(urlencode($params['client_id']) . ':' . urlencode($params['client_secret']));
+            $options['headers']['authorization'] = 'Basic ' .
+                base64_encode(urlencode($params['client_id']) . ':' . urlencode($params['client_secret']));
             unset($params['client_id']);
             unset($params['client_secret']);
         }
