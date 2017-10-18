@@ -91,7 +91,7 @@ abstract class AbstractProvider
      */
     protected $httpClient;
 
-    private $authType = self::AUTH_FORM;
+    protected $authType = self::AUTH_FORM;
 
     /**
      * Constructs an OAuth 2.0 service provider.
