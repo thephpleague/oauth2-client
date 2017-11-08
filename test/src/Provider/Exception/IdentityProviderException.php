@@ -3,8 +3,9 @@
 namespace League\OAuth2\Client\Test\Provider\Exception;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use PHPUnit\Framework\TestCase;
 
-class IdentityProviderExceptionTest extends \PHPUnit_Framework_TestCase
+class IdentityProviderExceptionTest extends TestCase
 {
     protected $result;
 
