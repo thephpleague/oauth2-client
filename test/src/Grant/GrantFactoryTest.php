@@ -6,7 +6,7 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Test\Grant\Fake as MockGrant;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class GrantFactoryTest extends TestCase
 {

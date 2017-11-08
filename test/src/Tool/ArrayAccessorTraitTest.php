@@ -3,9 +3,9 @@
 namespace League\OAuth2\Client\Test\Tool;
 
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class ArrayAccessorTraitTest extends PHPUnit_Framework_TestCase
+class ArrayAccessorTraitTest extends TestCase
 {
     use ArrayAccessorTrait;
 

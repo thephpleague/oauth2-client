@@ -6,11 +6,11 @@ use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Tool\ProviderRedirectTrait;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 
-class ProviderRedirectTraitTest extends PHPUnit_Framework_TestCase
+class ProviderRedirectTraitTest extends TestCase
 {
     use ProviderRedirectTrait;
 

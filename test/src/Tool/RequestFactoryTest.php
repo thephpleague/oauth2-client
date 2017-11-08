@@ -3,7 +3,7 @@
 namespace League\OAuth2\Client\Test\Tool;
 
 use League\OAuth2\Client\Tool\RequestFactory;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 
 class RequestFactoryTest extends TestCase
