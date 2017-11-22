@@ -1,14 +1,14 @@
 ---
 layout: default
 title: Implementing Your Own Provider
-permalink: /providers/implementing/
+permalink: /docs/providers/implementing/
 ---
 
 Implementing a Provider
 ========================
 
 > Hint: New providers may be created by copying the layout of an existing package. See
-the [first party](/providers/league) and [third party](/providers/thirdparty) providers for good examples.
+the [first party](league.md) and [third party](thirdparty.md) providers for good examples.
 
 When choosing a name for your package, please don’t use the `league` vendor
 prefix, as this implies that it is officially supported. You should use your own
@@ -35,7 +35,7 @@ abstract protected function createResourceOwner(array $response, AccessToken $to
 
 Each of these abstract methods contain a docblock defining their expectations
 and typical behavior. Once you have extended this class, you can simply follow
-the [basic usage example](/usage) using your new `Provider`.
+the [basic usage example](/docs/usage.md) using your new `Provider`.
 
 Resource owner identifiers in access token responses
 -----------------------------------------------------
