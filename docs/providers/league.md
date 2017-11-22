@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Official Providers
-permalink: /providers/league/
+permalink: /docs/providers/league/
 ---
 
 Official Providers
@@ -10,9 +10,9 @@ Official Providers
 Due to the vast (and ever-growing) number of OAuth 2.0 services that exist, it would be impossible to maintain first-party
 support for every OAuth 2 provider without damaging our ability to make this package the best it can be. Therefore we will only accept
 very high-quality providers into the `league` namespace on a case-by-case basis. You can find some of the criteria on the 
-[third-party providers page](/providers/thirdparty)
+[third-party providers page](thirdparty.md)
 
-There are a [large number of community packages](/providers/thirdparty) that interface with other systems.
+There are a [large number of community packages](thirdparty.md) that interface with other systems.
 
 Installation of any of these packages can be done with composer:
 
