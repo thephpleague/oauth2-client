@@ -3,9 +3,9 @@
 namespace League\OAuth2\Client\Test\Tool;
 
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class QueryBuilderTraitTest extends PHPUnit_Framework_TestCase
+class QueryBuilderTraitTest extends TestCase
 {
     use QueryBuilderTrait;
 

@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Test\Token;
 
 use Eloquent\Phony\Phpunit\Phony;
 use League\OAuth2\Client\Token\AccessToken;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class AccessTokenTest extends TestCase
 {
