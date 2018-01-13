@@ -9,7 +9,7 @@ Third-Party Providers
 
 These providers allow integration with other providers not supported by `oauth2-client`. They may require an older
 version so please help them out with a pull request if you notice this. If you're looking for an official `league` provider,
-you can check out the [first party providers](/providers/league) page.
+you can check out the [first party providers](/docs/providers/league.md) page.
 
 Since all of these packages depend on `league/oauth2-client` as their base, installation is as simple as requiring the
 package you wish to use via composer:
