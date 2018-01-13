@@ -36,6 +36,7 @@ before_install:
   - travis_retry composer self-update
 
 install:
+  - travis_retry composer require --no-update satooshi/php-coveralls:^1.0
   - travis_retry composer install --no-interaction --prefer-source
 
 before_script:
@@ -43,9 +44,8 @@ before_script:
 
 script:
   - ./vendor/bin/parallel-lint src test
-  - ./vendor/bin/phpunit --coverage-text
+  - ./vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml
   - ./vendor/bin/phpcs src --standard=psr2 -sp
 
 after_success:
-  - wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
-  - php coveralls.phar
+  - travis_retry php vendor/bin/coveralls
