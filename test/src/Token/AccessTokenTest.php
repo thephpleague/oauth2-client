@@ -156,7 +156,7 @@ class AccessTokenTest extends TestCase
 
         $values = $token->getValues();
 
-        $this->assertTrue(is_array($values));
+        $this->assertInternalType('array', $values);
         $this->assertArrayHasKey('custom_thing', $values);
         $this->assertSame($options['custom_thing'], $values['custom_thing']);
     }

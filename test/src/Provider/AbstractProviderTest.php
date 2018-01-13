@@ -653,7 +653,7 @@ class AbstractProviderTest extends TestCase
         $result = ['user_id' => uniqid()];
         $newResult = $provider->prepareAccessTokenResponse($result);
 
-        $this->assertTrue(isset($newResult['resource_owner_id']));
+        $this->assertArrayHasKey('resource_owner_id', $newResult);
         $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
     }
 
@@ -666,7 +666,7 @@ class AbstractProviderTest extends TestCase
         $result = ['user' => ['id' => uniqid()]];
         $newResult = $provider->prepareAccessTokenResponse($result);
 
-        $this->assertTrue(isset($newResult['resource_owner_id']));
+        $this->assertArrayHasKey('resource_owner_id', $newResult);
         $this->assertEquals($result['user']['id'], $newResult['resource_owner_id']);
     }
 
