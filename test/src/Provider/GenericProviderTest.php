@@ -129,9 +129,12 @@ class GenericProviderTest extends TestCase
     }
 
     /**
+     * @param array $error The error response to parse
+     * @param array $extraOptions Any extra options to configure the generic provider with.
+     * @dataProvider checkResponseThrowsExceptionProvider
      * @expectedException League\Oauth2\Client\Provider\Exception\IdentityProviderException
      */
-    public function testCheckResponseThrowsException()
+    public function testCheckResponseThrowsException(array $error, array $extraOptions = [])
     {
         $response = Phony::mock(ResponseInterface::class);
 
@@ -141,15 +144,25 @@ class GenericProviderTest extends TestCase
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new GenericProvider($options);
+        $provider = new GenericProvider($options + $extraOptions);
 
         $reflection = new \ReflectionClass(get_class($provider));
 
         $checkResponse = $reflection->getMethod('checkResponse');
         $checkResponse->setAccessible(true);
 
-        $checkResponse->invokeArgs($provider, [$response->get(), [
-            'error' => 'foobar',
-        ]]);
+        $checkResponse->invokeArgs($provider, [$response->get(), $error]);
+    }
+
+    public function checkResponseThrowsExceptionProvider() {
+        return [
+            [['error' => 'foobar',]],
+            [['error' => 'foobar',] , ['responseCode' => 'code']],
+            // Some servers return non-compliant responses. Provider shouldn't 'Fatal error: Wrong parameters'
+            [['error' => 'foobar', 'code' => 'abc55'], ['responseCode' => 'code']],
+            [['error' => 'foobar', 'code' => ['badformat']], ['responseCode' => 'code']],
+            [['error' => ['message' => 'msg', 'code' => 56]]],
+            [['error' => ['errors' => ['code' => 67, 'message' => 'msg']]]],
+        ];
     }
 }
