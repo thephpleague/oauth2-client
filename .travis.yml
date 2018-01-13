@@ -32,11 +32,16 @@ matrix:
         - php: nightly
         - php: hhvm-nightly
 
-before_script:
+before_install:
+  - travis_retry composer self-update
+
+install:
   - travis_retry composer install --no-interaction --prefer-source
 
-script:
+before_script:
   - mkdir -p build/logs
+
+script:
   - ./vendor/bin/parallel-lint src test
   - ./vendor/bin/phpunit --coverage-text
   - ./vendor/bin/phpcs src --standard=psr2 -sp
