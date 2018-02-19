@@ -1,0 +1,13 @@
+includes:
+	- vendor/eloquent/phpstan-phony/phony.neon
+	- vendor/phpstan/phpstan-phpunit/extension.neon
+	- vendor/phpstan/phpstan-phpunit/rules.neon
+	- vendor/phpstan/phpstan-phpunit/strictRules.neon
+parameters:
+	ignoreErrors:
+		- '#Call to an undefined method Eloquent\\Phony\\Verification\\CardinalityVerifier::#'
+services:
+	-
+		class: League\OAuth2\Client\Test\PHPStan\LiberatorExtension
+		tags:
+			- phpstan.broker.dynamicStaticMethodReturnTypeExtension

@@ -202,6 +202,7 @@ class AbstractProviderTest extends TestCase
 
         // Run
         $provider->setHttpClient($client->get());
+        /** @var \League\OAuth2\Client\Test\Provider\Fake\User $user */
         $user = $provider->getResourceOwner($token);
         $url = $provider->getResourceOwnerDetailsUrl($token);
 
@@ -284,7 +285,7 @@ class AbstractProviderTest extends TestCase
     public function getHeadersTest()
     {
         $provider = $this->getMockForAbstractClass(
-            '\League\OAuth2\Client\Provider\AbstractProvider',
+            \League\OAuth2\Client\Provider\AbstractProvider::class,
             [
               [
                   'clientId'     => 'mock_client_id',
@@ -300,7 +301,6 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals([], $provider->getHeaders());
         $this->assertEquals([], $provider->getHeaders('mock_token'));
 
-        $provider->authorizationHeader = 'Bearer';
         $this->assertEquals(['Authorization' => 'Bearer abc'], $provider->getHeaders('abc'));
 
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
