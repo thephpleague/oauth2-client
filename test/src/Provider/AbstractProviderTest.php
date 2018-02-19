@@ -367,6 +367,7 @@ class AbstractProviderTest extends TestCase
 
         $errorMessage = '';
         $errorCode = 0;
+        $errorBody = '';
 
         try {
             $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
