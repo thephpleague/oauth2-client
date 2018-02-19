@@ -35,7 +35,7 @@ class AbstractProviderTest extends TestCase
     }
 
     /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
+     * @expectedException \League\OAuth2\Client\Grant\Exception\InvalidGrantException
      */
     public function testInvalidGrantString()
     {
@@ -43,7 +43,7 @@ class AbstractProviderTest extends TestCase
     }
 
     /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
+     * @expectedException \League\OAuth2\Client\Grant\Exception\InvalidGrantException
      */
     public function testInvalidGrantObject()
     {
@@ -162,18 +162,18 @@ class AbstractProviderTest extends TestCase
 
     public function testSetRedirectHandler()
     {
-        $this->testFunction = false;
-        $this->state = false;
+        $testFunction = false;
+        $state = false;
 
-        $callback = function ($url, $provider) {
-            $this->testFunction = $url;
-            $this->state = $provider->getState();
+        $callback = function ($url, $provider) use (&$testFunction, &$state) {
+            $testFunction = $url;
+            $state = $provider->getState();
         };
 
         $this->provider->authorize([], $callback);
 
-        $this->assertNotFalse($this->testFunction);
-        $this->assertAttributeEquals($this->state, 'state', $this->provider);
+        $this->assertNotFalse($testFunction);
+        $this->assertAttributeEquals($state, 'state', $this->provider);
     }
 
     /**
@@ -233,7 +233,7 @@ class AbstractProviderTest extends TestCase
     public function testGetUserPropertiesThrowsExceptionWhenNonJsonResponseIsReceived()
     {
         $this->expectException(\UnexpectedValueException::class);
-// Mock
+        // Mock
         $provider = new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',

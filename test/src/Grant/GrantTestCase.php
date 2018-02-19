@@ -41,7 +41,7 @@ abstract class GrantTestCase extends TestCase
     /**
      * Callback to test access token request parameters.
      *
-     * @return Closure
+     * @return \Closure
      */
     abstract protected function getParamExpectation();
 

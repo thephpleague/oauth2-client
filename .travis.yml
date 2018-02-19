@@ -1,36 +1,17 @@
 language: php
 
+php:
+    - 7.0
+    - 7.1
+    - 7.2
+    - nightly
+
+sudo: false
+
 matrix:
-    include:
-        - php: 5.6
-        - php: 7.0
-        - php: 7.1
-        - php: 7.2
-        - php: nightly
-        - php: hhvm-3.6
-          sudo: required
-          dist: trusty
-          group: edge
-        - php: hhvm-3.9
-          sudo: required
-          dist: trusty
-          group: edge
-        - php: hhvm-3.12
-          sudo: required
-          dist: trusty
-          group: edge
-        - php: hhvm-3.15
-          sudo: required
-          dist: trusty
-          group: edge
-        - php: hhvm-nightly
-          sudo: required
-          dist: trusty
-          group: edge
     fast_finish: true
     allow_failures:
         - php: nightly
-        - php: hhvm-nightly
 
 before_install:
   - travis_retry composer self-update
@@ -46,6 +27,7 @@ script:
   - ./vendor/bin/parallel-lint src test
   - ./vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml
   - ./vendor/bin/phpcs src --standard=psr2 -sp
+  - ./vendor/bin/phpstan analyse -l 0 src test
 
 after_success:
   - travis_retry php vendor/bin/coveralls

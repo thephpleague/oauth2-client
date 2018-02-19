@@ -14,6 +14,11 @@ class ProviderRedirectTraitTest extends TestCase
 {
     use ProviderRedirectTrait;
 
+    /**
+     * @var ClientInterface
+     */
+    private $httpClient;
+
     public function getHttpClient()
     {
         return $this->httpClient;

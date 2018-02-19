@@ -25,6 +25,7 @@ We accept contributions via Pull Requests on [Github](https://github.com/thephpl
 
 - **Ensure no coding standards violations** - Please run PHP Code Sniffer using the PSR-2 standard (see below) before submitting your pull request. A violation will cause the build to fail, so please make sure there are no violations. We can't accept a patch if the build fails.
 
+- **Ensure static analysis pass!** - Please run PHPStan (see below) before submitting your pull request. We won't accept a patch until there are no error.
 
 ## Testing
 
@@ -34,6 +35,7 @@ The following tests must pass for a build to be considered successful. If contri
 $ ./vendor/bin/parallel-lint src test
 $ ./vendor/bin/phpunit --coverage-text
 $ ./vendor/bin/phpcs src --standard=psr2 -sp
+$ ./vendor/bin/phpstan analyse -l 0 src test
 ```
 
 **Happy coding**!
