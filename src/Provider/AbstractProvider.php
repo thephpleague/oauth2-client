@@ -644,7 +644,7 @@ abstract class AbstractProvider
      */
     protected function getContentType(ResponseInterface $response)
     {
-        return join(';', (array) $response->getHeader('content-type'));
+        return join(';', $response->getHeader('content-type'));
     }
 
     /**
@@ -652,7 +652,7 @@ abstract class AbstractProvider
      *
      * @throws UnexpectedValueException
      * @param  ResponseInterface $response
-     * @return array
+     * @return array|string
      */
     protected function parseResponse(ResponseInterface $response)
     {
@@ -682,7 +682,7 @@ abstract class AbstractProvider
                 );
             }
 
-            return [$content];
+            return $content;
         }
     }
 

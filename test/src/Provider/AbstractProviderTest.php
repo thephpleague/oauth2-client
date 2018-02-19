@@ -195,7 +195,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response->getHeader->with('content-type')->returns(['application/json']);
 
         $client = Phony::mock(ClientInterface::class);
         $client->send->returns($response->get());
@@ -248,7 +248,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('text/html');
+        $response->getHeader->with('content-type')->returns(['text/html']);
 
         $client = Phony::mock(ClientInterface::class);
         $client->send->returns($response->get());
@@ -357,7 +357,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response->getHeader->with('content-type')->returns(['application/json']);
 
         $client = Phony::mock(ClientInterface::class);
         $client->send->returns($response->get());
@@ -417,7 +417,7 @@ class AbstractProviderTest extends TestCase
         $response = Phony::mock(ResponseInterface::class);
         $response->getStatusCode->returns(400);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response->getHeader->with('content-type')->returns(['application/json']);
 
         $client = Phony::mock(ClientInterface::class);
         $client->send->throws(new BadResponseException(
@@ -461,7 +461,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response->getHeader->with('content-type')->returns(['application/json']);
 
         $client = Phony::mock(ClientInterface::class);
         $client->send->with($request)->returns($response->get());
@@ -519,7 +519,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response->getHeader->with('content-type')->returns(['application/json']);
 
         $client = Phony::mock(ClientInterface::class);
         $client->send->returns($response->get());
@@ -589,7 +589,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns($type);
+        $response->getHeader->with('content-type')->returns([$type]);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
         $result = $method->invoke($this->provider, $response->get());

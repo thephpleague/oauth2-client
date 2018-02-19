@@ -194,7 +194,7 @@ class AccessToken implements JsonSerializable
      */
     public function __toString()
     {
-        return (string) $this->getToken();
+        return $this->getToken();
     }
 
     /**
