@@ -215,7 +215,7 @@ class GenericProvider extends AbstractProvider
             if (!is_string($error)) {
                 $error = var_export($error, true);
             }
-            $code  = $this->responseCode && !empty($data[$this->responseCode])? $data[$this->responseCode] : 0;
+            $code  = (bool) $this->responseCode && !empty($data[$this->responseCode])? $data[$this->responseCode] : 0;
             if (!is_int($code)) {
                 $code = intval($code);
             }

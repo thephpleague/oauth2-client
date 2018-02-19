@@ -368,7 +368,7 @@ abstract class AbstractProvider
         callable $redirectHandler = null
     ) {
         $url = $this->getAuthorizationUrl($options);
-        if ($redirectHandler) {
+        if ($redirectHandler !== null) {
             return $redirectHandler($url, $this);
         }
 
@@ -817,7 +817,7 @@ abstract class AbstractProvider
      */
     public function getHeaders($token = null)
     {
-        if ($token) {
+        if ($token !== null) {
             return array_merge(
                 $this->getDefaultHeaders(),
                 $this->getAuthorizationHeaders($token)

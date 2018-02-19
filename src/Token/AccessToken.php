@@ -207,19 +207,19 @@ class AccessToken implements JsonSerializable
     {
         $parameters = $this->values;
 
-        if ($this->accessToken) {
+        if ((bool) $this->accessToken) {
             $parameters['access_token'] = $this->accessToken;
         }
 
-        if ($this->refreshToken) {
+        if ((bool) $this->refreshToken) {
             $parameters['refresh_token'] = $this->refreshToken;
         }
 
-        if ($this->expires) {
+        if ((bool) $this->expires) {
             $parameters['expires'] = $this->expires;
         }
 
-        if ($this->resourceOwnerId) {
+        if ((bool) $this->resourceOwnerId) {
             $parameters['resource_owner_id'] = $this->resourceOwnerId;
         }
 

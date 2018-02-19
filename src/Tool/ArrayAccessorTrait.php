@@ -29,7 +29,7 @@ trait ArrayAccessorTrait
      */
     private function getValueByKey(array $data, $key, $default = null)
     {
-        if (!is_string($key) || empty($key) || !count($data)) {
+        if (!is_string($key) || empty($key) || count($data) === 0) {
             return $default;
         }
 
