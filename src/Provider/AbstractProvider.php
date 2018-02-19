@@ -682,7 +682,7 @@ abstract class AbstractProvider
                 );
             }
 
-            return $content;
+            return [$content];
         }
     }
 

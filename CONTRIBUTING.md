@@ -35,7 +35,7 @@ The following tests must pass for a build to be considered successful. If contri
 $ ./vendor/bin/parallel-lint src test
 $ ./vendor/bin/phpunit --coverage-text
 $ ./vendor/bin/phpcs src --standard=psr2 -sp
-$ ./vendor/bin/phpstan analyse -l 2 -c phpstan.neon src test
+$ ./vendor/bin/phpstan analyse -l 3 -c phpstan.neon src test
 ```
 
 **Happy coding**!
