@@ -26,8 +26,8 @@ class RequestFactory
     /**
      * Creates a PSR-7 Request instance.
      *
-     * @param  null|string $method HTTP method for the request.
-     * @param  null|string $uri URI for the request.
+     * @param  string $method HTTP method for the request.
+     * @param  string $uri URI for the request.
      * @param  array $headers Headers for the message.
      * @param  string|resource|\Psr\Http\Message\StreamInterface $body Message body.
      * @param  string $version HTTP protocol version.
@@ -66,8 +66,8 @@ class RequestFactory
     /**
      * Creates a request using a simplified array of options.
      *
-     * @param  null|string $method
-     * @param  null|string $uri
+     * @param  string $method
+     * @param  string $uri
      * @param  array $options
      *
      * @return Request

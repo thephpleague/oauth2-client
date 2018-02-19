@@ -605,6 +605,7 @@ abstract class AbstractProvider
         try {
             $response = $this->getResponse($request);
         } catch (BadResponseException $e) {
+            /** @var ResponseInterface $response */
             $response = $e->getResponse();
         }
 
