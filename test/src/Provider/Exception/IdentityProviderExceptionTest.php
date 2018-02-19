@@ -16,10 +16,10 @@ class IdentityProviderExceptionTest extends \PHPUnit\Framework\TestCase
     protected function setUp()
     {
         $this->result = [
-            'error' => 'message',
-            'code' => 404
+            'error' => $error = 'message',
+            'code' => $message = 404
         ];
-        $this->exception = new IdentityProviderException($this->result['error'], $this->result['code'], $this->result);
+        $this->exception = new IdentityProviderException($error, $message, $this->result);
     }
 
     public function testGetResponseBody()
