@@ -657,6 +657,31 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
     }
 
+    public function testGuardedProperties()
+    {
+        $options = [
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+            'skipMeDuringMassAssignment' => 'bar',
+            'guarded' => 'foo'
+        ];
+
+        $provider = new Fake\ProviderWithGuardedProperties($options);
+
+        $this->assertAttributeNotEquals(
+            $options['skipMeDuringMassAssignment'],
+            'skipMeDuringMassAssignment',
+            $provider
+        );
+
+        $this->assertAttributeNotEquals(
+            $options['guarded'],
+            'guarded',
+            $provider
+        );
+    }
+
     public function testPrepareAccessTokenResponseWithDotNotation()
     {
         $provider = Phony::partialMock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
