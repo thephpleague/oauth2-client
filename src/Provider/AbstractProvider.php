@@ -103,12 +103,9 @@ abstract class AbstractProvider
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
+        // We'll let the GuardedPropertyTrait handle mass assignment of incoming
+        // options, skipping any blacklisted properties defined in the provider
         $this->fillProperties($options);
-        // foreach ($options as $option => $value) {
-        //     if (property_exists($this, $option)) {
-        //         $this->{$option} = $value;
-        //     }
-        // }
 
         if (empty($collaborators['grantFactory'])) {
             $collaborators['grantFactory'] = new GrantFactory();
