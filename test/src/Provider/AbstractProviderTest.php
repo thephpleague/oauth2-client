@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use UnexpectedValueException;
 use Eloquent\Liberator\Liberator;
 use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\Exception\BadResponseException;
@@ -10,6 +11,7 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -34,19 +36,15 @@ class AbstractProviderTest extends TestCase
         ]);
     }
 
-    /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
-     */
     public function testInvalidGrantString()
     {
+        $this->expectException(InvalidGrantException::class);
         $this->provider->getAccessToken('invalid_grant', ['invalid_parameter' => 'none']);
     }
 
-    /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
-     */
     public function testInvalidGrantObject()
     {
+        $this->expectException(InvalidGrantException::class);
         $grant = new \StdClass();
         $this->provider->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
@@ -397,11 +395,9 @@ class AbstractProviderTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     */
     public function testClientErrorTriggersProviderException()
     {
+        $this->expectException(IdentityProviderException::class);
         $provider = new MockProvider([
           'clientId' => 'mock_client_id',
           'clientSecret' => 'mock_secret',
@@ -597,19 +593,15 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($parsed, $result);
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testParseResponseJsonFailure()
     {
+        $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('{a: 1}', 'application/json', null);
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testParseResponseNonJsonFailure()
     {
+        $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
     }
 
