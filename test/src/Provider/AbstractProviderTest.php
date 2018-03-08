@@ -581,7 +581,7 @@ class AbstractProviderTest extends TestCase
     /**
      * @dataProvider parseResponseProvider
      */
-    public function testParseResponse($body, $type, $parsed)
+    public function testParseResponse($body, $type, $parsed, $statusCode = 200)
     {
         $stream = Phony::mock(StreamInterface::class);
         $stream->__toString->returns($body);
@@ -589,6 +589,7 @@ class AbstractProviderTest extends TestCase
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
         $response->getHeader->with('content-type')->returns($type);
+        $response->getStatusCode->returns($statusCode);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
         $result = $method->invoke($this->provider, $response->get());
@@ -602,6 +603,14 @@ class AbstractProviderTest extends TestCase
     public function testParseResponseJsonFailure()
     {
         $this->testParseResponse('{a: 1}', 'application/json', null);
+    }
+
+    /**
+     * @expectedException UnexpectedValueException
+     */
+    public function testParseResponseNonJsonFailure()
+    {
+        $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
     }
 
     public function getAppendQueryProvider()
