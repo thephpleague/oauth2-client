@@ -6,11 +6,11 @@ use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Tool\ProviderRedirectTrait;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 
-class ProviderRedirectTraitTest extends PHPUnit_Framework_TestCase
+class ProviderRedirectTraitTest extends TestCase
 {
     use ProviderRedirectTrait;
 
@@ -84,6 +84,8 @@ class ProviderRedirectTraitTest extends PHPUnit_Framework_TestCase
 
         $this->setHttpClient($client->get())->setRedirectLimit($redirectLimit);
         $finalResponse = $this->getResponse($request->get());
+
+        $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
 
     public function testClientLimitsRedirectLoopWhenRedirectNotDetected()
@@ -103,6 +105,8 @@ class ProviderRedirectTraitTest extends PHPUnit_Framework_TestCase
 
         $this->setHttpClient($client->get())->setRedirectLimit($redirectLimit);
         $finalResponse = $this->getResponse($request->get());
+
+        $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
 
     public function testClientErrorReturnsResponse()
@@ -123,5 +127,7 @@ class ProviderRedirectTraitTest extends PHPUnit_Framework_TestCase
 
         $this->setHttpClient($client->get());
         $finalResponse = $this->getResponse($request->get());
+
+        $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
 }

@@ -4,7 +4,7 @@ namespace League\OAuth2\Client\Test\Token;
 
 use Eloquent\Phony\Phpunit\Phony;
 use League\OAuth2\Client\Token\AccessToken;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class AccessTokenTest extends TestCase
 {
@@ -156,7 +156,7 @@ class AccessTokenTest extends TestCase
 
         $values = $token->getValues();
 
-        $this->assertTrue(is_array($values));
+        $this->assertInternalType('array', $values);
         $this->assertArrayHasKey('custom_thing', $values);
         $this->assertSame($options['custom_thing'], $values['custom_thing']);
     }

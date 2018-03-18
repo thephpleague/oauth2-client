@@ -13,7 +13,7 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -653,7 +653,7 @@ class AbstractProviderTest extends TestCase
         $result = ['user_id' => uniqid()];
         $newResult = $provider->prepareAccessTokenResponse($result);
 
-        $this->assertTrue(isset($newResult['resource_owner_id']));
+        $this->assertArrayHasKey('resource_owner_id', $newResult);
         $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
     }
 
@@ -666,7 +666,7 @@ class AbstractProviderTest extends TestCase
         $result = ['user' => ['id' => uniqid()]];
         $newResult = $provider->prepareAccessTokenResponse($result);
 
-        $this->assertTrue(isset($newResult['resource_owner_id']));
+        $this->assertArrayHasKey('resource_owner_id', $newResult);
         $this->assertEquals($result['user']['id'], $newResult['resource_owner_id']);
     }
 
