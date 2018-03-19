@@ -53,6 +53,9 @@ abstract class AbstractProvider
      */
     const METHOD_POST = 'POST';
 
+    const AUTH_BASIC = 'basic_auth';
+    const AUTH_FORM = 'form_params';
+
     /**
      * @var string
      */
@@ -87,6 +90,8 @@ abstract class AbstractProvider
      * @var HttpClientInterface
      */
     protected $httpClient;
+
+    protected $authType = self::AUTH_FORM;
 
     /**
      * Constructs an OAuth 2.0 service provider.
@@ -483,6 +488,13 @@ abstract class AbstractProvider
     protected function getAccessTokenOptions(array $params)
     {
         $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
+
+        if ($this->authType === self::AUTH_BASIC && isset($params['client_id']) && isset($params['client_secret'])) {
+            $options['headers']['authorization'] = 'Basic ' .
+                base64_encode(urlencode($params['client_id']) . ':' . urlencode($params['client_secret']));
+            unset($params['client_id']);
+            unset($params['client_secret']);
+        }
 
         if ($this->getAccessTokenMethod() === self::METHOD_POST) {
             $options['body'] = $this->getAccessTokenBody($params);
