@@ -43,6 +43,7 @@ Gateway | Composer Package | Maintainer
 [Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
+[ESIA](https://packagist.org/packages/ekapusta/oauth2-esia) | ekapusta/oauth2-esia | [Alexander Ustimenko](https://github.com/ekapusta)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
 [Fitbit](https://github.com/djchen/oauth2-fitbit) | djchen/oauth2-fitbit | [Dan Chen](https://github.com/djchen)
 [FormAssembly](https://github.com/FatherShawn/oauth2-formassembly) | fathershawn/oauth2-formassembly | [Shawn Duncan](https://github.com/FatherShawn)
