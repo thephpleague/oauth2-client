@@ -66,6 +66,7 @@ Gateway | Composer Package | Maintainer
 [Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
 [PayPal](https://github.com/stevenmaguire/oauth2-paypal) | stevenmaguire/oauth2-paypal | [Steven Maguire](https://github.com/stevenmaguire)
 [Phabricator](https://github.com/ofbeaton/oauth2-phabricator) | ofbeaton/oauth2-phabricator | [Finlay Beaton](https://ofbeaton.com)
+[Pinterest](https://github.com/vantezzen/oauth2-pinterest) | vantezzen/oauth2-pinterest | [vantezzen](https://github.com/vantezzen)
 [PSN](https://github.com/larabros/oauth2-psn) | larabros/oauth2-psn | [Hassan Khan](https://github.com/hassankhan)
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
