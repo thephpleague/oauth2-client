@@ -48,7 +48,7 @@ Gateway | Composer Package | Maintainer
 [FormAssembly](https://github.com/FatherShawn/oauth2-formassembly) | fathershawn/oauth2-formassembly | [Shawn Duncan](https://github.com/FatherShawn)
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | [Israel Sotomayor](https://github.com/zot24)
-[FreshBook](https://github.com/zerospam/oauth2-freshbook) | zerospam/oauth2-freshbook | [Antoine Aflalo](https://github.com/Belphemur)
+[FreshBooks](https://github.com/zerospam/oauth2-freshbook) | zerospam/oauth2-freshbook | [Antoine Aflalo](https://github.com/Belphemur)
 [GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
 [Harvest](https://github.com/nilesuan/oauth2-harvest) | nilesuan/oauth2-harvest | [Nile Suan](https://github.com/nilesuan)
 [HeadHunter](https://packagist.org/packages/alexmasterov/oauth2-headhunter) | alexmasterov/oauth2-headhunter | [Alex Masterov](https://github.com/AlexMasterov)
