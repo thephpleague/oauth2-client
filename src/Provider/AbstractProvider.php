@@ -20,6 +20,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
@@ -250,10 +251,10 @@ abstract class AbstractProvider
     /**
      * Returns the URL for requesting the resource owner's details.
      *
-     * @param AccessToken $token
+     * @param AccessTokenInterface $token
      * @return string
      */
-    abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
+    abstract public function getResourceOwnerDetailsUrl(AccessTokenInterface $token);
 
     /**
      * Returns a new random string to use as the state parameter in an
@@ -511,7 +512,7 @@ abstract class AbstractProvider
      *
      * @param  mixed $grant
      * @param  array $options
-     * @return AccessToken
+     * @return AccessTokenInterface
      */
     public function getAccessToken($grant, array $options = [])
     {
@@ -550,7 +551,7 @@ abstract class AbstractProvider
      *
      * @param  string $method
      * @param  string $url
-     * @param  AccessToken|string $token
+     * @param  AccessTokenInterface|string $token
      * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
@@ -564,7 +565,7 @@ abstract class AbstractProvider
      *
      * @param  string $method
      * @param  string $url
-     * @param  AccessToken|string|null $token
+     * @param  AccessTokenInterface|string|null $token
      * @param  array $options
      * @return RequestInterface
      */
@@ -724,7 +725,7 @@ abstract class AbstractProvider
      *
      * @param  array $response
      * @param  AbstractGrant $grant
-     * @return AccessToken
+     * @return AccessTokenInterface
      */
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
@@ -736,18 +737,18 @@ abstract class AbstractProvider
      * details request.
      *
      * @param  array $response
-     * @param  AccessToken $token
+     * @param  AccessTokenInterface $token
      * @return ResourceOwnerInterface
      */
-    abstract protected function createResourceOwner(array $response, AccessToken $token);
+    abstract protected function createResourceOwner(array $response, AccessTokenInterface $token);
 
     /**
      * Requests and returns the resource owner of given access token.
      *
-     * @param  AccessToken $token
+     * @param  AccessTokenInterface $token
      * @return ResourceOwnerInterface
      */
-    public function getResourceOwner(AccessToken $token)
+    public function getResourceOwner(AccessTokenInterface $token)
     {
         $response = $this->fetchResourceOwnerDetails($token);
 
@@ -757,10 +758,10 @@ abstract class AbstractProvider
     /**
      * Requests resource owner details.
      *
-     * @param  AccessToken $token
+     * @param  AccessTokenInterface $token
      * @return mixed
      */
-    protected function fetchResourceOwnerDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessTokenInterface $token)
     {
         $url = $this->getResourceOwnerDetailsUrl($token);
 
