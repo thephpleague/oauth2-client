@@ -511,6 +511,7 @@ abstract class AbstractProvider
      *
      * @param  mixed $grant
      * @param  array $options
+     * @throws IdentityProviderException
      * @return AccessToken
      */
     public function getAccessToken($grant, array $options = [])
@@ -598,6 +599,7 @@ abstract class AbstractProvider
      * Sends a request and returns the parsed response.
      *
      * @param  RequestInterface $request
+     * @throws IdentityProviderException
      * @return mixed
      */
     public function getParsedResponse(RequestInterface $request)
