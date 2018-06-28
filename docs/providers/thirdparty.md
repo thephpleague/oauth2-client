@@ -29,6 +29,7 @@ Gateway | Composer Package | Maintainer
 [BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php) | bookingsync/oauth2-bookingsync-php | [BookingSync](https://github.com/BookingSync)
 [Box](https://github.com/stevenmaguire/oauth2-box) | stevenmaguire/oauth2-box | [Steven Maguire](https://github.com/stevenmaguire)
 [Buffer](https://github.com/tgallice/oauth2-buffer) | tgallice/oauth2-buffer | [Thomas Gallice](https://github.com/tgallice)
+[ColorMeShop](https://github.com/pepabo/oauth2-colormeshop) | pepabo/oauth2-colormeshop | [GMO Pepabo, Inc.](https://github.com/pepabo)
 [Canvas LMS](https://github.com/smtech/oauth2-canvaslms) | smtech/oauth2-canvaslms | [Seth Battis](https://github.com/battis)
 [ChatWork](https://github.com/chatwork/oauth2-chatwork-php) | chatwork/oauth2-chatwork | [Yuta Adachi](https://github.com/ada-u)
 [Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
