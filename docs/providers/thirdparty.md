@@ -99,6 +99,7 @@ Gateway | Composer Package | Maintainer
 [Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
 [WordPress](https://github.com/krombox/oauth2-wordpress) | krombox/oauth2-wordpress | [Roman Kapustian](https://github.com/krombox)
 [Wechat](https://github.com/oakhope/oauth2-wechat) | oakhope/oauth2-wechat | [Benji Wang](https://github.com/oakhope)
+[WeCounsel](https://github.com/stevenmaguire/oauth2-wecounsel) | stevenmaguire/oauth2-wecounsel | [Steven Maguire](https://github.com/stevenmaguire)
 [Wrike](https://github.com/michaelKaefer/oauth2-wrike) | michaelkaefer/oauth2-wrike | [Michael Käfer](https://github.com/michaelKaefer)
 [Yahoo](https://packagist.org/packages/hayageek/oauth2-yahoo) | hayageek/oauth2-yahoo | [Ravishanker Kusuma](https://github.com/hayageek)
 [Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
