@@ -73,6 +73,7 @@ Gateway | Composer Package | Maintainer
 [Pipedrive](https://github.com/daniti/oauth2-pipedrive) | daniti/oauth2-pipedrive | [Daniele Timo](https://github.com/daniti)
 [Phabricator](https://github.com/ofbeaton/oauth2-phabricator) | ofbeaton/oauth2-phabricator | [Finlay Beaton](https://ofbeaton.com)
 [Pinterest](https://github.com/vantezzen/oauth2-pinterest) | vantezzen/oauth2-pinterest | [vantezzen](https://github.com/vantezzen)
+[Procore](https://packagist.org/packages/oxblue/oauth2-procore) | oxblue/oauth2-procore | [Chris Forrence](https://gitlab.com/chrisforrence)
 [PSN](https://github.com/larabros/oauth2-psn) | larabros/oauth2-psn | [Hassan Khan](https://github.com/hassankhan)
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
