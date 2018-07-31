@@ -549,6 +549,24 @@ class AbstractProviderTest extends TestCase
         );
     }
 
+    public function testGetAccessTokenWithNonJsonResponse()
+    {
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns('');
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('text/plain');
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
+        $this->provider->setHttpClient($client->get());
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid response received from Authorization Server. Expected JSON.');
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+    }
+
     private function getMethod($class, $name)
     {
         $class = new \ReflectionClass($class);
