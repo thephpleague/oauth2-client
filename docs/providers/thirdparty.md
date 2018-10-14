@@ -60,6 +60,7 @@ Gateway | Composer Package | Maintainer
 [HubSpot](https://github.com/helpscout/oauth2-hubspot) | helpscout/oauth2-hubspot | [Steven Wade](https://github.com/stevenwadejr)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
+[Linode](https://packagist.org/packages/webinarium/oauth2-linode) | webinarium/oauth2-linode | [Artem Rodygin](https://github.com/webinarium)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
 [Marketo](https://packagist.org/packages/kristenlk/oauth2-marketo) | kristenlk/oauth2-marketo | [Kristen Kehlenbeck](https://github.com/kristenlk)
 [Meetup](https://packagist.org/packages/wittestier/oauth2-meetup) | wittestier/oauth2-meetup | [WitteStier](https://gitlab.com/WitteStier)
