@@ -50,6 +50,7 @@ Gateway | Composer Package | Maintainer
 [Fitbit](https://github.com/djchen/oauth2-fitbit) | djchen/oauth2-fitbit | [Dan Chen](https://github.com/djchen)
 [FormAssembly](https://github.com/FatherShawn/oauth2-formassembly) | fathershawn/oauth2-formassembly | [Shawn Duncan](https://github.com/FatherShawn)
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
+[FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | *Unmaintained*
 [FreshBooks](https://github.com/zerospam/oauth2-freshbooks) | zerospam/oauth2-freshbooks | [Antoine Aflalo](https://github.com/Belphemur)
 [Geocaching](https://github.com/Surfoo/oauth2-geocaching) | surfoo/oauth2-geocaching | [Surfoo](https://github.com/Surfoo)
 [GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
