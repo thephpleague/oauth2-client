@@ -38,6 +38,7 @@ Gateway | Composer Package | Maintainer
 [DeviantArt](https://github.com/SeinopSys/oauth2-deviantart) | seinopsys/oauth2-deviantart | [SeinopSys](https://github.com/SeinopSys)
 [DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/oauth2-digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
 [Discord](https://github.com/wohali/oauth2-discord-new) | wohali/oauth2-discord-new | [Joan Touzet](https://github.com/wohali)
+[Docusign](https://github.com/AlaaSarhan/oauth2-docusign) | AlaaSarhan/oauth2-docusign | [Alaa Sarhan](https://github.com/AlaaSarhan)
 [Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
 [Drupal](https://github.com/chrishemmings/oauth2-drupal) | chrishemmings/oauth2-drupal | [Chris Hemmings](https://github.com/chrishemmings)
