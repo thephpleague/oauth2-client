@@ -61,6 +61,7 @@ Gateway | Composer Package | Maintainer
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
+[mailXpert](https://packagist.org/packages/mailxpert/oauth2-mailxpert) | mailxpert/oauth2-mailxpert | [mailXpert](https://github.com/mailXpert)
 [Marketo](https://packagist.org/packages/kristenlk/oauth2-marketo) | kristenlk/oauth2-marketo | [Kristen Kehlenbeck](https://github.com/kristenlk)
 [Meetup](https://packagist.org/packages/wittestier/oauth2-meetup) | wittestier/oauth2-meetup | [WitteStier](https://gitlab.com/WitteStier)
 [MercadoLibre](https://github.com/docta/oauth2-mercadolibre) | docta/oauth2-mercadolibre | [Lucas Banegas](https://github.com/lucascono)
