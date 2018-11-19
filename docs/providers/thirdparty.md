@@ -66,6 +66,7 @@ Gateway | Composer Package | Maintainer
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
 [mailXpert](https://packagist.org/packages/mailxpert/oauth2-mailxpert) | mailxpert/oauth2-mailxpert | [mailXpert](https://github.com/mailXpert)
 [Marketo](https://packagist.org/packages/kristenlk/oauth2-marketo) | kristenlk/oauth2-marketo | [Kristen Kehlenbeck](https://github.com/kristenlk)
+[Mastodon](https://packagist.org/packages/lrf141/oauth2-mastodon) | lrf141/oauth2-mastodon | [Kento Takeuchi](https://github.com/lrf141)
 [MDirector](https://github.com/antevenio/oauth2-mdirector) | antevenio/oauth2-mdirector | [Iván Mota](https://github.com/pinfake)
 [Meetup](https://packagist.org/packages/wittestier/oauth2-meetup) | wittestier/oauth2-meetup | [WitteStier](https://gitlab.com/WitteStier)
 [MercadoLibre](https://github.com/docta/oauth2-mercadolibre) | docta/oauth2-mercadolibre | [Lucas Banegas](https://github.com/lucascono)
