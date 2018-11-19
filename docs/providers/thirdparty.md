@@ -59,6 +59,7 @@ Gateway | Composer Package | Maintainer
 [Heroku](https://github.com/stevenmaguire/oauth2-heroku) | stevenmaguire/oauth2-heroku | [Steven Maguire](https://github.com/stevenmaguire)
 [HubSpot](https://github.com/helpscout/oauth2-hubspot) | helpscout/oauth2-hubspot | [Steven Wade](https://github.com/stevenwadejr)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
+[Jira](https://packagist.org/packages/mrjoops/oauth2-jira) | mrjoops/oauth2-jira | [Alexandre Lahure](https://github.com/mrjoops)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
 [mailXpert](https://packagist.org/packages/mailxpert/oauth2-mailxpert) | mailxpert/oauth2-mailxpert | [mailXpert](https://github.com/mailXpert)
