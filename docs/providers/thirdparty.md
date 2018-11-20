@@ -89,6 +89,7 @@ Gateway | Composer Package | Maintainer
 [Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
 [Spotify](https://packagist.org/packages/audeio/spotify-web-api) | audeio/spotify-web-api | [Jonjo McKay](https://github.com/jonjomckay)
+[Spotify](https://packagist.org/packages/kerox/oauth2-spotify) | kerox/oauth2-spotify | [Romain Monteil](https://github.com/ker0x)
 [SteemConnect V2](https://github.com/hernandev/oauth2-sc2) | hernandev/oauth2-sc2 | [Diego Hernandes](https://github.com/hernandev)
 [Stripe](https://github.com/adam-paterson/oauth2-stripe) | adam-paterson/oauth2-stripe | [Adam Paterson](https://github.com/adam-paterson)
 [Strava](https://github.com/Edwin-Luijten/oauth2-strava) | edwin-luijten/oauth2-strava | [Edwin Luijten](https://github.com/Edwin-Luijten)
