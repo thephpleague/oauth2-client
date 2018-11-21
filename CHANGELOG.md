@@ -1,5 +1,17 @@
 # OAuth 2.0 Client Changelog
 
+## 2.4.0
+
+_Released: 2018-11-21_
+
+* Add `HttpBasicAuthOptionProvider` to ease implementation for providers
+  requiring HTTP basic auth
+* Add `GuardedPropertyTrait` to allow providers the ability to specify
+  properties that may not be overridden by user-defined values passed to the
+  provider constructor
+* Add `AccessTokenInterface` and `ResourceOwnerAccessTokenInterface` to allow
+  providers the ability to override the default `AccessToken`
+
 ## 2.3.1
 
 _Released: 2018-11-19_
