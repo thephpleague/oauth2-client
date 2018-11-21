@@ -11,6 +11,7 @@ use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PHPUnit\Framework\TestCase;
@@ -528,7 +529,7 @@ class AbstractProviderTest extends TestCase
         $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
 
         // Verify
-        $this->assertInstanceOf(AccessToken::class, $token);
+        $this->assertInstanceOf(AccessTokenInterface::class, $token);
 
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());

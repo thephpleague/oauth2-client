@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -24,7 +24,7 @@ class Fake extends AbstractProvider
         return 'http://example.com/oauth/token';
     }
 
-    public function getResourceOwnerDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessTokenInterface $token)
     {
         return 'http://example.com/oauth/user';
     }
@@ -44,7 +44,7 @@ class Fake extends AbstractProvider
         return $this->accessTokenMethod;
     }
 
-    protected function createResourceOwner(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessTokenInterface $token)
     {
         return new Fake\User($response);
     }
