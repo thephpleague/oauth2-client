@@ -41,13 +41,6 @@ interface AccessTokenInterface extends JsonSerializable
     public function getExpires();
 
     /**
-     * Returns the resource owner identifier, if defined.
-     *
-     * @return string|null
-     */
-    public function getResourceOwnerId();
-
-    /**
      * Checks if this token has expired.
      *
      * @return boolean true if the token has expired, false otherwise.
