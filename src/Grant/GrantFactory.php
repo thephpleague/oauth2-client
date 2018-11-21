@@ -71,7 +71,7 @@ class GrantFactory
 
         $this->checkGrant($class);
 
-        return $this->setGrant($name, new $class);
+        return $this->setGrant($name, new $class());
     }
 
     /**
