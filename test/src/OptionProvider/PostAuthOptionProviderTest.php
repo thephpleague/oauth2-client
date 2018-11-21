@@ -3,7 +3,7 @@
 namespace League\OAuth2\Client\Test\OptionProvider;
 
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use League\OAuth2\Client\Provider\AbstractProvider;
 
 /**
