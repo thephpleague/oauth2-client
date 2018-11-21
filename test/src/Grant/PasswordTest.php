@@ -34,7 +34,13 @@ class PasswordTest extends GrantTestCase
      */
     public function testInvalidUsername()
     {
-        $this->provider->getAccessToken('password', ['invalid_username' => 'mock_username', 'password' => 'mock_password']);
+        $this->provider->getAccessToken(
+            'password',
+            [
+                'invalid_username' => 'mock_username',
+                'password' => 'mock_password'
+            ]
+        );
     }
 
     /**
@@ -42,6 +48,12 @@ class PasswordTest extends GrantTestCase
      */
     public function testInvalidPassword()
     {
-        $this->provider->getAccessToken('password', ['username' => 'mock_username', 'invalid_password' => 'mock_password']);
+        $this->provider->getAccessToken(
+            'password',
+            [
+                'username' => 'mock_username',
+                'invalid_password' => 'mock_password'
+            ]
+        );
     }
 }

@@ -718,7 +718,7 @@ class AbstractProviderTest extends TestCase
     public function testPrepareAccessTokenResponseWithInvalidKeyType()
     {
         $provider = Phony::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
-        $provider->getAccessTokenResourceOwnerId->returns(new \stdClass);
+        $provider->getAccessTokenResourceOwnerId->returns(new \stdClass());
         $provider = Liberator::liberate($provider->get());
 
         $result = ['user_id' => uniqid()];

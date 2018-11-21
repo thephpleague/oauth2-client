@@ -119,9 +119,9 @@ class AccessTokenTest extends TestCase
      */
     public function testInvalidExpiresIn()
     {
-	 $options = [
-            'access_token' => 'access_token',
-            'expires_in' => 'TEXT',
+         $options = [
+             'access_token' => 'access_token',
+             'expires_in' => 'TEXT',
          ];
          $token = $this->getAccessToken($options);
     }

@@ -53,7 +53,7 @@
     "scripts": {
         "lint": "parallel-lint src test",
         "phpunit": "phpunit --verbose --colors=always",
-        "phpcs": "phpcs src --standard=psr12 -sp --colors",
+        "phpcs": "phpcs src test --standard=psr12 -sp --colors",
         "test": [
             "@lint",
             "@phpunit",

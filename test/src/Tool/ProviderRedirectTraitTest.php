@@ -68,7 +68,7 @@ class ProviderRedirectTraitTest extends TestCase
     public function testClientLimitsRedirectResponse()
     {
         $redirectLimit = rand(3, 5);
-        $status = rand(301,399);
+        $status = rand(301, 399);
         $redirectUrl = uniqid();
 
         $request = Phony::mock(RequestInterface::class);

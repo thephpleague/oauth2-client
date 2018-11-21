@@ -10,7 +10,7 @@ class RequestFactoryTest extends TestCase
 {
     public function setUp()
     {
-        $this->factory = new RequestFactory;
+        $this->factory = new RequestFactory();
     }
 
     public function testGetRequest()

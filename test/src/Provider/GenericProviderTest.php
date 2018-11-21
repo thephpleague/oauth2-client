@@ -65,7 +65,10 @@ class GenericProviderTest extends TestCase
 
         $this->assertEquals($options['urlAuthorize'], $provider->getBaseAuthorizationUrl());
         $this->assertEquals($options['urlAccessToken'], $provider->getBaseAccessTokenUrl([]));
-        $this->assertEquals($options['urlResourceOwnerDetails'], $provider->getResourceOwnerDetailsUrl(new AccessToken(['access_token' => '1234'])));
+        $this->assertEquals(
+            $options['urlResourceOwnerDetails'],
+            $provider->getResourceOwnerDetailsUrl(new AccessToken(['access_token' => '1234']))
+        );
         $this->assertEquals($options['scopes'], $provider->getDefaultScopes());
 
         $reflection = new \ReflectionClass(get_class($provider));
@@ -153,7 +156,8 @@ class GenericProviderTest extends TestCase
         $checkResponse->invokeArgs($provider, [$response->get(), $error]);
     }
 
-    public function checkResponseThrowsExceptionProvider() {
+    public function checkResponseThrowsExceptionProvider()
+    {
         return [
             [['error' => 'foobar',]],
             [['error' => 'foobar',] , ['responseCode' => 'code']],
