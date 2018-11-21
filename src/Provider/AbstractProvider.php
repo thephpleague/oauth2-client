@@ -19,6 +19,8 @@ use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\OptionProvider\OptionProviderInterface;
+use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
@@ -89,6 +91,11 @@ abstract class AbstractProvider
     protected $httpClient;
 
     /**
+     * @var OptionProviderInterface
+     */
+    protected $optionProvider;
+
+    /**
      * Constructs an OAuth 2.0 service provider.
      *
      * @param array $options An array of options to set on this provider.
@@ -125,6 +132,11 @@ abstract class AbstractProvider
             );
         }
         $this->setHttpClient($collaborators['httpClient']);
+
+        if (empty($collaborators['optionProvider'])) {
+            $collaborators['optionProvider'] = new PostAuthOptionProvider();
+        }
+        $this->setOptionProvider($collaborators['optionProvider']);
     }
 
     /**
@@ -214,6 +226,29 @@ abstract class AbstractProvider
     public function getHttpClient()
     {
         return $this->httpClient;
+    }
+
+    /**
+     * Sets the option provider instance.
+     *
+     * @param  OptionProviderInterface $provider
+     * @return self
+     */
+    public function setOptionProvider(OptionProviderInterface $provider)
+    {
+        $this->optionProvider = $provider;
+
+        return $this;
+    }
+
+    /**
+     * Returns the option provider instance.
+     *
+     * @return OptionProviderInterface
+     */
+    public function getOptionProvider()
+    {
+        return $this->optionProvider;
     }
 
     /**
@@ -464,34 +499,6 @@ abstract class AbstractProvider
     }
 
     /**
-     * Returns the request body for requesting an access token.
-     *
-     * @param  array $params
-     * @return string
-     */
-    protected function getAccessTokenBody(array $params)
-    {
-        return $this->buildQueryString($params);
-    }
-
-    /**
-     * Builds request options used for requesting an access token.
-     *
-     * @param  array $params
-     * @return array
-     */
-    protected function getAccessTokenOptions(array $params)
-    {
-        $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
-
-        if ($this->getAccessTokenMethod() === self::METHOD_POST) {
-            $options['body'] = $this->getAccessTokenBody($params);
-        }
-
-        return $options;
-    }
-
-    /**
      * Returns a prepared request for requesting an access token.
      *
      * @param array $params Query string parameters
@@ -501,7 +508,7 @@ abstract class AbstractProvider
     {
         $method  = $this->getAccessTokenMethod();
         $url     = $this->getAccessTokenUrl($params);
-        $options = $this->getAccessTokenOptions($params);
+        $options = $this->optionProvider->getAccessTokenOptions($this->getAccessTokenMethod(), $params);
 
         return $this->getRequest($method, $url, $options);
     }
