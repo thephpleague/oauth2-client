@@ -25,6 +25,7 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
+use League\OAuth2\Client\Tool\GuardedPropertyTrait;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
 use League\OAuth2\Client\Tool\RequestFactory;
 use Psr\Http\Message\RequestInterface;
@@ -39,6 +40,7 @@ use UnexpectedValueException;
 abstract class AbstractProvider
 {
     use ArrayAccessorTrait;
+    use GuardedPropertyTrait;
     use QueryBuilderTrait;
 
     /**
@@ -109,11 +111,9 @@ abstract class AbstractProvider
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
-        foreach ($options as $option => $value) {
-            if (property_exists($this, $option)) {
-                $this->{$option} = $value;
-            }
-        }
+        // We'll let the GuardedPropertyTrait handle mass assignment of incoming
+        // options, skipping any blacklisted properties defined in the provider
+        $this->fillProperties($options);
 
         if (empty($collaborators['grantFactory'])) {
             $collaborators['grantFactory'] = new GrantFactory();
