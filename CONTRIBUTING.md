@@ -31,9 +31,7 @@ We accept contributions via Pull Requests on [Github](https://github.com/thephpl
 The following tests must pass for a build to be considered successful. If contributing, please ensure these pass before submitting a pull request.
 
 ``` bash
-$ ./vendor/bin/parallel-lint src test
-$ ./vendor/bin/phpunit --coverage-text
-$ ./vendor/bin/phpcs src --standard=psr2 -sp
+$ composer run test
 ```
 
 **Happy coding**!

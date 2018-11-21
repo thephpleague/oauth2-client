@@ -49,5 +49,15 @@
         "psr-4": {
             "League\\OAuth2\\Client\\Test\\": "test/src/"
         }
+    },
+    "scripts": {
+        "lint": "parallel-lint src test",
+        "phpunit": "phpunit --verbose --colors=always",
+        "phpcs": "phpcs src --standard=psr12 -sp --colors",
+        "test": [
+            "@lint",
+            "@phpunit",
+            "@phpcs"
+        ]
     }
 }
