@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use UnexpectedValueException;
 use Eloquent\Liberator\Liberator;
 use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\Exception\BadResponseException;
@@ -10,7 +11,9 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PHPUnit\Framework\TestCase;
@@ -39,6 +42,7 @@ class AbstractProviderTest extends TestCase
      */
     public function testInvalidGrantString()
     {
+        $this->expectException(InvalidGrantException::class);
         $this->provider->getAccessToken('invalid_grant', ['invalid_parameter' => 'none']);
     }
 
@@ -47,6 +51,7 @@ class AbstractProviderTest extends TestCase
      */
     public function testInvalidGrantObject()
     {
+        $this->expectException(InvalidGrantException::class);
         $grant = new \StdClass();
         $this->provider->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
@@ -398,11 +403,9 @@ class AbstractProviderTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \League\OAuth2\Client\Provider\Exception\IdentityProviderException
-     */
     public function testClientErrorTriggersProviderException()
     {
+        $this->expectException(IdentityProviderException::class);
         $provider = new MockProvider([
           'clientId' => 'mock_client_id',
           'clientSecret' => 'mock_secret',
@@ -529,7 +532,7 @@ class AbstractProviderTest extends TestCase
         $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
 
         // Verify
-        $this->assertInstanceOf(AccessToken::class, $token);
+        $this->assertInstanceOf(AccessTokenInterface::class, $token);
 
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
@@ -547,6 +550,24 @@ class AbstractProviderTest extends TestCase
             $stream->__toString->called(),
             $response->getHeader->called()
         );
+    }
+
+    public function testGetAccessTokenWithNonJsonResponse()
+    {
+        $stream = Phony::mock(StreamInterface::class);
+        $stream->__toString->returns('');
+
+        $response = Phony::mock(ResponseInterface::class);
+        $response->getBody->returns($stream->get());
+        $response->getHeader->with('content-type')->returns('text/plain');
+
+        $client = Phony::mock(ClientInterface::class);
+        $client->send->returns($response->get());
+        $this->provider->setHttpClient($client->get());
+
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid response received from Authorization Server. Expected JSON.');
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
     private function getMethod($class, $name)
@@ -582,7 +603,7 @@ class AbstractProviderTest extends TestCase
     /**
      * @dataProvider parseResponseProvider
      */
-    public function testParseResponse($body, $type, $parsed)
+    public function testParseResponse($body, $type, $parsed, $statusCode = 200)
     {
         $stream = Phony::mock(StreamInterface::class);
         $stream->__toString->returns($body);
@@ -590,6 +611,7 @@ class AbstractProviderTest extends TestCase
         $response = Phony::mock(ResponseInterface::class);
         $response->getBody->returns($stream->get());
         $response->getHeader->with('content-type')->returns([$type]);
+        $response->getStatusCode->returns($statusCode);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
         $result = $method->invoke($this->provider, $response->get());
@@ -597,12 +619,16 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($parsed, $result);
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     */
     public function testParseResponseJsonFailure()
     {
+        $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('{a: 1}', 'application/json', null);
+    }
+
+    public function testParseResponseNonJsonFailure()
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
     }
 
     public function getAppendQueryProvider()
@@ -656,6 +682,31 @@ class AbstractProviderTest extends TestCase
 
         $this->assertArrayHasKey('resource_owner_id', $newResult);
         $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
+    }
+
+    public function testGuardedProperties()
+    {
+        $options = [
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+            'skipMeDuringMassAssignment' => 'bar',
+            'guarded' => 'foo'
+        ];
+
+        $provider = new Fake\ProviderWithGuardedProperties($options);
+
+        $this->assertAttributeNotEquals(
+            $options['skipMeDuringMassAssignment'],
+            'skipMeDuringMassAssignment',
+            $provider
+        );
+
+        $this->assertAttributeNotEquals(
+            $options['guarded'],
+            'guarded',
+            $provider
+        );
     }
 
     public function testPrepareAccessTokenResponseWithDotNotation()

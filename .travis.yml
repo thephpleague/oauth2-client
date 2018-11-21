@@ -1,17 +1,18 @@
 language: php
 
 php:
-    - 7.0
-    - 7.1
-    - 7.2
-    - nightly
-
-sudo: false
+  - 7.0
+  - 7.1
+  - 7.2
+  - 7.3
+  - nightly
 
 matrix:
-    fast_finish: true
-    allow_failures:
-        - php: nightly
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+
+sudo: false
 
 before_install:
   - travis_retry composer self-update

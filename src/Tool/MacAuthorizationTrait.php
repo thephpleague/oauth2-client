@@ -14,7 +14,7 @@
 
 namespace League\OAuth2\Client\Tool;
 
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 /**
  * Enables `MAC` header authorization for providers.
@@ -26,10 +26,10 @@ trait MacAuthorizationTrait
     /**
      * Returns the id of this token for MAC generation.
      *
-     * @param  AccessToken $token
+     * @param  AccessTokenInterface $token
      * @return string
      */
-    abstract protected function getTokenId(AccessToken $token);
+    abstract protected function getTokenId(AccessTokenInterface $token);
 
     /**
      * Returns the MAC signature for the current request.
@@ -53,7 +53,7 @@ trait MacAuthorizationTrait
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
-     * @param  AccessToken $token
+     * @param  AccessTokenInterface $token
      * @return array
      * @codeCoverageIgnore
      *

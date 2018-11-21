@@ -1,5 +1,13 @@
 # OAuth 2.0 Client Changelog
 
+## 2.3.1
+
+_Released: 2018-11-19_
+
+* Allow paragonie/random_compat's empty 9.99.99 placeholder
+* Throw an `UnexpectedValueException` on non-JSON responses from access token
+  request (when calling `AbstractProvider::getAccessToken()`)
+
 ## 2.3.0
 
 _Released: 2018-01-13_

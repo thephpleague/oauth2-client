@@ -2,7 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Provider\GenericProvider;
 
 class Generic extends GenericProvider
@@ -19,7 +19,7 @@ class Generic extends GenericProvider
         parent::__construct($options);
     }
 
-    protected function fetchResourceOwnerDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessTokenInterface $token)
     {
         return [
             'mock_response_uid' => 1,
