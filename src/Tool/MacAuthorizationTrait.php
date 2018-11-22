@@ -49,7 +49,7 @@ trait MacAuthorizationTrait
      * @param  int $length Length of the random string to be generated.
      * @return string
      */
-    abstract protected function getRandomState($length);
+    abstract protected function getRandomState($length = 32);
 
     /**
      * Returns the authorization headers for the 'mac' grant.
