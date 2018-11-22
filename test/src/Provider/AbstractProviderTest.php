@@ -747,4 +747,36 @@ class AbstractProviderTest extends TestCase
 
         $this->assertEquals([], $headers);
     }
+
+    /**
+     * This test helps show the fatal errors occurring as a result of incompatible
+     * method signatures after the 2.4.0 release.
+     *
+     * @link https://github.com/thephpleague/oauth2-client/issues/752
+     */
+    public function testExtendedProviderDoesNotErrorWhenUsingAccessTokenAsTheTypeHint()
+    {
+        $token = new AccessToken([
+            'access_token' => 'mock_access_token',
+            'refresh_token' => 'mock_refresh_token',
+            'expires' => time(),
+            'resource_owner_id' => 'mock_resource_owner_id',
+        ]);
+
+        $provider = new Fake\ProviderWithAccessTokenHints([
+            'urlAuthorize' => 'https://example.com/authorize',
+            'urlAccessToken' => 'https://example.com/accessToken',
+            'urlResourceOwnerDetails' => 'https://api.example.com/owner',
+        ]);
+
+        $reflectedProvider = new \ReflectionObject($provider);
+        $getTokenId = $reflectedProvider->getMethod('getTokenId');
+        $getTokenId->setAccessible(true);
+
+        $url = $provider->getResourceOwnerDetailsUrl($token);
+        $tokenId = $getTokenId->invoke($provider, $token);
+
+        $this->assertSame('https://api.example.com/owner/mock_resource_owner_id', $url);
+        $this->assertSame('fake_token_id', $tokenId);
+    }
 }

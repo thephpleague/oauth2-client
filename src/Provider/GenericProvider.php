@@ -16,7 +16,7 @@ namespace League\OAuth2\Client\Provider;
 
 use InvalidArgumentException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Token\AccessTokenInterface;
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
 
@@ -168,7 +168,7 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    public function getResourceOwnerDetailsUrl(AccessTokenInterface $token)
+    public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
         return $this->urlResourceOwnerDetails;
     }
@@ -226,7 +226,7 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    protected function createResourceOwner(array $response, AccessTokenInterface $token)
+    protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);
     }

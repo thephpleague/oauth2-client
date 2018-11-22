@@ -14,6 +14,7 @@
 
 namespace League\OAuth2\Client\Tool;
 
+use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
 /**
@@ -26,10 +27,10 @@ trait MacAuthorizationTrait
     /**
      * Returns the id of this token for MAC generation.
      *
-     * @param  AccessTokenInterface $token
+     * @param  AccessToken $token
      * @return string
      */
-    abstract protected function getTokenId(AccessTokenInterface $token);
+    abstract protected function getTokenId(AccessToken $token);
 
     /**
      * Returns the MAC signature for the current request.
@@ -53,7 +54,7 @@ trait MacAuthorizationTrait
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
-     * @param  AccessTokenInterface $token
+     * @param  AccessTokenInterface|string|null $token Either a string or an access token instance
      * @return array
      * @codeCoverageIgnore
      *
@@ -61,8 +62,12 @@ trait MacAuthorizationTrait
      * complete the implementation, please create a pull request for
      * https://github.com/thephpleague/oauth2-client
      */
-    protected function getAuthorizationHeaders($token)
+    protected function getAuthorizationHeaders($token = null)
     {
+        if ($token === null) {
+            return [];
+        }
+
         $ts    = time();
         $id    = $this->getTokenId($token);
         $nonce = $this->getRandomState(16);

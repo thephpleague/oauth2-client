@@ -286,10 +286,10 @@ abstract class AbstractProvider
     /**
      * Returns the URL for requesting the resource owner's details.
      *
-     * @param AccessTokenInterface $token
+     * @param AccessToken $token
      * @return string
      */
-    abstract public function getResourceOwnerDetailsUrl(AccessTokenInterface $token);
+    abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
 
     /**
      * Returns a new random string to use as the state parameter in an
@@ -751,10 +751,10 @@ abstract class AbstractProvider
      * details request.
      *
      * @param  array $response
-     * @param  AccessTokenInterface $token
+     * @param  AccessToken $token
      * @return ResourceOwnerInterface
      */
-    abstract protected function createResourceOwner(array $response, AccessTokenInterface $token);
+    abstract protected function createResourceOwner(array $response, AccessToken $token);
 
     /**
      * Requests and returns the resource owner of given access token.
@@ -762,7 +762,7 @@ abstract class AbstractProvider
      * @param  AccessTokenInterface $token
      * @return ResourceOwnerInterface
      */
-    public function getResourceOwner(AccessTokenInterface $token)
+    public function getResourceOwner(AccessToken $token)
     {
         $response = $this->fetchResourceOwnerDetails($token);
 
@@ -772,10 +772,10 @@ abstract class AbstractProvider
     /**
      * Requests resource owner details.
      *
-     * @param  AccessTokenInterface $token
+     * @param  AccessToken $token
      * @return mixed
      */
-    protected function fetchResourceOwnerDetails(AccessTokenInterface $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token)
     {
         $url = $this->getResourceOwnerDetailsUrl($token);
 
