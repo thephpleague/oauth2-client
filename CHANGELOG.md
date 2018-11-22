@@ -1,5 +1,13 @@
 # OAuth 2.0 Client Changelog
 
+## 2.4.1
+
+_Released: 2018-11-22_
+
+* Revert to use of `AccessToken` in type hints to preserve backwards
+  compatibility; this fixes the issue reported in [#752](https://github.com/thephpleague/oauth2-client/issues/752)
+  and [#753](https://github.com/thephpleague/oauth2-client/issues/753)
+
 ## 2.4.0
 
 _Released: 2018-11-21_
