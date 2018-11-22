@@ -759,7 +759,7 @@ abstract class AbstractProvider
     /**
      * Requests and returns the resource owner of given access token.
      *
-     * @param  AccessTokenInterface $token
+     * @param  AccessToken $token
      * @return ResourceOwnerInterface
      */
     public function getResourceOwner(AccessToken $token)
