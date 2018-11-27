@@ -12,8 +12,10 @@
     "require-dev": {
         "eloquent/liberator": "^2.0",
         "eloquent/phony-phpunit": "^4.0",
+        "eloquent/phpstan-phony": "^0.3.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
         "phpstan/phpstan": "^0.10.5",
+        "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "^7.4",
         "squizlabs/php_codesniffer": "^3.3"
     },

@@ -4,14 +4,13 @@ namespace League\OAuth2\Client\Test\Grant;
 
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\AbstractGrant;
-use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Test\Grant\Fake as MockGrant;
 use PHPUnit\Framework\TestCase;
 
 class GrantFactoryTest extends TestCase
 {
     /**
-     * @var AbstractGrant
+     * @var GrantFactory
      */
     protected $factory;
 
@@ -40,7 +39,7 @@ class GrantFactoryTest extends TestCase
     }
 
     /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
+     * @expectedException \League\OAuth2\Client\Grant\Exception\InvalidGrantException
      */
     public function testGetInvalidGrantFails()
     {
@@ -79,14 +78,17 @@ class GrantFactoryTest extends TestCase
         $this->assertFalse($this->factory->isGrant('stdClass'));
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testCheckGrant()
     {
         $grant = $this->factory->getGrant('password');
-        $this->assertNull($this->factory->checkGrant($grant));
+        $this->factory->checkGrant($grant);
     }
 
     /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
+     * @expectedException \League\OAuth2\Client\Grant\Exception\InvalidGrantException
      */
     public function testCheckGrantInvalidFails()
     {

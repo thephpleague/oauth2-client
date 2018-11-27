@@ -42,7 +42,7 @@ trait RequiredParameterTrait
     /**
      * Checks for multiple required parameters in a hash.
      *
-     * @throws InvalidArgumentException
+     * @throws BadMethodCallException
      * @param  array $names
      * @param  array $params
      * @return void

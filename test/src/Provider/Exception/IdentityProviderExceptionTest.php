@@ -22,16 +22,6 @@ class IdentityProviderExceptionTest extends \PHPUnit\Framework\TestCase
         $this->exception = new IdentityProviderException($this->result['error'], $this->result['code'], $this->result);
     }
 
-    public function testGetType()
-    {
-        $this->assertEquals('Exception', $this->exception->getType());
-    }
-
-    public function testAsString()
-    {
-        $this->assertEquals('Exception: 404: message', (string)$this->exception);
-    }
-
     public function testGetResponseBody()
     {
 
