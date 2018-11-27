@@ -8,6 +8,9 @@ use Psr\Http\Message\RequestInterface;
 
 class RequestFactoryTest extends TestCase
 {
+    /** @var \League\OAuth2\Client\Tool\RequestFactory */
+    private $factory;
+
     public function setUp()
     {
         $this->factory = new RequestFactory();

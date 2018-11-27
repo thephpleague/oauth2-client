@@ -14,6 +14,9 @@ class ProviderRedirectTraitTest extends TestCase
 {
     use ProviderRedirectTrait;
 
+    /** @var \GuzzleHttp\ClientInterface|null */
+    private $httpClient;
+
     public function getHttpClient()
     {
         return $this->httpClient;

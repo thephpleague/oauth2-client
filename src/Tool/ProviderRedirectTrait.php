@@ -102,7 +102,7 @@ trait ProviderRedirectTrait
      * Updates the redirect limit.
      *
      * @param integer $limit
-     * @return League\OAuth2\Client\Provider\AbstractProvider
+     * @return \League\OAuth2\Client\Provider\AbstractProvider
      * @throws InvalidArgumentException
      */
     public function setRedirectLimit($limit)

@@ -7,7 +7,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 
 class Generic extends GenericProvider
 {
-    public function __construct($options = [], array $collaborators = [])
+    public function __construct($options = [])
     {
         // Add the required defaults for AbstractProvider
         $options += [
@@ -16,7 +16,7 @@ class Generic extends GenericProvider
             'redirectUri'  => 'none',
         ];
 
-        parent::__construct($options);
+        parent::__construct($options, []);
     }
 
     protected function fetchResourceOwnerDetails(AccessToken $token)

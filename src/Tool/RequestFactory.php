@@ -29,7 +29,7 @@ class RequestFactory
      * @param  null|string $method HTTP method for the request.
      * @param  null|string $uri URI for the request.
      * @param  array $headers Headers for the message.
-     * @param  string|resource|StreamInterface $body Message body.
+     * @param  string|resource|\Psr\Http\Message\StreamInterface $body Message body.
      * @param  string $version HTTP protocol version.
      *
      * @return Request
