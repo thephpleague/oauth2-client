@@ -25,8 +25,11 @@ final class LiberatorExtension implements DynamicStaticMethodReturnTypeExtension
         return $methodReflection->getName() === 'liberate';
     }
 
-    public function getTypeFromStaticMethodCall(MethodReflection $methodReflection, StaticCall $methodCall, Scope $scope): Type
-    {
+    public function getTypeFromStaticMethodCall(
+        MethodReflection $methodReflection,
+        StaticCall $methodCall,
+        Scope $scope
+    ): Type {
         $types = [new ObjectType(ProxyInterface::class)];
         foreach ($scope->getType($methodCall->args[0]->value)->getReferencedClasses() as $class) {
             $types[] = new LiberatedType($class);

@@ -667,7 +667,7 @@ abstract class AbstractProvider
      *
      * @throws UnexpectedValueException
      * @param  ResponseInterface $response
-     * @return array
+     * @return array|string
      */
     protected function parseResponse(ResponseInterface $response)
     {

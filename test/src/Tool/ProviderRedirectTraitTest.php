@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Test\Tool;
 use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use InvalidArgumentException;
 use League\OAuth2\Client\Tool\ProviderRedirectTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
