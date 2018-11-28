@@ -57,10 +57,12 @@
         "lint": "parallel-lint src test",
         "phpunit": "phpunit --verbose --colors=always",
         "phpcs": "phpcs src test --standard=psr12 -sp --colors",
+        "phpstan": "phpstan analyse -l 3 src test",
         "test": [
             "@lint",
             "@phpunit",
-            "@phpcs"
+            "@phpcs",
+            "@phpstan"
         ]
     }
 }
