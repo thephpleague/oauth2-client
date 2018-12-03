@@ -667,7 +667,7 @@ abstract class AbstractProvider
      *
      * @throws UnexpectedValueException
      * @param  ResponseInterface $response
-     * @return array
+     * @return array|string
      */
     protected function parseResponse(ResponseInterface $response)
     {
@@ -717,7 +717,7 @@ abstract class AbstractProvider
      * Custom mapping of expiration, etc should be done here. Always call the
      * parent method when overloading this method.
      *
-     * @param  mixed $result
+     * @param array $result
      * @return array
      */
     protected function prepareAccessTokenResponse(array $result)

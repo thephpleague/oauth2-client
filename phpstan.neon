@@ -1,0 +1,13 @@
+includes:
+	- vendor/eloquent/phpstan-phony/phony.neon
+	- vendor/phpstan/phpstan-phpunit/extension.neon
+	- vendor/phpstan/phpstan-phpunit/rules.neon
+
+services:
+	-
+		class: League\OAuth2\Client\Test\PHPStan\LiberatorExtension
+		tags: [phpstan.broker.dynamicStaticMethodReturnTypeExtension]
+
+parameters:
+	ignoreErrors:
+		- '#Method League\\OAuth2\\Client\\Test\\Tool\\ProviderRedirectTraitTest::setRedirectLimit\(\) should return League\\OAuth2\\Client\\Provider\\AbstractProvider but returns \$this\(League\\OAuth2\\Client\\Test\\Tool\\ProviderRedirectTraitTest\)\.#'

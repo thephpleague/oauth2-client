@@ -12,7 +12,10 @@
     "require-dev": {
         "eloquent/liberator": "^2.0",
         "eloquent/phony-phpunit": "^4.0",
+        "eloquent/phpstan-phony": "^0.3.0",
         "jakub-onderka/php-parallel-lint": "^1.0",
+        "phpstan/phpstan": "^0.10.5",
+        "phpstan/phpstan-phpunit": "^0.10.0",
         "phpunit/phpunit": "^7.4",
         "squizlabs/php_codesniffer": "^3.3"
     },
@@ -54,10 +57,12 @@
         "lint": "parallel-lint src test",
         "phpunit": "phpunit --verbose --colors=always",
         "phpcs": "phpcs src test --standard=psr12 -sp --colors",
+        "phpstan": "phpstan analyse -l 3 src test",
         "test": [
             "@lint",
             "@phpunit",
-            "@phpcs"
+            "@phpcs",
+            "@phpstan"
         ]
     }
 }

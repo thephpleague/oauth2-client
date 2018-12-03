@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use League\OAuth2\Client\Token\ResourceOwnerAccessTokenInterface;
 use UnexpectedValueException;
 use Eloquent\Liberator\Liberator;
 use Eloquent\Phony\Phpunit\Phony;
@@ -13,7 +14,6 @@ use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PHPUnit\Framework\TestCase;
@@ -46,7 +46,7 @@ class AbstractProviderTest extends TestCase
     public function testInvalidGrantObject()
     {
         $this->expectException(InvalidGrantException::class);
-        $grant = new \StdClass();
+        $grant = new \stdClass();
         $this->provider->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 
@@ -161,18 +161,18 @@ class AbstractProviderTest extends TestCase
 
     public function testSetRedirectHandler()
     {
-        $this->testFunction = false;
-        $this->state = false;
+        $testFunction = false;
+        $state = false;
 
-        $callback = function ($url, $provider) {
-            $this->testFunction = $url;
-            $this->state = $provider->getState();
+        $callback = function ($url, $provider) use (&$testFunction, &$state) {
+            $testFunction = $url;
+            $state = $provider->getState();
         };
 
         $this->provider->authorize([], $callback);
 
-        $this->assertNotFalse($this->testFunction);
-        $this->assertAttributeEquals($this->state, 'state', $this->provider);
+        $this->assertNotFalse($testFunction);
+        $this->assertAttributeEquals($state, 'state', $this->provider);
     }
 
     /**
@@ -201,6 +201,7 @@ class AbstractProviderTest extends TestCase
 
         // Run
         $provider->setHttpClient($client->get());
+        /** @var \League\OAuth2\Client\Test\Provider\Fake\User $user */
         $user = $provider->getResourceOwner($token);
         $url = $provider->getResourceOwnerDetailsUrl($token);
 
@@ -299,7 +300,6 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals([], $provider->getHeaders());
         $this->assertEquals([], $provider->getHeaders('mock_token'));
 
-        $provider->authorizationHeader = 'Bearer';
         $this->assertEquals(['Authorization' => 'Bearer abc'], $provider->getHeaders('abc'));
 
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
@@ -366,6 +366,7 @@ class AbstractProviderTest extends TestCase
 
         $errorMessage = '';
         $errorCode = 0;
+        $errorBody = [];
 
         try {
             $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -525,7 +526,7 @@ class AbstractProviderTest extends TestCase
         $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
 
         // Verify
-        $this->assertInstanceOf(AccessTokenInterface::class, $token);
+        $this->assertInstanceOf(ResourceOwnerAccessTokenInterface::class, $token);
 
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
