@@ -31,6 +31,7 @@ Gateway | Composer Package | Maintainer
 [Buffer](https://github.com/tgallice/oauth2-buffer) | tgallice/oauth2-buffer | [Thomas Gallice](https://github.com/tgallice)
 [ColorMeShop](https://github.com/pepabo/oauth2-colormeshop) | pepabo/oauth2-colormeshop | [GMO Pepabo, Inc.](https://github.com/pepabo)
 [Canvas LMS](https://github.com/smtech/oauth2-canvaslms) | smtech/oauth2-canvaslms | [Seth Battis](https://github.com/battis)
+[concrete5](https://github.com/concrete5/oauth2-concrete5) | concrete5/oauth2-concrete5 | [Andrew Embler](https://github.com/aembler)
 [ChatWork](https://github.com/chatwork/oauth2-chatwork-php) | chatwork/oauth2-chatwork | [Yuta Adachi](https://github.com/ada-u)
 [Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
