@@ -126,11 +126,17 @@ abstract class AbstractProvider
         $this->setRequestFactory($collaborators['requestFactory']);
 
         if (empty($collaborators['httpClient'])) {
+            $client_config = [];
             $client_options = $this->getAllowedClientOptions($options);
-
-            $collaborators['httpClient'] = new HttpClient(
-                array_intersect_key($options, array_flip($client_options))
-            );
+            if ($client_options) {
+                $client_config = array_intersect_key($options, array_flip($client_options));
+            }
+            // if set httpClientConfig, override the previous options
+            if (isset($options['httpClientConfig'])) {
+                $client_options = $this->getAllowedClientOptions($options['httpClientConfig']);
+                $client_config = array_intersect_key($options['httpClientConfig'], array_flip($client_options));
+            }
+            $collaborators['httpClient'] = new HttpClient($client_config);
         }
         $this->setHttpClient($collaborators['httpClient']);
 

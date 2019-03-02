@@ -135,6 +135,67 @@ class AbstractProviderTest extends TestCase
         $this->assertFalse($config['verify']);
     }
 
+    public function testConstructorSetsHttpClientConfig()
+    {
+        $timeout = rand(100, 900);
+
+        $httpClientConfig = [
+            'timeout' => $timeout,
+        ];
+        $mockProvider = new MockProvider(['httpClientConfig' => $httpClientConfig]);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('timeout', $config);
+        $this->assertEquals($timeout, $config['timeout']);
+    }
+
+    public function testCanSetAProxyInHttpClientConfig()
+    {
+        $proxy = '192.168.0.1:8888';
+        $httpClientConfig = [
+            'proxy' => $proxy,
+        ];
+        $mockProvider = new MockProvider(['httpClientConfig' => $httpClientConfig]);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('proxy', $config);
+        $this->assertEquals($proxy, $config['proxy']);
+    }
+
+    public function testCannotDisableVerifyIfNoProxyInHttpClientConfig()
+    {
+        $httpClientConfig = [
+            'verify' => false,
+        ];
+        $mockProvider = new MockProvider([$httpClientConfig]);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('verify', $config);
+        $this->assertTrue($config['verify']);
+    }
+
+    public function testOptionsOverrideByHttpClientConfig()
+    {
+        $configTimeout = 20;
+        $optionsTimeout = 10;
+        $httpClientConfig = [
+            'timeout' => $configTimeout,
+        ];
+        $options = [
+            'timeout' => $optionsTimeout,
+            'httpClientConfig' => $httpClientConfig,
+        ];
+        $mockProvider = new MockProvider($options);
+
+        $config = $mockProvider->getHttpClient()->getConfig();
+
+        $this->assertContains('timeout', $config);
+        $this->assertEquals($configTimeout, $config['timeout']);
+    }
+
     public function testConstructorSetsGrantFactory()
     {
         $mockAdapter = Phony::mock(GrantFactory::class)->get();
