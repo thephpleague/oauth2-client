@@ -302,7 +302,13 @@ abstract class AbstractProvider
     {
         // Converting bytes to hex will always double length. Hence, we can reduce
         // the amount of bytes by half to produce the correct length.
-        return bin2hex(random_bytes($length / 2));
+        // Converting bytes to hex will always double length. Hence, we can reduce
+        // the amount of bytes by half to produce the correct length.
+        if ((phpversion() < 7) && (phpversion() >= 5)) {
+            return bin2hex(mt_rand($length / 2, mt_getrandmax()));
+        } else {
+            return bin2hex(random_bytes($length / 2));
+        }
     }
 
     /**
@@ -343,8 +349,8 @@ abstract class AbstractProvider
         }
 
         $options += [
-            'response_type'   => 'code',
-            'approval_prompt' => 'auto'
+            'response_type' => 'code',
+            'approval_prompt' => 'auto',
         ];
 
         if (is_array($options['scope'])) {
@@ -385,9 +391,9 @@ abstract class AbstractProvider
      */
     public function getAuthorizationUrl(array $options = [])
     {
-        $base   = $this->getBaseAuthorizationUrl();
+        $base = $this->getBaseAuthorizationUrl();
         $params = $this->getAuthorizationParameters($options);
-        $query  = $this->getAuthorizationQuery($params);
+        $query = $this->getAuthorizationQuery($params);
 
         return $this->appendQuery($base, $query);
     }
@@ -507,8 +513,8 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenRequest(array $params)
     {
-        $method  = $this->getAccessTokenMethod();
-        $url     = $this->getAccessTokenUrl($params);
+        $method = $this->getAccessTokenMethod();
+        $url = $this->getAccessTokenUrl($params);
         $options = $this->optionProvider->getAccessTokenOptions($this->getAccessTokenMethod(), $params);
 
         return $this->getRequest($method, $url, $options);
@@ -527,13 +533,13 @@ abstract class AbstractProvider
         $grant = $this->verifyGrant($grant);
 
         $params = [
-            'client_id'     => $this->clientId,
+            'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
-            'redirect_uri'  => $this->redirectUri,
+            'redirect_uri' => $this->redirectUri,
         ];
 
-        $params   = $grant->prepareRequestParameters($params, $options);
-        $request  = $this->getAccessTokenRequest($params);
+        $params = $grant->prepareRequestParameters($params, $options);
+        $request = $this->getAccessTokenRequest($params);
         $response = $this->getParsedResponse($request);
         if (false === is_array($response)) {
             throw new UnexpectedValueException(
@@ -541,7 +547,7 @@ abstract class AbstractProvider
             );
         }
         $prepared = $this->prepareAccessTokenResponse($response);
-        $token    = $this->createAccessToken($prepared, $grant);
+        $token = $this->createAccessToken($prepared, $grant);
 
         return $token;
     }
