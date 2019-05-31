@@ -14,11 +14,15 @@
 
 namespace League\OAuth2\Client\Provider;
 
+use League\OAuth2\Client\Tool\ArrayAccessorTrait;
+
 /**
  * Represents a generic resource owner for use with the GenericProvider.
  */
 class GenericResourceOwner implements ResourceOwnerInterface
 {
+    use ArrayAccessorTrait;
+
     /**
      * @var array
      */
@@ -46,7 +50,7 @@ class GenericResourceOwner implements ResourceOwnerInterface
      */
     public function getId()
     {
-        return $this->response[$this->resourceOwnerId];
+        return $this->getValueByKey($this->response, $this->resourceOwnerId);
     }
 
     /**
