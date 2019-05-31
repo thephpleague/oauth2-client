@@ -54,6 +54,16 @@ class GenericResourceOwner implements ResourceOwnerInterface
     }
 
     /**
+     * Gets resource owner attribute by key. The key supports dot notation.
+     *
+     * @return mixed
+     */
+    public function getAttribute($key)
+    {
+        return $this->getValueByKey($this->response, (string) $key);
+    }
+    
+    /**
      * Returns the raw resource owner response.
      *
      * @return array
