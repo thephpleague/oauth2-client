@@ -100,6 +100,7 @@ Gateway | Composer Package | Maintainer
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Twinfield](https://github.com/php-twinfield/twinfield) | php-twinfield/twinfield | [Mollie B.V.](https://github.com/mollie)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
+[Twitch.tv (New API Helix)](https://github.com/vertisan/oauth2-twitch-helix) | vertisan/oauth2-twitch-helix | [Paweł Farys](https://github.com/vertisan)
 [Uber](https://github.com/stevenmaguire/oauth2-uber) | stevenmaguire/oauth2-uber | [Steven Maguire](https://github.com/stevenmaguire)
 [Unsplash](https://github.com/hughbertd/oauth2-unsplash) | hughbertd/oauth2-unsplash | [Hugh Downer](https://github.com/hughbertd)
 [Untappd](https://github.com/shadowhand/oauth2-untappd) | shadowhand/oauth2-untappd | [Woody Gilk](https://github.com/shadowhand)
