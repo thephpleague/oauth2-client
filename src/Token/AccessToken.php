@@ -80,7 +80,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
                 throw new \InvalidArgumentException('expires_in value must be an integer');
             }
 
-            $this->expires = $options['expires_in'] != 0 ? time() + $options['expires_in'] : 0;
+            $this->expires = $options['expires_in'] != 0 ? time() + $options['expires_in'] : time();
         } elseif (!empty($options['expires'])) {
             // Some providers supply the seconds until expiration rather than
             // the exact timestamp. Take a best guess at which we received.
