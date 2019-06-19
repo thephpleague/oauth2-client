@@ -74,7 +74,7 @@ trait MacAuthorizationTrait
         $mac   = $this->getMacSignature($id, $ts, $nonce);
 
         $parts = [];
-        foreach (compact('id', 'ts', 'nonce', 'mac') as $key => $value) {
+        foreach (compact('id', 'ts', 'nonce', 'mac') as $key => $value) { // Nice use of the compact function for the foreach loop
             $parts[] = sprintf('%s="%s"', $key, $value);
         }
 

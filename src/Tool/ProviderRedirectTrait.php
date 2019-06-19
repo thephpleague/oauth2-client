@@ -75,6 +75,7 @@ trait ProviderRedirectTrait
     {
         $statusCode = $response->getStatusCode();
 
+        // Maybe better to compare to statusCode with 301 and 302 codes, because other codes might be for other purposes
         return $statusCode > 300 && $statusCode < 400 && $response->hasHeader('Location');
     }
 

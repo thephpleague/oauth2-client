@@ -504,6 +504,7 @@ class AbstractProviderTest extends TestCase
 
         $provider->setAccessTokenMethod($method);
 
+        // Unused variable
         $grant_name = 'mock';
         $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
 

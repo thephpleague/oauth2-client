@@ -13,6 +13,8 @@ class AccessTokenTest extends TestCase
      */
     public function testInvalidRefreshToken()
     {
+        // The exception is thrown in the  if statement of AccessToken constructor, that checks is access_token key is exists, but method name says that check refresh token functionality
+        // Also variable  $token do not used
         $token = $this->getAccessToken(['invalid_access_token' => 'none']);
     }
 
@@ -111,6 +113,7 @@ class AccessTokenTest extends TestCase
         ];
         $token = $this->getAccessToken($options);
 
+        // The variable is unused
         $hasExpired = $token->hasExpired();
     }
 
@@ -119,10 +122,12 @@ class AccessTokenTest extends TestCase
      */
     public function testInvalidExpiresIn()
     {
+        // Wrong formatting the code
 	 $options = [
             'access_token' => 'access_token',
             'expires_in' => 'TEXT',
          ];
+        // The variable is unused
          $token = $this->getAccessToken($options);
     }
 

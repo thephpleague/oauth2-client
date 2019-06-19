@@ -56,7 +56,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
      *     in the access token request. The `access_token` option is required.
      * @throws InvalidArgumentException if `access_token` is not provided in `$options`.
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = []) // Need to remove the ability to create an instance of a token without options, because at least access_token value is required
     {
         if (empty($options['access_token'])) {
             throw new InvalidArgumentException('Required option not passed: "access_token"');

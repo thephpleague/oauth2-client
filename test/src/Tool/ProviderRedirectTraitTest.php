@@ -112,6 +112,7 @@ class ProviderRedirectTraitTest extends TestCase
     public function testClientErrorReturnsResponse()
     {
         $status = rand(400, 500);
+        // The variable is unused
         $result = ['foo' => 'bar'];
 
         $request = Phony::mock(RequestInterface::class);
