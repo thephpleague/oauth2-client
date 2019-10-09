@@ -26,7 +26,7 @@ Installation
 
 This package establishes a convenient base of interfaces and abstract classes that allow developers to easily create
 OAuth2 Clients to interface with a wide-variety of providers on the web. There are many clients that exist that you may
-use on the [Third-Party Providers](/providers/thirdparty) page.
+use on the [Third-Party Providers](/docs/providers/thirdparty.md) page.
 
 This base package also includes a `GenericProvider` that can be used with any OAuth 2.0 Server that uses [Bearer tokens](http://tools.ietf.org/html/rfc6750).
 
