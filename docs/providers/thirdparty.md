@@ -59,6 +59,7 @@ Gateway | Composer Package | Maintainer
 [HeadHunter](https://packagist.org/packages/alexmasterov/oauth2-headhunter) | alexmasterov/oauth2-headhunter | [Alex Masterov](https://github.com/AlexMasterov)
 [Heroku](https://github.com/stevenmaguire/oauth2-heroku) | stevenmaguire/oauth2-heroku | [Steven Maguire](https://github.com/stevenmaguire)
 [HubSpot](https://github.com/helpscout/oauth2-hubspot) | helpscout/oauth2-hubspot | [Steven Wade](https://github.com/stevenwadejr)
+[IBM App ID](https://github.com/Jampire/oauth2-appid) | jampire/oauth2-appid | [Dzianis Kotau](https://github.com/Jampire)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Jira](https://packagist.org/packages/mrjoops/oauth2-jira) | mrjoops/oauth2-jira | [Alexandre Lahure](https://github.com/mrjoops)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
