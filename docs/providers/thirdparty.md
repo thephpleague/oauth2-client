@@ -110,6 +110,7 @@ Gateway | Composer Package | Maintainer
 [Wechat](https://github.com/oakhope/oauth2-wechat) | oakhope/oauth2-wechat | [Benji Wang](https://github.com/oakhope)
 [WeCounsel](https://github.com/stevenmaguire/oauth2-wecounsel) | stevenmaguire/oauth2-wecounsel | [Steven Maguire](https://github.com/stevenmaguire)
 [Wrike](https://github.com/michaelKaefer/oauth2-wrike) | michaelkaefer/oauth2-wrike | [Michael Käfer](https://github.com/michaelKaefer)
+[Xero](https://github.com/calcinai/oauth2-xero) | calcinai/oauth2-xero | [Michael Calcinai](https://github.com/calcinai)
 [Yahoo](https://packagist.org/packages/hayageek/oauth2-yahoo) | hayageek/oauth2-yahoo | [Ravishanker Kusuma](https://github.com/hayageek)
 [Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
 [Yelp](https://github.com/stevenmaguire/oauth2-yelp) | stevenmaguire/oauth2-yelp | [Steven Maguire](https://github.com/stevenmaguire)
