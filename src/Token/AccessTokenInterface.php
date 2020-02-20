@@ -15,7 +15,6 @@
 namespace League\OAuth2\Client\Token;
 
 use JsonSerializable;
-use RuntimeException;
 
 interface AccessTokenInterface extends JsonSerializable
 {
@@ -44,7 +43,7 @@ interface AccessTokenInterface extends JsonSerializable
      * Checks if this token has expired.
      *
      * @return boolean true if the token has expired, false otherwise.
-     * @throws RuntimeException if 'expires' is not set on the token.
+     * @throws \RuntimeException if 'expires' is not set on the token.
      */
     public function hasExpired();
 
