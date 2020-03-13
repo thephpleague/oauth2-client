@@ -630,13 +630,13 @@ class AbstractProviderTest extends TestCase
         $this->provider->allowResponseParsingException();
         $exception = null;
         try {
-            $this->testParseResponse('', '', null, 401);
+            $this->testParseResponse('{13}', '', null, 401);
         } catch (ResponseParsingException $exception) {
         }
         $this->assertInstanceOf(ResponseParsingException::class, $exception);
         $response = $exception->getResponse();
         $this->assertSame(401, $response->getStatusCode());
-        $this->assertSame('', $exception->getResponseBody());
+        $this->assertSame('{13}', $exception->getResponseBody());
         $this->provider->disallowResponseParsingException();
     }
 
