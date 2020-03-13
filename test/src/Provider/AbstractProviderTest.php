@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use League\OAuth2\Client\Provider\Exception\ResponseParsingException;
 use UnexpectedValueException;
 use Eloquent\Liberator\Liberator;
 use Eloquent\Phony\Phpunit\Phony;
@@ -622,6 +623,21 @@ class AbstractProviderTest extends TestCase
     {
         $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
+    }
+
+    public function testResponseParsingException()
+    {
+        $this->provider->allowResponseParsingException();
+        $exception = null;
+        try {
+            $this->testParseResponse('', '', null, 401);
+        } catch (ResponseParsingException $exception) {
+        }
+        $this->assertInstanceOf(ResponseParsingException::class, $exception);
+        $response = $exception->getResponse();
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertSame('', $exception->getResponseBody());
+        $this->provider->disallowResponseParsingException();
     }
 
     public function getAppendQueryProvider()

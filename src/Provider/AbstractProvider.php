@@ -22,6 +22,7 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\OptionProvider\OptionProviderInterface;
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\Exception\ResponseParsingException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
@@ -97,6 +98,15 @@ abstract class AbstractProvider
      * @var OptionProviderInterface
      */
     protected $optionProvider;
+
+    /**
+     * If a response body cannot be parsed, a value true of this flag will allow
+     * the response parser to throw a ResponseParsingException containing
+     * the response and the body.
+     *
+     * @var bool
+     */
+    protected $mayThrowResponseParsingException = false;
 
     /**
      * Constructs an OAuth 2.0 service provider.
@@ -520,6 +530,8 @@ abstract class AbstractProvider
      * @param  mixed $grant
      * @param  array $options
      * @throws IdentityProviderException
+     * @throws ResponseParsingException if the flag $mayThrowResponseParsingException is true and
+     *                                  response body cannot be parsed.
      * @return AccessTokenInterface
      */
     public function getAccessToken($grant, array $options = [])
@@ -613,6 +625,8 @@ abstract class AbstractProvider
      *
      * @param  RequestInterface $request
      * @throws IdentityProviderException
+     * @throws ResponseParsingException if the flag $mayThrowResponseParsingException is true and
+     *                                  response body cannot be parsed.
      * @return mixed
      */
     public function getParsedResponse(RequestInterface $request)
@@ -666,8 +680,10 @@ abstract class AbstractProvider
      * Parses the response according to its content-type header.
      *
      * @throws UnexpectedValueException
+     * @throws ResponseParsingException if the flag $mayThrowResponseParsingException is true and
+     *                                  response body cannot be parsed.
      * @param  ResponseInterface $response
-     * @return array
+     * @return array|string
      */
     protected function parseResponse(ResponseInterface $response)
     {
@@ -686,18 +702,26 @@ abstract class AbstractProvider
             return $this->parseJson($content);
         } catch (UnexpectedValueException $e) {
             if (strpos($type, 'json') !== false) {
-                throw $e;
+                throw $this->mayThrowResponseParsingException
+                    ? new ResponseParsingException($response, $content, $e->getMessage(), $e->getCode())
+                    : $e;
             }
 
-            if ($response->getStatusCode() == 500) {
-                throw new UnexpectedValueException(
-                    'An OAuth server error was encountered that did not contain a JSON body',
-                    0,
-                    $e
-                );
-            }
+            // for any other content types
+            if ($this->mayThrowResponseParsingException) {
+                // let the calling function decide what to do with the response and its body
+                throw new ResponseParsingException($response, $content, '', 0);
+            } else {
+                if ($response->getStatusCode() == 500) {
+                    throw new UnexpectedValueException(
+                        'An OAuth server error was encountered that did not contain a JSON body',
+                        0,
+                        $e
+                    );
+                }
 
-            return $content;
+                return $content;
+            }
         }
     }
 
@@ -774,6 +798,8 @@ abstract class AbstractProvider
      *
      * @param  AccessToken $token
      * @return mixed
+     * @throws ResponseParsingException if the flag $mayThrowResponseParsingException is true and
+     *                                  response body cannot be parsed.
      */
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
