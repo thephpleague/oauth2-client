@@ -13,7 +13,7 @@ class AccessTokenTest extends TestCase
         parent::tearDown();
 
         /* reset the test double time if it was set */
-        AccessToken::setTimeNow(null);
+        AccessToken::resetTimeNow();
     }
 
     /**
@@ -51,7 +51,29 @@ class AccessTokenTest extends TestCase
         $expires = $token->getExpires();
 
         $this->assertNotNull($expires);
-        $this->assertEquals(1577836900);
+        $this->assertEquals(1577836900, $expires);
+    }
+
+    public function testSetTimeNow()
+    {
+        AccessToken::setTimeNow(1577836800);
+        $timeNow = $this->getAccessToken(['access_token' => 'asdf'])->getTimeNow();
+
+        $this->assertEquals(1577836800, $timeNow);
+    }
+
+    public function testResetTimeNow()
+    {
+        AccessToken::setTimeNow(1577836800);
+        $token = $this->getAccessToken(['access_token' => 'asdf']);
+
+        $this->assertEquals(1577836800, $token->getTimeNow());
+        AccessToken::resetTimeNow();
+
+        $this->assertNotEquals(1577836800, $token->getTimeNow());
+
+        $timeBeforeAssertion = time();
+        $this->assertGreaterThanOrEqual($timeBeforeAssertion, $token->getTimeNow());
     }
 
     public function testExpiresPastTimestamp()
