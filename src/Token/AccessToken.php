@@ -50,6 +50,30 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     protected $values = [];
 
     /**
+     * @var int
+     */
+    private static $timeNow;
+
+    /**
+     * Set the time now. This should only be used for testing purposes.
+     *
+     * @param int $timeNow the time in seconds since epoch
+     * @return void
+     */
+    public static function setTimeNow(?int $timeNow): void
+    {
+        self::$timeNow = $timeNow;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeNow(): int
+    {
+        return self::$timeNow ? self::$timeNow : time();
+    }
+
+    /**
      * Constructs an access token.
      *
      * @param array $options An array of options returned by the service provider
@@ -80,14 +104,16 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
                 throw new \InvalidArgumentException('expires_in value must be an integer');
             }
 
-            $this->expires = $options['expires_in'] != 0 ? time() + $options['expires_in'] : 0;
+            $timeNow = $this->getTimeNow();
+
+            $this->expires = $options['expires_in'] != 0 ? $timeNow + $options['expires_in'] : 0;
         } elseif (!empty($options['expires'])) {
             // Some providers supply the seconds until expiration rather than
             // the exact timestamp. Take a best guess at which we received.
             $expires = $options['expires'];
 
             if (!$this->isExpirationTimestamp($expires)) {
-                $expires += time();
+                $expires += $timeNow;
             }
 
             $this->expires = $expires;

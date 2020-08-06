@@ -8,6 +8,14 @@ use PHPUnit\Framework\TestCase;
 
 class AccessTokenTest extends TestCase
 {
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        /* reset the test double time if it was set */
+        AccessToken::setTimeNow(null);
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -31,6 +39,19 @@ class AccessTokenTest extends TestCase
         $this->assertNotNull($expires);
         $this->assertGreaterThan(time(), $expires);
         $this->assertLessThan(time() + 200, $expires);
+    }
+
+    public function testExpiresInCorrectionUsingSetTimeNow()
+    {
+        /* set fake time at 2020-01-01 00:00:00 */
+        AccessToken::setTimeNow(1577836800);
+        $options = ['access_token' => 'access_token', 'expires_in' => 100];
+        $token = $this->getAccessToken($options);
+
+        $expires = $token->getExpires();
+
+        $this->assertNotNull($expires);
+        $this->assertEquals(1577836900);
     }
 
     public function testExpiresPastTimestamp()
