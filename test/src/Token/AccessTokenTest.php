@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class AccessTokenTest extends TestCase
 {
-    public function tearDown(): void
+    public function tearDown()
     {
         parent::tearDown();
 
