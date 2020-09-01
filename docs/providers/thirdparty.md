@@ -58,6 +58,7 @@ Gateway | Composer Package | Maintainer
 [Harvest](https://github.com/nilesuan/oauth2-harvest) | nilesuan/oauth2-harvest | [Nile Suan](https://github.com/nilesuan)
 [HeadHunter](https://packagist.org/packages/alexmasterov/oauth2-headhunter) | alexmasterov/oauth2-headhunter | [Alex Masterov](https://github.com/AlexMasterov)
 [Heroku](https://github.com/stevenmaguire/oauth2-heroku) | stevenmaguire/oauth2-heroku | [Steven Maguire](https://github.com/stevenmaguire)
+[Housecall Pro](https://github.com/compwright/oauth2-housecallpro) | compwright/oauth2-housecallpro | [Jonathon Hill](https://github.com/compwright)
 [HubSpot](https://github.com/helpscout/oauth2-hubspot) | helpscout/oauth2-hubspot | [Steven Wade](https://github.com/stevenwadejr)
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Jira](https://packagist.org/packages/mrjoops/oauth2-jira) | mrjoops/oauth2-jira | [Alexandre Lahure](https://github.com/mrjoops)
