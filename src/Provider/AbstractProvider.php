@@ -532,6 +532,7 @@ abstract class AbstractProvider
             'redirect_uri'  => $this->redirectUri,
         ];
 
+        $options  = $this->getAuthorizationParameters($options);
         $params   = $grant->prepareRequestParameters($params, $options);
         $request  = $this->getAccessTokenRequest($params);
         $response = $this->getParsedResponse($request);
