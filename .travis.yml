@@ -7,6 +7,7 @@ php:
   - 7.2
   - 7.3
   - 7.4
+  - 8.0
   - nightly
 
 matrix:
@@ -20,7 +21,7 @@ before_install:
   - travis_retry composer self-update
 
 install:
-  - travis_retry composer require --no-update satooshi/php-coveralls:^1.0
+  - travis_retry composer require --no-update php-coveralls/php-coveralls:^2.4
   - travis_retry composer install --no-interaction --prefer-source
 
 before_script:

@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 2.6.0
+
+_Released: TBD_
+
+* Support PHP 8
+
 ## 2.5.0
 
 _Released: 2020-07-18_
