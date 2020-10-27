@@ -126,3 +126,4 @@ Gateway | Composer Package | Maintainer
 [Yelp](https://github.com/stevenmaguire/oauth2-yelp) | stevenmaguire/oauth2-yelp | [Steven Maguire](https://github.com/stevenmaguire)
 [Zendesk](https://github.com/stevenmaguire/oauth2-zendesk) | stevenmaguire/oauth2-zendesk | [Steven Maguire](https://github.com/stevenmaguire)
 [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll) | wheniwork/oauth2-zenpayroll | [Woody Gilk](https://github.com/shadowhand)
+[Zoho](https://github.com/shahariaazam/zoho-oauth2) | shahariaazam/zoho-oauth2 | [Shaharia Azam](https://github.com/shahariaazam)
