@@ -1,0 +1,1 @@
+The `docs/` directory is what powers the website [oauth2-client.thephpleague.com](https://oauth2-client.thephpleague.com/). Modifying links to work in the Github file browser will break the website. Please do not open a new Pull Request to "fix the broken documentation links"; they will be promptly closed.

@@ -14,6 +14,21 @@ class Fake extends AbstractProvider
 
     private $accessTokenMethod = 'POST';
 
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
+
+    public function getRedirectUri()
+    {
+        return $this->redirectUri;
+    }
+
     public function getBaseAuthorizationUrl()
     {
         return 'http://example.com/oauth/authorize';
