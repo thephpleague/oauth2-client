@@ -8,17 +8,13 @@ use Psr\Http\Message\RequestInterface;
 
 class RequestFactoryTest extends TestCase
 {
-    public function setUp()
-    {
-        $this->factory = new RequestFactory;
-    }
-
     public function testGetRequest()
     {
         $method  = 'get';
         $uri     = '/test';
 
-        $request = $this->factory->getRequest($method, $uri);
+        $factory = new RequestFactory();
+        $request = $factory->getRequest($method, $uri);
 
         $this->assertInstanceOf(RequestInterface::class, $request);
         $this->assertSame(strtoupper($method), $request->getMethod());
@@ -28,7 +24,7 @@ class RequestFactoryTest extends TestCase
         $body            = 'test body';
         $protocolVersion = '1.0';
 
-        $request = $this->factory->getRequest($method, $uri, $headers, $body, $protocolVersion);
+        $request = $factory->getRequest($method, $uri, $headers, $body, $protocolVersion);
 
         $this->assertTrue($request->hasHeader('X-Test'));
         $this->assertSame($body, (string) $request->getBody());
@@ -40,7 +36,8 @@ class RequestFactoryTest extends TestCase
         $method  = 'head';
         $uri     = '/test/options';
 
-        $request = $this->factory->getRequestWithOptions($method, $uri);
+        $factory = new RequestFactory();
+        $request = $factory->getRequestWithOptions($method, $uri);
 
         $this->assertInstanceOf(RequestInterface::class, $request);
         $this->assertSame(strtoupper($method), $request->getMethod());
@@ -51,7 +48,7 @@ class RequestFactoryTest extends TestCase
             'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
         ];
 
-        $request = $this->factory->getRequestWithOptions($method, $uri, $options);
+        $request = $factory->getRequestWithOptions($method, $uri, $options);
 
         $this->assertContains($options['headers']['Content-Type'], $request->getHeader('Content-Type'));
         $this->assertSame($options['body'], (string) $request->getBody());
