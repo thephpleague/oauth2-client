@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
+use BadMethodCallException;
 use League\OAuth2\Client\Grant\Password;
 
 class PasswordTest extends GrantTestCase
@@ -29,19 +30,17 @@ class PasswordTest extends GrantTestCase
         $this->assertEquals('password', (string) $grant);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidUsername()
     {
-        $this->provider->getAccessToken('password', ['invalid_username' => 'mock_username', 'password' => 'mock_password']);
+        $this->expectException(BadMethodCallException::class);
+
+        $this->getMockProvider()->getAccessToken('password', ['invalid_username' => 'mock_username', 'password' => 'mock_password']);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidPassword()
     {
-        $this->provider->getAccessToken('password', ['username' => 'mock_username', 'invalid_password' => 'mock_password']);
+        $this->expectException(BadMethodCallException::class);
+
+        $this->getMockProvider()->getAccessToken('password', ['username' => 'mock_username', 'invalid_password' => 'mock_password']);
     }
 }
