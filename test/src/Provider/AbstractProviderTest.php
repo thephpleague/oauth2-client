@@ -2,9 +2,10 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
+use Mockery;
+use ReflectionClass;
 use UnexpectedValueException;
-use Eloquent\Liberator\Liberator;
-use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\ClientInterface;
 use League\OAuth2\Client\Provider\AbstractProvider;
@@ -23,38 +24,43 @@ use Psr\Http\Message\StreamInterface;
 
 class AbstractProviderTest extends TestCase
 {
-    /**
-     * @var AbstractProvider
-     */
-    protected $provider;
-
-    protected function setUp()
+    protected function getMockProvider()
     {
-        $this->provider = new MockProvider([
+        return new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ]);
     }
 
+    public function testGetOptionProvider()
+    {
+        $this->assertInstanceOf(
+            PostAuthOptionProvider::class,
+            $this->getMockProvider()->getOptionProvider()
+        );
+    }
+
     public function testInvalidGrantString()
     {
         $this->expectException(InvalidGrantException::class);
-        $this->provider->getAccessToken('invalid_grant', ['invalid_parameter' => 'none']);
+        $this->getMockProvider()->getAccessToken('invalid_grant', ['invalid_parameter' => 'none']);
     }
 
     public function testInvalidGrantObject()
     {
         $this->expectException(InvalidGrantException::class);
         $grant = new \StdClass();
-        $this->provider->getAccessToken($grant, ['invalid_parameter' => 'none']);
+        $this->getMockProvider()->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 
     public function testAuthorizationUrlStateParam()
     {
-        $this->assertContains('state=XXX', $this->provider->getAuthorizationUrl([
-            'state' => 'XXX'
-        ]));
+        $authUrl = $this->getMockProvider()->getAuthorizationUrl([
+            'state' => 'XXX',
+        ]);
+
+        $this->assertTrue(strpos($authUrl, 'state=XXX') !== false);
     }
 
     /**
@@ -62,7 +68,7 @@ class AbstractProviderTest extends TestCase
      */
     public function testCustomAuthorizationUrlOptions()
     {
-        $url = $this->provider->getAuthorizationUrl([
+        $url = $this->getMockProvider()->getAuthorizationUrl([
             'foo' => 'BAR'
         ]);
         $query = parse_url($url, PHP_URL_QUERY);
@@ -86,9 +92,9 @@ class AbstractProviderTest extends TestCase
 
         $mockProvider = new MockProvider($options);
 
-        foreach ($options as $key => $value) {
-            $this->assertAttributeEquals($value, $key, $mockProvider);
-        }
+        $this->assertSame($options['clientId'], $mockProvider->getClientId());
+        $this->assertSame($options['clientSecret'], $mockProvider->getClientSecret());
+        $this->assertSame($options['redirectUri'], $mockProvider->getRedirectUri());
     }
 
     public function testConstructorSetsClientOptions()
@@ -99,7 +105,7 @@ class AbstractProviderTest extends TestCase
 
         $config = $mockProvider->getHttpClient()->getConfig();
 
-        $this->assertContains('timeout', $config);
+        $this->assertArrayHasKey('timeout', $config);
         $this->assertEquals($timeout, $config['timeout']);
     }
 
@@ -111,7 +117,7 @@ class AbstractProviderTest extends TestCase
 
         $config = $mockProvider->getHttpClient()->getConfig();
 
-        $this->assertContains('proxy', $config);
+        $this->assertArrayHasKey('proxy', $config);
         $this->assertEquals($proxy, $config['proxy']);
     }
 
@@ -121,7 +127,7 @@ class AbstractProviderTest extends TestCase
 
         $config = $mockProvider->getHttpClient()->getConfig();
 
-        $this->assertContains('verify', $config);
+        $this->assertArrayHasKey('verify', $config);
         $this->assertTrue($config['verify']);
     }
 
@@ -131,7 +137,7 @@ class AbstractProviderTest extends TestCase
 
         $config = $mockProvider->getHttpClient()->getConfig();
 
-        $this->assertContains('verify', $config);
+        $this->assertArrayHasKey('verify', $config);
         $this->assertFalse($config['verify']);
     }
 
@@ -198,7 +204,7 @@ class AbstractProviderTest extends TestCase
 
     public function testConstructorSetsGrantFactory()
     {
-        $mockAdapter = Phony::mock(GrantFactory::class)->get();
+        $mockAdapter = Mockery::mock(GrantFactory::class);
 
         $mockProvider = new MockProvider([], ['grantFactory' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
@@ -206,7 +212,7 @@ class AbstractProviderTest extends TestCase
 
     public function testConstructorSetsHttpAdapter()
     {
-        $mockAdapter = Phony::mock(ClientInterface::class)->get();
+        $mockAdapter = Mockery::mock(ClientInterface::class);
 
         $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
@@ -214,7 +220,7 @@ class AbstractProviderTest extends TestCase
 
     public function testConstructorSetsRequestFactory()
     {
-        $mockAdapter = Phony::mock(RequestFactory::class)->get();
+        $mockAdapter = Mockery::mock(RequestFactory::class);
 
         $mockProvider = new MockProvider([], ['requestFactory' => $mockAdapter]);
         $this->assertSame($mockAdapter, $mockProvider->getRequestFactory());
@@ -222,78 +228,25 @@ class AbstractProviderTest extends TestCase
 
     public function testSetRedirectHandler()
     {
-        $this->testFunction = false;
-        $this->state = false;
+        $testFunction = false;
+        $state = false;
 
-        $callback = function ($url, $provider) {
-            $this->testFunction = $url;
-            $this->state = $provider->getState();
+        $callback = function ($url, $provider) use (&$testFunction, &$state) {
+            $testFunction = $url;
+            $state = $provider->getState();
         };
 
-        $this->provider->authorize([], $callback);
+        $this->getMockProvider()->authorize([], $callback);
 
-        $this->assertNotFalse($this->testFunction);
-        $this->assertAttributeEquals($this->state, 'state', $this->provider);
+        $this->assertNotFalse($testFunction);
+        $this->assertNotFalse($state);
     }
 
     /**
      * @dataProvider userPropertyProvider
      */
-    public function testGetUserProperties($response, $name = null, $email = null, $id = null)
+    public function testGetUserProperties($name = null, $email = null, $id = null)
     {
-        // Mock
-        $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
-        ]);
-
-        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
-
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns(json_encode(compact('id', 'name', 'email')));
-
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
-
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->returns($response->get());
-
-        // Run
-        $provider->setHttpClient($client->get());
-        $user = $provider->getResourceOwner($token);
-        $url = $provider->getResourceOwnerDetailsUrl($token);
-
-        // Verify
-        $this->assertEquals($id, $user->getId());
-        $this->assertEquals($name, $user->getUserScreenName());
-        $this->assertEquals($email, $user->getUserEmail());
-
-        $this->assertArrayHasKey('name', $user->toArray());
-        $this->assertArrayHasKey('email', $user->toArray());
-
-        Phony::inOrder(
-            $client->send->calledWith(
-                $this->callback(function ($request) use ($url) {
-                    return $request->getMethod() === 'GET'
-                        && $request->hasHeader('Authorization')
-                        && (string) $request->getUri() === $url;
-                })
-            ),
-            $response->getBody->called(),
-            $stream->__toString->called(),
-            $response->getHeader->called()
-        );
-    }
-
-    /**
-     * @dataProvider userPropertyProvider
-     */
-    public function testGetUserPropertiesThrowsExceptionWhenNonJsonResponseIsReceived()
-    {
-        $this->expectException(\UnexpectedValueException::class);
-// Mock
         $provider = new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
@@ -302,65 +255,101 @@ class AbstractProviderTest extends TestCase
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
 
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns("<html><body>some unexpected response.</body></html>");
+        $stream = Mockery::mock(StreamInterface::class);
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn(json_encode([
+                'id' => $id,
+                'name' => $name,
+                'email' => $email,
+            ]));
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('text/html');
+        $response = Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn('application/json');
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->returns($response->get());
 
-        // Run
-        $provider->setHttpClient($client->get());
+        $client = Mockery::spy(ClientInterface::class, [
+            'send' => $response,
+        ]);
+
+        $provider->setHttpClient($client);
+        $user = $provider->getResourceOwner($token);
+        $url = $provider->getResourceOwnerDetailsUrl($token);
+
+        $this->assertEquals($id, $user->getId());
+        $this->assertEquals($name, $user->getUserScreenName());
+        $this->assertEquals($email, $user->getUserEmail());
+
+        $this->assertArrayHasKey('name', $user->toArray());
+        $this->assertArrayHasKey('email', $user->toArray());
+
+        $client
+            ->shouldHaveReceived('send')
+            ->once()
+            ->withArgs(function ($request) use ($url) {
+                return $request->getMethod() === 'GET'
+                    && $request->hasHeader('Authorization')
+                    && (string) $request->getUri() === $url;
+            });
+    }
+
+    public function testGetUserPropertiesThrowsExceptionWhenNonJsonResponseIsReceived()
+    {
+        $provider = new MockProvider([
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
+        ]);
+
+        $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+
+        $stream = Mockery::mock(StreamInterface::class, [
+            '__toString' => '<html><body>some unexpected response.</body></html>',
+        ]);
+
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => 200,
+            'getBody' => $stream,
+        ]);
+        $response
+            ->shouldReceive('getHeader')
+            ->with('content-type')
+            ->andReturn('text/html');
+
+        $client = Mockery::mock(ClientInterface::class, [
+            'send' => $response,
+        ]);
+
+        $provider->setHttpClient($client);
+
+        $this->expectException(UnexpectedValueException::class);
 
         $user = $provider->getResourceOwner($token);
     }
 
     public function userPropertyProvider()
     {
-        $response = [
-            'id'    => 1,
-            'email' => 'test@example.com',
-            'name'  => 'test',
-        ];
-
-        $response2 = [
-            'id'    => null,
-            'email' => null,
-            'name'  => null,
-        ];
-
-        $response3 = [];
-
         return [
-            'full response'  => [$response, 'test', 'test@example.com', 1],
-            'empty response' => [$response2],
-            'no response'    => [$response3],
+            'full response'  => ['test', 'test@example.com', 1],
+            'no response'    => [],
         ];
     }
 
-    public function getHeadersTest()
+    public function testGetHeaders()
     {
-        $provider = $this->getMockForAbstractClass(
-            '\League\OAuth2\Client\Provider\AbstractProvider',
-            [
-              [
-                  'clientId'     => 'mock_client_id',
-                  'clientSecret' => 'mock_secret',
-                  'redirectUri'  => 'none',
-              ]
-            ]
-        );
+        $provider = $this->getMockProvider();
 
-        /**
-         * @var $provider AbstractProvider
-         */
         $this->assertEquals([], $provider->getHeaders());
-        $this->assertEquals([], $provider->getHeaders('mock_token'));
-
-        $provider->authorizationHeader = 'Bearer';
+        $this->assertEquals(['Authorization' => 'Bearer mock_token'], $provider->getHeaders('mock_token'));
         $this->assertEquals(['Authorization' => 'Bearer abc'], $provider->getHeaders('abc'));
 
         $token = new AccessToken(['access_token' => 'xyz', 'expires_in' => 3600]);
@@ -369,14 +358,16 @@ class AbstractProviderTest extends TestCase
 
     public function testScopesOverloadedDuringAuthorize()
     {
-        $url = $this->provider->getAuthorizationUrl();
+        $provider = $this->getMockProvider();
+
+        $url = $provider->getAuthorizationUrl();
 
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
         $this->assertArrayHasKey('scope', $qs);
         $this->assertSame('test', $qs['scope']);
 
-        $url = $this->provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
+        $url = $provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
 
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
@@ -387,14 +378,15 @@ class AbstractProviderTest extends TestCase
     public function testAuthorizationStateIsRandom()
     {
         $last = null;
+        $provider = $this->getMockProvider();
 
         for ($i = 0; $i < 100; $i++) {
             // Repeat the test multiple times to verify state changes
-            $url = $this->provider->getAuthorizationUrl();
+            $url = $provider->getAuthorizationUrl();
 
             parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
-            $this->assertRegExp('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']);
+            $this->assertTrue(1 === preg_match('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']));
             $this->assertNotSame($qs['state'], $last);
 
             $last = $qs['state'];
@@ -404,29 +396,40 @@ class AbstractProviderTest extends TestCase
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
         $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
         ]);
 
         $error = ["error" => "Foo error", "code" => 1337];
         $errorJson = json_encode($error);
 
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns($errorJson);
+        $stream = Mockery::mock(StreamInterface::class);
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn($errorJson);
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response = Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn('application/json');
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->returns($response->get());
+        $client = Mockery::spy(ClientInterface::class, [
+            'send' => $response,
+        ]);
 
-        // Run
-        $provider->setHttpClient($client->get());
+        $provider->setHttpClient($client);
 
         $errorMessage = '';
         $errorCode = 0;
+        $errorBody = false;
 
         try {
             $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
@@ -439,52 +442,49 @@ class AbstractProviderTest extends TestCase
         $method = $provider->getAccessTokenMethod();
         $url = $provider->getBaseAccessTokenUrl([]);
 
-        // Verify
         $this->assertEquals($error['error'], $errorMessage);
         $this->assertEquals($error['code'], $errorCode);
         $this->assertEquals($error, $errorBody);
 
-        Phony::inOrder(
-            $client->send->calledWith(
-                $this->callback(function ($request) use ($method, $url) {
-                    return $request->getMethod() === $method
-                        && (string) $request->getUri() === $url;
-                })
-            ),
-            $response->getBody->called(),
-            $stream->__toString->called(),
-            $response->getHeader->called()
-        );
+        $client
+            ->shouldHaveReceived('send')
+            ->once()
+            ->withArgs(function ($request) use ($method, $url) {
+                return $request->getMethod() === $method
+                    && (string) $request->getUri() === $url;
+            });
     }
 
     public function testClientErrorTriggersProviderException()
     {
         $this->expectException(IdentityProviderException::class);
         $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
         ]);
 
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns('{"error":"Foo error","code":1337}');
+        $stream = Mockery::mock(StreamInterface::class, [
+            '__toString' => '{"error":"Foo error","code":1337}',
+        ]);
 
-        $request = Phony::mock(RequestInterface::class);
+        $request = Mockery::mock(RequestInterface::class);
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getStatusCode->returns(400);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => 400,
+            'getBody' => $stream,
+        ]);
+        $response
+            ->shouldReceive('getHeader')
+            ->with('content-type')
+            ->andReturn('application/json');
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->throws(new BadResponseException(
-            'test exception',
-            $request->get(),
-            $response->get()
-        ));
+        $client = Mockery::mock(ClientInterface::class);
+        $client
+            ->shouldReceive('send')
+            ->andThrow(new BadResponseException('test exception', $request, $response));
 
-        // Run
-        $provider->setHttpClient($client->get());
+        $provider->setHttpClient($client);
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
@@ -492,17 +492,18 @@ class AbstractProviderTest extends TestCase
     {
         $provider = new MockProvider();
 
-        $request = Phony::mock(RequestInterface::class)->get();
-        $response = Phony::mock(ResponseInterface::class)->get();
+        $request = Mockery::mock(RequestInterface::class);
+        $response = Mockery::mock(ResponseInterface::class);
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->with($request)->returns($response);
+        $client = Mockery::mock(ClientInterface::class);
+        $client
+            ->shouldReceive('send')
+            ->with($request)
+            ->andReturn($response);
 
-        // Run
-        $provider->setHttpClient($client->get());
+        $provider->setHttpClient($client);
         $output = $provider->getResponse($request);
 
-        // Verify
         $this->assertSame($output, $response);
     }
 
@@ -513,21 +514,27 @@ class AbstractProviderTest extends TestCase
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
         $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
 
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns('{"example":"response"}');
+        $stream = Mockery::mock(StreamInterface::class, [
+            '__toString' => '{"example":"response"}',
+        ]);
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getBody' => $stream,
+        ]);
+        $response
+            ->shouldReceive('getHeader')
+            ->with('content-type')
+            ->andReturn('application/json');
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->with($request)->returns($response->get());
+        $client = Mockery::mock(ClientInterface::class);
+        $client
+            ->shouldReceive('send')
+            ->with($request)
+            ->andReturn($response);
 
-        // Run
-        $provider->setHttpClient($client->get());
+        $provider->setHttpClient($client);
         $result = $provider->getParsedResponse($request);
 
-        // Verify
         $this->assertSame(['example' => 'response'], $result);
 
         $this->assertInstanceOf(RequestInterface::class, $request);
@@ -535,13 +542,6 @@ class AbstractProviderTest extends TestCase
         // Authorization header should contain the token
         $header = $request->getHeader('Authorization');
         $this->assertContains('Bearer abc', $header);
-
-        Phony::inOrder(
-            $client->send->called(),
-            $response->getBody->called(),
-            $stream->__toString->called(),
-            $response->getHeader->called()
-        );
     }
 
     public function getAccessTokenMethodProvider()
@@ -558,75 +558,95 @@ class AbstractProviderTest extends TestCase
     public function testGetAccessToken($method)
     {
         $provider = new MockProvider([
-          'clientId' => 'mock_client_id',
-          'clientSecret' => 'mock_secret',
-          'redirectUri' => 'none',
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
         ]);
 
         $provider->setAccessTokenMethod($method);
 
-        $grant_name = 'mock';
         $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
 
-        $grant = Phony::mock(AbstractGrant::class);
-        $grant->prepareRequestParameters->returns([]);
+        $grant = Mockery::mock(AbstractGrant::class);
+        $grant
+            ->shouldReceive('prepareRequestParameters')
+            ->once()
+            ->with(
+                ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
+                ['code' => 'mock_authorization_code']
+            )
+            ->andReturn([]);
 
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns(json_encode($raw_response));
+        $stream = Mockery::mock(StreamInterface::class);
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn(json_encode($raw_response));
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        $response = Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn('application/json');
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->returns($response->get());
+        $client = Mockery::spy(ClientInterface::class, [
+            'send' => $response,
+        ]);
 
-        // Run
-        $provider->setHttpClient($client->get());
-        $token = $provider->getAccessToken($grant->get(), ['code' => 'mock_authorization_code']);
+        $provider->setHttpClient($client);
+        $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
-        // Verify
         $this->assertInstanceOf(AccessTokenInterface::class, $token);
 
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
 
-        Phony::inOrder(
-            $grant->prepareRequestParameters->calledWith('~', '~'),
-            $client->send->calledWith(
-                $this->callback(function ($request) use ($provider) {
-                    return $request->getMethod() === $provider->getAccessTokenMethod()
-                        && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]);
-                })
-            ),
-            $response->getBody->called(),
-            $stream->__toString->called(),
-            $response->getHeader->called()
-        );
+        $client
+            ->shouldHaveReceived('send')
+            ->once()
+            ->withArgs(function ($request) use ($provider) {
+                return $request->getMethod() === $provider->getAccessTokenMethod()
+                    && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]);
+            });
     }
 
     public function testGetAccessTokenWithNonJsonResponse()
     {
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns('');
+        $provider = $this->getMockProvider();
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('text/plain');
+        $stream = Mockery::mock(StreamInterface::class, [
+            '__toString' => '',
+        ]);
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->returns($response->get());
-        $this->provider->setHttpClient($client->get());
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => 200,
+            'getBody' => $stream,
+        ]);
+        $response
+            ->shouldReceive('getHeader')
+            ->with('content-type')
+            ->andReturn('text/plain');
 
-        $this->expectException(\UnexpectedValueException::class);
+        $client = Mockery::mock(ClientInterface::class, [
+            'send' => $response,
+        ]);
+
+        $provider->setHttpClient($client);
+
+        $this->expectException(UnexpectedValueException::class);
         $this->expectExceptionMessage('Invalid response received from Authorization Server. Expected JSON.');
-        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
     private function getMethod($class, $name)
     {
-        $class = new \ReflectionClass($class);
+        $class = new ReflectionClass($class);
         $method = $class->getMethod($name);
 
         $method->setAccessible(true);
@@ -659,16 +679,21 @@ class AbstractProviderTest extends TestCase
      */
     public function testParseResponse($body, $type, $parsed, $statusCode = 200)
     {
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns($body);
+        $stream = Mockery::mock(StreamInterface::class, [
+            '__toString' => $body,
+        ]);
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns($type);
-        $response->getStatusCode->returns($statusCode);
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getBody' => $stream,
+            'getStatusCode' => $statusCode,
+        ]);
+        $response
+            ->shouldReceive('getHeader')
+            ->with('content-type')
+            ->andReturn($type);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
-        $result = $method->invoke($this->provider, $response->get());
+        $result = $method->invoke($this->getMockProvider(), $response);
 
         $this->assertEquals($parsed, $result);
     }
@@ -707,13 +732,12 @@ class AbstractProviderTest extends TestCase
     public function testAppendQuery($expected, $url, $query)
     {
         $method = $this->getMethod(AbstractProvider::class, 'appendQuery');
-        $this->assertEquals($expected, $method->invoke($this->provider, $url, $query));
+        $this->assertEquals($expected, $method->invoke($this->getMockProvider(), $url, $query));
     }
 
     protected function getAbstractProviderMock()
     {
-        $mock = Phony::partialMock(AbstractProvider::class);
-        return Liberator::liberate($mock->get());
+        return Mockery::mock(AbstractProvider::class)->makePartial();
     }
 
     public function testDefaultAccessTokenMethod()
@@ -728,8 +752,7 @@ class AbstractProviderTest extends TestCase
 
     public function testDefaultPrepareAccessTokenResponse()
     {
-        $provider = Phony::partialMock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
-        $provider = Liberator::liberate($provider->get());
+        $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
 
         $result = ['user_id' => uniqid()];
         $newResult = $provider->prepareAccessTokenResponse($result);
@@ -750,24 +773,24 @@ class AbstractProviderTest extends TestCase
 
         $provider = new Fake\ProviderWithGuardedProperties($options);
 
-        $this->assertAttributeNotEquals(
+        $this->assertNotEquals(
             $options['skipMeDuringMassAssignment'],
-            'skipMeDuringMassAssignment',
-            $provider
+            $provider->getSkipMeDuringMassAssignment()
         );
 
-        $this->assertAttributeNotEquals(
+        $this->assertNotEquals(
             $options['guarded'],
-            'guarded',
-            $provider
+            $provider->getGuarded()
         );
     }
 
     public function testPrepareAccessTokenResponseWithDotNotation()
     {
-        $provider = Phony::partialMock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
-        $provider->getAccessTokenResourceOwnerId->returns('user.id');
-        $provider = Liberator::liberate($provider->get());
+        $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
+        $provider->shouldAllowMockingProtectedMethods();
+        $provider
+            ->shouldReceive('getAccessTokenResourceOwnerId')
+            ->andReturn('user.id');
 
         $result = ['user' => ['id' => uniqid()]];
         $newResult = $provider->prepareAccessTokenResponse($result);
@@ -778,9 +801,11 @@ class AbstractProviderTest extends TestCase
 
     public function testPrepareAccessTokenResponseWithInvalidKeyType()
     {
-        $provider = Phony::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
-        $provider->getAccessTokenResourceOwnerId->returns(new \stdClass);
-        $provider = Liberator::liberate($provider->get());
+        $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
+        $provider->shouldAllowMockingProtectedMethods();
+        $provider
+            ->shouldReceive('getAccessTokenResourceOwnerId')
+            ->andReturn(new \stdClass());
 
         $result = ['user_id' => uniqid()];
         $newResult = $provider->prepareAccessTokenResponse($result);
@@ -790,9 +815,11 @@ class AbstractProviderTest extends TestCase
 
     public function testPrepareAccessTokenResponseWithInvalidKeyPath()
     {
-        $provider = Phony::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class);
-        $provider->getAccessTokenResourceOwnerId->returns('user.name');
-        $provider = Liberator::liberate($provider->get());
+        $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
+        $provider->shouldAllowMockingProtectedMethods();
+        $provider
+            ->shouldReceive('getAccessTokenResourceOwnerId')
+            ->andReturn('user.name');
 
         $result = ['user' => ['id' => uniqid()]];
         $newResult = $provider->prepareAccessTokenResponse($result);
