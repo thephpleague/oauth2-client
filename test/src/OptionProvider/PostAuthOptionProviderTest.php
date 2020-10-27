@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use League\OAuth2\Client\Provider\AbstractProvider;
 
 /**
- * @coversDefaultClass League\OAuth2\Client\OptionProvider\PostAuthOptionProvider
+ * @coversDefaultClass \League\OAuth2\Client\OptionProvider\PostAuthOptionProvider
  */
 class PostAuthOptionProviderTest extends TestCase
 {
