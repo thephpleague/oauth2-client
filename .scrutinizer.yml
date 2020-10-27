@@ -1,8 +1,0 @@
-filter:
-    excluded_paths:
-        - 'test/*'
-
-tools:
-    php_code_sniffer:
-        config:
-            standard: "PSR2"

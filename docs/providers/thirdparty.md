@@ -21,6 +21,7 @@ $ composer require [vendor/package-name]
 Gateway | Composer Package | Maintainer
 --- | --- | ---
 [Amazon](https://github.com/michaelKaefer/oauth2-amazon/) | michaelkaefer/oauth2-amazon | [Michael Käfer](https://github.com/michaelKaefer)
+[Amazon Cognito](https://github.com/CakeDC/oauth2-cognito/) | cakedc/oauth2-cognito | [Cake Development Corporation](https://github.com/CakeDC)
 [Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Nicolas Eeckeloo](https://github.com/neeckeloo)
 [Azure Active Directory](https://github.com/thenetworg/oauth2-azure) | thenetworg/oauth2-azure | [Jan Hajek](https://github.com/hajekj)
 [BASE](https://github.com/w-takumi/oauth2-base) | shippinno/oauth-base | [SHIPPInno Corp.](https://www.shippinno.co.jp/)
@@ -64,6 +65,7 @@ Gateway | Composer Package | Maintainer
 [Jira](https://packagist.org/packages/mrjoops/oauth2-jira) | mrjoops/oauth2-jira | [Alexandre Lahure](https://github.com/mrjoops)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [Linode](https://packagist.org/packages/webinarium/oauth2-linode) | webinarium/oauth2-linode | [Artem Rodygin](https://github.com/webinarium)
+[Mailchimp](https://github.com/chadhutchins/oauth2-mailchimp) | chadhutchins/oauth2-mailchimp | [Chad Hutchins](https://github.com/chadhutchins)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
 [mailXpert](https://packagist.org/packages/mailxpert/oauth2-mailxpert) | mailxpert/oauth2-mailxpert | [mailXpert](https://github.com/mailXpert)
 [Marketo](https://packagist.org/packages/kristenlk/oauth2-marketo) | kristenlk/oauth2-marketo | [Kristen Kehlenbeck](https://github.com/kristenlk)
@@ -74,6 +76,7 @@ Gateway | Composer Package | Maintainer
 [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
 [Mollie](https://github.com/mollie/oauth2-mollie-php) | mollie/oauth2-mollie-php | [Mollie](https://github.com/mollie)
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
+[Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
 [Nest](https://github.com/stevenmaguire/oauth2-nest) | stevenmaguire/oauth2-nest | [Steven Maguire](https://github.com/stevenmaguire)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
 [Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
