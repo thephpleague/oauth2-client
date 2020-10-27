@@ -75,6 +75,7 @@ Gateway | Composer Package | Maintainer
 [MercadoLibre](https://github.com/docta/oauth2-mercadolibre) | docta/oauth2-mercadolibre | [Lucas Banegas](https://github.com/lucascono)
 [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
 [Mollie](https://github.com/mollie/oauth2-mollie-php) | mollie/oauth2-mollie-php | [Mollie](https://github.com/mollie)
+[Mixer](https://gitlab.com/morgann/oauth2-mixer) | morgann/oauth2-mixer | [Morgann](https://gitlab.com/morgann/oauth2-mixer)
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
 [Nest](https://github.com/stevenmaguire/oauth2-nest) | stevenmaguire/oauth2-nest | [Steven Maguire](https://github.com/stevenmaguire)
