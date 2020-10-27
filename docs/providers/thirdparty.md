@@ -63,6 +63,7 @@ Gateway | Composer Package | Maintainer
 [Jira](https://packagist.org/packages/mrjoops/oauth2-jira) | mrjoops/oauth2-jira | [Alexandre Lahure](https://github.com/mrjoops)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
 [Linode](https://packagist.org/packages/webinarium/oauth2-linode) | webinarium/oauth2-linode | [Artem Rodygin](https://github.com/webinarium)
+[Mailchimp](https://github.com/chadhutchins/oauth2-mailchimp) | chadhutchins/oauth2-mailchimp | [Chad Hutchins](https://github.com/chadhutchins)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
 [mailXpert](https://packagist.org/packages/mailxpert/oauth2-mailxpert) | mailxpert/oauth2-mailxpert | [mailXpert](https://github.com/mailXpert)
 [Marketo](https://packagist.org/packages/kristenlk/oauth2-marketo) | kristenlk/oauth2-marketo | [Kristen Kehlenbeck](https://github.com/kristenlk)
