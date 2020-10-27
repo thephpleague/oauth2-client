@@ -20,7 +20,7 @@ before_install:
   - travis_retry composer self-update
 
 install:
-  - travis_retry composer require --no-update satooshi/php-coveralls:^1.0
+  - travis_retry composer require --no-update php-coveralls/php-coveralls:^2.4
   - travis_retry composer install --no-interaction --prefer-source
 
 before_script:
@@ -32,4 +32,4 @@ script:
   - ./vendor/bin/phpcs src --standard=psr2 -sp
 
 after_success:
-  - travis_retry php vendor/bin/coveralls
+  - travis_retry php vendor/bin/php-coveralls
