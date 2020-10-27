@@ -83,4 +83,6 @@ jobs:
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml"
       - name: "Publish coverage report to Coveralls"
         continue-on-error: true
-        run: "php vendor/bin/php-coveralls --ansi -vvv"
+        run: "php vendor/bin/php-coveralls --ansi -vv"
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
