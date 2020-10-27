@@ -9,13 +9,10 @@ class QueryBuilderTraitTest extends TestCase
 {
     use QueryBuilderTrait;
 
-    public function setUp()
-    {
-        ini_set('arg_separator.output', '&amp;');
-    }
-
     public function testBuildQueryString()
     {
+        ini_set('arg_separator.output', '&amp;');
+
         $params = [
             'a' => 'foo',
             'b' => 'bar',
