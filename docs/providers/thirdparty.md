@@ -61,6 +61,7 @@ Gateway | Composer Package | Maintainer
 [FreshBooks](https://github.com/zerospam/oauth2-freshbooks) | zerospam/oauth2-freshbooks | [Antoine Aflalo](https://github.com/Belphemur)
 [Geocaching](https://github.com/Surfoo/oauth2-geocaching) | surfoo/oauth2-geocaching | [Surfoo](https://github.com/Surfoo)
 [GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
+[Gumroad](https://github.com/Alofoxx/oauth2-gumroad) | alofoxx/oauth2-gumroad | [Alofoxx](https://github.com/Alofoxx)
 [Harvest](https://github.com/nilesuan/oauth2-harvest) | nilesuan/oauth2-harvest | [Nile Suan](https://github.com/nilesuan)
 [HeadHunter](https://packagist.org/packages/alexmasterov/oauth2-headhunter) | alexmasterov/oauth2-headhunter | [Alex Masterov](https://github.com/AlexMasterov)
 [Heroku](https://github.com/stevenmaguire/oauth2-heroku) | stevenmaguire/oauth2-heroku | [Steven Maguire](https://github.com/stevenmaguire)
