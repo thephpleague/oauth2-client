@@ -73,9 +73,7 @@ jobs:
           ini-values: "memory_limit=-1"
           tools: "composer:v2"
       - name: "Prepare for tests"
-        run: |
-          mkdir -p build/logs
-          composer require --no-update php-coveralls/php-coveralls:^2.4
+        run: "mkdir -p build/logs"
       - uses: "ramsey/composer-install@v1"
         with:
           composer-options: "${{ matrix.composer-options }}"
@@ -83,6 +81,8 @@ jobs:
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml"
       - name: "Publish coverage report to Coveralls"
         continue-on-error: true
-        run: "php vendor/bin/php-coveralls --ansi -vv"
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          composer global require php-coveralls/php-coveralls:^2.4
+          php-coveralls --ansi -vv --coverage_clover=build/logs/clover.xml
