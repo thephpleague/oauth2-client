@@ -27,10 +27,10 @@ Now, you don't really have an account on Lock'd In, but for the sake of this exa
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => 'demoapp',    // The client ID assigned to you by the provider
     'clientSecret'            => 'demopass',   // The client password assigned to you by the provider
-    'redirectUri'             => 'http://example.com/your-redirect-url/',
-    'urlAuthorize'            => 'http://brentertainment.com/oauth2/lockdin/authorize',
-    'urlAccessToken'          => 'http://brentertainment.com/oauth2/lockdin/token',
-    'urlResourceOwnerDetails' => 'http://brentertainment.com/oauth2/lockdin/resource'
+    'redirectUri'             => 'https://example.com/your-redirect-url/',
+    'urlAuthorize'            => 'https://example.com/oauth2/lockdin/authorize',
+    'urlAccessToken'          => 'https://example.com/oauth2/lockdin/token',
+    'urlResourceOwnerDetails' => 'https://example.com/oauth2/lockdin/resource'
 ]);
 
 // If we don't have an authorization code then get one
@@ -81,7 +81,7 @@ if (!isset($_GET['code'])) {
         // to Psr\Http\Message\RequestInterface.
         $request = $provider->getAuthenticatedRequest(
             'GET',
-            'http://brentertainment.com/oauth2/lockdin/resource',
+            'https://example.com/oauth2/lockdin/resource',
             $accessToken
         );
 
@@ -108,10 +108,10 @@ _This example uses [Brent Shaffer's](https://github.com/bshaffer) demo OAuth 2.0
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => 'demoapp',    // The client ID assigned to you by the provider
     'clientSecret'            => 'demopass',   // The client password assigned to you by the provider
-    'redirectUri'             => 'http://example.com/your-redirect-url/',
-    'urlAuthorize'            => 'http://brentertainment.com/oauth2/lockdin/authorize',
-    'urlAccessToken'          => 'http://brentertainment.com/oauth2/lockdin/token',
-    'urlResourceOwnerDetails' => 'http://brentertainment.com/oauth2/lockdin/resource'
+    'redirectUri'             => 'https://example.com/your-redirect-url/',
+    'urlAuthorize'            => 'https://example.com/oauth2/lockdin/authorize',
+    'urlAccessToken'          => 'https://example.com/oauth2/lockdin/token',
+    'urlResourceOwnerDetails' => 'https://example.com/oauth2/lockdin/resource'
 ]);
 
 $existingAccessToken = getAccessTokenFromYourDataStore();
