@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
+use BadMethodCallException;
 use League\OAuth2\Client\Grant\RefreshToken;
 
 class RefreshTokenTest extends GrantTestCase
@@ -27,11 +28,10 @@ class RefreshTokenTest extends GrantTestCase
         $this->assertEquals('refresh_token', (string) $grant);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidRefreshToken()
     {
-        $this->provider->getAccessToken('refresh_token', ['invalid_refresh_token' => 'mock_refresh_token']);
+        $this->expectException(BadMethodCallException::class);
+
+        $this->getMockProvider()->getAccessToken('refresh_token', ['invalid_refresh_token' => 'mock_refresh_token']);
     }
 }
