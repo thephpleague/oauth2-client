@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
+use BadMethodCallException;
 use League\OAuth2\Client\Grant\AuthorizationCode;
 
 class AuthorizationCodeTest extends GrantTestCase
@@ -28,11 +29,10 @@ class AuthorizationCodeTest extends GrantTestCase
         $this->assertEquals('authorization_code', (string) $grant);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testInvalidRefreshToken()
     {
-        $this->provider->getAccessToken('authorization_code', ['invalid_code' => 'mock_authorization_code']);
+        $this->expectException(BadMethodCallException::class);
+
+        $this->getMockProvider()->getAccessToken('authorization_code', ['invalid_code' => 'mock_authorization_code']);
     }
 }
