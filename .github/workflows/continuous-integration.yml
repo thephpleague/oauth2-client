@@ -80,6 +80,7 @@ jobs:
         with:
           composer-options: "${{ matrix.composer-options }}"
       - name: "Run unit tests"
-        run: "./vendor/bin/phpunit --verbose --coverage-clover build/logs/clover.xml"
+        run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml"
       - name: "Publish coverage report to Coveralls"
-        run: "php ./vendor/bin/php-coveralls"
+        continue-on-error: true
+        run: "php vendor/bin/php-coveralls --ansi -vvv"
