@@ -2,17 +2,18 @@
 
 namespace League\OAuth2\Client\Test\Token;
 
-use Eloquent\Phony\Phpunit\Phony;
+use InvalidArgumentException;
 use League\OAuth2\Client\Token\AccessToken;
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class AccessTokenTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidRefreshToken()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $token = $this->getAccessToken(['invalid_access_token' => 'none']);
     }
 
@@ -61,49 +62,38 @@ class AccessTokenTest extends TestCase
 
     public function testHasNotExpiredWhenPropertySetInFuture()
     {
-        // Mock
         $options = [
             'access_token' => 'access_token'
         ];
 
         $expectedExpires = strtotime('+1 day');
 
-        $token = Phony::partialMock(AccessToken::class, [$options]);
-        $token->getExpires->returns($expectedExpires);
+        $token = Mockery::mock(AccessToken::class, [$options])->makePartial();
+        $token
+            ->shouldReceive('getExpires')
+            ->once()
+            ->andReturn($expectedExpires);
 
-        // Run
-        $hasExpired = $token->get()->hasExpired();
-
-        // Verify
-        $this->assertFalse($hasExpired);
-
-        $token->getExpires->called();
+        $this->assertFalse($token->hasExpired());
     }
 
     public function testHasExpiredWhenPropertySetInPast()
     {
-        // Mock
         $options = [
             'access_token' => 'access_token'
         ];
 
         $expectedExpires = strtotime('-1 day');
 
-        $token = Phony::partialMock(AccessToken::class, [$options]);
-        $token->getExpires->returns($expectedExpires);
+        $token = Mockery::mock(AccessToken::class, [$options])->makePartial();
+        $token
+            ->shouldReceive('getExpires')
+            ->once()
+            ->andReturn($expectedExpires);
 
-        // Run
-        $hasExpired = $token->get()->hasExpired();
-
-        // Verify
-        $this->assertTrue($hasExpired);
-
-        $token->getExpires->called();
+        $this->assertTrue($token->hasExpired());
     }
 
-    /**
-     * @expectedException RuntimeException
-     */
     public function testCannotReportExpiredWhenNoExpirationSet()
     {
         $options = [
@@ -111,18 +101,20 @@ class AccessTokenTest extends TestCase
         ];
         $token = $this->getAccessToken($options);
 
+        $this->expectException(RuntimeException::class);
+
         $hasExpired = $token->hasExpired();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testInvalidExpiresIn()
     {
-	 $options = [
+         $options = [
             'access_token' => 'access_token',
             'expires_in' => 'TEXT',
          ];
+
+         $this->expectException(InvalidArgumentException::class);
+
          $token = $this->getAccessToken($options);
     }
 
@@ -156,7 +148,7 @@ class AccessTokenTest extends TestCase
 
         $values = $token->getValues();
 
-        $this->assertInternalType('array', $values);
+        $this->assertTrue(is_array($values));
         $this->assertArrayHasKey('custom_thing', $values);
         $this->assertSame($options['custom_thing'], $values['custom_thing']);
     }
