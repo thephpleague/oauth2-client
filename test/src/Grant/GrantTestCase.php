@@ -2,8 +2,9 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\ClientInterface;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -12,18 +13,13 @@ use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 
 abstract class GrantTestCase extends TestCase
 {
-    /**
-     * @var \League\OAuth2\Client\Provider\AbstractProvider
-     */
-    protected $provider;
-
-    protected function setUp()
+    protected function getMockProvider()
     {
-        $this->provider = new MockProvider(array(
+        return new MockProvider([
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
-        ));
+        ]);
     }
 
     /**
@@ -50,36 +46,41 @@ abstract class GrantTestCase extends TestCase
      */
     public function testGetAccessToken($grant, array $params = [])
     {
-        // Mock
-        $stream = Phony::mock(StreamInterface::class);
-        $stream->__toString->returns(
-            '{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}'
-        );
+        $provider = $this->getMockProvider();
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getBody->returns($stream->get());
-        $response->getHeader->with('content-type')->returns('application/json');
+        /** @var StreamInterface & MockInterface $stream */
+        $stream = Mockery::spy(StreamInterface::class)->makePartial();
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn('{"access_token": "mock_access_token", "expires": 3600, "refresh_token": "mock_refresh_token", "uid": 1}');
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->returns($response->get());
+        /** @var ResponseInterface & MockInterface $response */
+        $response = Mockery::spy(ResponseInterface::class)->makePartial();
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn('application/json');
 
-        // Execute
-        $this->provider->setHttpClient($client->get());
-        $token = $this->provider->getAccessToken($grant, $params);
+        /** @var ClientInterface & MockInterface $client */
+        $client = Mockery::spy(ClientInterface::class)->makePartial();
+        $client
+            ->shouldReceive('send')
+            ->once()
+            ->withArgs(function ($request) {
+                parse_str((string) $request->getBody(), $body);
+                return call_user_func($this->getParamExpectation(), $body);
+            })
+            ->andReturn($response);
 
-        // Verify
+        $provider->setHttpClient($client);
+        $token = $provider->getAccessToken($grant, $params);
+
         $this->assertInstanceOf(AccessTokenInterface::class, $token);
-
-        Phony::inOrder(
-            $client->send->times(1)->calledWith(
-                $this->callback(function ($request) {
-                    parse_str((string) $request->getBody(), $body);
-                    return call_user_func($this->getParamExpectation(), $body);
-                })
-            ),
-            $response->getBody->times(1)->called(),
-            $stream->__toString->times(1)->called(),
-            $response->getHeader->times(1)->called()
-        );
     }
 }

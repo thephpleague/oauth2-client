@@ -2,13 +2,17 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use Eloquent\Phony\Phpunit\Phony;
+use InvalidArgumentException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Test\Provider\Generic as MockProvider;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
+use ReflectionClass;
+use ReflectionProperty;
 
 class GenericProviderTest extends TestCase
 {
@@ -30,7 +34,7 @@ class GenericProviderTest extends TestCase
             try {
                 $provider = new GenericProvider($options);
             } catch (\Exception $e) {
-                $this->assertInstanceOf('\InvalidArgumentException', $e);
+                $this->assertInstanceOf(InvalidArgumentException::class, $e);
             }
         }
 
@@ -60,7 +64,10 @@ class GenericProviderTest extends TestCase
         ]);
 
         foreach ($options as $key => $expected) {
-            $this->assertAttributeEquals($expected, $key, $provider);
+            $property = new ReflectionProperty(GenericProvider::class, $key);
+            $property->setAccessible(true);
+
+            $this->assertEquals($expected, $property->getValue($provider));
         }
 
         $this->assertEquals($options['urlAuthorize'], $provider->getBaseAuthorizationUrl());
@@ -68,7 +75,7 @@ class GenericProviderTest extends TestCase
         $this->assertEquals($options['urlResourceOwnerDetails'], $provider->getResourceOwnerDetailsUrl(new AccessToken(['access_token' => '1234'])));
         $this->assertEquals($options['scopes'], $provider->getDefaultScopes());
 
-        $reflection = new \ReflectionClass(get_class($provider));
+        $reflection = new ReflectionClass(get_class($provider));
 
         $getAccessTokenMethod = $reflection->getMethod('getAccessTokenMethod');
         $getAccessTokenMethod->setAccessible(true);
@@ -109,7 +116,7 @@ class GenericProviderTest extends TestCase
 
     public function testCheckResponse()
     {
-        $response = Phony::mock(ResponseInterface::class);
+        $response = Mockery::mock(ResponseInterface::class);
 
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
@@ -119,23 +126,22 @@ class GenericProviderTest extends TestCase
 
         $provider = new GenericProvider($options);
 
-        $reflection = new \ReflectionClass(get_class($provider));
+        $reflection = new ReflectionClass(get_class($provider));
 
         $checkResponse = $reflection->getMethod('checkResponse');
         $checkResponse->setAccessible(true);
 
-        $this->assertNull($checkResponse->invokeArgs($provider, [$response->get(), []]));
+        $this->assertNull($checkResponse->invokeArgs($provider, [$response, []]));
     }
 
     /**
      * @param array $error The error response to parse
      * @param array $extraOptions Any extra options to configure the generic provider with.
      * @dataProvider checkResponseThrowsExceptionProvider
-     * @expectedException League\Oauth2\Client\Provider\Exception\IdentityProviderException
      */
     public function testCheckResponseThrowsException(array $error, array $extraOptions = [])
     {
-        $response = Phony::mock(ResponseInterface::class);
+        $response = Mockery::mock(ResponseInterface::class);
 
         $options = [
             'urlAuthorize'      => 'http://example.com/authorize',
@@ -145,12 +151,14 @@ class GenericProviderTest extends TestCase
 
         $provider = new GenericProvider($options + $extraOptions);
 
-        $reflection = new \ReflectionClass(get_class($provider));
+        $reflection = new ReflectionClass(get_class($provider));
 
         $checkResponse = $reflection->getMethod('checkResponse');
         $checkResponse->setAccessible(true);
 
-        $checkResponse->invokeArgs($provider, [$response->get(), $error]);
+        $this->expectException(IdentityProviderException::class);
+
+        $checkResponse->invokeArgs($provider, [$response, $error]);
     }
 
     public function checkResponseThrowsExceptionProvider() {
