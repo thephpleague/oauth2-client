@@ -77,7 +77,7 @@ Make it available
 ------------------
 
 If you find a package for a certain provider useful, chances are someone else will too! Make your package available by
-putting it on [packagist](http://packagist.org) and [GitHub](https://github.com)! After it's available, submit a pull request
+putting it on [packagist](https://packagist.org) and [GitHub](https://github.com)! After it's available, submit a pull request
 to the [oauth2-client](https://github.com/thephpleague/oauth2-client) repository adding your provider to the provider list.
 
 Make your gateway official
