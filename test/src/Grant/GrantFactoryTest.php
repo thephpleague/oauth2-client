@@ -11,21 +11,12 @@ use PHPUnit\Framework\TestCase;
 class GrantFactoryTest extends TestCase
 {
     /**
-     * @var AbstractGrant
-     */
-    protected $factory;
-
-    protected function setUp()
-    {
-        $this->factory = new GrantFactory();
-    }
-
-    /**
      * @dataProvider providerGetGrantDefaults
      */
     public function testGetGrantDefaults($name)
     {
-        $grant = $this->factory->getGrant($name);
+        $factory = new GrantFactory();
+        $grant = $factory->getGrant($name);
         $this->assertInstanceOf(AbstractGrant::class, $grant);
     }
 
@@ -39,12 +30,12 @@ class GrantFactoryTest extends TestCase
         ];
     }
 
-    /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
-     */
     public function testGetInvalidGrantFails()
     {
-        $this->factory->getGrant('invalid');
+        $this->expectException(InvalidGrantException::class);
+
+        $factory = new GrantFactory();
+        $factory->getGrant('invalid');
     }
 
     public function testSetGrantReplaceDefault()
@@ -73,23 +64,25 @@ class GrantFactoryTest extends TestCase
 
     public function testIsGrant()
     {
-        $grant = $this->factory->getGrant('password');
+        $factory = new GrantFactory();
+        $grant = $factory->getGrant('password');
 
-        $this->assertTrue($this->factory->isGrant($grant));
-        $this->assertFalse($this->factory->isGrant('stdClass'));
+        $this->assertTrue($factory->isGrant($grant));
+        $this->assertFalse($factory->isGrant('stdClass'));
     }
 
     public function testCheckGrant()
     {
-        $grant = $this->factory->getGrant('password');
-        $this->assertNull($this->factory->checkGrant($grant));
+        $factory = new GrantFactory();
+        $grant = $factory->getGrant('password');
+        $this->assertNull($factory->checkGrant($grant));
     }
 
-    /**
-     * @expectedException League\OAuth2\Client\Grant\Exception\InvalidGrantException
-     */
     public function testCheckGrantInvalidFails()
     {
-        $this->factory->checkGrant('stdClass');
+        $this->expectException(InvalidGrantException::class);
+
+        $factory = new GrantFactory();
+        $factory->checkGrant('stdClass');
     }
 }
