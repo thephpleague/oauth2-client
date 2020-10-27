@@ -2,10 +2,11 @@
 
 namespace League\OAuth2\Client\Test\Tool;
 
-use Eloquent\Phony\Phpunit\Phony;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use InvalidArgumentException;
 use League\OAuth2\Client\Tool\ProviderRedirectTrait;
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
@@ -38,30 +39,30 @@ class ProviderRedirectTraitTest extends TestCase
         $this->assertEquals($redirectLimit, $this->getRedirectLimit());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     **/
     public function testSetRedirectLimitThrowsExceptionWhenNonNumericProvided()
     {
         $redirectLimit = 'florp';
+
+        $this->expectException(InvalidArgumentException::class);
+
         $this->setRedirectLimit($redirectLimit);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     **/
     public function testSetRedirectLimitThrowsExceptionWhenZeroProvided()
     {
         $redirectLimit = 0;
+
+        $this->expectException(InvalidArgumentException::class);
+
         $this->setRedirectLimit($redirectLimit);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     **/
     public function testSetRedirectLimitThrowsExceptionWhenNegativeIntegerProvided()
     {
         $redirectLimit = -10;
+
+        $this->expectException(InvalidArgumentException::class);
+
         $this->setRedirectLimit($redirectLimit);
     }
 
@@ -71,19 +72,31 @@ class ProviderRedirectTraitTest extends TestCase
         $status = rand(301,399);
         $redirectUrl = uniqid();
 
-        $request = Phony::mock(RequestInterface::class);
-        $request->withUri->returns($request);
+        $request = Mockery::mock(RequestInterface::class);
+        $request
+            ->shouldReceive('withUri')
+            ->andReturnSelf();
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->hasHeader->with('Location')->returns(true);
-        $response->getHeader->with('Location')->returns([$redirectUrl]);
-        $response->getStatusCode->returns($status);
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => $status,
+        ]);
+        $response
+            ->shouldReceive('hasHeader')
+            ->with('Location')
+            ->andReturnTrue();
+        $response
+            ->shouldReceive('getHeader')
+            ->with('Location')
+            ->andReturn([$redirectUrl]);
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->times($redirectLimit)->returns($response->get());
+        $client = Mockery::mock(ClientInterface::class);
+        $client
+            ->shouldReceive('send')
+            ->times($redirectLimit)
+            ->andReturn($response);
 
-        $this->setHttpClient($client->get())->setRedirectLimit($redirectLimit);
-        $finalResponse = $this->getResponse($request->get());
+        $this->setHttpClient($client)->setRedirectLimit($redirectLimit);
+        $finalResponse = $this->getResponse($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
@@ -93,18 +106,27 @@ class ProviderRedirectTraitTest extends TestCase
         $redirectLimit = rand(3, 5);
         $status = 200;
 
-        $request = Phony::mock(RequestInterface::class);
-        $request->withUri->returns($request);
+        $request = Mockery::mock(RequestInterface::class);
+        $request
+            ->shouldReceive('withUri')
+            ->andReturnSelf();
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->hasHeader->with('Location')->returns(true);
-        $response->getStatusCode->returns($status);
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => $status,
+        ]);
+        $response
+            ->shouldReceive('hasHeader')
+            ->with('Location')
+            ->andReturnTrue();
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->once()->returns($response->get());
+        $client = Mockery::mock(ClientInterface::class);
+        $client
+            ->shouldReceive('send')
+            ->once()
+            ->andReturn($response);
 
-        $this->setHttpClient($client->get())->setRedirectLimit($redirectLimit);
-        $finalResponse = $this->getResponse($request->get());
+        $this->setHttpClient($client)->setRedirectLimit($redirectLimit);
+        $finalResponse = $this->getResponse($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
@@ -114,19 +136,24 @@ class ProviderRedirectTraitTest extends TestCase
         $status = rand(400, 500);
         $result = ['foo' => 'bar'];
 
-        $request = Phony::mock(RequestInterface::class);
-        $request->withUri->returns($request);
+        $request = Mockery::mock(RequestInterface::class);
+        $request
+            ->shouldReceive('withUri')
+            ->andReturnSelf();
 
-        $response = Phony::mock(ResponseInterface::class);
-        $response->getStatusCode->returns($status);
+        $response = Mockery::mock(ResponseInterface::class, [
+            'getStatusCode' => $status,
+        ]);
 
-        $exception = new BadResponseException('test exception', $request->get(), $response->get());
+        $exception = new BadResponseException('test exception', $request, $response);
 
-        $client = Phony::mock(ClientInterface::class);
-        $client->send->throws($exception);
+        $client = Mockery::mock(ClientInterface::class);
+        $client
+            ->shouldReceive('send')
+            ->andThrow($exception);
 
-        $this->setHttpClient($client->get());
-        $finalResponse = $this->getResponse($request->get());
+        $this->setHttpClient($client);
+        $finalResponse = $this->getResponse($request);
 
         $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
