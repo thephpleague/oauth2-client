@@ -19,4 +19,14 @@ class ProviderWithGuardedProperties extends MockProvider
      * @var string
      */
     protected $skipMeDuringMassAssignment = 'foo';
+
+    public function getGuarded()
+    {
+        return $this->guarded;
+    }
+
+    public function getSkipMeDuringMassAssignment()
+    {
+        return $this->skipMeDuringMassAssignment;
+    }
 }
