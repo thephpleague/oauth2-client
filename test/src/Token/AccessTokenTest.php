@@ -20,8 +20,6 @@ class AccessTokenTest extends TestCase
      */
     private static function tearDownForBackwardsCompatibility()
     {
-        parent::tearDown();
-
         /* reset the test double time if it was set */
         AccessToken::resetTimeNow();
     }
