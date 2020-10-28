@@ -79,10 +79,5 @@ jobs:
           composer-options: "${{ matrix.composer-options }}"
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml"
-      - name: "Publish coverage report to Coveralls"
-        continue-on-error: true
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          composer global --ansi require php-coveralls/php-coveralls
-          php-coveralls --ansi -vv --coverage_clover=build/logs/clover.xml
+      - name: "Publish coverage report to Codecov"
+        uses: "codecov/codecov-action@v1"
