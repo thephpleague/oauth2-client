@@ -10,11 +10,27 @@ use RuntimeException;
 
 class AccessTokenTest extends TestCase
 {
+    /**
+     * BC teardown.
+     *
+     * This is for backwards compatibility of older PHP versions. Ideally we would just implement a tearDown() here but
+     * older PHP versions this library supports don't have return typehint support, so this is the workaround.
+     *
+     * @return void
+     */
+    private static function tearDownForBackwardsCompatibility()
+    {
+        /* reset the test double time if it was set */
+        AccessToken::resetTimeNow();
+    }
+
     public function testInvalidRefreshToken()
     {
         $this->expectException(InvalidArgumentException::class);
 
         $token = $this->getAccessToken(['invalid_access_token' => 'none']);
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     protected function getAccessToken($options = [])
@@ -32,6 +48,49 @@ class AccessTokenTest extends TestCase
         $this->assertNotNull($expires);
         $this->assertGreaterThan(time(), $expires);
         $this->assertLessThan(time() + 200, $expires);
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
+    public function testExpiresInCorrectionUsingSetTimeNow()
+    {
+        /* set fake time at 2020-01-01 00:00:00 */
+        AccessToken::setTimeNow(1577836800);
+        $options = ['access_token' => 'access_token', 'expires_in' => 100];
+        $token = $this->getAccessToken($options);
+
+        $expires = $token->getExpires();
+
+        $this->assertNotNull($expires);
+        $this->assertEquals(1577836900, $expires);
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
+    public function testSetTimeNow()
+    {
+        AccessToken::setTimeNow(1577836800);
+        $timeNow = $this->getAccessToken(['access_token' => 'asdf'])->getTimeNow();
+
+        $this->assertEquals(1577836800, $timeNow);
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
+    public function testResetTimeNow()
+    {
+        AccessToken::setTimeNow(1577836800);
+        $token = $this->getAccessToken(['access_token' => 'asdf']);
+
+        $this->assertEquals(1577836800, $token->getTimeNow());
+        AccessToken::resetTimeNow();
+
+        $this->assertNotEquals(1577836800, $token->getTimeNow());
+
+        $timeBeforeAssertion = time();
+        $this->assertGreaterThanOrEqual($timeBeforeAssertion, $token->getTimeNow());
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testExpiresPastTimestamp()
@@ -45,6 +104,8 @@ class AccessTokenTest extends TestCase
         $token = $this->getAccessToken($options);
 
         $this->assertFalse($token->hasExpired());
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testGetRefreshToken()
@@ -58,6 +119,8 @@ class AccessTokenTest extends TestCase
         $refreshToken = $token->getRefreshToken();
 
         $this->assertEquals($options['refresh_token'], $refreshToken);
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testHasNotExpiredWhenPropertySetInFuture()
@@ -75,6 +138,8 @@ class AccessTokenTest extends TestCase
             ->andReturn($expectedExpires);
 
         $this->assertFalse($token->hasExpired());
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testHasExpiredWhenPropertySetInPast()
@@ -92,6 +157,8 @@ class AccessTokenTest extends TestCase
             ->andReturn($expectedExpires);
 
         $this->assertTrue($token->hasExpired());
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testCannotReportExpiredWhenNoExpirationSet()
@@ -104,6 +171,8 @@ class AccessTokenTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         $hasExpired = $token->hasExpired();
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testInvalidExpiresIn()
@@ -116,6 +185,8 @@ class AccessTokenTest extends TestCase
          $this->expectException(InvalidArgumentException::class);
 
          $token = $this->getAccessToken($options);
+
+        self::tearDownForBackwardsCompatibility();
     }
 
 
@@ -132,6 +203,8 @@ class AccessTokenTest extends TestCase
         $jsonToken = json_encode($token);
 
         $this->assertEquals($options, json_decode($jsonToken, true));
+
+        self::tearDownForBackwardsCompatibility();
     }
 
     public function testValues()
@@ -151,5 +224,7 @@ class AccessTokenTest extends TestCase
         $this->assertTrue(is_array($values));
         $this->assertArrayHasKey('custom_thing', $values);
         $this->assertSame($options['custom_thing'], $values['custom_thing']);
+
+        self::tearDownForBackwardsCompatibility();
     }
 }
