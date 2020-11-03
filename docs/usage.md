@@ -7,14 +7,14 @@ title: "Basic Usage"
 Basic Usage
 ===========
 
-> ℹ️ **NOTE:** In most cases, you should use a specific [official](/providers/league/) or [third-party](/providers/thirdparty/) provider client library, rather than this base library alone.
+> ℹ️ **NOTE** In most cases, you should use a specific [official](/providers/league/) or [third-party](/providers/thirdparty/) provider client library, rather than this base library alone.
 
 Authorization Code Grant
 ------------------------
 
-The following example uses the out-of-the-box `GenericProvider` provided by this library. If you're looking for a specific provider client (i.e. Facebook, Google, GitHub, etc.), take a look at our [list of provider client libraries](/providers/league/). **HINT: You're probably looking for a specific provider client.**
+The following example uses the out-of-the-box `GenericProvider` provided by this library. If you're looking for a specific provider client (e.g., Facebook, Google, GitHub, etc.), take a look at our [list of provider client libraries](/providers/league/). **HINT: You're probably looking for a specific provider client.**
 
-The authorization code grant type is the most common grant type used when authenticating users with a third-party service. This grant type utilizes a *client* (this library), a *service provider* (the server), and a *resource owner* (the user with credentials to a protected—or owned—resource) to request access to resources owned by the user. This is often referred to as _3-legged OAuth_, since there are three parties involved.
+The *authorization code* grant type is the most common grant type used when authenticating users with a third-party service. This grant type utilizes a *client* (this library), a *service provider* (the server), and a *resource owner* (the account with credentials to a protected—or owned—resource) to request access to resources owned by the user. This is often referred to as _3-legged OAuth_, since there are three parties involved.
 
 ```php
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
@@ -120,16 +120,13 @@ if ($existingAccessToken->hasExpired()) {
 Resource Owner Password Credentials Grant
 -----------------------------------------
 
-Some service providers allow you to skip the authorization code step to exchange a user's credentials (username and password) for an access token. This is referred to as the "resource owner password credentials" grant type.
+Some service providers allow you to skip the authorization code step to exchange a user's credentials (username and password) for an access token. This is referred to as the *resource owner password credentials* grant type.
 
 According to [section 1.3.3](http://tools.ietf.org/html/rfc6749#section-1.3.3) of the OAuth 2.0 standard (emphasis added):
 
-> The credentials **should only be used when there is a high degree of trust**
-> between the resource owner and the client (e.g., the client is part of the
-> device operating system or a highly privileged application), and when other
-> authorization grant types are not available (such as an authorization code).
+> The credentials **should only be used when there is a high degree of trust** between the resource owner and the client (e.g., the client is part of the device operating system or a highly privileged application), and when other authorization grant types are not available (such as an authorization code).
 
-**We advise against using this grant type if the service provider supports the authorization code grant type (see above), as this reinforces the [password anti-pattern](https://agentile.com/the-password-anti-pattern), allowing users to think it's okay to trust third-party applications with their usernames and passwords.**
+> 🛑 **DANGER!** We advise against using this grant type if the service provider supports the authorization code grant type (see above), as this reinforces the [password anti-pattern](https://agentile.com/the-password-anti-pattern), allowing users to think it's okay to trust third-party applications with their usernames and passwords.
 
 That said, there are use-cases where the resource owner password credentials grant is acceptable and useful.
 
@@ -162,7 +159,9 @@ try {
 Client Credentials Grant
 ------------------------
 
-When your application acts on its own behalf to access resources it controls or owns in a service provider, it may use the client credentials grant type. This is best used when storing the credentials for your application privately and never exposing them (e.g., through the web browser, etc.) to end-users. This grant type functions like the resource owner password credentials grant type, but it does not request a user's username or password. It uses only the client ID and client secret issued to your client by the service provider.
+When your application acts on its own behalf to access resources it controls or owns in a service provider, it may use the *client credentials* grant type.
+
+The client credentials grant type is best when storing the credentials for your application privately and never exposing them (e.g., through the web browser, etc.) to end-users. This grant type functions like the resource owner password credentials grant type, but it does not request a user's username or password. It uses only the client ID and client secret issued to your client by the service provider.
 
 ```php
 // Note: the GenericProvider requires the `urlAuthorize` option, even though

@@ -7,11 +7,11 @@ permalink: /providers/implementing/
 Implementing a Provider Client
 ==============================
 
-> 💡 **TIP:** You may create new provider clients by copying the layout of an existing package. See the [first party](/providers/league/) and [third party](/providers/thirdparty/) provider clients for good examples.
+> 💡 **TIP** You may create new provider clients by copying the layout of an existing package. See the [first party](/providers/league/) and [third party](/providers/thirdparty/) provider clients for good examples.
 
-**When choosing a name for your package, please don’t use the `league` vendor prefix or the `League` vendor namespace, as this implies it is officially supported.** You should use your own username as the vendor prefix, and prepend `oauth2-` to the package name to make it clear your package works with `league/oauth2-client`.
-
-For example, if your GitHub username is *santa*, and you are implementing the *giftpay* OAuth 2.0 client library, a good name for your Composer package would be `santa/oauth2-giftpay`.
+> ⚠️ **Attention!** When choosing a name for your package, please don’t use the `league` vendor prefix or the `League` vendor namespace, as this implies it is officially supported. You should use your own username as the vendor prefix, and prepend `oauth2-` to the package name to make it clear your package works with `league/oauth2-client`.
+>
+> For example, if your GitHub username is *santa*, and you are implementing the *giftpay* OAuth 2.0 client library, a good name for your Composer package would be `santa/oauth2-giftpay`.
 
 If you are working with an OAuth 2.0 service provider not supported out-of-the-box or by an existing package, you may implement your own. To do so, extend [`League\OAuth2\Client\Provider\AbstractProvider`](https://github.com/thephpleague/oauth2-client/blob/master/src/Provider/AbstractProvider.php) and implement the required abstract methods:
 
@@ -26,7 +26,7 @@ protected function createResourceOwner(array $response, AccessToken $token);
 
 Each of these abstract methods has a comment block defining their expectations and typical behavior. Once you have extended this class, you may follow the [basic usage example](/usage/) using your new provider client class.
 
-If you wish to use your provider client class to make authenticated requests to the service, you will also need to define how you provide the token to the service. If this is done via headers, you should override this method:
+If you wish to use your provider client class to make authenticated requests to the provider, you will also need to define how you provide the token to the service. If this is done via headers, you should override this method:
 
 ```php
 protected function getAuthorizationHeaders($token = null);
@@ -70,7 +70,7 @@ Next, implement the `AbstractProvider::createResourceOwner()` method. This metho
 Make It Available
 ------------------
 
-If you find a package for a certain provider useful, chances are someone else will too! Make your package available by putting it on [packagist](https://packagist.org) and [GitHub](https://github.com)! After it's available, submit a pull request to the [oauth2-client](https://github.com/thephpleague/oauth2-client) repository, adding your provider client to the [provider client list](https://github.com/thephpleague/oauth2-client/blob/master/docs/providers/thirdparty.md).
+If you find a package for a certain provider useful, chances are someone else will too! Make your package available by putting it on [Packagist](https://packagist.org) and [GitHub](https://github.com). After it's available, submit a pull request to the [oauth2-client](https://github.com/thephpleague/oauth2-client) repository, adding your provider client to the [provider client list](https://github.com/thephpleague/oauth2-client/blob/master/docs/providers/thirdparty.md).
 
 Make It Official
 ----------------
