@@ -617,7 +617,7 @@ class AbstractProviderTest extends TestCase
     /**
      * @dataProvider parseResponseProvider
      */
-    public function testParseResponse($body, $type, $parsed, $statusCode = 200)
+    public function testParseResponse($body, $type, $parsed, $statusCode = 200, $provider = null)
     {
         $stream = Mockery::mock(StreamInterface::class, [
             '__toString' => $body,
@@ -633,7 +633,12 @@ class AbstractProviderTest extends TestCase
             ->andReturn($type);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
-        $result = $method->invoke($this->getMockProvider(), $response);
+
+        if (null === $provider) {
+            $provider = $this->getMockProvider();
+        }
+
+        $result = $method->invoke($provider, $response);
 
         $this->assertEquals($parsed, $result);
     }
@@ -652,17 +657,18 @@ class AbstractProviderTest extends TestCase
 
     public function testResponseParsingException()
     {
-        $this->provider->allowResponseParsingException();
+        $provider = $this->getMockProvider();
+        $provider->allowResponseParsingException();
         $exception = null;
         try {
-            $this->testParseResponse('{13}', '', null, 401);
+            $this->testParseResponse('{13}', 'application/json', null, 401, $provider);
         } catch (ResponseParsingException $exception) {
         }
         $this->assertInstanceOf(ResponseParsingException::class, $exception);
         $response = $exception->getResponse();
         $this->assertSame(401, $response->getStatusCode());
         $this->assertSame('{13}', $exception->getResponseBody());
-        $this->provider->disallowResponseParsingException();
+        $provider->disallowResponseParsingException();
     }
 
     public function getAppendQueryProvider()
