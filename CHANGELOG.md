@@ -2,9 +2,11 @@
 
 ## 2.6.0
 
-_Released: TBD_
+_Released: 2020-10-27_
 
-* Support PHP 8
+* Indicate support for PHP 8
+* Allow time to be set for testing purposes
+  [#852](https://github.com/thephpleague/oauth2-client/pull/852)
 
 ## 2.5.0
 
