@@ -655,13 +655,24 @@ class AbstractProviderTest extends TestCase
         $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
     }
 
-    public function testResponseParsingException()
+    public function responseParsingExceptionProvider()
+    {
+        return [
+            ['application/json'],
+            ['']
+        ];
+    }
+
+    /**
+     * @dataProvider responseParsingExceptionProvider
+     */
+    public function testResponseParsingException($type)
     {
         $provider = $this->getMockProvider();
         $provider->allowResponseParsingException();
         $exception = null;
         try {
-            $this->testParseResponse('{13}', 'application/json', null, 401, $provider);
+            $this->testParseResponse('{13}', $type, null, 401, $provider);
         } catch (ResponseParsingException $exception) {
         }
         $this->assertInstanceOf(ResponseParsingException::class, $exception);
