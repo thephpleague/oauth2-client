@@ -22,7 +22,7 @@ Installation
 
 This package establishes a convenient base of interfaces and abstract classes, allowing developers to create OAuth 2.0 clients that interface with a wide-variety of OAuth 2.0 providers.
 
-> There are already many [official](/providers/league/) or [third-party](/providers/thirdparty/) provider clients available.
+> ⚠️ **Attention!** There are already many [official](/providers/league/) or [third-party](/providers/thirdparty/) provider clients available. Check these before using this base package. A client might already exist for your provider.
 
 This base package also includes a `GenericProvider` class, which works out-of-the-box with many OAuth 2.0 providers who use [Bearer tokens](http://tools.ietf.org/html/rfc6750). If you would like to use the `GenericProvider` instead of one of the specific provider clients, you may require this package directly with [Composer](https://getcomposer.org):
 
