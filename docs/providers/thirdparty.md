@@ -1,18 +1,15 @@
 ---
 layout: default
-title: "Third-Party Providers"
+title: "Third-party Provider Clients"
 permalink: /providers/thirdparty/
 ---
 
-Third-Party Providers
-======================
+Third-party Provider Clients
+============================
 
-These providers allow integration with other providers not supported by `oauth2-client`. They may require an older
-version so please help them out with a pull request if you notice this. If you're looking for an official `league` provider,
-you can check out the [first party providers](/providers/league) page.
+These provider clients allow integration with other providers not supported by `league/oauth2-client`. They may require an older version, so please help them with a pull request if you notice this. If you're looking for an official `league` provider client, check out the [first-party provider clients](/providers/league/) page.
 
-Since all of these packages depend on `league/oauth2-client` as their base, installation is as simple as requiring the
-package you wish to use via composer:
+All of these packages depend on `league/oauth2-client`, and you may use [Composer](https://getcomposer.org) to install them:
 
 ~~~ bash
 $ composer require [vendor/package-name]

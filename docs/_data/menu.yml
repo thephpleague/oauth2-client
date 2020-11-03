@@ -5,4 +5,4 @@ Getting Started:
 Providers:
     "Official Providers": '/providers/league/'
     "Third-Party Providers": '/providers/thirdparty/'
-    "Implementing Your Own": '/providers/implementing/'
+    "Implementing a Provider": '/providers/implementing/'
