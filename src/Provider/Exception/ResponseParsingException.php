@@ -16,11 +16,12 @@ namespace League\OAuth2\Client\Provider\Exception;
 
 use Exception;
 use Psr\Http\Message\ResponseInterface;
+use UnexpectedValueException;
 
 /**
  * Exception thrown if the parser cannot parse the provider response.
  */
-class ResponseParsingException extends Exception
+class ResponseParsingException extends UnexpectedValueException
 {
     /**
      * @var ResponseInterface
@@ -37,12 +38,14 @@ class ResponseParsingException extends Exception
      * @param string $responseBody The response body
      * @param null $message
      * @param int $code
+     * @param Exception|null $previous
      */
     public function __construct(
         ResponseInterface $response,
         $responseBody,
         $message = null,
-        $code = 0
+        $code = 0,
+        Exception $previous = null
     ) {
         $this->response = $response;
         $this->responseBody = $responseBody;
@@ -51,7 +54,7 @@ class ResponseParsingException extends Exception
             $message = sprintf('Cannot parse response body: "%s"', $responseBody);
         }
 
-        parent::__construct($message, $code);
+        parent::__construct($message, $code, $previous);
     }
 
     /**

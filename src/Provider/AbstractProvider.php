@@ -100,15 +100,6 @@ abstract class AbstractProvider
     protected $optionProvider;
 
     /**
-     * If a response body cannot be parsed, a value true of this flag will allow
-     * the response parser to throw a ResponseParsingException containing
-     * the response and the body.
-     *
-     * @var bool
-     */
-    protected $mayThrowResponseParsingException = false;
-
-    /**
      * Constructs an OAuth 2.0 service provider.
      *
      * @param array $options An array of options to set on this provider.
@@ -679,9 +670,7 @@ abstract class AbstractProvider
     /**
      * Parses the response according to its content-type header.
      *
-     * @throws UnexpectedValueException
-     * @throws ResponseParsingException if the flag $mayThrowResponseParsingException is true and
-     *                                  response body cannot be parsed.
+     * @throws ResponseParsingException if response body cannot be parsed.
      * @param  ResponseInterface $response
      * @return array|string
      */
@@ -702,26 +691,21 @@ abstract class AbstractProvider
             return $this->parseJson($content);
         } catch (UnexpectedValueException $e) {
             if (strpos($type, 'json') !== false) {
-                throw $this->mayThrowResponseParsingException
-                    ? new ResponseParsingException($response, $content, $e->getMessage(), $e->getCode())
-                    : $e;
+                throw new ResponseParsingException($response, $content, $e->getMessage(), $e->getCode(), $e);
             }
 
             // for any other content types
-            if ($this->mayThrowResponseParsingException) {
-                // let the calling function decide what to do with the response and its body
-                throw new ResponseParsingException($response, $content, '', 0);
-            } else {
-                if ($response->getStatusCode() == 500) {
-                    throw new UnexpectedValueException(
-                        'An OAuth server error was encountered that did not contain a JSON body',
-                        0,
-                        $e
-                    );
-                }
-
-                return $content;
+            if ($response->getStatusCode() == 500) {
+                throw new ResponseParsingException(
+                    $response,
+                    $content,
+                    'An OAuth server error was encountered that did not contain a JSON body',
+                    0,
+                    $e
+                );
             }
+
+            return $content;
         }
     }
 

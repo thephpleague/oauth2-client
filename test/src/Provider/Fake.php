@@ -59,16 +59,6 @@ class Fake extends AbstractProvider
         return $this->accessTokenMethod;
     }
 
-    public function allowResponseParsingException()
-    {
-        $this->mayThrowResponseParsingException = true;
-    }
-
-    public function disallowResponseParsingException()
-    {
-        $this->mayThrowResponseParsingException = false;
-    }
-
     protected function createResourceOwner(array $response, AccessToken $token)
     {
         return new Fake\User($response);
