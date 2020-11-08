@@ -15,7 +15,7 @@
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
-use League\OAuth2\Client\Provider\ProviderClock;
+use League\OAuth2\Client\Provider\Clock;
 use RuntimeException;
 
 /**
@@ -58,7 +58,11 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     private static $timeNow;
 
     /**
-     * Set the time now. This should only be used for testing purposes.
+     * The clock.
+     *
+     * @var Clock
+     */
+    protected $clock;
 
     /**
      * Sets the current time.
@@ -82,15 +86,25 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     }
 
     /**
+     * @inheritdoc
+     */
+    public function setClock(Clock $clock)
+    {
+        $this->clock = $clock;
+    }
 
     /**
-     * Get the current time, whether true or simulated.
-     *
-     * @return int
+     * @inheritdoc
      */
     public function getTimeNow()
     {
-        return self::$timeNow ? self::$timeNow : time();
+        if (self::$timeNow) {
+            return self::$timeNow;
+        } elseif (isset($this->clock)) {
+            return $this->clock->now()->getTimestamp();
+        } else {
+            return time();
+        }
     }
 
     /**
@@ -114,6 +128,10 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
 
         if (!empty($options['refresh_token'])) {
             $this->refreshToken = $options['refresh_token'];
+        }
+
+        if (!empty($options['clock'])) {
+            $this->clock = $options['clock'];
         }
 
         // We need to know when the token expires. Show preference to

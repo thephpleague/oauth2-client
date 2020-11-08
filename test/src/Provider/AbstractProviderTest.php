@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
+use League\OAuth2\Client\Provider\Clock;
 use Mockery;
 use ReflectionClass;
 use UnexpectedValueException;
@@ -46,6 +47,14 @@ class AbstractProviderTest extends TestCase
         $this->assertInstanceOf(
             PostAuthOptionProvider::class,
             $this->getMockProvider()->getOptionProvider()
+        );
+    }
+
+    public function testGetClock()
+    {
+        $this->assertInstanceOf(
+            Clock::class,
+            $this->getMockProvider()->getClock()
         );
     }
 

@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Test\Token;
 
 use InvalidArgumentException;
+use League\OAuth2\Client\Test\Provider\FrozenClock;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -76,6 +77,21 @@ class AccessTokenTest extends TestCase
         self::tearDownForBackwardsCompatibility();
     }
 
+    public function testSetClockConstructor()
+    {
+        $clock = new FrozenClock();
+        $token = $this->getAccessToken(['access_token' => 'asdf', 'clock' => $clock]);
+        $this->assertEquals(FrozenClock::NOW, $token->getTimeNow());
+    }
+
+    public function testSetClockMethod()
+    {
+        $clock = new FrozenClock();
+        $token = $this->getAccessToken(['access_token' => 'asdf']);
+        $token->setClock($clock);
+        $this->assertEquals(FrozenClock::NOW, $token->getTimeNow());
+    }
+
     public function testSetTimeNow()
     {
         AccessToken::setTimeNow(1577836800);
@@ -84,6 +100,15 @@ class AccessTokenTest extends TestCase
         $this->assertEquals(1577836800, $timeNow);
 
         self::tearDownForBackwardsCompatibility();
+    }
+
+    public function testSetClockAndSetTime()
+    {
+        // When both a clock and time set, time wins over clock.
+        $clock = new FrozenClock();
+        AccessToken::setTimeNow(static::NOW);
+        $token = $this->getAccessToken(['access_token' => 'asdf', 'clock' => $clock]);
+        $this->assertEquals(static::NOW, $token->getTimeNow());
     }
 
     public function testResetTimeNow()
@@ -197,7 +222,7 @@ class AccessTokenTest extends TestCase
 
          $token = $this->getAccessToken($options);
 
-        self::tearDownForBackwardsCompatibility();
+         self::tearDownForBackwardsCompatibility();
     }
 
 

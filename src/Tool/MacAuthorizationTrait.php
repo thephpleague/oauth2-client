@@ -14,6 +14,7 @@
 
 namespace League\OAuth2\Client\Tool;
 
+use League\OAuth2\Client\Provider\Clock;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
@@ -24,6 +25,12 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
  */
 trait MacAuthorizationTrait
 {
+
+    /**
+     * @var Clock
+     */
+    protected $clock;
+
     /**
      * Returns the id of this token for MAC generation.
      *
@@ -68,7 +75,7 @@ trait MacAuthorizationTrait
             return [];
         }
 
-        $ts    = time();
+        $ts    = $this->clock->now()->getTimestamp();
         $id    = $this->getTokenId($token);
         $nonce = $this->getRandomState(16);
         $mac   = $this->getMacSignature($id, $ts, $nonce);

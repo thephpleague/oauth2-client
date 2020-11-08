@@ -99,6 +99,11 @@ abstract class AbstractProvider
     protected $optionProvider;
 
     /**
+     * @var Clock
+     */
+    protected $clock;
+
+    /**
      * Constructs an OAuth 2.0 service provider.
      *
      * @param array $options An array of options to set on this provider.
@@ -138,6 +143,11 @@ abstract class AbstractProvider
             $collaborators['optionProvider'] = new PostAuthOptionProvider();
         }
         $this->setOptionProvider($collaborators['optionProvider']);
+
+        if (empty($collaborators['clock'])) {
+            $collaborators['clock'] = new Clock();
+        }
+        $this->setClock($collaborators['clock']);
     }
 
     /**
@@ -250,6 +260,31 @@ abstract class AbstractProvider
     public function getOptionProvider()
     {
         return $this->optionProvider;
+    }
+
+    /**
+     * Sets the clock.
+     *
+     * @param  Clock $clock
+     *
+     * @return self
+     */
+    public function setClock(Clock $clock)
+    {
+        $this->clock = $clock;
+
+        return $this;
+    }
+
+
+    /**
+     * Returns the clock.
+     *
+     * @return Clock
+     */
+    public function getClock()
+    {
+        return $this->clock;
     }
 
     /**
@@ -541,6 +576,7 @@ abstract class AbstractProvider
             );
         }
         $prepared = $this->prepareAccessTokenResponse($response);
+        $prepared['clock'] = $this->clock;
         $token    = $this->createAccessToken($prepared, $grant);
 
         return $token;
