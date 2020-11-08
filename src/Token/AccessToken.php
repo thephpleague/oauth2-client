@@ -15,6 +15,7 @@
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
+use League\OAuth2\Client\Provider\ProviderClock;
 use RuntimeException;
 
 /**
@@ -50,12 +51,17 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     protected $values = [];
 
     /**
-     * @var int
+     * The current time, or NULL to get the true current time via PHP.
+     *
+     * @var int|null
      */
     private static $timeNow;
 
     /**
      * Set the time now. This should only be used for testing purposes.
+
+    /**
+     * Sets the current time.
      *
      * @param int $timeNow the time in seconds since epoch
      * @return void
@@ -66,7 +72,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     }
 
     /**
-     * Reset the time now if it was set for test purposes.
+     * Reset the current time so the true current time via PHP is used.
      *
      * @return void
      */
@@ -76,6 +82,10 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     }
 
     /**
+
+    /**
+     * Get the current time, whether true or simulated.
+     *
      * @return int
      */
     public function getTimeNow()
@@ -196,7 +206,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
             throw new RuntimeException('"expires" is not set on the token');
         }
 
-        return $expires < time();
+        return $expires < $this->getTimeNow();
     }
 
     /**

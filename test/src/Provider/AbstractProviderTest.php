@@ -24,6 +24,14 @@ use Psr\Http\Message\StreamInterface;
 
 class AbstractProviderTest extends TestCase
 {
+
+    /**
+     * The current simulated time.
+     *
+     * @var int
+     */
+    const NOW = 1359504000;
+
     protected function getMockProvider()
     {
         return new MockProvider([
@@ -504,7 +512,7 @@ class AbstractProviderTest extends TestCase
 
         $provider->setAccessTokenMethod($method);
 
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+        $raw_response = ['access_token' => 'okay', 'expires' => static::NOW + 3600, 'resource_owner_id' => 3];
 
         $grant = Mockery::mock(AbstractGrant::class);
         $grant
@@ -786,7 +794,7 @@ class AbstractProviderTest extends TestCase
         $token = new AccessToken([
             'access_token' => 'mock_access_token',
             'refresh_token' => 'mock_refresh_token',
-            'expires' => time(),
+            'expires' => 123,
             'resource_owner_id' => 'mock_resource_owner_id',
         ]);
 

@@ -10,6 +10,14 @@ use RuntimeException;
 
 class AccessTokenTest extends TestCase
 {
+
+    /**
+     * The current simulated time.
+     *
+     * @var int
+     */
+    const NOW = 1359504000;
+
     /**
      * BC teardown.
      *
@@ -40,14 +48,15 @@ class AccessTokenTest extends TestCase
 
     public function testExpiresInCorrection()
     {
+        // Correction happens in constructor so time needs to be set before
+        // object is created.
+        AccessToken::setTimeNow(static::NOW);
         $options = ['access_token' => 'access_token', 'expires_in' => 100];
         $token = $this->getAccessToken($options);
 
         $expires = $token->getExpires();
 
-        $this->assertNotNull($expires);
-        $this->assertGreaterThan(time(), $expires);
-        $this->assertLessThan(time() + 200, $expires);
+        $this->assertEquals(static::NOW + 100, $expires);
 
         self::tearDownForBackwardsCompatibility();
     }
@@ -79,13 +88,13 @@ class AccessTokenTest extends TestCase
 
     public function testResetTimeNow()
     {
-        AccessToken::setTimeNow(1577836800);
+        AccessToken::setTimeNow(static::NOW);
         $token = $this->getAccessToken(['access_token' => 'asdf']);
 
-        $this->assertEquals(1577836800, $token->getTimeNow());
+        $this->assertEquals(static::NOW, $token->getTimeNow());
         AccessToken::resetTimeNow();
 
-        $this->assertNotEquals(1577836800, $token->getTimeNow());
+        $this->assertNotEquals(static::NOW, $token->getTimeNow());
 
         $timeBeforeAssertion = time();
         $this->assertGreaterThanOrEqual($timeBeforeAssertion, $token->getTimeNow());
@@ -95,8 +104,9 @@ class AccessTokenTest extends TestCase
 
     public function testExpiresPastTimestamp()
     {
-        $options = ['access_token' => 'access_token', 'expires' => strtotime('5 days ago')];
+        $options = ['access_token' => 'access_token', 'expires' => static::NOW - 1];
         $token = $this->getAccessToken($options);
+        AccessToken::setTimeNow(static::NOW);
 
         $this->assertTrue($token->hasExpired());
 
@@ -129,8 +139,9 @@ class AccessTokenTest extends TestCase
             'access_token' => 'access_token'
         ];
 
-        $expectedExpires = strtotime('+1 day');
+        $expectedExpires = static::NOW + 1;
 
+        AccessToken::setTimeNow(static::NOW);
         $token = Mockery::mock(AccessToken::class, [$options])->makePartial();
         $token
             ->shouldReceive('getExpires')
@@ -148,7 +159,7 @@ class AccessTokenTest extends TestCase
             'access_token' => 'access_token'
         ];
 
-        $expectedExpires = strtotime('-1 day');
+        $expectedExpires = static::NOW - 1;
 
         $token = Mockery::mock(AccessToken::class, [$options])->makePartial();
         $token
@@ -195,7 +206,7 @@ class AccessTokenTest extends TestCase
         $options = [
             'access_token' => 'mock_access_token',
             'refresh_token' => 'mock_refresh_token',
-            'expires' => time(),
+            'expires' => static::NOW + 3600,
             'resource_owner_id' => 'mock_resource_owner_id',
         ];
 
@@ -212,7 +223,7 @@ class AccessTokenTest extends TestCase
         $options = [
             'access_token' => 'mock_access_token',
             'refresh_token' => 'mock_refresh_token',
-            'expires' => time(),
+            'expires' => static::NOW + 3600,
             'resource_owner_id' => 'mock_resource_owner_id',
             'custom_thing' => 'i am a test!',
         ];
