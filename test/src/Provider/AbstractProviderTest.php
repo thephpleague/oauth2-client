@@ -555,6 +555,9 @@ class AbstractProviderTest extends TestCase
         ]);
 
         $provider->setHttpClient($client);
+        $clock = (new ProgrammableClock())
+            ->setTime(new \DateTimeImmutable('1st February 2013 1pm'));
+        $provider->setClock($clock);
         $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertInstanceOf(AccessTokenInterface::class, $token);
@@ -562,6 +565,13 @@ class AbstractProviderTest extends TestCase
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
+
+        // Set the time to a different value so we know references to the
+        // original clock object in provider was not lost.
+        $newTime = new \DateTimeImmutable('2nd February 2013 1pm');
+        $clock->setTime($newTime);
+
+        $this->assertEquals($newTime->getTimestamp(), $token->getTimeNow());
 
         $client
             ->shouldHaveReceived('send')
