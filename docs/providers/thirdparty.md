@@ -84,6 +84,7 @@ Gateway | Composer Package | Maintainer
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
 [Nest](https://github.com/stevenmaguire/oauth2-nest) | stevenmaguire/oauth2-nest | [Steven Maguire](https://github.com/stevenmaguire)
+[Nitrado](https://github.com/itsmestevieg/oauth2-nitrado) | itsmestevieg/oauth2-nitrado | [Steven Graham](https://github.com/itsmestevieg)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
 [Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
 [PayPal](https://github.com/stevenmaguire/oauth2-paypal) | stevenmaguire/oauth2-paypal | [Steven Maguire](https://github.com/stevenmaguire)
