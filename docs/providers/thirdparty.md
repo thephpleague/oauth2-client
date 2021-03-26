@@ -48,6 +48,7 @@ Gateway | Composer Package | Maintainer
 [Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
+[Epic Games](https://github.com/MrPropre/oauth2-epicgames) | mrpropre/oauth2-epicgames | [Adrien Alais](https://github.com/MrPropre)
 [ESIA](https://packagist.org/packages/ekapusta/oauth2-esia) | ekapusta/oauth2-esia | [Alexander Ustimenko](https://github.com/ekapusta)
 [EVE Online](https://github.com/killmails/oauth2-eve) | killmails/oauth2-eve | [Oizys](https://github.com/syzio)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
