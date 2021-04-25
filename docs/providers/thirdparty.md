@@ -17,6 +17,7 @@ $ composer require [vendor/package-name]
 
 Gateway | Composer Package | Maintainer
 --- | --- | ---
+[42 School](https://github.com/mehdibo/oauth2-fortytwo/) | mehdibo/oauth2-fortytwo | [Mehdi Bounya](https://github.com/mehdibo)
 [Amazon](https://github.com/michaelKaefer/oauth2-amazon/) | michaelkaefer/oauth2-amazon | [Michael Käfer](https://github.com/michaelKaefer)
 [Amazon Cognito](https://github.com/CakeDC/oauth2-cognito/) | cakedc/oauth2-cognito | [Cake Development Corporation](https://github.com/CakeDC)
 [Apple](https://github.com/patrickbussmann/oauth2-apple) | patrickbussmann/oauth2-apple | [Patrick Bußmann](https://github.com/patrickbussmann)
