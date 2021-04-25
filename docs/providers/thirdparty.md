@@ -17,6 +17,7 @@ $ composer require [vendor/package-name]
 
 Gateway | Composer Package | Maintainer
 --- | --- | ---
+[42 School](https://github.com/mehdibo/oauth2-fortytwo/) | mehdibo/oauth2-fortytwo | [Mehdi Bounya](https://github.com/mehdibo)
 [Amazon](https://github.com/michaelKaefer/oauth2-amazon/) | michaelkaefer/oauth2-amazon | [Michael Käfer](https://github.com/michaelKaefer)
 [Amazon Cognito](https://github.com/CakeDC/oauth2-cognito/) | cakedc/oauth2-cognito | [Cake Development Corporation](https://github.com/CakeDC)
 [Apple](https://github.com/patrickbussmann/oauth2-apple) | patrickbussmann/oauth2-apple | [Patrick Bußmann](https://github.com/patrickbussmann)
@@ -49,6 +50,7 @@ Gateway | Composer Package | Maintainer
 [Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
+[Epic Games](https://github.com/MrPropre/oauth2-epicgames) | mrpropre/oauth2-epicgames | [Adrien Alais](https://github.com/MrPropre)
 [ESIA](https://packagist.org/packages/ekapusta/oauth2-esia) | ekapusta/oauth2-esia | [Alexander Ustimenko](https://github.com/ekapusta)
 [EVE Online](https://github.com/killmails/oauth2-eve) | killmails/oauth2-eve | [Oizys](https://github.com/syzio)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
@@ -86,6 +88,7 @@ Gateway | Composer Package | Maintainer
 [Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
 [Nest](https://github.com/stevenmaguire/oauth2-nest) | stevenmaguire/oauth2-nest | [Steven Maguire](https://github.com/stevenmaguire)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
+[Okta](https://packagist.org/packages/foxworth42/oauth2-okta) | foxworth42/oauth2-okta | [Ed Walker](https://github.com/foxworth42)
 [Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
 [PayPal](https://github.com/stevenmaguire/oauth2-paypal) | stevenmaguire/oauth2-paypal | [Steven Maguire](https://github.com/stevenmaguire)
 [Pipedrive](https://github.com/daniti/oauth2-pipedrive) | daniti/oauth2-pipedrive | [Daniele Timo](https://github.com/daniti)
@@ -97,6 +100,7 @@ Gateway | Composer Package | Maintainer
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
 [Resource Guru](https://github.com/adam-paterson/oauth2-resource-guru) | adam-paterson/oauth2-resource-guru | [Adam Paterson](https://github.com/adam-paterson)
+[Riot (RSO)](https://github.com/kdefives/oauth2-riot) | kdefives/oauth2-riot | [Kevin Defives](https://github.com/kdefives)
 [Salesforce](https://github.com/stevenmaguire/oauth2-salesforce) | stevenmaguire/oauth2-salesforce | [Steven Maguire](https://github.com/stevenmaguire)
 [Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
@@ -108,6 +112,7 @@ Gateway | Composer Package | Maintainer
 [Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
 [StackExchange](https://packagist.org/packages/alexmasterov/oauth2-stackexchange) | alexmasterov/oauth2-stackexchange | [Alex Masterov](https://github.com/AlexMasterov)
 [SuperJob](https://packagist.org/packages/alexmasterov/oauth2-superjob) | alexmasterov/oauth2-superjob | [Alex Masterov](https://github.com/AlexMasterov)
+[Thingiverse](https://packagist.org/packages/freshworkx/oauth2-thingiverse) | freshworkx/oauth2-thingiverse | [Jens Neumann](https://github.com/freshworkx)
 [ThirtySevenSignals](https://github.com/nilesuan/oauth2-thirtysevensignals) | nilesuan/oauth2-thirtysevensignals | [Nile Suan](https://github.com/nilesuan)
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Twinfield](https://github.com/php-twinfield/twinfield) | php-twinfield/twinfield | [Mollie B.V.](https://github.com/mollie)
