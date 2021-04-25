@@ -107,6 +107,7 @@ Gateway | Composer Package | Maintainer
 [Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
 [StackExchange](https://packagist.org/packages/alexmasterov/oauth2-stackexchange) | alexmasterov/oauth2-stackexchange | [Alex Masterov](https://github.com/AlexMasterov)
 [SuperJob](https://packagist.org/packages/alexmasterov/oauth2-superjob) | alexmasterov/oauth2-superjob | [Alex Masterov](https://github.com/AlexMasterov)
+[Thingiverse](https://packagist.org/packages/freshworkx/oauth2-thingiverse) | freshworkx/oauth2-thingiverse | [Jens Neumann](https://github.com/freshworkx)
 [ThirtySevenSignals](https://github.com/nilesuan/oauth2-thirtysevensignals) | nilesuan/oauth2-thirtysevensignals | [Nile Suan](https://github.com/nilesuan)
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Twinfield](https://github.com/php-twinfield/twinfield) | php-twinfield/twinfield | [Mollie B.V.](https://github.com/mollie)
