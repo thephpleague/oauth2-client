@@ -14,7 +14,9 @@
 
 namespace League\OAuth2\Client\Tool;
 
-use GuzzleHttp\Psr7\Request;
+use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Used to produce PSR-7 Request instances.
@@ -24,6 +26,16 @@ use GuzzleHttp\Psr7\Request;
 class RequestFactory
 {
     /**
+     * @var RequestFactoryInterface
+     */
+    protected $requestFactory;
+
+    /**
+     * @var StreamFactoryInterface
+     */
+    protected $streamFactory;
+    
+    /**
      * Creates a PSR-7 Request instance.
      *
      * @param  null|string $method HTTP method for the request.
@@ -32,7 +44,7 @@ class RequestFactory
      * @param  string|resource|StreamInterface $body Message body.
      * @param  string $version HTTP protocol version.
      *
-     * @return Request
+     * @return RequestInterface
      */
     public function getRequest(
         $method,
@@ -41,7 +53,15 @@ class RequestFactory
         $body = null,
         $version = '1.1'
     ) {
-        return new Request($method, $uri, $headers, $body, $version);
+        $request = $this->requestFactory->createRequest($method, $uri)
+            ->withProtocolVersion($version)
+            ->withBody($this->streamFactory->createStream($body));
+        
+        foreach ($headers as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+        
+        return $request;
     }
 
     /**
@@ -70,7 +90,7 @@ class RequestFactory
      * @param  null|string $uri
      * @param  array $options
      *
-     * @return Request
+     * @return RequestInterface
      */
     public function getRequestWithOptions($method, $uri, array $options = [])
     {

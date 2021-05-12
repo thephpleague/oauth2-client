@@ -14,9 +14,6 @@
 
 namespace League\OAuth2\Client\Provider;
 
-use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\ClientInterface as HttpClientInterface;
-use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\OptionProvider\OptionProviderInterface;
@@ -28,6 +25,8 @@ use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 use League\OAuth2\Client\Tool\GuardedPropertyTrait;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
 use League\OAuth2\Client\Tool\RequestFactory;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use UnexpectedValueException;
@@ -89,7 +88,7 @@ abstract class AbstractProvider
     protected $requestFactory;
 
     /**
-     * @var HttpClientInterface
+     * @var ClientInterface
      */
     protected $httpClient;
 
@@ -126,11 +125,7 @@ abstract class AbstractProvider
         $this->setRequestFactory($collaborators['requestFactory']);
 
         if (empty($collaborators['httpClient'])) {
-            $client_options = $this->getAllowedClientOptions($options);
-
-            $collaborators['httpClient'] = new HttpClient(
-                array_intersect_key($options, array_flip($client_options))
-            );
+            throw new \LogicException('Must specify client');
         }
         $this->setHttpClient($collaborators['httpClient']);
 
@@ -209,10 +204,10 @@ abstract class AbstractProvider
     /**
      * Sets the HTTP client instance.
      *
-     * @param  HttpClientInterface $client
+     * @param  ClientInterface $client
      * @return self
      */
-    public function setHttpClient(HttpClientInterface $client)
+    public function setHttpClient(ClientInterface $client)
     {
         $this->httpClient = $client;
 
@@ -222,7 +217,7 @@ abstract class AbstractProvider
     /**
      * Returns the HTTP client instance.
      *
-     * @return HttpClientInterface
+     * @return ClientInterface
      */
     public function getHttpClient()
     {
@@ -600,12 +595,14 @@ abstract class AbstractProvider
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @param  RequestInterface $request
+     * @param RequestInterface $request
+     *
      * @return ResponseInterface
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function getResponse(RequestInterface $request)
     {
-        return $this->getHttpClient()->send($request);
+        return $this->getHttpClient()->sendRequest($request);
     }
 
     /**
@@ -619,8 +616,8 @@ abstract class AbstractProvider
     {
         try {
             $response = $this->getResponse($request);
-        } catch (BadResponseException $e) {
-            $response = $e->getResponse();
+        } catch (ClientExceptionInterface $e) {
+            throw $e; 
         }
 
         $parsed = $this->parseResponse($response);
