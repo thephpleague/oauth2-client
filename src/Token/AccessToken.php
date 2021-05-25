@@ -208,6 +208,34 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     }
 
     /**
+     * Determine if the access token has a value by the offset
+     * @param  string|int $offset The offset to check
+     * @return bool
+     */
+    public function hasValue($offset)
+    {
+        if (!(is_string($offset) || is_numeric($offset))) {
+            throw new InvalidArgumentException("Values offset must be a string or int");
+        }
+
+        return array_key_exists($offset, $this->values);
+    }
+
+    /**
+     * Get an access token value by the offset
+     * @param  string|int $offset The offset to find
+     * @return mixed|null
+     */
+    public function getValue($offset)
+    {
+        if ($this->hasValue($offset)) {
+            return $this->values[$offset];
+        }
+
+        return null;
+    }
+
+    /**
      * @inheritdoc
      */
     public function __toString()
