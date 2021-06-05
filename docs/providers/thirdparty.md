@@ -48,6 +48,7 @@ Gateway | Composer Package | Maintainer
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
 [Drupal](https://github.com/chrishemmings/oauth2-drupal) | chrishemmings/oauth2-drupal | [Chris Hemmings](https://github.com/chrishemmings)
 [Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
+[Edenred](https://github.com/jzecca/oauth2-edenred) | jzecca/oauth2-edenred | [Jérôme Zecca](https://github.com/jzecca)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
 [Epic Games](https://github.com/MrPropre/oauth2-epicgames) | mrpropre/oauth2-epicgames | [Adrien Alais](https://github.com/MrPropre)
