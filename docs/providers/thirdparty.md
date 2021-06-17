@@ -124,6 +124,7 @@ Gateway | Composer Package | Maintainer
 [Vend](https://github.com/wheniwork/oauth2-vend) | wheniwork/oauth2-vend | [When I Work](https://github.com/wheniwork)
 [Vimeo](https://github.com/saf33r/oauth2-vimeo) | saf33r/oauth2-vimeo | [Safeer Ahmed](https://github.com/saf33r)
 [Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
+[Withings](https://github.com/waytohealth/oauth2-withings) | waytohealth/oauth2-withings | [Way to Health](https://github.com/waytohealth)
 [WordPress](https://github.com/krombox/oauth2-wordpress) | krombox/oauth2-wordpress | [Roman Kapustian](https://github.com/krombox)
 [Wechat](https://github.com/oakhope/oauth2-wechat) | oakhope/oauth2-wechat | [Benji Wang](https://github.com/oakhope)
 [WeCounsel](https://github.com/stevenmaguire/oauth2-wecounsel) | stevenmaguire/oauth2-wecounsel | [Steven Maguire](https://github.com/stevenmaguire)
