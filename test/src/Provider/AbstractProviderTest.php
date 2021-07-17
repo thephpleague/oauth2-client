@@ -3,6 +3,7 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
+use League\OAuth2\Client\Provider\Clock;
 use Mockery;
 use ReflectionClass;
 use UnexpectedValueException;
@@ -24,6 +25,14 @@ use Psr\Http\Message\StreamInterface;
 
 class AbstractProviderTest extends TestCase
 {
+
+    /**
+     * The current simulated time.
+     *
+     * @var int
+     */
+    const NOW = 1359504000;
+
     protected function getMockProvider()
     {
         return new MockProvider([
@@ -38,6 +47,14 @@ class AbstractProviderTest extends TestCase
         $this->assertInstanceOf(
             PostAuthOptionProvider::class,
             $this->getMockProvider()->getOptionProvider()
+        );
+    }
+
+    public function testGetClock()
+    {
+        $this->assertInstanceOf(
+            Clock::class,
+            $this->getMockProvider()->getClock()
         );
     }
 
@@ -504,7 +521,7 @@ class AbstractProviderTest extends TestCase
 
         $provider->setAccessTokenMethod($method);
 
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+        $raw_response = ['access_token' => 'okay', 'expires' => static::NOW + 3600, 'resource_owner_id' => 3];
 
         $grant = Mockery::mock(AbstractGrant::class);
         $grant
@@ -538,6 +555,9 @@ class AbstractProviderTest extends TestCase
         ]);
 
         $provider->setHttpClient($client);
+        $clock = (new ProgrammableClock())
+            ->setTime(new \DateTimeImmutable('1st February 2013 1pm'));
+        $provider->setClock($clock);
         $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
         $this->assertInstanceOf(AccessTokenInterface::class, $token);
@@ -545,6 +565,13 @@ class AbstractProviderTest extends TestCase
         $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($raw_response['access_token'], $token->getToken());
         $this->assertSame($raw_response['expires'], $token->getExpires());
+
+        // Set the time to a different value so we know references to the
+        // original clock object in provider was not lost.
+        $newTime = new \DateTimeImmutable('2nd February 2013 1pm');
+        $clock->setTime($newTime);
+
+        $this->assertEquals($newTime->getTimestamp(), $token->getTimeNow());
 
         $client
             ->shouldHaveReceived('send')
@@ -786,7 +813,7 @@ class AbstractProviderTest extends TestCase
         $token = new AccessToken([
             'access_token' => 'mock_access_token',
             'refresh_token' => 'mock_refresh_token',
-            'expires' => time(),
+            'expires' => 123,
             'resource_owner_id' => 'mock_resource_owner_id',
         ]);
 

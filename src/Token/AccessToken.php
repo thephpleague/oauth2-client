@@ -15,6 +15,7 @@
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
+use League\OAuth2\Client\Provider\Clock;
 use RuntimeException;
 
 /**
@@ -50,12 +51,21 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     protected $values = [];
 
     /**
-     * @var int
+     * The current time, or NULL to get the true current time via PHP.
+     *
+     * @var int|null
      */
     private static $timeNow;
 
     /**
-     * Set the time now. This should only be used for testing purposes.
+     * The clock.
+     *
+     * @var Clock
+     */
+    protected $clock;
+
+    /**
+     * Sets the current time.
      *
      * @param int $timeNow the time in seconds since epoch
      * @return void
@@ -66,7 +76,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     }
 
     /**
-     * Reset the time now if it was set for test purposes.
+     * Reset the current time so the true current time via PHP is used.
      *
      * @return void
      */
@@ -76,11 +86,25 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     }
 
     /**
-     * @return int
+     * @inheritdoc
+     */
+    public function setClock(Clock $clock)
+    {
+        $this->clock = $clock;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getTimeNow()
     {
-        return self::$timeNow ? self::$timeNow : time();
+        if (self::$timeNow) {
+            return self::$timeNow;
+        } elseif (isset($this->clock)) {
+            return $this->clock->now()->getTimestamp();
+        } else {
+            return time();
+        }
     }
 
     /**
@@ -104,6 +128,10 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
 
         if (!empty($options['refresh_token'])) {
             $this->refreshToken = $options['refresh_token'];
+        }
+
+        if (!empty($options['clock'])) {
+            $this->clock = $options['clock'];
         }
 
         // We need to know when the token expires. Show preference to
@@ -196,7 +224,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
             throw new RuntimeException('"expires" is not set on the token');
         }
 
-        return $expires < time();
+        return $expires < $this->getTimeNow();
     }
 
     /**
