@@ -16,6 +16,7 @@ The following example uses the out-of-the-box `GenericProvider` provided by this
 
 The *authorization code* grant type is the most common grant type used when authenticating users with a third-party service. This grant type utilizes a *client* (this library), a *service provider* (the server), and a *resource owner* (the account with credentials to a protected—or owned—resource) to request access to resources owned by the user. This is often referred to as _3-legged OAuth_, since there are three parties involved.
 
+<a name="authorization-code-grant-example"></a>
 ```php
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => 'XXXXXX',    // The client ID assigned to you by the provider
@@ -37,6 +38,10 @@ if (!isset($_GET['code'])) {
     // Get the state generated for you and store it to the session.
     $_SESSION['oauth2state'] = $provider->getState();
 
+    // Optional, only required when PKCE is enabled.
+    // Get the PKCE code generated for you and store it to the session.
+    $_SESSION['oauth2pkceCode'] = $provider->getPkceCode();
+
     // Redirect the user to the authorization URL.
     header('Location: ' . $authorizationUrl);
     exit;
@@ -53,6 +58,10 @@ if (!isset($_GET['code'])) {
 } else {
 
     try {
+    
+        // Optional, only required when PKCE is enabled.
+        // Restore the PKCE code stored in the session.
+        $provider->setPkceCode($_SESSION['oauth2pkceCode']);
 
         // Try to get an access token using the authorization code grant.
         $accessToken = $provider->getAccessToken('authorization_code', [
@@ -89,6 +98,31 @@ if (!isset($_GET['code'])) {
     }
 
 }
+```
+### Authorization Code Grant with PKCE
+
+To enable PKCE (Proof Key for Code Exchange) you can set the `pkceMethod` option for the provider.  
+Supported methods are:
+- `S256` Recommended method. The code challenge will be hashed with sha256.
+- `plain` **NOT** recommended. The code challenge will be sent as plain text. Only use this if no other option is possible.
+
+You can configure the PKCE method as follows:
+```php
+$provider = new \League\OAuth2\Client\Provider\GenericProvider([
+    // ...
+    // other options
+    // ...
+    'pkceMethod' => \League\OAuth2\Client\Provider\GenericProvider::PKCE_METHOD_S256
+]);
+```
+The PKCE code needs to be used between requests and therefore be saved and restored, usually via the session.
+In the [example](#authorization-code-grant-example) above this is done as follows:
+```php
+// Store the PKCE code after the `getAuthorizationUrl()` call.
+$_SESSION['oauth2pkceCode'] = $provider->getPkceCode();
+// ...
+// Restore the PKCE code before the `getAccessToken()` call. 
+$provider->setPkceCode($_SESSION['oauth2pkceCode']);
 ```
 
 Refreshing a Token
