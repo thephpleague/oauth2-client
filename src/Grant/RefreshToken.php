@@ -38,4 +38,14 @@ class RefreshToken extends AbstractGrant
             'refresh_token',
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function prepareRequestParameters(array $defaults, array $options)
+    {
+        unset($defaults['redirect_uri']);
+
+        return parent::prepareRequestParameters($defaults, $options);
+    }
 }
