@@ -107,6 +107,7 @@ Gateway | Composer Package | Maintainer
 [Salesforce](https://github.com/stevenmaguire/oauth2-salesforce) | stevenmaguire/oauth2-salesforce | [Steven Maguire](https://github.com/stevenmaguire)
 [Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
+[Snapchat](https://github.com/pbringetto/oauth2-snapchat) | pbringetto/oauth2-snapchat | [Paul Bringetto](https://github.com/pbringetto)
 [Spotify](https://packagist.org/packages/audeio/spotify-web-api) | audeio/spotify-web-api | [Jonjo McKay](https://github.com/jonjomckay)
 [Spotify](https://packagist.org/packages/kerox/oauth2-spotify) | kerox/oauth2-spotify | [Romain Monteil](https://github.com/ker0x)
 [SteemConnect V2](https://github.com/hernandev/oauth2-sc2) | hernandev/oauth2-sc2 | [Diego Hernandes](https://github.com/hernandev)
