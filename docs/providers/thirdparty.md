@@ -36,6 +36,7 @@ Gateway | Composer Package | Maintainer
 [concrete5](https://github.com/concrete5/oauth2-concrete5) | concrete5/oauth2-concrete5 | [Andrew Embler](https://github.com/aembler)
 [ChatWork](https://github.com/chatwork/oauth2-chatwork-php) | chatwork/oauth2-chatwork | [Yuta Adachi](https://github.com/ada-u)
 [Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
+[CloudConvert](https://github.com/osavchenko/oauth2-cloudconvert) | osavchenko/oauth2-cloudconvert | [Oleksandr Savchenko](https://github.com/osavchenko)
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [Deezer](https://github.com/julienbornstein/oauth2-deezer) | julienbornstein/oauth2-deezer | [Julien Bornstein](https://github.com/julienbornstein)
