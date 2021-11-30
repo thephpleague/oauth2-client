@@ -1,18 +1,15 @@
 ---
 layout: default
-title: "Third-Party Providers"
+title: "Third-party Provider Clients"
 permalink: /providers/thirdparty/
 ---
 
-Third-Party Providers
-======================
+Third-party Provider Clients
+============================
 
-These providers allow integration with other providers not supported by `oauth2-client`. They may require an older
-version so please help them out with a pull request if you notice this. If you're looking for an official `league` provider,
-you can check out the [first party providers](/providers/league) page.
+These provider clients allow integration with other providers not supported by `league/oauth2-client`. They may require an older version, so please help them with a pull request if you notice this. If you're looking for an official `league` provider client, check out the [first-party provider clients](/providers/league/) page.
 
-Since all of these packages depend on `league/oauth2-client` as their base, installation is as simple as requiring the
-package you wish to use via composer:
+All of these packages depend on `league/oauth2-client`, and you may use [Composer](https://getcomposer.org) to install them:
 
 ~~~ bash
 $ composer require [vendor/package-name]
@@ -20,6 +17,7 @@ $ composer require [vendor/package-name]
 
 Gateway | Composer Package | Maintainer
 --- | --- | ---
+[42 School](https://github.com/mehdibo/oauth2-fortytwo/) | mehdibo/oauth2-fortytwo | [Mehdi Bounya](https://github.com/mehdibo)
 [Amazon](https://github.com/michaelKaefer/oauth2-amazon/) | michaelkaefer/oauth2-amazon | [Michael Käfer](https://github.com/michaelKaefer)
 [Amazon Cognito](https://github.com/CakeDC/oauth2-cognito/) | cakedc/oauth2-cognito | [Cake Development Corporation](https://github.com/CakeDC)
 [Apple](https://github.com/patrickbussmann/oauth2-apple) | patrickbussmann/oauth2-apple | [Patrick Bußmann](https://github.com/patrickbussmann)
@@ -31,12 +29,14 @@ Gateway | Composer Package | Maintainer
 [Bitbucket](https://github.com/stevenmaguire/oauth2-bitbucket) | stevenmaguire/oauth2-bitbucket | [Steven Maguire](https://github.com/stevenmaguire)
 [BookingSync](https://github.com/BookingSync/oauth2-bookingsync-php) | bookingsync/oauth2-bookingsync-php | [BookingSync](https://github.com/BookingSync)
 [Box](https://github.com/stevenmaguire/oauth2-box) | stevenmaguire/oauth2-box | [Steven Maguire](https://github.com/stevenmaguire)
+[Buddy](https://github.com/buddy-works/oauth2-client) | buddy-works/oauth2-client | [Arkadiusz Kondas](https://github.com/akondas)
 [Buffer](https://github.com/tgallice/oauth2-buffer) | tgallice/oauth2-buffer | [Thomas Gallice](https://github.com/tgallice)
 [ColorMeShop](https://github.com/pepabo/oauth2-colormeshop) | pepabo/oauth2-colormeshop | [GMO Pepabo, Inc.](https://github.com/pepabo)
 [Canvas LMS](https://github.com/smtech/oauth2-canvaslms) | smtech/oauth2-canvaslms | [Seth Battis](https://github.com/battis)
 [concrete5](https://github.com/concrete5/oauth2-concrete5) | concrete5/oauth2-concrete5 | [Andrew Embler](https://github.com/aembler)
 [ChatWork](https://github.com/chatwork/oauth2-chatwork-php) | chatwork/oauth2-chatwork | [Yuta Adachi](https://github.com/ada-u)
 [Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
+[CloudConvert](https://github.com/osavchenko/oauth2-cloudconvert) | osavchenko/oauth2-cloudconvert | [Oleksandr Savchenko](https://github.com/osavchenko)
 [Clover](https://github.com/wheniwork/oauth2-clover) | wheniwork/oauth2-clover | [When I Work](https://github.com/wheniwork)
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [Deezer](https://github.com/julienbornstein/oauth2-deezer) | julienbornstein/oauth2-deezer | [Julien Bornstein](https://github.com/julienbornstein)
@@ -49,8 +49,10 @@ Gateway | Composer Package | Maintainer
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
 [Drupal](https://github.com/chrishemmings/oauth2-drupal) | chrishemmings/oauth2-drupal | [Chris Hemmings](https://github.com/chrishemmings)
 [Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
+[Edenred](https://github.com/jzecca/oauth2-edenred) | jzecca/oauth2-edenred | [Jérôme Zecca](https://github.com/jzecca)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
 [Envato](https://github.com/dilab/envato-oauth2-provider) | dilab/envato-oauth2-provider | [Xu Ding](https://github.com/dilab)
+[Epic Games](https://github.com/MrPropre/oauth2-epicgames) | mrpropre/oauth2-epicgames | [Adrien Alais](https://github.com/MrPropre)
 [ESIA](https://packagist.org/packages/ekapusta/oauth2-esia) | ekapusta/oauth2-esia | [Alexander Ustimenko](https://github.com/ekapusta)
 [EVE Online](https://github.com/killmails/oauth2-eve) | killmails/oauth2-eve | [Oizys](https://github.com/syzio)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
@@ -87,7 +89,10 @@ Gateway | Composer Package | Maintainer
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
 [Nest](https://github.com/stevenmaguire/oauth2-nest) | stevenmaguire/oauth2-nest | [Steven Maguire](https://github.com/stevenmaguire)
+[NIBE](https://github.com/olssonm/oauth2-nibe) | olssonm/oauth2-nibe | [Marcus Olsson](https://github.com/olssonm)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
+[Okta](https://packagist.org/packages/foxworth42/oauth2-okta) | foxworth42/oauth2-okta | [Ed Walker](https://github.com/foxworth42)
+[OpenStreetMap](https://packagist.org/packages/jbelien/oauth2-openstreetmap) | jbelien/oauth2-openstreetmap | [Jonathan Beliën](https://github.com/jbelien)
 [Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
 [PayPal](https://github.com/stevenmaguire/oauth2-paypal) | stevenmaguire/oauth2-paypal | [Steven Maguire](https://github.com/stevenmaguire)
 [Pipedrive](https://github.com/daniti/oauth2-pipedrive) | daniti/oauth2-pipedrive | [Daniele Timo](https://github.com/daniti)
@@ -99,9 +104,11 @@ Gateway | Composer Package | Maintainer
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
 [Resource Guru](https://github.com/adam-paterson/oauth2-resource-guru) | adam-paterson/oauth2-resource-guru | [Adam Paterson](https://github.com/adam-paterson)
+[Riot (RSO)](https://github.com/kdefives/oauth2-riot) | kdefives/oauth2-riot | [Kevin Defives](https://github.com/kdefives)
 [Salesforce](https://github.com/stevenmaguire/oauth2-salesforce) | stevenmaguire/oauth2-salesforce | [Steven Maguire](https://github.com/stevenmaguire)
 [Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
+[Snapchat](https://github.com/pbringetto/oauth2-snapchat) | pbringetto/oauth2-snapchat | [Paul Bringetto](https://github.com/pbringetto)
 [Spotify](https://packagist.org/packages/audeio/spotify-web-api) | audeio/spotify-web-api | [Jonjo McKay](https://github.com/jonjomckay)
 [Spotify](https://packagist.org/packages/kerox/oauth2-spotify) | kerox/oauth2-spotify | [Romain Monteil](https://github.com/ker0x)
 [SteemConnect V2](https://github.com/hernandev/oauth2-sc2) | hernandev/oauth2-sc2 | [Diego Hernandes](https://github.com/hernandev)
@@ -110,8 +117,10 @@ Gateway | Composer Package | Maintainer
 [Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
 [StackExchange](https://packagist.org/packages/alexmasterov/oauth2-stackexchange) | alexmasterov/oauth2-stackexchange | [Alex Masterov](https://github.com/AlexMasterov)
 [SuperJob](https://packagist.org/packages/alexmasterov/oauth2-superjob) | alexmasterov/oauth2-superjob | [Alex Masterov](https://github.com/AlexMasterov)
+[Thingiverse](https://packagist.org/packages/freshworkx/oauth2-thingiverse) | freshworkx/oauth2-thingiverse | [Jens Neumann](https://github.com/freshworkx)
 [ThirtySevenSignals](https://github.com/nilesuan/oauth2-thirtysevensignals) | nilesuan/oauth2-thirtysevensignals | [Nile Suan](https://github.com/nilesuan)
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
+[Trovo](https://github.com/artandor/oauth2-trovo) | artandor/oauth2-trovo | [Nicolas Mylle](https://github.com/artandor/)
 [Twinfield](https://github.com/php-twinfield/twinfield) | php-twinfield/twinfield | [Mollie B.V.](https://github.com/mollie)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
 [Twitch.tv (New API Helix)](https://github.com/vertisan/oauth2-twitch-helix) | vertisan/oauth2-twitch-helix | [Paweł Farys](https://github.com/vertisan)
@@ -121,6 +130,7 @@ Gateway | Composer Package | Maintainer
 [Vend](https://github.com/wheniwork/oauth2-vend) | wheniwork/oauth2-vend | [When I Work](https://github.com/wheniwork)
 [Vimeo](https://github.com/saf33r/oauth2-vimeo) | saf33r/oauth2-vimeo | [Safeer Ahmed](https://github.com/saf33r)
 [Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
+[Withings](https://github.com/waytohealth/oauth2-withings) | waytohealth/oauth2-withings | [Way to Health](https://github.com/waytohealth)
 [WordPress](https://github.com/krombox/oauth2-wordpress) | krombox/oauth2-wordpress | [Roman Kapustian](https://github.com/krombox)
 [Wechat](https://github.com/oakhope/oauth2-wechat) | oakhope/oauth2-wechat | [Benji Wang](https://github.com/oakhope)
 [WeCounsel](https://github.com/stevenmaguire/oauth2-wecounsel) | stevenmaguire/oauth2-wecounsel | [Steven Maguire](https://github.com/stevenmaguire)
