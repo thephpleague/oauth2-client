@@ -16,13 +16,21 @@ jobs:
   lint:
     name: "Lint"
     runs-on: "ubuntu-latest"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1' ]
+
+    continue-on-error: ${{ matrix.php-version == '8.1' }}
+
     steps:
       - uses: "actions/checkout@v2"
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "7.4"
           coverage: "none"
-          ini-values: "memory_limit=-1"
+          ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer:v2"
       - uses: "ramsey/composer-install@v1"
       - name: "Lint the PHP source code"
@@ -58,19 +66,17 @@ jobs:
           - "7.3"
           - "7.4"
           - "8.0"
+          - "8.1"
         experimental:
           - false
-        include:
-          - php-version: "8.1"
-            experimental: true
-            composer-options: "--ignore-platform-reqs"
+
     steps:
       - uses: "actions/checkout@v2"
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
           coverage: "pcov"
-          ini-values: "memory_limit=-1"
+          ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer:v2"
       - name: "Prepare for tests"
         run: "mkdir -p build/logs"
