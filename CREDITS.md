@@ -4,9 +4,10 @@
 
 Also see <https://github.com/thephpleague/oauth2-client/contributors>.
 
-### Current Maintainer
+### Current Maintainers
 
 - [Ben Ramsey](https://github.com/ramsey)
+- [Woody Gilk](https://github.com/shadowhand)
 
 ### Contributors
 
@@ -17,4 +18,3 @@ Also see <https://github.com/thephpleague/oauth2-client/contributors>.
 - [Phil Sturgeon](https://github.com/philsturgeon)
 - [Rudi Theunissen](https://github.com/rtheunissen)
 - [Tom Anderson](https://github.com/TomHAnderson)
-- [Woody Gilk](https://github.com/shadowhand)

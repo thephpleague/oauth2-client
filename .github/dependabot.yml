@@ -3,6 +3,8 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "thursday"
-    versioning-strategy: "increase-if-necessary"
+      interval: "daily"
+  - package-ecosystem: "bundler"
+    directory: "/docs"
+    schedule:
+      interval: "daily"
