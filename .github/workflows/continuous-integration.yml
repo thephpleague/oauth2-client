@@ -16,19 +16,15 @@ jobs:
   lint:
     name: "Lint"
     runs-on: "ubuntu-latest"
-
     strategy:
       fail-fast: false
       matrix:
         php-version: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1' ]
-
-    continue-on-error: ${{ matrix.php-version == '8.1' }}
-
     steps:
       - uses: "actions/checkout@v2"
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "7.4"
+          php-version: "${{ matrix.php-version }}"
           coverage: "none"
           ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer:v2"
@@ -43,7 +39,7 @@ jobs:
       - uses: "actions/checkout@v2"
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "7.4"
+          php-version: "latest"
           coverage: "none"
           ini-values: "memory_limit=-1"
           tools: "composer:v2"
@@ -51,39 +47,42 @@ jobs:
       - name: "Check coding standards"
         run: "./vendor/bin/phpcs src --standard=psr2 -sp --colors"
 
+  coverage:
+    name: "Coverage"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v2"
+      - uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "latest"
+          coverage: "pcov"
+          ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
+          tools: "composer"
+      - name: "Prepare for tests"
+        run: "mkdir -p build/logs"
+      - uses: "ramsey/composer-install@v1"
+      - name: "Run unit tests"
+        run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml --coverage-text"
+      - name: "Publish coverage report to Codecov"
+        uses: "codecov/codecov-action@v1"
+
   unit-tests:
     name: "Unit Tests"
     runs-on: "ubuntu-latest"
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        php-version:
-          - "5.6"
-          - "7.0"
-          - "7.1"
-          - "7.2"
-          - "7.3"
-          - "7.4"
-          - "8.0"
-          - "8.1"
-        experimental:
-          - false
-
+        php-version: [ '5.6', '7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1' ]
     steps:
       - uses: "actions/checkout@v2"
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
-          coverage: "pcov"
+          coverage: "none"
           ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
-          tools: "composer:v2"
+          tools: "composer"
       - name: "Prepare for tests"
         run: "mkdir -p build/logs"
       - uses: "ramsey/composer-install@v1"
-        with:
-          composer-options: "${{ matrix.composer-options }}"
       - name: "Run unit tests"
-        run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml"
-      - name: "Publish coverage report to Codecov"
-        uses: "codecov/codecov-action@v1"
+        run: "./vendor/bin/phpunit --colors=always"
