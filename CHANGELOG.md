@@ -1,5 +1,13 @@
 # OAuth 2.0 Client Changelog
 
+## 2.6.1
+
+_Released: 2021-12-22_
+
+* Fix deprecation notices, providing full support for PHP 8.1
+  [#919](https://github.com/thephpleague/oauth2-client/pull/919)
+  [#920](https://github.com/thephpleague/oauth2-client/pull/920)
+
 ## 2.6.0
 
 _Released: 2020-10-27_
