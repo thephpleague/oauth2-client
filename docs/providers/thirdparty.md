@@ -106,6 +106,7 @@ Gateway | Composer Package | Maintainer
 [Resource Guru](https://github.com/adam-paterson/oauth2-resource-guru) | adam-paterson/oauth2-resource-guru | [Adam Paterson](https://github.com/adam-paterson)
 [Riot (RSO)](https://github.com/kdefives/oauth2-riot) | kdefives/oauth2-riot | [Kevin Defives](https://github.com/kdefives)
 [Salesforce](https://github.com/stevenmaguire/oauth2-salesforce) | stevenmaguire/oauth2-salesforce | [Steven Maguire](https://github.com/stevenmaguire)
+[SceneId](https://github.com/potibm/oauth2-sceneid) | potibm/oauth2-sceneid | [Stefan Keßeler](https://github.com/potibm)
 [Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
 [Snapchat](https://github.com/pbringetto/oauth2-snapchat) | pbringetto/oauth2-snapchat | [Paul Bringetto](https://github.com/pbringetto)
