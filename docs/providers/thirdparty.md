@@ -74,6 +74,7 @@ Gateway | Composer Package | Maintainer
 [Imgur](https://github.com/adam-paterson/oauth2-imgur) | adam-paterson/oauth2-imgur | [Adam Paterson](https://github.com/adam-paterson)
 [Jira](https://packagist.org/packages/mrjoops/oauth2-jira) | mrjoops/oauth2-jira | [Alexandre Lahure](https://github.com/mrjoops)
 [Keycloak](https://github.com/stevenmaguire/oauth2-keycloak) | stevenmaguire/oauth2-keycloak | [Steven Maguire](https://github.com/stevenmaguire)
+[Lichess](https://packagist.org/packages/joseayram/oauth2-lichess) | joseayram/oauth2-lichess | [José Ayram](https://github.com/joseayram)
 [Linode](https://packagist.org/packages/webinarium/oauth2-linode) | webinarium/oauth2-linode | [Artem Rodygin](https://github.com/webinarium)
 [Mailchimp](https://github.com/chadhutchins/oauth2-mailchimp) | chadhutchins/oauth2-mailchimp | [Chad Hutchins](https://github.com/chadhutchins)
 [Mail.ru](https://packagist.org/packages/aego/oauth2-mailru) | aego/oauth2-mailru | [Alexey](https://github.com/rakeev)
