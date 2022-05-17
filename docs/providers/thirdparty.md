@@ -34,6 +34,7 @@ Gateway | Composer Package | Maintainer
 [ColorMeShop](https://github.com/pepabo/oauth2-colormeshop) | pepabo/oauth2-colormeshop | [GMO Pepabo, Inc.](https://github.com/pepabo)
 [Canvas LMS](https://github.com/smtech/oauth2-canvaslms) | smtech/oauth2-canvaslms | [Seth Battis](https://github.com/battis)
 [concrete5](https://github.com/concrete5/oauth2-concrete5) | concrete5/oauth2-concrete5 | [Andrew Embler](https://github.com/aembler)
+[Chaster App](https://github.com/Austomos/oauth2-chaster-app) | austomos/oauth2-chaster-app | [Ben Hyr](https://github.com/Austomos)
 [ChatWork](https://github.com/chatwork/oauth2-chatwork-php) | chatwork/oauth2-chatwork | [Yuta Adachi](https://github.com/ada-u)
 [Clever](https://github.com/schoolrunner/oauth2-clever) | schoolrunner/oauth2-clever | [Schoolrunner](https://github.com/schoolrunner)
 [CloudConvert](https://github.com/osavchenko/oauth2-cloudconvert) | osavchenko/oauth2-cloudconvert | [Oleksandr Savchenko](https://github.com/osavchenko)
