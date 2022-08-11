@@ -600,12 +600,14 @@ abstract class AbstractProvider
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @param  RequestInterface $request
+     * @param RequestInterface $request
+     * @param array            $options Request options to apply to the given
+     *
      * @return ResponseInterface
      */
-    public function getResponse(RequestInterface $request)
+    public function getResponse(RequestInterface $request, array $options = [])
     {
-        return $this->getHttpClient()->send($request);
+        return $this->getHttpClient()->send($request, $options);
     }
 
     /**
