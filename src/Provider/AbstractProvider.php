@@ -541,9 +541,7 @@ abstract class AbstractProvider
             );
         }
         $prepared = $this->prepareAccessTokenResponse($response);
-        $token    = $this->createAccessToken($prepared, $grant);
-
-        return $token;
+        return $this->createAccessToken($prepared);
     }
 
     /**
@@ -738,10 +736,9 @@ abstract class AbstractProvider
      * additional context.
      *
      * @param  array $response
-     * @param  AbstractGrant $grant
      * @return AccessTokenInterface
      */
-    protected function createAccessToken(array $response, AbstractGrant $grant)
+    protected function createAccessToken(array $response)
     {
         return new AccessToken($response);
     }
