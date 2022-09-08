@@ -28,7 +28,7 @@ jobs:
           coverage: "none"
           ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer:v2"
-      - uses: "ramsey/composer-install@v1"
+      - uses: "ramsey/composer-install@v2"
       - name: "Lint the PHP source code"
         run: "./vendor/bin/parallel-lint src test"
 
@@ -43,7 +43,7 @@ jobs:
           coverage: "none"
           ini-values: "memory_limit=-1"
           tools: "composer:v2"
-      - uses: "ramsey/composer-install@v1"
+      - uses: "ramsey/composer-install@v2"
       - name: "Check coding standards"
         run: "./vendor/bin/phpcs src --standard=psr2 -sp --colors"
 
@@ -60,11 +60,11 @@ jobs:
           tools: "composer"
       - name: "Prepare for tests"
         run: "mkdir -p build/logs"
-      - uses: "ramsey/composer-install@v1"
+      - uses: "ramsey/composer-install@v2"
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml --coverage-text"
       - name: "Publish coverage report to Codecov"
-        uses: "codecov/codecov-action@v1"
+        uses: "codecov/codecov-action@v2"
 
   unit-tests:
     name: "Unit Tests"
@@ -83,6 +83,6 @@ jobs:
           tools: "composer"
       - name: "Prepare for tests"
         run: "mkdir -p build/logs"
-      - uses: "ramsey/composer-install@v1"
+      - uses: "ramsey/composer-install@v2"
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always"
