@@ -415,6 +415,15 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
+    public function testInvalidPkceMethod()
+    {
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod('non-existing');
+
+        $this->expectExceptionMessage('Unknown PKCE method "non-existing".');
+        $provider->getAuthorizationUrl();
+    }
+
     public function testPkceCodeIsRandom()
     {
         $last = null;
@@ -430,6 +439,13 @@ class AbstractProviderTest extends TestCase
             $this->assertNotSame($qs['code_challenge'], $last);
             $last = $qs['code_challenge'];
         }
+    }
+
+    public function testPkceMethodIsDisabledByDefault()
+    {
+        $provider = $this->getAbstractProviderMock();
+        $pkceMethod = $provider->getPkceMethod();
+        $this->assertNull($pkceMethod);
     }
 
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
