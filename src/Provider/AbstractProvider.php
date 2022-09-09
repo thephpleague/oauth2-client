@@ -93,9 +93,9 @@ abstract class AbstractProvider
     protected $state;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $pkceCode;
+    protected $pkceCode = null;
 
     /**
      * @var GrantFactory
