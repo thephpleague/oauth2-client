@@ -79,7 +79,7 @@ class GenericProvider extends AbstractProvider
     private $responseResourceOwnerId = 'id';
 
     /**
-     * @var string
+     * @var string|null
      */
     private $pkceMethod = null;
 

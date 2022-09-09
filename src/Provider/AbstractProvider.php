@@ -302,7 +302,7 @@ abstract class AbstractProvider
      *
      * This can be accessed by the redirect handler during authorization.
      *
-     * @return string
+     * @return string|null
      */
     public function getPkceCode()
     {
