@@ -332,6 +332,122 @@ class AbstractProviderTest extends TestCase
         }
     }
 
+    public function testSetGetPkceCode()
+    {
+        $pkceCode = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+        $provider = $this->getMockProvider();
+        $this->assertEquals($provider, $provider->setPkceCode($pkceCode));
+        $this->assertEquals($pkceCode, $provider->getPkceCode());
+    }
+
+    /**
+     * @dataProvider pkceMethodProvider
+     */
+    public function testPkceMethod($pkceMethod, $pkceCode, $expectedChallenge)
+    {
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod($pkceMethod);
+        $provider->setFixedPkceCode($pkceCode);
+
+        $url = $provider->getAuthorizationUrl();
+        $this->assertSame($pkceCode, $provider->getPkceCode());
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+        $this->assertArrayHasKey('code_challenge', $qs);
+        $this->assertArrayHasKey('code_challenge_method', $qs);
+        $this->assertSame($pkceMethod, $qs['code_challenge_method']);
+        $this->assertSame($expectedChallenge, $qs['code_challenge']);
+
+        // Simulate re-initialization of provider after authorization request
+        $provider = $this->getMockProvider();
+
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+        $stream = Mockery::mock(StreamInterface::class);
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn(json_encode($raw_response));
+
+        $response = Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn('application/json');
+
+        $client = Mockery::spy(ClientInterface::class, [
+            'send' => $response,
+        ]);
+        $provider->setHttpClient($client);
+
+        // restore $pkceCode (normally done by client from session)
+        $provider->setPkceCode($pkceCode);
+
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+
+        $client
+            ->shouldHaveReceived('send')
+            ->once()
+            ->withArgs(function ($request) use ($pkceCode) {
+                parse_str((string)$request->getBody(), $body);
+                return $body['code_verifier'] === $pkceCode;
+            });
+    }
+
+    public function pkceMethodProvider()
+    {
+        return [
+            [
+                AbstractProvider::PKCE_METHOD_S256,
+                '1234567890123456789012345678901234567890',
+                'pOvdVBRUuEzGcMnx9VCLr2f_0_5ZuIMmeAh4H5kqCx0',
+            ],
+            [
+                AbstractProvider::PKCE_METHOD_PLAIN,
+                '1234567890123456789012345678901234567890',
+                '1234567890123456789012345678901234567890',
+            ],
+        ];
+    }
+
+    public function testInvalidPkceMethod()
+    {
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod('non-existing');
+
+        $this->expectExceptionMessage('Unknown PKCE method "non-existing".');
+        $provider->getAuthorizationUrl();
+    }
+
+    public function testPkceCodeIsRandom()
+    {
+        $last = null;
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod('S256');
+
+        for ($i = 0; $i < 100; $i++) {
+            // Repeat the test multiple times to verify code_challenge changes
+            $url = $provider->getAuthorizationUrl();
+
+            parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+            $this->assertTrue(1 === preg_match('/^[a-zA-Z0-9-_]{43}$/', $qs['code_challenge']));
+            $this->assertNotSame($qs['code_challenge'], $last);
+            $last = $qs['code_challenge'];
+        }
+    }
+
+    public function testPkceMethodIsDisabledByDefault()
+    {
+        $provider = $this->getAbstractProviderMock();
+        $pkceMethod = $provider->getPkceMethod();
+        $this->assertNull($pkceMethod);
+    }
+
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
         $provider = new MockProvider([
