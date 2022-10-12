@@ -61,6 +61,7 @@ Gateway | Composer Package | Maintainer
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | *Unmaintained*
 [FreshBooks](https://github.com/zerospam/oauth2-freshbooks) | zerospam/oauth2-freshbooks | [Antoine Aflalo](https://github.com/Belphemur)
+[Genesys](https://github.com/vormkracht10/oauth2-genesys) | vormkracht10/oauth2-genesys | [Vormkracht10](https://github.com/vormkracht10)
 [Geocaching](https://github.com/Surfoo/oauth2-geocaching) | surfoo/oauth2-geocaching | [Surfoo](https://github.com/Surfoo)
 [GitLab](https://github.com/omines/oauth2-gitlab) | omines/oauth2-gitlab | [Niels Keurentjes](https://github.com/curry684)
 [Gumroad](https://github.com/Alofoxx/oauth2-gumroad) | alofoxx/oauth2-gumroad | [Alofoxx](https://github.com/Alofoxx)
