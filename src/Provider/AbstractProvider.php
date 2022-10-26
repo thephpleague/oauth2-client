@@ -45,7 +45,7 @@ abstract class AbstractProvider
     use QueryBuilderTrait;
 
     /**
-     * @var string Key used in a token response to identify the resource owner.
+     * @var string|null Key used in a token response to identify the resource owner.
      */
     const ACCESS_TOKEN_RESOURCE_OWNER_ID = null;
 
