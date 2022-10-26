@@ -89,6 +89,7 @@ Gateway | Composer Package | Maintainer
 [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
 [MYOB](https://github.com/globalvisionmedia/oauth2-myob) | globalvisionmedia/oauth2-myob | [Peter Hawkins](https://www.globalvision.com.au)
 [Mollie](https://github.com/mollie/oauth2-mollie-php) | mollie/oauth2-mollie-php | [Mollie](https://github.com/mollie)
+[Monizze](https://github.com/jzecca/oauth2-monizze) | jzecca/oauth2-monizze | [Jérôme Zecca](https://github.com/jzecca)
 [Mixer](https://gitlab.com/morgann/oauth2-mixer) | morgann/oauth2-mixer | [Morgann](https://gitlab.com/morgann/oauth2-mixer)
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
