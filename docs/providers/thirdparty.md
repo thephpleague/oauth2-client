@@ -130,6 +130,7 @@ Gateway | Composer Package | Maintainer
 [ThirtySevenSignals](https://github.com/nilesuan/oauth2-thirtysevensignals) | nilesuan/oauth2-thirtysevensignals | [Nile Suan](https://github.com/nilesuan)
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Trovo](https://github.com/artandor/oauth2-trovo) | artandor/oauth2-trovo | [Nicolas Mylle](https://github.com/artandor/)
+[Trustpilot](https://github.com/dmt-software/oauth2-trustpilot) | dmt-software/oauth2-trustpilot | [DMT software](https://github.com/dmt-software/)
 [Twinfield](https://github.com/php-twinfield/twinfield) | php-twinfield/twinfield | [Mollie B.V.](https://github.com/mollie)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
 [Twitch.tv (New API Helix)](https://github.com/vertisan/oauth2-twitch-helix) | vertisan/oauth2-twitch-helix | [Paweł Farys](https://github.com/vertisan)
