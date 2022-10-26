@@ -58,6 +58,7 @@ Gateway | Composer Package | Maintainer
 [Etsy](https://packagist.org/packages/startz/oauth2-etsy) | startz/oauth2-etsy | [Chuck Burgess](https://github.com/cdburgess)
 [EVE Online](https://github.com/killmails/oauth2-eve) | killmails/oauth2-eve | [Oizys](https://github.com/syzio)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
+[Firefly III](https://github.com/StanSoftBG/oauth2-firefly-iii) | stansoft/oauth2-firefly-iii | [Stanimir Stoyanov](https://github.com/stratoss)
 [Fitbit](https://github.com/djchen/oauth2-fitbit) | djchen/oauth2-fitbit | [Dan Chen](https://github.com/djchen)
 [FormAssembly](https://github.com/FatherShawn/oauth2-formassembly) | fathershawn/oauth2-formassembly | [Shawn Duncan](https://github.com/FatherShawn)
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
