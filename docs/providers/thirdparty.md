@@ -114,6 +114,7 @@ Gateway | Composer Package | Maintainer
 [Resource Guru](https://github.com/adam-paterson/oauth2-resource-guru) | adam-paterson/oauth2-resource-guru | [Adam Paterson](https://github.com/adam-paterson)
 [Riot (RSO)](https://github.com/kdefives/oauth2-riot) | kdefives/oauth2-riot | [Kevin Defives](https://github.com/kdefives)
 [Salesforce](https://github.com/stevenmaguire/oauth2-salesforce) | stevenmaguire/oauth2-salesforce | [Steven Maguire](https://github.com/stevenmaguire)
+[Service Fusion](https://github.com/compwright/oauth2-servicefusion) | compwright/oauth2-servicefusion | [Jonathon Hill](https://compwright.com)
 [ServiceTitan](https://github.com/compwright/oauth2-servicetitan) | compwright/oauth2-servicetitan | [Jonathon Hill](https://compwright.com)
 [Shopify](https://github.com/multidimension-al/oauth2-shopify) | multidimensional/oauth2-shopify | [multidimension.al](https://multidimension.al/)
 [Slack](https://github.com/adam-paterson/oauth2-slack) | adam-paterson/oauth2-slack | [Adam Paterson](https://github.com/adam-paterson)
