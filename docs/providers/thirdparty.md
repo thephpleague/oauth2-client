@@ -107,6 +107,7 @@ Gateway | Composer Package | Maintainer
 [Phabricator](https://github.com/ofbeaton/oauth2-phabricator) | ofbeaton/oauth2-phabricator | [Finlay Beaton](https://ofbeaton.com)
 [Pinterest](https://github.com/vantezzen/oauth2-pinterest) | vantezzen/oauth2-pinterest | [vantezzen](https://github.com/vantezzen)
 [Procore](https://packagist.org/packages/oxblue/oauth2-procore) | oxblue/oauth2-procore | [Chris Forrence](https://gitlab.com/chrisforrence)
+[Pro Sante Connect](https://packagist.org/packages/groupepsih/oauth2-prosanteconnect) | groupepsih/oauth2-prosanteconnect | [Groupe PSIH](https://github.com/pmsipilot)
 [PSN](https://github.com/larabros/oauth2-psn) | larabros/oauth2-psn | [Hassan Khan](https://github.com/hassankhan)
 [Rocket Beans TV](https://github.com/oliverschloebe/oauth2-rbtv) | oliverschloebe/oauth2-rbtv | [Oliver Schlöbe](https://github.com/oliverschloebe)
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
