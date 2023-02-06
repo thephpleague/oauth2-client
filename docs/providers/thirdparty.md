@@ -61,6 +61,7 @@ Gateway | Composer Package | Maintainer
 [Firefly III](https://github.com/StanSoftBG/oauth2-firefly-iii) | stansoft/oauth2-firefly-iii | [Stanimir Stoyanov](https://github.com/stratoss)
 [Fitbit](https://github.com/djchen/oauth2-fitbit) | djchen/oauth2-fitbit | [Dan Chen](https://github.com/djchen)
 [FormAssembly](https://github.com/FatherShawn/oauth2-formassembly) | fathershawn/oauth2-formassembly | [Shawn Duncan](https://github.com/FatherShawn)
+[Fortnox](https://github.com/codepeak/oauth2-fortnox) | codepeak/oauth2-fortnox | [Codepeak AB](https://github.com/codepeak)
 [Foursquare](https://github.com/stevenmaguire/oauth2-foursquare) | stevenmaguire/oauth2-foursquare | [Steven Maguire](https://github.com/stevenmaguire)
 [FreeAgent](https://github.com/CloudManaged/oauth2-freeagent) | cloudmanaged/oauth2-freeagent | *Unmaintained*
 [FreshBooks](https://github.com/zerospam/oauth2-freshbooks) | zerospam/oauth2-freshbooks | [Antoine Aflalo](https://github.com/Belphemur)
