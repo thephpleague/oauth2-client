@@ -172,6 +172,14 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     /**
      * @inheritdoc
      */
+    public function setRefreshToken($refreshToken)
+    {
+        $this->refreshToken = $refreshToken;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getExpires()
     {
         return $this->expires;
