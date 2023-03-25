@@ -698,25 +698,29 @@ abstract class AbstractProvider
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @param  RequestInterface $request
+     * @param  RequestInterface $request Request to send
+     * @param  array            $options Request options to apply to the given
+     *                                   request and to the transfer.
      * @return ResponseInterface
      */
-    public function getResponse(RequestInterface $request)
+    public function getResponse(RequestInterface $request, array $options = [])
     {
-        return $this->getHttpClient()->send($request);
+        return $this->getHttpClient()->send($request, $options);
     }
 
     /**
      * Sends a request and returns the parsed response.
      *
-     * @param  RequestInterface $request
+     * @param  RequestInterface $request Request to send
+     * @param  array            $options Request options to apply to the given
+     *                                   request and to the transfer.
      * @throws IdentityProviderException
      * @return mixed
      */
-    public function getParsedResponse(RequestInterface $request)
+    public function getParsedResponse(RequestInterface $request, array $options = [])
     {
         try {
-            $response = $this->getResponse($request);
+            $response = $this->getResponse($request, $options);
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
         }
