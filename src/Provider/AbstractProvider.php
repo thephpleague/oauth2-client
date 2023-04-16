@@ -662,7 +662,7 @@ abstract class AbstractProvider
      *
      * @param  string $method
      * @param  string $url
-     * @param  AccessTokenInterface|string $token
+     * @param  AccessTokenInterface|string|null $token
      * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
