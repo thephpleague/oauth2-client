@@ -14,5 +14,16 @@
 
 namespace League\OAuth2\Client\Token;
 
-interface ResourceOwnerAccessTokenInterface extends AccessTokenInterface, ResourceOwnerTokenInterface
-{}
+class IdToken extends AbstractToken implements ResourceOwnerTokenInterface {
+
+  /**
+   * @inheritDoc
+   */
+  public function __construct(array $options = []) {
+    parent::__construct($options);
+    if (!empty($options['resource_owner_id'])) {
+      $this->resourceOwnerId = $options['resource_owner_id'];
+    }
+  }
+
+}
