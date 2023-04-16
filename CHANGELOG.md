@@ -1,5 +1,18 @@
 # OAuth 2.0 Client Changelog
 
+## 2.7.0
+
+_Released: 2023-04-16_
+
+* Add support for PKCE (Proof Key for Code Exchange,
+  [RFC 7636](https://www.rfc-editor.org/rfc/rfc7636))
+  [#901](https://github.com/thephpleague/oauth2-client/pull/901)
+* Various type improvements for static analysis
+  [#939](https://github.com/thephpleague/oauth2-client/pull/939)
+  [#959](https://github.com/thephpleague/oauth2-client/pull/959)
+  [#972](https://github.com/thephpleague/oauth2-client/pull/972)
+  [#997](https://github.com/thephpleague/oauth2-client/pull/997)
+
 ## 2.6.1
 
 _Released: 2021-12-22_
