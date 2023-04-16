@@ -14,7 +14,7 @@
 
 namespace League\OAuth2\Client\Token;
 
-interface ResourceOwnerAccessTokenInterface extends AccessTokenInterface
+interface ResourceOwnerAccessTokenInterface
 {
     /**
      * Returns the resource owner identifier, if defined.
