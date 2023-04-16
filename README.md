@@ -24,6 +24,7 @@ This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. I
 
 We support the following versions of PHP:
 
+* PHP 8.2
 * PHP 8.1
 * PHP 8.0
 * PHP 7.4
