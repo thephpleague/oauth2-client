@@ -14,7 +14,7 @@
 
 namespace League\OAuth2\Client\Token;
 
-interface SettableRefreshTokenInterface extends AccessTokenInterface
+interface SettableRefreshTokenInterface
 {
     /**
      * Sets or replaces the refresh token with the provided refresh token.
