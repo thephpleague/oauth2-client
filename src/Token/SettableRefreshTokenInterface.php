@@ -17,9 +17,9 @@ namespace League\OAuth2\Client\Token;
 interface SettableRefreshTokenInterface extends AccessTokenInterface
 {
     /**
-     * Sets the refresh token.
+     * Sets or replaces the refresh token with the provided refresh token.
      *
-     * @param  string $refreshToken
+     * @param string $refreshToken
      * @return void
      */
     public function setRefreshToken($refreshToken);
