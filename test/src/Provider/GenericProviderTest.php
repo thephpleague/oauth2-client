@@ -55,6 +55,7 @@ class GenericProviderTest extends TestCase
             'responseCode'      => 'mock_code',
             'responseResourceOwnerId' => 'mock_response_uid',
             'scopes'            => ['mock', 'scopes'],
+            'pkceMethod'        => 'S256',
         ];
 
         $provider = new GenericProvider($options + [
@@ -88,6 +89,10 @@ class GenericProviderTest extends TestCase
         $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
         $getScopeSeparator->setAccessible(true);
         $this->assertEquals($options['scopeSeparator'], $getScopeSeparator->invoke($provider));
+
+        $getPkceMethod = $reflection->getMethod('getPkceMethod');
+        $getPkceMethod->setAccessible(true);
+        $this->assertEquals($options['pkceMethod'], $getPkceMethod->invoke($provider));
     }
 
     public function testResourceOwnerDetails()
