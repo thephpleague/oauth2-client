@@ -121,6 +121,10 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
             $expires = $options['expires'];
 
             if (!$this->isExpirationTimestamp($expires)) {
+                if (!is_numeric($expires)) {
+                    $expires = intval($expires);
+                }
+                
                 $expires += $this->getTimeNow();
             }
 
