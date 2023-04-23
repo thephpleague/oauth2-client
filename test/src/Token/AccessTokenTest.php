@@ -244,4 +244,44 @@ class AccessTokenTest extends TestCase
 
         self::tearDownForBackwardsCompatibility();
     }
+
+    public function testValue()
+    {
+        $options = [
+            'access_token' => 'mock_access_token',
+            'refresh_token' => 'mock_refresh_token',
+            'expires' => time(),
+            'resource_owner_id' => 'mock_resource_owner_id',
+            'custom_thing' => 'i am a test!',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $value = $token->getValue('custom_thing');
+        $this->assertSame($options['custom_thing'], $value);
+
+        $value = $token->getValue('doesnt_exist');
+        $this->assertNull($value);
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
+    public function testInvalidValueOffsetType()
+    {
+        $options = [
+            'access_token' => 'mock_access_token',
+            'refresh_token' => 'mock_refresh_token',
+            'expires' => time(),
+            'resource_owner_id' => 'mock_resource_owner_id',
+            'custom_thing' => 'i am a test!',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $value = $token->getValue([]);
+
+        self::tearDownForBackwardsCompatibility();
+    }
 }
