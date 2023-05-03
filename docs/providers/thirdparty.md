@@ -44,6 +44,7 @@ Gateway | Composer Package | Maintainer
 [DeviantArt](https://github.com/SeinopSys/oauth2-deviantart) | seinopsys/oauth2-deviantart | [SeinopSys](https://github.com/SeinopSys)
 [DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/oauth2-digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
 [Discord](https://github.com/wohali/oauth2-discord-new) | wohali/oauth2-discord-new | [Joan Touzet](https://github.com/wohali)
+[Disqus](https://github.com/antalaron/oauth2-disqus) | antalaron/oauth2-disqus | [Antal Áron](https://github.com/antalaron)
 [Docusign](https://github.com/AlaaSarhan/oauth2-docusign) | sarhan/oauth2-docusign | [Alaa Sarhan](https://github.com/AlaaSarhan)
 [Dokeop](https://github.com/dokeop/oauth2-dokeop) | dokeop/oauth2-dokeop | [Dokeop](https://github.com/dokeop)
 [DonationAlerts](https://github.com/mish-ka-mishka/oauth2-donationalerts) | mkaverin/oauth2-donationalerts | [Michael Kaverin](https://github.com/mish-ka-mishka)
