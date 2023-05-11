@@ -99,6 +99,7 @@ Gateway | Composer Package | Maintainer
 [Naver](https://packagist.org/packages/deminoth/oauth2-naver) | deminoth/oauth2-naver | [SangYeob Bono Yu](https://github.com/deminoth)
 [Netatmo](https://github.com/rugaard/oauth2-netatmo) | rugaard/oauth2-netatmo | [Morten Rugaard](https://github.com/rugaard)
 [Nest](https://github.com/stevenmaguire/oauth2-nest) | stevenmaguire/oauth2-nest | [Steven Maguire](https://github.com/stevenmaguire)
+[Nextcloud](https://github.com/bahuma/oauth2-nextcloud) | bahuma/oauth2-nextcloud | [Max Bachhuber](https://github.com/bahuma20)
 [NIBE](https://github.com/olssonm/oauth2-nibe) | olssonm/oauth2-nibe | [Marcus Olsson](https://github.com/olssonm)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
 [Okta](https://packagist.org/packages/foxworth42/oauth2-okta) | foxworth42/oauth2-okta | [Ed Walker](https://github.com/foxworth42)
