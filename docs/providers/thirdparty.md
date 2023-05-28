@@ -57,7 +57,7 @@ Gateway | Composer Package | Maintainer
 [Epic Games](https://github.com/MrPropre/oauth2-epicgames) | mrpropre/oauth2-epicgames | [Adrien Alais](https://github.com/MrPropre)
 [ESIA](https://packagist.org/packages/ekapusta/oauth2-esia) | ekapusta/oauth2-esia | [Alexander Ustimenko](https://github.com/ekapusta)
 [Etsy](https://packagist.org/packages/startz/oauth2-etsy) | startz/oauth2-etsy | [Chuck Burgess](https://github.com/cdburgess)
-[EVE Online](https://github.com/killmails/oauth2-eve) | killmails/oauth2-eve | [Oizys](https://github.com/syzio)
+[EVE Online](https://github.com/tkhamez/eve-sso-php) | tkhamez/eve-sso | [Tian Khamez](https://github.com/tkhamez)
 [Eventbrite](https://github.com/stevenmaguire/oauth2-eventbrite) | stevenmaguire/oauth2-eventbrite | [Steven Maguire](https://github.com/stevenmaguire)
 [FieldEdge](https://github.com/compwright/oauth2-fieldedge) | compwright/oauth2-fieldedge | [Jonathon Hill](https://compwright.com)
 [Firefly III](https://github.com/StanSoftBG/oauth2-firefly-iii) | stansoft/oauth2-firefly-iii | [Stanimir Stoyanov](https://github.com/stratoss)
