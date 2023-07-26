@@ -2,25 +2,26 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
-use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
-use Mockery;
-use ReflectionClass;
-use UnexpectedValueException;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\ClientInterface;
-use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
+use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Grant\AbstractGrant;
-use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
+use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\Exception\ResponseParsingException;
+use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\RequestFactory;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Mockery;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use ReflectionClass;
+use UnexpectedValueException;
 
 class AbstractProviderTest extends TestCase
 {
@@ -763,6 +764,32 @@ class AbstractProviderTest extends TestCase
     {
         $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
+    }
+
+    public function responseParsingExceptionProvider()
+    {
+        // List only combinations of content-type and status code that should lead to exception
+        // if the response body cannot be parsed as JSON
+        return [
+            ['application/json', 401],
+            ['application/xml', 500]
+        ];
+    }
+
+    /**
+     * @dataProvider responseParsingExceptionProvider
+     */
+    public function testResponseParsingException($type, $statusCode)
+    {
+        $exception = null;
+        try {
+            $this->testParseResponse('{13}', $type, null, $statusCode);
+        } catch (ResponseParsingException $exception) {
+        }
+        $this->assertInstanceOf(ResponseParsingException::class, $exception);
+        $response = $exception->getResponse();
+        $this->assertSame($statusCode, $response->getStatusCode());
+        $this->assertSame('{13}', $exception->getResponseBody());
     }
 
     public function getAppendQueryProvider()
