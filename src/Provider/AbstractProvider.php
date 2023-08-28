@@ -837,7 +837,7 @@ abstract class AbstractProvider
      *
      * @param  array $response
      * @param  AbstractGrant $grant
-     * @return AccessTokenInterface
+     * @return AccessToken
      */
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
