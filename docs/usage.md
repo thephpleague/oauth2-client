@@ -27,6 +27,9 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'urlResourceOwnerDetails' => 'https://service.example.com/resource'
 ]);
 
+// A session is required to store some session data for later usage
+session_start();
+
 // If we don't have an authorization code then get one
 if (!isset($_GET['code'])) {
 
