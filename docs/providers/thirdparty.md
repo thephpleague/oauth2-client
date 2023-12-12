@@ -110,6 +110,7 @@ Gateway | Composer Package | Maintainer
 [Pinterest](https://github.com/vantezzen/oauth2-pinterest) | vantezzen/oauth2-pinterest | [vantezzen](https://github.com/vantezzen)
 [Procore](https://packagist.org/packages/oxblue/oauth2-procore) | oxblue/oauth2-procore | [Chris Forrence](https://gitlab.com/chrisforrence)
 [PSN](https://github.com/larabros/oauth2-psn) | larabros/oauth2-psn | [Hassan Khan](https://github.com/hassankhan)
+[Quickbooks Online](https://github.com/compwright/oauth2-quickbooks-online] | compwright/oauth2-quickbooks-online | [Jonathon Hill](https://compwright.com)
 [Rocket Beans TV](https://github.com/oliverschloebe/oauth2-rbtv) | oliverschloebe/oauth2-rbtv | [Oliver Schlöbe](https://github.com/oliverschloebe)
 [Rdio](https://github.com/adam-paterson/oauth2-rdio) | adam-paterson/oauth2-rdio | [Adam Paterson](https://github.com/adam-paterson)
 [Reddit](https://github.com/rtheunissen/oauth2-reddit) | rtheunissen/oauth2-reddit | [Rudi Theunissen](https://github.com/rtheunissen)
