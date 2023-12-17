@@ -132,7 +132,6 @@ Gateway | Composer Package | Maintainer
 [StackExchange](https://packagist.org/packages/alexmasterov/oauth2-stackexchange) | alexmasterov/oauth2-stackexchange | [Alex Masterov](https://github.com/AlexMasterov)
 [SuperJob](https://packagist.org/packages/alexmasterov/oauth2-superjob) | alexmasterov/oauth2-superjob | [Alex Masterov](https://github.com/AlexMasterov)
 [TikTok](https://github.com/bastiaandewaele/oauth2-tiktok) | bastiaandewaele/oauth2-tiktok | [Bastiaan Dewaele](https://github.com/bastiaandewaele)
-[Thingiverse](https://packagist.org/packages/freshworkx/oauth2-thingiverse) | freshworkx/oauth2-thingiverse | [Jens Neumann](https://github.com/freshworkx)
 [ThirtySevenSignals](https://github.com/nilesuan/oauth2-thirtysevensignals) | nilesuan/oauth2-thirtysevensignals | [Nile Suan](https://github.com/nilesuan)
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Trovo](https://github.com/artandor/oauth2-trovo) | artandor/oauth2-trovo | [Nicolas Mylle](https://github.com/artandor/)
