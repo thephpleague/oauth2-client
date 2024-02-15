@@ -65,7 +65,7 @@ abstract class GrantTestCase extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         /** @var ClientInterface & MockInterface $client */
         $client = Mockery::spy(ClientInterface::class)->makePartial();
