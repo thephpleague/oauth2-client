@@ -740,7 +740,7 @@ class AbstractProviderTest extends TestCase
 
         $response = Mockery::mock(ResponseInterface::class, [
             'getBody' => $stream,
-            'getStatusCode' => $statusCode,s
+            'getStatusCode' => $statusCode,
         ]);
         $response
             ->shouldReceive('getHeader')
