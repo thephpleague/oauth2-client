@@ -620,6 +620,15 @@ abstract class AbstractProvider
     {
         $grant = $this->verifyGrant($grant);
 
+        if (empty($options['scope'])) {
+            $options['scope'] = $this->getDefaultScopes();
+        }
+
+        if (is_array($options['scope'])) {
+            $separator = $this->getScopeSeparator();
+            $options['scope'] = implode($separator, $options['scope']);
+        }
+
         $params = [
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
