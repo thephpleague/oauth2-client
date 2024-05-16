@@ -757,7 +757,7 @@ abstract class AbstractProvider
      */
     protected function getContentType(ResponseInterface $response)
     {
-        return join(';', (array) $response->getHeader('content-type'));
+        return implode(';', $response->getHeader('content-type'));
     }
 
     /**
