@@ -8,7 +8,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use UnexpectedValueException;
 use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -16,11 +17,13 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use League\OAuth2\Client\Tool\RequestFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 
 class AbstractProviderTest extends TestCase
@@ -31,6 +34,10 @@ class AbstractProviderTest extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
     }
 
@@ -91,62 +98,27 @@ class AbstractProviderTest extends TestCase
             'redirectUri' => 'http://example.org/redirect'
         ];
 
-        $mockProvider = new MockProvider($options);
+        $mockProvider = new MockProvider($options, [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
 
         $this->assertSame($options['clientId'], $mockProvider->getClientId());
         $this->assertSame($options['clientSecret'], $mockProvider->getClientSecret());
         $this->assertSame($options['redirectUri'], $mockProvider->getRedirectUri());
     }
 
-    public function testConstructorSetsClientOptions()
-    {
-        $timeout = rand(100, 900);
-
-        $mockProvider = new MockProvider(compact('timeout'));
-
-        $config = $mockProvider->getHttpClient()->getConfig();
-
-        $this->assertArrayHasKey('timeout', $config);
-        $this->assertEquals($timeout, $config['timeout']);
-    }
-
-    public function testCanSetAProxy()
-    {
-        $proxy = '192.168.0.1:8888';
-
-        $mockProvider = new MockProvider(['proxy' => $proxy]);
-
-        $config = $mockProvider->getHttpClient()->getConfig();
-
-        $this->assertArrayHasKey('proxy', $config);
-        $this->assertEquals($proxy, $config['proxy']);
-    }
-
-    public function testCannotDisableVerifyIfNoProxy()
-    {
-        $mockProvider = new MockProvider(['verify' => false]);
-
-        $config = $mockProvider->getHttpClient()->getConfig();
-
-        $this->assertArrayHasKey('verify', $config);
-        $this->assertTrue($config['verify']);
-    }
-
-    public function testCanDisableVerificationIfThereIsAProxy()
-    {
-        $mockProvider = new MockProvider(['proxy' => '192.168.0.1:8888', 'verify' => false]);
-
-        $config = $mockProvider->getHttpClient()->getConfig();
-
-        $this->assertArrayHasKey('verify', $config);
-        $this->assertFalse($config['verify']);
-    }
-
     public function testConstructorSetsGrantFactory()
     {
         $mockAdapter = Mockery::mock(GrantFactory::class);
 
-        $mockProvider = new MockProvider([], ['grantFactory' => $mockAdapter]);
+        $mockProvider = new MockProvider([], [
+            'grantFactory' => $mockAdapter,
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
         $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
     }
 
@@ -154,16 +126,36 @@ class AbstractProviderTest extends TestCase
     {
         $mockAdapter = Mockery::mock(ClientInterface::class);
 
-        $mockProvider = new MockProvider([], ['httpClient' => $mockAdapter]);
+        $mockProvider = new MockProvider([], [
+            'httpClient' => $mockAdapter,
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
     }
 
     public function testConstructorSetsRequestFactory()
     {
-        $mockAdapter = Mockery::mock(RequestFactory::class);
+        $mockAdapter = Mockery::mock(RequestFactoryInterface::class);
 
-        $mockProvider = new MockProvider([], ['requestFactory' => $mockAdapter]);
+        $mockProvider = new MockProvider([], [
+            'httpClient' => new Client(),
+            'requestFactory' => $mockAdapter,
+            'streamFactory' => new HttpFactory()
+        ]);
         $this->assertSame($mockAdapter, $mockProvider->getRequestFactory());
+    }
+
+    public function testConstructorSetsStreamFactory()
+    {
+        $mockAdapter = Mockery::mock(StreamFactoryInterface::class);
+
+        $mockProvider = new MockProvider([], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => $mockAdapter
+        ]);
+        $this->assertSame($mockAdapter, $mockProvider->getStreamFactory());
     }
 
     public function testSetRedirectHandler()
@@ -192,6 +184,10 @@ class AbstractProviderTest extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
@@ -219,7 +215,7 @@ class AbstractProviderTest extends TestCase
 
 
         $client = Mockery::spy(ClientInterface::class, [
-            'send' => $response,
+            'sendRequest' => $response,
         ]);
 
         $provider->setHttpClient($client);
@@ -234,7 +230,7 @@ class AbstractProviderTest extends TestCase
         $this->assertArrayHasKey('email', $user->toArray());
 
         $client
-            ->shouldHaveReceived('send')
+            ->shouldHaveReceived('sendRequest')
             ->once()
             ->withArgs(function ($request) use ($url) {
                 return $request->getMethod() === 'GET'
@@ -249,6 +245,10 @@ class AbstractProviderTest extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
@@ -267,7 +267,7 @@ class AbstractProviderTest extends TestCase
             ->andReturn(['text/html']);
 
         $client = Mockery::mock(ClientInterface::class, [
-            'send' => $response,
+            'sendRequest' => $response,
         ]);
 
         $provider->setHttpClient($client);
@@ -384,7 +384,7 @@ class AbstractProviderTest extends TestCase
             ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
-            'send' => $response,
+            'sendRequest' => $response,
         ]);
         $provider->setHttpClient($client);
 
@@ -394,7 +394,7 @@ class AbstractProviderTest extends TestCase
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
 
         $client
-            ->shouldHaveReceived('send')
+            ->shouldHaveReceived('sendRequest')
             ->once()
             ->withArgs(function ($request) use ($pkceCode) {
                 parse_str((string)$request->getBody(), $body);
@@ -457,6 +457,10 @@ class AbstractProviderTest extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $error = ["error" => "Foo error", "code" => 1337];
@@ -480,7 +484,7 @@ class AbstractProviderTest extends TestCase
             ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
-            'send' => $response,
+            'sendRequest' => $response,
         ]);
 
         $provider->setHttpClient($client);
@@ -505,7 +509,7 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($error, $errorBody);
 
         $client
-            ->shouldHaveReceived('send')
+            ->shouldHaveReceived('sendRequest')
             ->once()
             ->withArgs(function ($request) use ($method, $url) {
                 return $request->getMethod() === $method
@@ -520,6 +524,10 @@ class AbstractProviderTest extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $stream = Mockery::mock(StreamInterface::class, [
@@ -539,7 +547,7 @@ class AbstractProviderTest extends TestCase
 
         $client = Mockery::mock(ClientInterface::class);
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->andThrow(new BadResponseException('test exception', $request, $response));
 
         $provider->setHttpClient($client);
@@ -548,14 +556,18 @@ class AbstractProviderTest extends TestCase
 
     public function testGetResponse()
     {
-        $provider = new MockProvider();
+        $provider = new MockProvider([], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
 
         $request = Mockery::mock(RequestInterface::class);
         $response = Mockery::mock(ResponseInterface::class);
 
         $client = Mockery::mock(ClientInterface::class);
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->with($request)
             ->andReturn($response);
 
@@ -567,7 +579,11 @@ class AbstractProviderTest extends TestCase
 
     public function testAuthenticatedRequestAndResponse()
     {
-        $provider = new MockProvider();
+        $provider = new MockProvider([], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
         $request = $provider->getAuthenticatedRequest('get', 'https://api.example.com/v1/test', $token);
@@ -586,7 +602,7 @@ class AbstractProviderTest extends TestCase
 
         $client = Mockery::mock(ClientInterface::class);
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->with($request)
             ->andReturn($response);
 
@@ -620,6 +636,10 @@ class AbstractProviderTest extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $provider->setAccessTokenMethod($method);
@@ -654,7 +674,7 @@ class AbstractProviderTest extends TestCase
             ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
-            'send' => $response,
+            'sendRequest' => $response,
         ]);
 
         $provider->setHttpClient($client);
@@ -667,7 +687,7 @@ class AbstractProviderTest extends TestCase
         $this->assertSame($raw_response['expires'], $token->getExpires());
 
         $client
-            ->shouldHaveReceived('send')
+            ->shouldHaveReceived('sendRequest')
             ->once()
             ->withArgs(function ($request) use ($provider) {
                 return $request->getMethod() === $provider->getAccessTokenMethod()
@@ -693,7 +713,7 @@ class AbstractProviderTest extends TestCase
             ->andReturn(['text/plain']);
 
         $client = Mockery::mock(ClientInterface::class, [
-            'send' => $response,
+            'sendRequest' => $response,
         ]);
 
         $provider->setHttpClient($client);
@@ -832,7 +852,11 @@ class AbstractProviderTest extends TestCase
             'guarded' => 'foo'
         ];
 
-        $provider = new Fake\ProviderWithGuardedProperties($options);
+        $provider = new Fake\ProviderWithGuardedProperties($options, [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
 
         $this->assertNotEquals(
             $options['skipMeDuringMassAssignment'],
@@ -916,6 +940,10 @@ class AbstractProviderTest extends TestCase
             'urlAuthorize' => 'https://example.com/authorize',
             'urlAccessToken' => 'https://example.com/accessToken',
             'urlResourceOwnerDetails' => 'https://api.example.com/owner',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $reflectedProvider = new \ReflectionObject($provider);

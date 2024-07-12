@@ -15,7 +15,6 @@
 namespace League\OAuth2\Client\Provider;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use InvalidArgumentException;
 use League\OAuth2\Client\Grant\AbstractGrant;
@@ -28,9 +27,11 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 use League\OAuth2\Client\Tool\GuardedPropertyTrait;
 use League\OAuth2\Client\Tool\QueryBuilderTrait;
-use League\OAuth2\Client\Tool\RequestFactory;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 use UnexpectedValueException;
 
 /**
@@ -103,12 +104,17 @@ abstract class AbstractProvider
     protected $grantFactory;
 
     /**
-     * @var RequestFactory
+     * @var RequestFactoryInterface
      */
     protected $requestFactory;
 
     /**
-     * @var HttpClientInterface
+     * @var StreamFactoryInterface
+     */
+    protected $streamFactory;
+
+    /**
+     * @var ClientInterface
      */
     protected $httpClient;
 
@@ -140,16 +146,17 @@ abstract class AbstractProvider
         $this->setGrantFactory($collaborators['grantFactory']);
 
         if (empty($collaborators['requestFactory'])) {
-            $collaborators['requestFactory'] = new RequestFactory();
+            throw new InvalidArgumentException('No request factory set');
         }
         $this->setRequestFactory($collaborators['requestFactory']);
 
-        if (empty($collaborators['httpClient'])) {
-            $client_options = $this->getAllowedClientOptions($options);
+        if (empty($collaborators['streamFactory'])) {
+            throw new InvalidArgumentException('No stream factory set');
+        }
+        $this->setStreamFactory($collaborators['streamFactory']);
 
-            $collaborators['httpClient'] = new HttpClient(
-                array_intersect_key($options, array_flip($client_options))
-            );
+        if (empty($collaborators['httpClient'])) {
+            throw new InvalidArgumentException('No http client set');
         }
         $this->setHttpClient($collaborators['httpClient']);
 
@@ -205,10 +212,10 @@ abstract class AbstractProvider
     /**
      * Sets the request factory instance.
      *
-     * @param  RequestFactory $factory
+     * @param  RequestFactoryInterface $factory
      * @return self
      */
-    public function setRequestFactory(RequestFactory $factory)
+    public function setRequestFactory(RequestFactoryInterface $factory)
     {
         $this->requestFactory = $factory;
 
@@ -218,7 +225,7 @@ abstract class AbstractProvider
     /**
      * Returns the request factory instance.
      *
-     * @return RequestFactory
+     * @return RequestFactoryInterface
      */
     public function getRequestFactory()
     {
@@ -226,12 +233,35 @@ abstract class AbstractProvider
     }
 
     /**
-     * Sets the HTTP client instance.
+     * Sets the stream factory instance.
      *
-     * @param  HttpClientInterface $client
+     * @param  StreamFactoryInterface $factory
      * @return self
      */
-    public function setHttpClient(HttpClientInterface $client)
+    public function setStreamFactory(StreamFactoryInterface $factory)
+    {
+        $this->streamFactory = $factory;
+
+        return $this;
+    }
+
+    /**
+     * Returns the stream factory instance.
+     *
+     * @return StreamFactoryInterface
+     */
+    public function getStreamFactory()
+    {
+        return $this->streamFactory;
+    }
+
+    /**
+     * Sets the HTTP client instance.
+     *
+     * @param  ClientInterface $client
+     * @return self
+     */
+    public function setHttpClient(ClientInterface $client)
     {
         $this->httpClient = $client;
 
@@ -241,7 +271,7 @@ abstract class AbstractProvider
     /**
      * Returns the HTTP client instance.
      *
-     * @return HttpClientInterface
+     * @return ClientInterface
      */
     public function getHttpClient()
     {
@@ -696,9 +726,23 @@ abstract class AbstractProvider
         ];
 
         $options = array_merge_recursive($defaults, $options);
-        $factory = $this->getRequestFactory();
+        $requestFactory = $this->getRequestFactory();
+        $streamFactory = $this->getStreamFactory();
 
-        return $factory->getRequestWithOptions($method, $url, $options);
+        $request = $requestFactory->createRequest($method, $url);
+        foreach ($options['headers'] as $name => $value) {
+            $request = $request->withAddedHeader($name, $value);
+        }
+
+        $request = $request->withProtocolVersion($options['version'] ?? '1.1');
+
+        if (!empty($options['body'])) {
+            $request = $request->withBody(
+                $streamFactory->createStream($options['body'] ?? null)
+            );
+        }
+
+        return $request;
     }
 
     /**
@@ -712,7 +756,7 @@ abstract class AbstractProvider
      */
     public function getResponse(RequestInterface $request)
     {
-        return $this->getHttpClient()->send($request);
+        return $this->getHttpClient()->sendRequest($request);
     }
 
     /**

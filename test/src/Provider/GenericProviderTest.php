@@ -3,6 +3,8 @@
 namespace League\OAuth2\Client\Test\Provider;
 
 use InvalidArgumentException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Test\Provider\Generic as MockProvider;
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -39,7 +41,10 @@ class GenericProviderTest extends TestCase
             }
         }
 
-        $provider = new GenericProvider($required + [
+        $provider = new GenericProvider($required, [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
     }
 
@@ -63,6 +68,10 @@ class GenericProviderTest extends TestCase
             'clientId'       => 'mock_client_id',
             'clientSecret'   => 'mock_secret',
             'redirectUri'    => 'none',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         foreach ($options as $key => $expected) {
@@ -105,6 +114,10 @@ class GenericProviderTest extends TestCase
             'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
             'responseResourceOwnerId' => 'mock_response_uid',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
 
         $user = $provider->getResourceOwner($token);
@@ -130,7 +143,11 @@ class GenericProviderTest extends TestCase
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new GenericProvider($options);
+        $provider = new GenericProvider($options,[
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
 
         $reflection = new ReflectionClass(get_class($provider));
 
@@ -157,7 +174,11 @@ class GenericProviderTest extends TestCase
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new GenericProvider($options + $extraOptions);
+        $provider = new GenericProvider($options + $extraOptions,[
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
+        ]);
 
         $reflection = new ReflectionClass(get_class($provider));
 

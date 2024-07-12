@@ -16,7 +16,7 @@ class Generic extends GenericProvider
             'redirectUri'  => 'none',
         ];
 
-        parent::__construct($options);
+        parent::__construct($options, $collaborators);
     }
 
     protected function fetchResourceOwnerDetails(AccessToken $token)
