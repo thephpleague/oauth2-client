@@ -3,17 +3,15 @@
 namespace League\OAuth2\Client\Test\OptionProvider;
 
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
 use PHPUnit\Framework\TestCase;
 use League\OAuth2\Client\Provider\AbstractProvider;
 
-/**
- * @coversDefaultClass \League\OAuth2\Client\OptionProvider\PostAuthOptionProvider
- */
+#[CoversClass(PostAuthOptionProvider::class)]
+#[CoversMethod(PostAuthOptionProvider::class, 'getAccessTokenOptions')]
 class PostAuthOptionProviderTest extends TestCase
 {
-    /**
-     * @covers ::getAccessTokenOptions
-     */
     public function testGetAccessTokenOptions()
     {
         $provider = new PostAuthOptionProvider();

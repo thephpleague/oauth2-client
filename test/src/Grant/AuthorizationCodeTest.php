@@ -7,7 +7,7 @@ use League\OAuth2\Client\Grant\AuthorizationCode;
 
 class AuthorizationCodeTest extends GrantTestCase
 {
-    public function providerGetAccessToken()
+    public static function providerGetAccessToken()
     {
         return [
             ['authorization_code', ['code' => 'mock_code']],
