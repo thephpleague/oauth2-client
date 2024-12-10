@@ -7,7 +7,7 @@ use League\OAuth2\Client\Grant\Password;
 
 class PasswordTest extends GrantTestCase
 {
-    public function providerGetAccessToken()
+    public static function providerGetAccessToken()
     {
         return [
             ['password', ['username' => 'mock_username', 'password' => 'mock_password']],
