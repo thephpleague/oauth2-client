@@ -2,6 +2,7 @@
 
 namespace League\OAuth2\Client\Test\Provider;
 
+use InvalidArgumentException;
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -60,6 +61,38 @@ class AbstractProviderTest extends TestCase
         $this->expectException(InvalidGrantException::class);
         $grant = new \stdClass();
         $this->getMockProvider()->getAccessToken($grant, ['invalid_parameter' => 'none']);
+    }
+
+    public function testMissingRequestFactory()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No request factory set');
+        $provider = new Fake();
+    }
+
+    public function testMissingStreamFactory()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No stream factory set');
+        $provider = new Fake(
+            [],
+            [
+                'requestFactory' => new HttpFactory()
+            ]
+        );
+    }
+
+    public function testMissingHttpClient()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No http client set');
+        $provider = new Fake(
+            [],
+            [
+                'requestFactory' => new HttpFactory(),
+                'streamFactory' => new HttpFactory()
+            ]
+        );
     }
 
     public function testAuthorizationUrlStateParam()
