@@ -6,7 +6,7 @@ use League\OAuth2\Client\Grant\ClientCredentials;
 
 class ClientCredentialsTest extends GrantTestCase
 {
-    public function providerGetAccessToken()
+    public static function providerGetAccessToken()
     {
         return [
             ['client_credentials'],
