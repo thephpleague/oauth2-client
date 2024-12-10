@@ -22,7 +22,10 @@ use RuntimeException;
  *
  * @link http://tools.ietf.org/html/rfc6749#section-1.4 Access Token (RFC 6749, §1.4)
  */
-class AccessToken extends AbstractToken implements AccessTokenInterface, ResourceOwnerAccessTokenInterface
+class AccessToken extends AbstractToken implements
+    AccessTokenInterface,
+    ResourceOwnerAccessTokenInterface,
+    SettableRefreshTokenInterface
 {
     /**
      * @var string
@@ -104,6 +107,14 @@ class AccessToken extends AbstractToken implements AccessTokenInterface, Resourc
     public function getRefreshToken()
     {
         return $this->refreshToken;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRefreshToken($refreshToken)
+    {
+        $this->refreshToken = $refreshToken;
     }
 
     /**

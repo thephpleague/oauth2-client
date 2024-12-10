@@ -123,6 +123,23 @@ class AccessTokenTest extends TestCase
         self::tearDownForBackwardsCompatibility();
     }
 
+    public function testSetRefreshToken()
+    {
+        $refreshToken = 'refresh_token';
+
+        $options = [
+            'access_token' => 'access_token',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $token->setRefreshToken($refreshToken);
+
+        $this->assertEquals($refreshToken, $token->getRefreshToken());
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
     public function testHasNotExpiredWhenPropertySetInFuture()
     {
         $options = [

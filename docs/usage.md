@@ -27,6 +27,9 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'urlResourceOwnerDetails' => 'https://service.example.com/resource'
 ]);
 
+// A session is required to store some session data for later usage
+session_start();
+
 // If we don't have an authorization code then get one
 if (!isset($_GET['code'])) {
 
@@ -47,7 +50,7 @@ if (!isset($_GET['code'])) {
     exit;
 
 // Check given state against previously stored one to mitigate CSRF attack
-} elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
+} elseif (empty($_GET['state']) || empty($_SESSION['oauth2state']) || $_GET['state'] !== $_SESSION['oauth2state']) {
 
     if (isset($_SESSION['oauth2state'])) {
         unset($_SESSION['oauth2state']);
