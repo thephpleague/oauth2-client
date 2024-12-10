@@ -50,7 +50,7 @@ class AbstractProviderTest extends TestCase
     public function testInvalidGrantObject()
     {
         $this->expectException(InvalidGrantException::class);
-        $grant = new \StdClass();
+        $grant = new \stdClass();
         $this->getMockProvider()->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 
@@ -628,7 +628,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code']
+                ['code' => 'mock_authorization_code', 'scope' => 'test']
             )
             ->andReturn([]);
 
