@@ -495,7 +495,7 @@ abstract class AbstractProvider
      */
     public function authorize(
         array $options = [],
-        callable $redirectHandler = null
+        ?callable $redirectHandler = null
     ) {
         $url = $this->getAuthorizationUrl($options);
         if ($redirectHandler) {
@@ -620,6 +620,15 @@ abstract class AbstractProvider
     {
         $grant = $this->verifyGrant($grant);
 
+        if (empty($options['scope'])) {
+            $options['scope'] = $this->getDefaultScopes();
+        }
+
+        if (is_array($options['scope'])) {
+            $separator = $this->getScopeSeparator();
+            $options['scope'] = implode($separator, $options['scope']);
+        }
+
         $params = [
             'client_id'     => $this->clientId,
             'client_secret' => $this->clientSecret,
@@ -662,7 +671,7 @@ abstract class AbstractProvider
      *
      * @param  string $method
      * @param  string $url
-     * @param  AccessTokenInterface|string $token
+     * @param  AccessTokenInterface|string|null $token
      * @param  array $options Any of "headers", "body", and "protocolVersion".
      * @return RequestInterface
      */
@@ -757,7 +766,7 @@ abstract class AbstractProvider
      */
     protected function getContentType(ResponseInterface $response)
     {
-        return join(';', (array) $response->getHeader('content-type'));
+        return implode(';', $response->getHeader('content-type'));
     }
 
     /**
@@ -815,7 +824,7 @@ abstract class AbstractProvider
      * Custom mapping of expiration, etc should be done here. Always call the
      * parent method when overloading this method.
      *
-     * @param  mixed $result
+     * @param  array<string, mixed> $result
      * @return array
      */
     protected function prepareAccessTokenResponse(array $result)

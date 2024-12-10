@@ -7,7 +7,7 @@ use League\OAuth2\Client\Grant\RefreshToken;
 
 class RefreshTokenTest extends GrantTestCase
 {
-    public function providerGetAccessToken()
+    public static function providerGetAccessToken()
     {
         return [
             ['refresh_token', ['refresh_token' => 'mock_refresh_token']],
