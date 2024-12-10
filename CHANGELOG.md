@@ -1,5 +1,9 @@
 # OAuth 2.0 Client Changelog
 
+## x.x.x
+
+* Send scopes with access token request [#1029](https://github.com/thephpleague/oauth2-client/issues/1029)
+
 ## 2.7.0
 
 _Released: 2023-04-16_
