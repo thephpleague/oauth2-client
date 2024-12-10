@@ -85,4 +85,4 @@ jobs:
         run: "mkdir -p build/logs"
       - uses: "ramsey/composer-install@v3"
       - name: "Run unit tests"
-        run: "./vendor/bin/phpunit --colors=always"
+        run: "./vendor/bin/phpunit --colors=always --no-coverage"
