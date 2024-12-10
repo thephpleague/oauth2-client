@@ -50,7 +50,7 @@ class AbstractProviderTest extends TestCase
     public function testInvalidGrantObject()
     {
         $this->expectException(InvalidGrantException::class);
-        $grant = new \StdClass();
+        $grant = new \stdClass();
         $this->getMockProvider()->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 
@@ -213,7 +213,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
 
         $client = Mockery::spy(ClientInterface::class, [
@@ -262,7 +262,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('text/html');
+            ->andReturn(['text/html']);
 
         $client = Mockery::mock(ClientInterface::class, [
             'send' => $response,
@@ -378,7 +378,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
             'send' => $response,
@@ -474,7 +474,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
             'send' => $response,
@@ -532,7 +532,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::mock(ClientInterface::class);
         $client
@@ -579,7 +579,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::mock(ClientInterface::class);
         $client
@@ -628,7 +628,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code']
+                ['code' => 'mock_authorization_code', 'scope' => 'test']
             )
             ->andReturn([]);
 
@@ -647,7 +647,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
             'send' => $response,
@@ -686,7 +686,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('text/plain');
+            ->andReturn(['text/plain']);
 
         $client = Mockery::mock(ClientInterface::class, [
             'send' => $response,
@@ -745,7 +745,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn($type);
+            ->andReturn([$type]);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
         $result = $method->invoke($this->getMockProvider(), $response);
