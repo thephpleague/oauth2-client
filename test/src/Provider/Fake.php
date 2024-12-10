@@ -14,6 +14,10 @@ class Fake extends AbstractProvider
 
     private $accessTokenMethod = 'POST';
 
+    private $pkceMethod = null;
+
+    private $fixedPkceCode = null;
+
     public function getClientId()
     {
         return $this->clientId;
@@ -57,6 +61,26 @@ class Fake extends AbstractProvider
     public function getAccessTokenMethod()
     {
         return $this->accessTokenMethod;
+    }
+
+    public function setPkceMethod($method)
+    {
+        $this->pkceMethod = $method;
+    }
+
+    public function getPkceMethod()
+    {
+        return $this->pkceMethod;
+    }
+
+    public function setFixedPkceCode($code)
+    {
+        return $this->fixedPkceCode = $code;
+    }
+
+    protected function getRandomPkceCode($length = 64)
+    {
+        return $this->fixedPkceCode ?: parent::getRandomPkceCode($length);
     }
 
     protected function createResourceOwner(array $response, AccessToken $token)

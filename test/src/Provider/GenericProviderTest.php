@@ -9,6 +9,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
@@ -55,6 +56,7 @@ class GenericProviderTest extends TestCase
             'responseCode'      => 'mock_code',
             'responseResourceOwnerId' => 'mock_response_uid',
             'scopes'            => ['mock', 'scopes'],
+            'pkceMethod'        => 'S256',
         ];
 
         $provider = new GenericProvider($options + [
@@ -88,6 +90,10 @@ class GenericProviderTest extends TestCase
         $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
         $getScopeSeparator->setAccessible(true);
         $this->assertEquals($options['scopeSeparator'], $getScopeSeparator->invoke($provider));
+
+        $getPkceMethod = $reflection->getMethod('getPkceMethod');
+        $getPkceMethod->setAccessible(true);
+        $this->assertEquals($options['pkceMethod'], $getPkceMethod->invoke($provider));
     }
 
     public function testResourceOwnerDetails()
@@ -137,8 +143,8 @@ class GenericProviderTest extends TestCase
     /**
      * @param array $error The error response to parse
      * @param array $extraOptions Any extra options to configure the generic provider with.
-     * @dataProvider checkResponseThrowsExceptionProvider
      */
+    #[DataProvider('checkResponseThrowsExceptionProvider')]
     public function testCheckResponseThrowsException(array $error, array $extraOptions = [])
     {
         $response = Mockery::mock(ResponseInterface::class);
@@ -161,7 +167,7 @@ class GenericProviderTest extends TestCase
         $checkResponse->invokeArgs($provider, [$response, $error]);
     }
 
-    public function checkResponseThrowsExceptionProvider() {
+    public static function checkResponseThrowsExceptionProvider() {
         return [
             [['error' => 'foobar',]],
             [['error' => 'foobar',] , ['responseCode' => 'code']],

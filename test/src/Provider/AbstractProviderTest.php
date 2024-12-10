@@ -4,6 +4,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use UnexpectedValueException;
 use GuzzleHttp\Exception\BadResponseException;
@@ -50,7 +51,7 @@ class AbstractProviderTest extends TestCase
     public function testInvalidGrantObject()
     {
         $this->expectException(InvalidGrantException::class);
-        $grant = new \StdClass();
+        $grant = new \stdClass();
         $this->getMockProvider()->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 
@@ -181,9 +182,7 @@ class AbstractProviderTest extends TestCase
         $this->assertNotFalse($state);
     }
 
-    /**
-     * @dataProvider userPropertyProvider
-     */
+    #[DataProvider('userPropertyProvider')]
     public function testGetUserProperties($name = null, $email = null, $id = null)
     {
         $provider = new MockProvider([
@@ -213,7 +212,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
 
         $client = Mockery::spy(ClientInterface::class, [
@@ -262,7 +261,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('text/html');
+            ->andReturn(['text/html']);
 
         $client = Mockery::mock(ClientInterface::class, [
             'send' => $response,
@@ -275,7 +274,7 @@ class AbstractProviderTest extends TestCase
         $user = $provider->getResourceOwner($token);
     }
 
-    public function userPropertyProvider()
+    public static function userPropertyProvider()
     {
         return [
             'full response'  => ['test', 'test@example.com', 1],
@@ -332,6 +331,120 @@ class AbstractProviderTest extends TestCase
         }
     }
 
+    public function testSetGetPkceCode()
+    {
+        $pkceCode = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+
+        $provider = $this->getMockProvider();
+        $this->assertEquals($provider, $provider->setPkceCode($pkceCode));
+        $this->assertEquals($pkceCode, $provider->getPkceCode());
+    }
+
+    #[DataProvider('pkceMethodProvider')]
+    public function testPkceMethod($pkceMethod, $pkceCode, $expectedChallenge)
+    {
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod($pkceMethod);
+        $provider->setFixedPkceCode($pkceCode);
+
+        $url = $provider->getAuthorizationUrl();
+        $this->assertSame($pkceCode, $provider->getPkceCode());
+
+        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+        $this->assertArrayHasKey('code_challenge', $qs);
+        $this->assertArrayHasKey('code_challenge_method', $qs);
+        $this->assertSame($pkceMethod, $qs['code_challenge_method']);
+        $this->assertSame($expectedChallenge, $qs['code_challenge']);
+
+        // Simulate re-initialization of provider after authorization request
+        $provider = $this->getMockProvider();
+
+        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+        $stream = Mockery::mock(StreamInterface::class);
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn(json_encode($raw_response));
+
+        $response = Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn(['application/json']);
+
+        $client = Mockery::spy(ClientInterface::class, [
+            'send' => $response,
+        ]);
+        $provider->setHttpClient($client);
+
+        // restore $pkceCode (normally done by client from session)
+        $provider->setPkceCode($pkceCode);
+
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+
+        $client
+            ->shouldHaveReceived('send')
+            ->once()
+            ->withArgs(function ($request) use ($pkceCode) {
+                parse_str((string)$request->getBody(), $body);
+                return $body['code_verifier'] === $pkceCode;
+            });
+    }
+
+    public static function pkceMethodProvider()
+    {
+        return [
+            [
+                AbstractProvider::PKCE_METHOD_S256,
+                '1234567890123456789012345678901234567890',
+                'pOvdVBRUuEzGcMnx9VCLr2f_0_5ZuIMmeAh4H5kqCx0',
+            ],
+            [
+                AbstractProvider::PKCE_METHOD_PLAIN,
+                '1234567890123456789012345678901234567890',
+                '1234567890123456789012345678901234567890',
+            ],
+        ];
+    }
+
+    public function testInvalidPkceMethod()
+    {
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod('non-existing');
+
+        $this->expectExceptionMessage('Unknown PKCE method "non-existing".');
+        $provider->getAuthorizationUrl();
+    }
+
+    public function testPkceCodeIsRandom()
+    {
+        $last = null;
+        $provider = $this->getMockProvider();
+        $provider->setPkceMethod('S256');
+
+        for ($i = 0; $i < 100; $i++) {
+            // Repeat the test multiple times to verify code_challenge changes
+            $url = $provider->getAuthorizationUrl();
+
+            parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+            $this->assertTrue(1 === preg_match('/^[a-zA-Z0-9-_]{43}$/', $qs['code_challenge']));
+            $this->assertNotSame($qs['code_challenge'], $last);
+            $last = $qs['code_challenge'];
+        }
+    }
+
+    public function testPkceMethodIsDisabledByDefault()
+    {
+        $provider = $this->getAbstractProviderMock();
+        $pkceMethod = $provider->getPkceMethod();
+        $this->assertNull($pkceMethod);
+    }
+
     public function testErrorResponsesCanBeCustomizedAtTheProvider()
     {
         $provider = new MockProvider([
@@ -358,7 +471,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
             'send' => $response,
@@ -416,7 +529,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::mock(ClientInterface::class);
         $client
@@ -463,7 +576,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::mock(ClientInterface::class);
         $client
@@ -483,7 +596,7 @@ class AbstractProviderTest extends TestCase
         $this->assertContains('Bearer abc', $header);
     }
 
-    public function getAccessTokenMethodProvider()
+    public static function getAccessTokenMethodProvider()
     {
         return [
             ['GET'],
@@ -491,9 +604,7 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getAccessTokenMethodProvider
-     */
+    #[DataProvider('getAccessTokenMethodProvider')]
     public function testGetAccessToken($method)
     {
         $provider = new MockProvider([
@@ -512,7 +623,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code']
+                ['code' => 'mock_authorization_code', 'scope' => 'test']
             )
             ->andReturn([]);
 
@@ -531,7 +642,7 @@ class AbstractProviderTest extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         $client = Mockery::spy(ClientInterface::class, [
             'send' => $response,
@@ -570,7 +681,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn('text/plain');
+            ->andReturn(['text/plain']);
 
         $client = Mockery::mock(ClientInterface::class, [
             'send' => $response,
@@ -592,7 +703,7 @@ class AbstractProviderTest extends TestCase
         return $method;
     }
 
-    public function parseResponseProvider()
+    public static function parseResponseProvider()
     {
         return [
             [
@@ -613,9 +724,7 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider parseResponseProvider
-     */
+    #[DataProvider('parseResponseProvider')]
     public function testParseResponse($body, $type, $parsed, $statusCode = 200)
     {
         $stream = Mockery::mock(StreamInterface::class, [
@@ -629,7 +738,7 @@ class AbstractProviderTest extends TestCase
         $response
             ->shouldReceive('getHeader')
             ->with('content-type')
-            ->andReturn($type);
+            ->andReturn([$type]);
 
         $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
         $result = $method->invoke($this->getMockProvider(), $response);
@@ -649,7 +758,7 @@ class AbstractProviderTest extends TestCase
         $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
     }
 
-    public function getAppendQueryProvider()
+    public static function getAppendQueryProvider()
     {
         return [
             ['test.com/?a=1', 'test.com/', '?a=1'],
@@ -665,9 +774,7 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getAppendQueryProvider
-     */
+    #[DataProvider('getAppendQueryProvider')]
     public function testAppendQuery($expected, $url, $query)
     {
         $method = $this->getMethod(AbstractProvider::class, 'appendQuery');
