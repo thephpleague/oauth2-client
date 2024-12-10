@@ -43,6 +43,7 @@ Gateway | Composer Package | Maintainer
 [Coinbase](https://github.com/openclerk/coinbase-oauth2) | openclerk/coinbase-oauth2 | [Openclerk](https://github.com/openclerk)
 [Deezer](https://github.com/julienbornstein/oauth2-deezer) | julienbornstein/oauth2-deezer | [Julien Bornstein](https://github.com/julienbornstein)
 [DeviantArt](https://github.com/SeinopSys/oauth2-deviantart) | seinopsys/oauth2-deviantart | [SeinopSys](https://github.com/SeinopSys)
+[DigiKey](https://github.com/bggardner/oauth2-digikey) | bggardner/oauth2-digikey | [Brent Gardner](https://github.com/bggardner)
 [DigitalOcean](https://github.com/chrishemmings/oauth2-digitalocean) | chrishemmings/oauth2-digitalocean | [Chris Hemmings](https://github.com/chrishemmings)
 [Discord](https://github.com/wohali/oauth2-discord-new) | wohali/oauth2-discord-new | [Joan Touzet](https://github.com/wohali)
 [Disqus](https://github.com/antalaron/oauth2-disqus) | antalaron/oauth2-disqus | [Antal Áron](https://github.com/antalaron)
