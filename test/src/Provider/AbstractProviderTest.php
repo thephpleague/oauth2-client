@@ -182,6 +182,9 @@ class AbstractProviderTest extends TestCase
         $this->assertNotFalse($state);
     }
 
+    /**
+     * @dataProvider userPropertyProvider
+     */
     #[DataProvider('userPropertyProvider')]
     public function testGetUserProperties($name = null, $email = null, $id = null)
     {
@@ -340,6 +343,9 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($pkceCode, $provider->getPkceCode());
     }
 
+    /**
+     * @dataProvider pkceMethodProvider
+     */
     #[DataProvider('pkceMethodProvider')]
     public function testPkceMethod($pkceMethod, $pkceCode, $expectedChallenge)
     {
@@ -604,6 +610,9 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider getAccessTokenMethodProvider
+     */
     #[DataProvider('getAccessTokenMethodProvider')]
     public function testGetAccessToken($method)
     {
@@ -724,6 +733,9 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider parseResponseProvider
+     */
     #[DataProvider('parseResponseProvider')]
     public function testParseResponse($body, $type, $parsed, $statusCode = 200)
     {
@@ -774,6 +786,9 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @dataProvider getAppendQueryProvider
+     */
     #[DataProvider('getAppendQueryProvider')]
     public function testAppendQuery($expected, $url, $query)
     {

@@ -28,6 +28,11 @@ We support the following versions of PHP:
 * PHP 8.3
 * PHP 8.2
 * PHP 8.1
+* PHP 8.0
+* PHP 7.4
+* PHP 7.3
+* PHP 7.2
+* PHP 7.1
 
 ## Provider Clients
 
