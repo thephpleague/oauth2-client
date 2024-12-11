@@ -144,13 +144,16 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
 ]);
 
 $existingAccessToken = getAccessTokenFromYourDataStore();
+$existingRefreshToken = getRefreshTokenFromYourDataStore();
 
 if ($existingAccessToken->hasExpired()) {
-    $newAccessToken = $provider->getAccessToken('refresh_token', [
-        'refresh_token' => $existingAccessToken->getRefreshToken()
+    $tokens = $provider->getAccessToken('refresh_token', [
+        'refresh_token' => $existingRefreshToken
     ]);
 
-    // Purge old access token and store new access token to your data store.
+    // Purge old tokens and store new ones to your data store.
+    saveNewAccessTokenToYourDataStore($tokens->getToken());
+    saveNewRefreshTokenToYourDataStore($tokens->getRefreshToken());
 }
 ```
 
