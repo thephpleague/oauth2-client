@@ -178,6 +178,22 @@ class AccessTokenTest extends TestCase
         self::tearDownForBackwardsCompatibility();
     }
 
+    public function testHasExpiredWhenTimeNowIsInFuture()
+    {
+        $options = [
+            'access_token' => 'mock_access_token',
+            'expires' => time(),
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $token->setTimeNow(time() + 60);
+
+        $this->assertTrue($token->hasExpired());
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
     public function testCannotReportExpiredWhenNoExpirationSet()
     {
         $options = [

@@ -204,7 +204,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
             throw new RuntimeException('"expires" is not set on the token');
         }
 
-        return $expires < time();
+        return $expires < $this->getTimeNow();
     }
 
     /**
