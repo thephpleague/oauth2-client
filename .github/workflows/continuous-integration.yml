@@ -6,9 +6,11 @@ on:
   pull_request:
     branches:
       - "master"
+      - "*.x"
   push:
     branches:
       - "master"
+      - "*.x"
     tags:
       - "*"
 
