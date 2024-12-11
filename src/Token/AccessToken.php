@@ -118,7 +118,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
         } elseif (!empty($options['expires'])) {
             // Some providers supply the seconds until expiration rather than
             // the exact timestamp. Take a best guess at which we received.
-            $expires = $options['expires'];
+            $expires = (int) $options['expires'];
 
             if (!$this->isExpirationTimestamp($expires)) {
                 $expires += $this->getTimeNow();
