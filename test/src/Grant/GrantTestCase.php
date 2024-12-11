@@ -2,11 +2,13 @@
 
 namespace League\OAuth2\Client\Test\Grant;
 
-use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\HttpFactory;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use League\OAuth2\Client\Token\AccessTokenInterface;
@@ -20,6 +22,10 @@ abstract class GrantTestCase extends TestCase
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
+        ],[
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory()
         ]);
     }
 
@@ -72,7 +78,7 @@ abstract class GrantTestCase extends TestCase
         /** @var ClientInterface & MockInterface $client */
         $client = Mockery::spy(ClientInterface::class)->makePartial();
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->once()
             ->withArgs(function ($request) {
                 parse_str((string) $request->getBody(), $body);
