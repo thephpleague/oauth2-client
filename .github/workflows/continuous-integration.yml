@@ -4,9 +4,19 @@ name: "CI"
 
 on:
   pull_request:
+    branches:
+      - "master"
   push:
     branches:
       - "master"
+    tags:
+      - "*"
+
+# Cancels all previous workflow runs for the same branch that have not yet completed.
+concurrency:
+  # The concurrency group contains the workflow name and the branch name.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   COMPOSER_ROOT_VERSION: "1.99.99"
@@ -15,9 +25,10 @@ jobs:
 
   lint:
     name: "Lint"
+    needs: ["coding-standards", "coverage"]
     runs-on: "ubuntu-latest"
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         php-version: [ '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
     steps:
@@ -42,7 +53,7 @@ jobs:
           php-version: "latest"
           coverage: "none"
           ini-values: "memory_limit=-1"
-          tools: "composer:v2"
+          tools: "composer"
       - uses: "ramsey/composer-install@v3"
       - name: "Check coding standards"
         run: "./vendor/bin/phpcs src --standard=psr2 -sp --colors"
@@ -68,9 +79,10 @@ jobs:
 
   unit-tests:
     name: "Unit Tests"
+    needs: ["lint"]
     runs-on: "ubuntu-latest"
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         php-version: [ '7.1', '7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4' ]
     steps:
