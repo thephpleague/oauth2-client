@@ -8,7 +8,7 @@
     "require": {
         "php": "^7.1 || >=8.0.0 <8.5.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.0 || ^7.0"
+        "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5"
     },
     "require-dev": {
         "mockery/mockery": "^1.3.5",
