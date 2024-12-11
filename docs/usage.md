@@ -67,16 +67,16 @@ if (!isset($_GET['code'])) {
         $provider->setPkceCode($_SESSION['oauth2pkceCode']);
 
         // Try to get an access token using the authorization code grant.
-        $accessToken = $provider->getAccessToken('authorization_code', [
+        $tokens = $provider->getAccessToken('authorization_code', [
             'code' => $_GET['code']
         ]);
 
         // We have an access token, which we may use in authenticated
         // requests against the service provider's API.
-        echo 'Access Token: ' . $accessToken->getToken() . "<br>";
-        echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
-        echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
+        echo 'Access Token: ' . $tokens->getToken() . "<br>";
+        echo 'Refresh Token: ' . $tokens->getRefreshToken() . "<br>";
+        echo 'Expired in: ' . $tokens->getExpires() . "<br>";
+        echo 'Already expired? ' . ($tokens->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
         // Using the access token, we may look up details about the
         // resource owner.
