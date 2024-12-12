@@ -18,7 +18,7 @@ This OAuth 2.0 client library will work with any OAuth 2.0 provider that conform
 
 Many service providers provide additional functionality above and beyond the OAuth 2.0 specification. For this reason, you may extend and wrap this library to support additional behavior. There are already many [official](https://oauth2-client.thephpleague.com/providers/league/) and [third-party](https://oauth2-client.thephpleague.com/providers/thirdparty/) provider clients available (e.g., Facebook, GitHub, Google, Instagram, LinkedIn, etc.). If your provider isn't in the list, feel free to add it.
 
-This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. If you notice compliance oversights, please send a patch via pull request. If you're interested in contributing to this library, please take a look at our [contributing guidelines](https://github.com/thephpleague/oauth2-client/blob/master/CONTRIBUTING.md).
+This package is compliant with [PSR-4][], [PSR-7][], [PSR-12][], [PSR-17][], and [PSR-18][]. If you notice compliance oversights, please send a patch via pull request. If you're interested in contributing to this library, please take a look at our [contributing guidelines](https://github.com/thephpleague/oauth2-client/blob/master/CONTRIBUTING.md).
 
 ## Requirements
 
@@ -28,11 +28,6 @@ We support the following versions of PHP:
 * PHP 8.3
 * PHP 8.2
 * PHP 8.1
-* PHP 8.0
-* PHP 7.4
-* PHP 7.3
-* PHP 7.2
-* PHP 7.1
 
 ## Provider Clients
 
@@ -53,7 +48,8 @@ Please see [our contributing guidelines](https://github.com/thephpleague/oauth2-
 The MIT License (MIT). Please see [LICENSE](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE) for more information.
 
 
-[PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
-[PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
-[PSR-4]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md
-[PSR-7]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-7-http-message.md
+[PSR-4]: https://www.php-fig.org/psr/psr-4/
+[PSR-7]: https://www.php-fig.org/psr/psr-7/
+[PSR-12]: https://www.php-fig.org/psr/psr-12/
+[PSR-17]: https://www.php-fig.org/psr/psr-17/
+[PSR-18]: https://www.php-fig.org/psr/psr-18/

@@ -56,5 +56,21 @@
         "psr-4": {
             "League\\OAuth2\\Client\\Test\\": "test/src/"
         }
+    },
+    "scripts": {
+        "cs": "phpcs",
+        "cs-fix": "phpcbf",
+        "lint": "parallel-lint src test",
+        "test": [
+            "@lint",
+            "@cs",
+            "phpunit --no-coverage"
+        ]
+    },
+    "scripts-descriptions": {
+        "cs": "Check for coding style errors.",
+        "cs-fix": "Check and automatically fix any fixable coding style errors.",
+        "lint": "Check source code for syntax errors.",
+        "test": "Run the full test suite."
     }
 }

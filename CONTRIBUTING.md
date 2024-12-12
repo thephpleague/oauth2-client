@@ -2,12 +2,28 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/thephpleague/oauth2-client).
+We accept contributions via Pull Requests on [GitHub](https://github.com/thephpleague/oauth2-client).
+
+
+## Developing
+
+Before working on oauth2-client, install the dependencies by running the following from the root directory of your local git clone:
+
+```bash
+composer install
+```
 
 
 ## Pull Requests
 
-- **[PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)** - The easiest way to apply the conventions is to install [PHP Code Sniffer](http://pear.php.net/package/PHP_CodeSniffer).
+> [!TIP]
+> Before opening a pull request, be sure to run our full test suite locally:
+>
+> ```bash
+> composer test
+> ```
+
+- **[PSR-12 Coding Standard](https://www.php-fig.org/psr/psr-12/)** - We follow a superset of PSR-12. The easiest way to apply the conventions is to run `composer cs-fix` before committing your work (be sure to visually inspect any changes the coding style fixer applies).
 
 - **Add tests!** - Your patch won't be accepted if it doesn't have tests.
 
@@ -30,10 +46,16 @@ We accept contributions via Pull Requests on [Github](https://github.com/thephpl
 
 The following tests must pass for a build to be considered successful. If contributing, please ensure these pass before submitting a pull request.
 
-``` bash
-$ ./vendor/bin/parallel-lint src test
-$ ./vendor/bin/phpunit --coverage-text
-$ ./vendor/bin/phpcs src --standard=psr2 -sp
+```bash
+./vendor/bin/parallel-lint src test
+./vendor/bin/phpcs
+./vendor/bin/phpunit
+```
+
+You can run them all at one time with:
+
+```bash
+composer test
 ```
 
 **Happy coding**!
