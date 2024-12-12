@@ -58,7 +58,7 @@ jobs:
           tools: "composer"
       - uses: "ramsey/composer-install@v3"
       - name: "Check coding standards"
-        run: "./vendor/bin/phpcs src --standard=psr2 -sp --colors"
+        run: "./vendor/bin/phpcs"
 
   coverage:
     name: "Coverage"

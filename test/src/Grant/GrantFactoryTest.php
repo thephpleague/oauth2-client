@@ -1,38 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Grant;
 
-use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
+use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Test\Grant\Fake as MockGrant;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class GrantFactoryTest extends TestCase
 {
-    /**
-     * @dataProvider providerGetGrantDefaults
-     */
     #[DataProvider('providerGetGrantDefaults')]
-    public function testGetGrantDefaults($name)
+    public function testGetGrantDefaults(string $name): void
     {
         $factory = new GrantFactory();
         $grant = $factory->getGrant($name);
         $this->assertInstanceOf(AbstractGrant::class, $grant);
     }
 
-    public static function providerGetGrantDefaults()
+    /**
+     * @return array<string, list<string>>
+     */
+    public static function providerGetGrantDefaults(): array
     {
         return [
             'authorization_code' => ['authorization_code'],
             'client_credentials' => ['client_credentials'],
-            'password'           => ['password'],
-            'refresh_token'      => ['refresh_token'],
+            'password' => ['password'],
+            'refresh_token' => ['refresh_token'],
         ];
     }
 
-    public function testGetInvalidGrantFails()
+    public function testGetInvalidGrantFails(): void
     {
         $this->expectException(InvalidGrantException::class);
 
@@ -40,7 +42,7 @@ class GrantFactoryTest extends TestCase
         $factory->getGrant('invalid');
     }
 
-    public function testSetGrantReplaceDefault()
+    public function testSetGrantReplaceDefault(): void
     {
         $mock = new MockGrant();
 
@@ -52,7 +54,7 @@ class GrantFactoryTest extends TestCase
         $this->assertSame($mock, $grant);
     }
 
-    public function testSetGrantCustom()
+    public function testSetGrantCustom(): void
     {
         $mock = new MockGrant();
 
@@ -64,7 +66,7 @@ class GrantFactoryTest extends TestCase
         $this->assertSame($mock, $grant);
     }
 
-    public function testIsGrant()
+    public function testIsGrant(): void
     {
         $factory = new GrantFactory();
         $grant = $factory->getGrant('password');
@@ -73,14 +75,16 @@ class GrantFactoryTest extends TestCase
         $this->assertFalse($factory->isGrant('stdClass'));
     }
 
-    public function testCheckGrant()
+    public function testCheckGrant(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $factory = new GrantFactory();
         $grant = $factory->getGrant('password');
-        $this->assertNull($factory->checkGrant($grant));
+        $factory->checkGrant($grant);
     }
 
-    public function testCheckGrantInvalidFails()
+    public function testCheckGrantInvalidFails(): void
     {
         $this->expectException(InvalidGrantException::class);
 

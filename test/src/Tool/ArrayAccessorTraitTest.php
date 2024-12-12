@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Tool;
 
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
@@ -9,7 +11,7 @@ class ArrayAccessorTraitTest extends TestCase
 {
     use ArrayAccessorTrait;
 
-    public function testGetRootValue()
+    public function testGetRootValue(): void
     {
         $array = ['foo' => 'bar'];
 
@@ -18,7 +20,7 @@ class ArrayAccessorTraitTest extends TestCase
         $this->assertEquals($array['foo'], $result);
     }
 
-    public function testGetNonExistentValueWithDefault()
+    public function testGetNonExistentValueWithDefault(): void
     {
         $array = [];
         $default = 'foo';
@@ -28,7 +30,7 @@ class ArrayAccessorTraitTest extends TestCase
         $this->assertEquals($default, $result);
     }
 
-    public function testGetNestedValue()
+    public function testGetNestedValue(): void
     {
         $array = ['foo' => ['bar' => 'murray']];
 
@@ -37,7 +39,7 @@ class ArrayAccessorTraitTest extends TestCase
         $this->assertEquals($array['foo']['bar'], $result);
     }
 
-    public function testGetNonExistantRootValue()
+    public function testGetNonExistentRootValue(): void
     {
         $array = ['foo' => 'bar'];
 

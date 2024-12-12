@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Provider;
 
-use InvalidArgumentException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
+use InvalidArgumentException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
-use League\OAuth2\Client\Test\Provider\Generic as MockProvider;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
+use League\OAuth2\Client\Test\Provider\Generic as MockProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,108 +18,108 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionClass;
 use ReflectionProperty;
+use Throwable;
+
+use function array_keys;
 
 class GenericProviderTest extends TestCase
 {
-    public function testRequiredOptions()
+    public function testRequiredOptions(): void
     {
         // Additionally, these options are required by the GenericProvider
         $required = [
-            'urlAuthorize'   => 'http://example.com/authorize',
+            'urlAuthorize' => 'http://example.com/authorize',
             'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        foreach ($required as $key => $value) {
+        foreach (array_keys($required) as $key) {
             // Test each of the required options by removing a single value
             // and attempting to create a new provider.
             $options = $required;
             unset($options[$key]);
 
             try {
-                $provider = new GenericProvider($options);
-            } catch (\Exception $e) {
+                new GenericProvider($options);
+            } catch (Throwable $e) {
                 $this->assertInstanceOf(InvalidArgumentException::class, $e);
             }
         }
 
-        $provider = new GenericProvider($required, [
+        new GenericProvider($required, [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
     }
 
-    public function testConfigurableOptions()
+    public function testConfigurableOptions(): void
     {
         $options = [
-            'urlAuthorize'      => 'http://example.com/authorize',
-            'urlAccessToken'    => 'http://example.com/token',
+            'urlAuthorize' => 'http://example.com/authorize',
+            'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
             'accessTokenMethod' => 'mock_method',
             'accessTokenResourceOwnerId' => 'mock_token_uid',
-            'scopeSeparator'    => 'mock_separator',
-            'responseError'     => 'mock_error',
-            'responseCode'      => 'mock_code',
+            'scopeSeparator' => 'mock_separator',
+            'responseError' => 'mock_error',
+            'responseCode' => 'mock_code',
             'responseResourceOwnerId' => 'mock_response_uid',
-            'scopes'            => ['mock', 'scopes'],
-            'pkceMethod'        => 'S256',
+            'scopes' => ['mock', 'scopes'],
+            'pkceMethod' => 'S256',
         ];
 
         $provider = new GenericProvider($options + [
-            'clientId'       => 'mock_client_id',
-            'clientSecret'   => 'mock_secret',
-            'redirectUri'    => 'none',
+            'clientId' => 'mock_client_id',
+            'clientSecret' => 'mock_secret',
+            'redirectUri' => 'none',
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         foreach ($options as $key => $expected) {
             $property = new ReflectionProperty(GenericProvider::class, $key);
-            $property->setAccessible(true);
-
             $this->assertEquals($expected, $property->getValue($provider));
         }
 
         $this->assertEquals($options['urlAuthorize'], $provider->getBaseAuthorizationUrl());
         $this->assertEquals($options['urlAccessToken'], $provider->getBaseAccessTokenUrl([]));
-        $this->assertEquals($options['urlResourceOwnerDetails'], $provider->getResourceOwnerDetailsUrl(new AccessToken(['access_token' => '1234'])));
+        $this->assertEquals(
+            $options['urlResourceOwnerDetails'],
+            $provider->getResourceOwnerDetailsUrl(new AccessToken(['access_token' => '1234'])),
+        );
         $this->assertEquals($options['scopes'], $provider->getDefaultScopes());
 
-        $reflection = new ReflectionClass(get_class($provider));
+        $reflection = new ReflectionClass($provider::class);
 
         $getAccessTokenMethod = $reflection->getMethod('getAccessTokenMethod');
-        $getAccessTokenMethod->setAccessible(true);
         $this->assertEquals($options['accessTokenMethod'], $getAccessTokenMethod->invoke($provider));
 
         $getAccessTokenResourceOwnerId = $reflection->getMethod('getAccessTokenResourceOwnerId');
-        $getAccessTokenResourceOwnerId->setAccessible(true);
         $this->assertEquals($options['accessTokenResourceOwnerId'], $getAccessTokenResourceOwnerId->invoke($provider));
 
         $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
-        $getScopeSeparator->setAccessible(true);
         $this->assertEquals($options['scopeSeparator'], $getScopeSeparator->invoke($provider));
 
         $getPkceMethod = $reflection->getMethod('getPkceMethod');
-        $getPkceMethod->setAccessible(true);
         $this->assertEquals($options['pkceMethod'], $getPkceMethod->invoke($provider));
     }
 
-    public function testResourceOwnerDetails()
+    public function testResourceOwnerDetails(): void
     {
         $token = new AccessToken(['access_token' => 'mock_token']);
 
         $provider = new MockProvider([
-            'urlAuthorize'   => 'http://example.com/authorize',
+            'urlAuthorize' => 'http://example.com/authorize',
             'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
             'responseResourceOwnerId' => 'mock_response_uid',
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $user = $provider->getResourceOwner($token);
@@ -133,35 +135,32 @@ class GenericProviderTest extends TestCase
         $this->assertSame('mock@example.com', $data['email']);
     }
 
-    public function testCheckResponse()
+    public function testCheckResponse(): void
     {
         $response = Mockery::mock(ResponseInterface::class);
 
         $options = [
-            'urlAuthorize'      => 'http://example.com/authorize',
-            'urlAccessToken'    => 'http://example.com/token',
+            'urlAuthorize' => 'http://example.com/authorize',
+            'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new GenericProvider($options,[
+        $provider = new GenericProvider($options, [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
-        $reflection = new ReflectionClass(get_class($provider));
+        $reflection = new ReflectionClass($provider::class);
 
         $checkResponse = $reflection->getMethod('checkResponse');
-        $checkResponse->setAccessible(true);
 
         $this->assertNull($checkResponse->invokeArgs($provider, [$response, []]));
     }
 
     /**
-     * @param array $error The error response to parse
-     * @param array $extraOptions Any extra options to configure the generic provider with.
-     *
-     * @dataProvider checkResponseThrowsExceptionProvider
+     * @param array<string, mixed> $error The error response to parse
+     * @param array<string, mixed> $extraOptions Any extra options to configure the generic provider with.
      */
     #[DataProvider('checkResponseThrowsExceptionProvider')]
     public function testCheckResponseThrowsException(array $error, array $extraOptions = [])
@@ -169,28 +168,31 @@ class GenericProviderTest extends TestCase
         $response = Mockery::mock(ResponseInterface::class);
 
         $options = [
-            'urlAuthorize'      => 'http://example.com/authorize',
-            'urlAccessToken'    => 'http://example.com/token',
+            'urlAuthorize' => 'http://example.com/authorize',
+            'urlAccessToken' => 'http://example.com/token',
             'urlResourceOwnerDetails' => 'http://example.com/user',
         ];
 
-        $provider = new GenericProvider($options + $extraOptions,[
+        $provider = new GenericProvider($options + $extraOptions, [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
-        $reflection = new ReflectionClass(get_class($provider));
+        $reflection = new ReflectionClass($provider::class);
 
         $checkResponse = $reflection->getMethod('checkResponse');
-        $checkResponse->setAccessible(true);
 
         $this->expectException(IdentityProviderException::class);
 
         $checkResponse->invokeArgs($provider, [$response, $error]);
     }
 
-    public static function checkResponseThrowsExceptionProvider() {
+    /**
+     * @return array<array{0: array<string, mixed>, 1?: array<string, mixed>}>
+     */
+    public static function checkResponseThrowsExceptionProvider(): array
+    {
         return [
             [['error' => 'foobar',]],
             [['error' => 'foobar',] , ['responseCode' => 'code']],

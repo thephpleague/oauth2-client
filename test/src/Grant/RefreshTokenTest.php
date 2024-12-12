@@ -1,34 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Grant;
 
 use BadMethodCallException;
+use Closure;
 use League\OAuth2\Client\Grant\RefreshToken;
 
 class RefreshTokenTest extends GrantTestCase
 {
-    public static function providerGetAccessToken()
+    /**
+     * @inheritDoc
+     */
+    public static function providerGetAccessToken(): array
     {
         return [
             ['refresh_token', ['refresh_token' => 'mock_refresh_token']],
         ];
     }
 
-    protected function getParamExpectation()
+    protected function getParamExpectation(): Closure
     {
-        return function ($body) {
-            return !empty($body['grant_type'])
+        return fn ($body) => isset($body['grant_type'])
                 && $body['grant_type'] === 'refresh_token';
-        };
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $grant = new RefreshToken();
         $this->assertEquals('refresh_token', (string) $grant);
     }
 
-    public function testInvalidRefreshToken()
+    public function testInvalidRefreshToken(): void
     {
         $this->expectException(BadMethodCallException::class);
 

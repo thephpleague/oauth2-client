@@ -1,16 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Provider\Exception;
 
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use PHPUnit\Framework\TestCase;
 
-class IdentityProviderExceptionTest extends \PHPUnit\Framework\TestCase
+class IdentityProviderExceptionTest extends TestCase
 {
     public function testIdentityProviderException()
     {
         $result = [
             'error' => 'message',
-            'code' => 404
+            'code' => 404,
         ];
         $exception = new IdentityProviderException($result['error'], $result['code'], $result);
 

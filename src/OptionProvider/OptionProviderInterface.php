@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,6 +13,8 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\OptionProvider;
 
 /**
@@ -22,9 +25,9 @@ interface OptionProviderInterface
     /**
      * Builds request options used for requesting an access token.
      *
-     * @param string $method
-     * @param  array $params
-     * @return array
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
      */
-    public function getAccessTokenOptions($method, array $params);
+    public function getAccessTokenOptions(string $method, array $params);
 }

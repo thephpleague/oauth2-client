@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -11,6 +12,8 @@
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
+
+declare(strict_types=1);
 
 namespace League\OAuth2\Client\OptionProvider;
 
@@ -41,7 +44,8 @@ class PostAuthOptionProvider implements OptionProviderInterface
     /**
      * Returns the request body for requesting an access token.
      *
-     * @param  array $params
+     * @param array<string, mixed> $params
+     *
      * @return string
      */
     protected function getAccessTokenBody(array $params)

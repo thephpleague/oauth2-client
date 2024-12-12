@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -11,6 +12,8 @@
  * @link https://packagist.org/packages/league/oauth2-client Packagist
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
+
+declare(strict_types=1);
 
 namespace League\OAuth2\Client\Token;
 
@@ -30,21 +33,22 @@ interface AccessTokenInterface extends JsonSerializable
     /**
      * Returns the refresh token, if defined.
      *
-     * @return string|null
+     * @return string | null
      */
     public function getRefreshToken();
 
     /**
      * Returns the expiration timestamp in seconds, if defined.
      *
-     * @return integer|null
+     * @return int | null
      */
     public function getExpires();
 
     /**
      * Checks if this token has expired.
      *
-     * @return boolean true if the token has expired, false otherwise.
+     * @return bool true if the token has expired, false otherwise.
+     *
      * @throws RuntimeException if 'expires' is not set on the token.
      */
     public function hasExpired();
@@ -52,7 +56,7 @@ interface AccessTokenInterface extends JsonSerializable
     /**
      * Returns additional vendor values stored in the token.
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getValues();
 
@@ -67,7 +71,7 @@ interface AccessTokenInterface extends JsonSerializable
      * Returns an array of parameters to serialize when this is serialized with
      * json_encode().
      *
-     * @return array
+     * @return array<string, mixed>
      */
     #[ReturnTypeWillChange]
     public function jsonSerialize();

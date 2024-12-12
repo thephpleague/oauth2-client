@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,6 +13,8 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Provider;
 
 use InvalidArgumentException;
@@ -19,6 +22,17 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
+
+use function array_diff_key;
+use function array_flip;
+use function array_intersect_key;
+use function array_keys;
+use function array_merge;
+use function implode;
+use function intval;
+use function is_int;
+use function is_string;
+use function var_export;
 
 /**
  * Represents a generic service provider that may be used to interact with any
@@ -28,70 +42,32 @@ class GenericProvider extends AbstractProvider
 {
     use BearerAuthorizationTrait;
 
-    /**
-     * @var string
-     */
-    private $urlAuthorize;
+    private string $urlAuthorize;
+    private string $urlAccessToken;
+    private string $urlResourceOwnerDetails;
+    private string $accessTokenMethod;
+    private string $accessTokenResourceOwnerId;
 
     /**
-     * @var string
+     * @var list<string> | null
      */
-    private $urlAccessToken;
+    private ?array $scopes = null;
+
+    private string $scopeSeparator;
+    private string $responseError = 'error';
+    private string $responseCode;
+    private string $responseResourceOwnerId = 'id';
+    private ?string $pkceMethod = null;
 
     /**
-     * @var string
-     */
-    private $urlResourceOwnerDetails;
-
-    /**
-     * @var string
-     */
-    private $accessTokenMethod;
-
-    /**
-     * @var string
-     */
-    private $accessTokenResourceOwnerId;
-
-    /**
-     * @var array|null
-     */
-    private $scopes = null;
-
-    /**
-     * @var string
-     */
-    private $scopeSeparator;
-
-    /**
-     * @var string
-     */
-    private $responseError = 'error';
-
-    /**
-     * @var string
-     */
-    private $responseCode;
-
-    /**
-     * @var string
-     */
-    private $responseResourceOwnerId = 'id';
-
-    /**
-     * @var string|null
-     */
-    private $pkceMethod = null;
-
-    /**
-     * @param array $options
-     * @param array $collaborators
+     * @param array<string, mixed> $options
+     * @param array<string, mixed> $collaborators
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
         $this->assertRequiredOptions($options);
 
-        $possible   = $this->getConfigurableOptions();
+        $possible = $this->getConfigurableOptions();
         $configured = array_intersect_key($options, array_flip($possible));
 
         foreach ($configured as $key => $value) {
@@ -107,7 +83,7 @@ class GenericProvider extends AbstractProvider
     /**
      * Returns all options that can be configured.
      *
-     * @return array
+     * @return list<string>
      */
     protected function getConfigurableOptions()
     {
@@ -126,7 +102,7 @@ class GenericProvider extends AbstractProvider
     /**
      * Returns all options that are required.
      *
-     * @return array
+     * @return list<string>
      */
     protected function getRequiredOptions()
     {
@@ -140,17 +116,19 @@ class GenericProvider extends AbstractProvider
     /**
      * Verifies that all required options have been passed.
      *
-     * @param  array $options
+     * @param array<string, mixed> $options
+     *
      * @return void
+     *
      * @throws InvalidArgumentException
      */
     private function assertRequiredOptions(array $options)
     {
         $missing = array_diff_key(array_flip($this->getRequiredOptions()), $options);
 
-        if (!empty($missing)) {
+        if ($missing !== []) {
             throw new InvalidArgumentException(
-                'Required options not defined: ' . implode(', ', array_keys($missing))
+                'Required options not defined: ' . implode(', ', array_keys($missing)),
             );
         }
     }
@@ -224,15 +202,16 @@ class GenericProvider extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if (!empty($data[$this->responseError])) {
+        if (isset($data[$this->responseError])) {
             $error = $data[$this->responseError];
             if (!is_string($error)) {
                 $error = var_export($error, true);
             }
-            $code  = $this->responseCode && !empty($data[$this->responseCode])? $data[$this->responseCode] : 0;
+            $code = isset($this->responseCode) && isset($data[$this->responseCode]) ? $data[$this->responseCode] : 0;
             if (!is_int($code)) {
                 $code = intval($code);
             }
+
             throw new IdentityProviderException($error, $code, $data);
         }
     }

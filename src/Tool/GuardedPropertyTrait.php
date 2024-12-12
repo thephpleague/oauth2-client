@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,7 +13,12 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Tool;
+
+use function in_array;
+use function property_exists;
 
 /**
  * Provides support for blacklisting explicit properties from the
@@ -23,15 +29,16 @@ trait GuardedPropertyTrait
     /**
      * The properties that aren't mass assignable.
      *
-     * @var array
+     * @var list<string>
      */
-    protected $guarded = [];
+    protected array $guarded = [];
 
     /**
      * Attempts to mass assign the given options to explicitly defined properties,
      * skipping over any properties that are defined in the guarded array.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
+     *
      * @return mixed
      */
     protected function fillProperties(array $options = [])
@@ -50,7 +57,7 @@ trait GuardedPropertyTrait
     /**
      * Returns current guarded properties.
      *
-     * @return array
+     * @return list<string>
      */
     public function getGuarded()
     {
@@ -60,10 +67,9 @@ trait GuardedPropertyTrait
     /**
      * Determines if the given property is guarded.
      *
-     * @param  string  $property
      * @return bool
      */
-    public function isGuarded($property)
+    public function isGuarded(string $property)
     {
         return in_array($property, $this->getGuarded());
     }

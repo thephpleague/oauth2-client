@@ -1,47 +1,57 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Grant;
 
 use BadMethodCallException;
+use Closure;
 use League\OAuth2\Client\Grant\Password;
 
 class PasswordTest extends GrantTestCase
 {
-    public static function providerGetAccessToken()
+    /**
+     * @inheritDoc
+     */
+    public static function providerGetAccessToken(): array
     {
         return [
             ['password', ['username' => 'mock_username', 'password' => 'mock_password']],
         ];
     }
 
-    protected function getParamExpectation()
+    protected function getParamExpectation(): Closure
     {
-        return function ($body) {
-            return !empty($body['grant_type'])
+        return fn ($body) => isset($body['grant_type'])
                 && $body['grant_type'] === 'password'
-                && !empty($body['username'])
-                && !empty($body['password'])
-                && !empty($body['scope']);
-        };
+                && isset($body['username'])
+                && isset($body['password'])
+                && isset($body['scope']);
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $grant = new Password();
         $this->assertEquals('password', (string) $grant);
     }
 
-    public function testInvalidUsername()
+    public function testInvalidUsername(): void
     {
         $this->expectException(BadMethodCallException::class);
 
-        $this->getMockProvider()->getAccessToken('password', ['invalid_username' => 'mock_username', 'password' => 'mock_password']);
+        $this->getMockProvider()->getAccessToken(
+            'password',
+            ['invalid_username' => 'mock_username', 'password' => 'mock_password'],
+        );
     }
 
-    public function testInvalidPassword()
+    public function testInvalidPassword(): void
     {
         $this->expectException(BadMethodCallException::class);
 
-        $this->getMockProvider()->getAccessToken('password', ['username' => 'mock_username', 'invalid_password' => 'mock_password']);
+        $this->getMockProvider()->getAccessToken(
+            'password',
+            ['username' => 'mock_username', 'invalid_password' => 'mock_password'],
+        );
     }
 }

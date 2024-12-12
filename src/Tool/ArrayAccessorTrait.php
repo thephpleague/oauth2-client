@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,7 +13,16 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Tool;
+
+use function array_key_exists;
+use function count;
+use function explode;
+use function is_array;
+use function is_string;
+use function strpos;
 
 /**
  * Provides generic array navigation tools.
@@ -22,14 +32,13 @@ trait ArrayAccessorTrait
     /**
      * Returns a value by key using dot notation.
      *
-     * @param  array      $data
-     * @param  string     $key
-     * @param  mixed|null $default
+     * @param array<string, mixed> $data
+     *
      * @return mixed
      */
-    private function getValueByKey(array $data, $key, $default = null)
+    private function getValueByKey(array $data, mixed $key, mixed $default = null)
     {
-        if (!is_string($key) || empty($key) || !count($data)) {
+        if (!is_string($key) || !isset($key) || !count($data)) {
             return $default;
         }
 

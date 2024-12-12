@@ -1,59 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Tool;
 
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use InvalidArgumentException;
 use League\OAuth2\Client\Tool\ProviderRedirectTrait;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+
+use function rand;
+use function uniqid;
 
 class ProviderRedirectTraitTest extends TestCase
 {
     use ProviderRedirectTrait;
 
-    /**
-     * @var ClientInterface
-     */
-    private $httpClient;
+    private ClientInterface $httpClient;
 
-    public function getHttpClient()
+    public function getHttpClient(): ClientInterface
     {
         return $this->httpClient;
     }
 
-    public function setHttpClient(ClientInterface $httpClient)
+    public function setHttpClient(ClientInterface $httpClient): self
     {
         $this->httpClient = $httpClient;
 
         return $this;
     }
 
-    public function testRedirectLimitDefault()
+    public function testRedirectLimitDefault(): void
     {
         $this->assertEquals(2, $this->getRedirectLimit());
     }
 
-    public function testSetRedirectLimit()
+    public function testSetRedirectLimit(): void
     {
         $redirectLimit = rand(3, 5);
         $this->setRedirectLimit($redirectLimit);
         $this->assertEquals($redirectLimit, $this->getRedirectLimit());
     }
 
-    public function testSetRedirectLimitThrowsExceptionWhenNonNumericProvided()
-    {
-        $redirectLimit = 'florp';
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $this->setRedirectLimit($redirectLimit);
-    }
-
-    public function testSetRedirectLimitThrowsExceptionWhenZeroProvided()
+    public function testSetRedirectLimitThrowsExceptionWhenZeroProvided(): void
     {
         $redirectLimit = 0;
 
@@ -62,7 +55,7 @@ class ProviderRedirectTraitTest extends TestCase
         $this->setRedirectLimit($redirectLimit);
     }
 
-    public function testSetRedirectLimitThrowsExceptionWhenNegativeIntegerProvided()
+    public function testSetRedirectLimitThrowsExceptionWhenNegativeIntegerProvided(): void
     {
         $redirectLimit = -10;
 
@@ -71,10 +64,10 @@ class ProviderRedirectTraitTest extends TestCase
         $this->setRedirectLimit($redirectLimit);
     }
 
-    public function testClientLimitsRedirectResponse()
+    public function testClientLimitsRedirectResponse(): void
     {
         $redirectLimit = rand(3, 5);
-        $status = rand(301,399);
+        $status = rand(301, 399);
         $redirectUrl = uniqid();
 
         $request = Mockery::mock(RequestInterface::class);
@@ -106,7 +99,7 @@ class ProviderRedirectTraitTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
 
-    public function testClientLimitsRedirectLoopWhenRedirectNotDetected()
+    public function testClientLimitsRedirectLoopWhenRedirectNotDetected(): void
     {
         $redirectLimit = rand(3, 5);
         $status = 200;
@@ -136,10 +129,9 @@ class ProviderRedirectTraitTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $finalResponse);
     }
 
-    public function testClientErrorReturnsResponse()
+    public function testClientErrorReturnsResponse(): void
     {
         $status = rand(400, 500);
-        $result = ['foo' => 'bar'];
 
         $request = Mockery::mock(RequestInterface::class);
         $request

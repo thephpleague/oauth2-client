@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Provider\Fake;
 
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
@@ -9,23 +11,24 @@ class ProviderWithGuardedProperties extends MockProvider
     /**
      * The properties that aren't mass assignable.
      *
-     * @var array
+     * @var list<string>
      */
-    protected $guarded = ['skipMeDuringMassAssignment'];
+    protected array $guarded = ['skipMeDuringMassAssignment'];
 
     /**
      * Throwaway property that shouldn't be mass assigned.
-     *
-     * @var string
      */
-    protected $skipMeDuringMassAssignment = 'foo';
+    protected string $skipMeDuringMassAssignment = 'foo';
 
+    /**
+     * @inheritDoc
+     */
     public function getGuarded()
     {
         return $this->guarded;
     }
 
-    public function getSkipMeDuringMassAssignment()
+    public function getSkipMeDuringMassAssignment(): string
     {
         return $this->skipMeDuringMassAssignment;
     }

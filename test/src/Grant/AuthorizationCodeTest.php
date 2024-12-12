@@ -1,35 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Grant;
 
 use BadMethodCallException;
+use Closure;
 use League\OAuth2\Client\Grant\AuthorizationCode;
 
 class AuthorizationCodeTest extends GrantTestCase
 {
-    public static function providerGetAccessToken()
+    /**
+     * @inheritDoc
+     */
+    public static function providerGetAccessToken(): array
     {
         return [
             ['authorization_code', ['code' => 'mock_code']],
         ];
     }
 
-    protected function getParamExpectation()
+    protected function getParamExpectation(): Closure
     {
-        return function ($body) {
-            return !empty($body['grant_type'])
+        return fn ($body) => isset($body['grant_type'])
                 && $body['grant_type'] === 'authorization_code'
-                && !empty($body['code']);
-        };
+                && isset($body['code']);
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $grant = new AuthorizationCode();
         $this->assertEquals('authorization_code', (string) $grant);
     }
 
-    public function testInvalidRefreshToken()
+    public function testInvalidRefreshToken(): void
     {
         $this->expectException(BadMethodCallException::class);
 

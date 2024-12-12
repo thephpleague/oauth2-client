@@ -1,10 +1,27 @@
 <?php
 
+/**
+ * This file is part of the league/oauth2-client library
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * @copyright Copyright (c) Alex Bilbie <hello@alexbilbie.com>
+ * @license http://opensource.org/licenses/MIT MIT
+ * @link http://thephpleague.com/oauth2-client/ Documentation
+ * @link https://packagist.org/packages/league/oauth2-client Packagist
+ * @link https://github.com/thephpleague/oauth2-client GitHub
+ */
+
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Tool;
 
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -12,18 +29,17 @@ trait ProviderRedirectTrait
 {
     /**
      * Maximum number of times to follow provider initiated redirects
-     *
-     * @var integer
      */
-    protected $redirectLimit = 2;
+    protected int $redirectLimit = 2;
 
     /**
      * Retrieves a response for a given request and retrieves subsequent
      * responses, with authorization headers, if a redirect is detected.
      *
-     * @param  RequestInterface $request
      * @return ResponseInterface
+     *
      * @throws BadResponseException
+     * @throws ClientExceptionInterface
      */
     protected function followRequestRedirects(RequestInterface $request)
     {
@@ -33,7 +49,7 @@ trait ProviderRedirectTrait
         while ($attempts < $this->redirectLimit) {
             $attempts++;
             $response = $this->getHttpClient()->send($request, [
-                'allow_redirects' => false
+                'allow_redirects' => false,
             ]);
 
             if ($this->isRedirect($response)) {
@@ -50,14 +66,14 @@ trait ProviderRedirectTrait
     /**
      * Returns the HTTP client instance.
      *
-     * @return GuzzleHttp\ClientInterface
+     * @return ClientInterface
      */
     abstract public function getHttpClient();
 
     /**
      * Retrieves current redirect limit.
      *
-     * @return integer
+     * @return int
      */
     public function getRedirectLimit()
     {
@@ -67,9 +83,7 @@ trait ProviderRedirectTrait
     /**
      * Determines if a given response is a redirect.
      *
-     * @param  ResponseInterface  $response
-     *
-     * @return boolean
+     * @return bool
      */
     protected function isRedirect(ResponseInterface $response)
     {
@@ -84,8 +98,9 @@ trait ProviderRedirectTrait
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @param  RequestInterface $request
      * @return ResponseInterface
+     *
+     * @throws ClientExceptionInterface
      */
     public function getResponse(RequestInterface $request)
     {
@@ -101,16 +116,12 @@ trait ProviderRedirectTrait
     /**
      * Updates the redirect limit.
      *
-     * @param integer $limit
-     * @return League\OAuth2\Client\Provider\AbstractProvider
+     * @return self
+     *
      * @throws InvalidArgumentException
      */
-    public function setRedirectLimit($limit)
+    public function setRedirectLimit(int $limit)
     {
-        if (!is_int($limit)) {
-            throw new InvalidArgumentException('redirectLimit must be an integer.');
-        }
-
         if ($limit < 1) {
             throw new InvalidArgumentException('redirectLimit must be greater than or equal to one.');
         }

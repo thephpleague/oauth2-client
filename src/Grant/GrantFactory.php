@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,9 +13,17 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
+
+use function is_object;
+use function is_subclass_of;
+use function sprintf;
+use function str_replace;
+use function ucwords;
 
 /**
  * Represents a factory used when retrieving an authorization grant type.
@@ -22,18 +31,16 @@ use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 class GrantFactory
 {
     /**
-     * @var array
+     * @var array<string, AbstractGrant>
      */
-    protected $registry = [];
+    protected array $registry = [];
 
     /**
      * Defines a grant singleton in the registry.
      *
-     * @param  string $name
-     * @param  AbstractGrant $grant
      * @return self
      */
-    public function setGrant($name, AbstractGrant $grant)
+    public function setGrant(string $name, AbstractGrant $grant)
     {
         $this->registry[$name] = $grant;
 
@@ -45,12 +52,11 @@ class GrantFactory
      *
      * If the grant has not be registered, a default grant will be loaded.
      *
-     * @param  string $name
      * @return AbstractGrant
      */
-    public function getGrant($name)
+    public function getGrant(string $name)
     {
-        if (empty($this->registry[$name])) {
+        if (!isset($this->registry[$name])) {
             $this->registerDefaultGrant($name);
         }
 
@@ -60,10 +66,9 @@ class GrantFactory
     /**
      * Registers a default grant singleton by name.
      *
-     * @param  string $name
      * @return self
      */
-    protected function registerDefaultGrant($name)
+    protected function registerDefaultGrant(string $name)
     {
         // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
         $class = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
@@ -71,16 +76,15 @@ class GrantFactory
 
         $this->checkGrant($class);
 
-        return $this->setGrant($name, new $class);
+        return $this->setGrant($name, new $class());
     }
 
     /**
      * Determines if a variable is a valid grant.
      *
-     * @param  mixed $class
-     * @return boolean
+     * @return bool
      */
-    public function isGrant($class)
+    public function isGrant(mixed $class)
     {
         return is_subclass_of($class, AbstractGrant::class);
     }
@@ -88,16 +92,16 @@ class GrantFactory
     /**
      * Checks if a variable is a valid grant.
      *
-     * @throws InvalidGrantException
-     * @param  mixed $class
      * @return void
+     *
+     * @throws InvalidGrantException
      */
-    public function checkGrant($class)
+    public function checkGrant(mixed $class)
     {
         if (!$this->isGrant($class)) {
             throw new InvalidGrantException(sprintf(
                 'Grant "%s" must extend AbstractGrant',
-                is_object($class) ? get_class($class) : $class
+                is_object($class) ? $class::class : $class,
             ));
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,9 +13,13 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Tool\RequiredParameterTrait;
+
+use function array_merge;
 
 /**
  * Represents a type of authorization grant.
@@ -43,7 +48,7 @@ abstract class AbstractGrant
     /**
      * Returns a list of all required request parameters.
      *
-     * @return array
+     * @return list<string>
      */
     abstract protected function getRequiredRequestParameters();
 
@@ -62,9 +67,10 @@ abstract class AbstractGrant
      * Prepares an access token request's parameters by checking that all
      * required parameters are set, then merging with any given defaults.
      *
-     * @param  array $defaults
-     * @param  array $options
-     * @return array
+     * @param array<string, mixed> $defaults
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
      */
     public function prepareRequestParameters(array $defaults, array $options)
     {

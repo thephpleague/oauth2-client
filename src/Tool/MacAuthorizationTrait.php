@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,10 +13,17 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Tool;
 
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
+
+use function compact;
+use function implode;
+use function sprintf;
+use function time;
 
 /**
  * Enables `MAC` header authorization for providers.
@@ -27,7 +35,6 @@ trait MacAuthorizationTrait
     /**
      * Returns the id of this token for MAC generation.
      *
-     * @param  AccessToken $token
      * @return string
      */
     abstract protected function getTokenId(AccessToken $token);
@@ -35,12 +42,9 @@ trait MacAuthorizationTrait
     /**
      * Returns the MAC signature for the current request.
      *
-     * @param  string $id
-     * @param  integer $ts
-     * @param  string $nonce
      * @return string
      */
-    abstract protected function getMacSignature($id, $ts, $nonce);
+    abstract protected function getMacSignature(string $id, int $ts, string $nonce);
 
     /**
      * Returns a new random string to use as the state parameter in an
@@ -49,29 +53,32 @@ trait MacAuthorizationTrait
      * @param  int $length Length of the random string to be generated.
      * @return string
      */
-    abstract protected function getRandomState($length = 32);
+    abstract protected function getRandomState(int $length = 32);
 
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
-     * @param  AccessTokenInterface|string|null $token Either a string or an access token instance
-     * @return array
+     * @param AccessTokenInterface | string | null $token Either a string or an access token instance
+     *
+     * @return array<string, mixed>
+     *
      * @codeCoverageIgnore
      *
+     * phpcs:ignore Generic.Commenting.Todo.CommentFound
      * @todo This is currently untested and provided only as an example. If you
-     * complete the implementation, please create a pull request for
-     * https://github.com/thephpleague/oauth2-client
+     *       complete the implementation, please create a pull request for
+     *       https://github.com/thephpleague/oauth2-client
      */
-    protected function getAuthorizationHeaders($token = null)
+    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null)
     {
         if ($token === null) {
             return [];
         }
 
-        $ts    = time();
-        $id    = $this->getTokenId($token);
+        $ts = time();
+        $id = $this->getTokenId($token);
         $nonce = $this->getRandomState(16);
-        $mac   = $this->getMacSignature($id, $ts, $nonce);
+        $mac = $this->getMacSignature($id, $ts, $nonce);
 
         $parts = [];
         foreach (compact('id', 'ts', 'nonce', 'mac') as $key => $value) {

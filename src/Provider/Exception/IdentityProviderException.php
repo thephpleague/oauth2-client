@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,24 +13,23 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Provider\Exception;
+
+use Exception;
 
 /**
  * Exception thrown if the provider response contains errors.
  */
-class IdentityProviderException extends \Exception
+class IdentityProviderException extends Exception
 {
-    /**
-     * @var mixed
-     */
-    protected $response;
+    protected mixed $response;
 
     /**
-     * @param string $message
-     * @param int $code
      * @param mixed $response The response body
      */
-    public function __construct($message, $code, $response)
+    public function __construct(string $message, int $code, mixed $response)
     {
         $this->response = $response;
 

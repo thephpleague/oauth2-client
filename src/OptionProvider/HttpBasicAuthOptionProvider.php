@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,12 +13,18 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\OptionProvider;
 
 use InvalidArgumentException;
 
+use function base64_encode;
+use function sprintf;
+
 /**
  * Add http basic auth into access token request options
+ *
  * @link https://tools.ietf.org/html/rfc6749#section-2.3.1
  */
 class HttpBasicAuthOptionProvider extends PostAuthOptionProvider
@@ -27,7 +34,7 @@ class HttpBasicAuthOptionProvider extends PostAuthOptionProvider
      */
     public function getAccessTokenOptions($method, array $params)
     {
-        if (empty($params['client_id']) || empty($params['client_secret'])) {
+        if (!isset($params['client_id']) || !isset($params['client_secret'])) {
             throw new InvalidArgumentException('clientId and clientSecret are required for http basic auth');
         }
 

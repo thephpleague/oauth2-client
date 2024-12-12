@@ -1,35 +1,51 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Provider;
 
-use InvalidArgumentException;
-use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
-use Mockery;
-use PHPUnit\Framework\Attributes\DataProvider;
-use ReflectionClass;
-use UnexpectedValueException;
-use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\HttpFactory;
-use League\OAuth2\Client\Provider\AbstractProvider;
-use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
+use InvalidArgumentException;
 use League\OAuth2\Client\Grant\AbstractGrant;
-use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
+use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\OptionProvider\PostAuthOptionProvider;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Mockery;
+use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionObject;
+use UnexpectedValueException;
+use stdClass;
+
+use function json_encode;
+use function parse_str;
+use function parse_url;
+use function preg_match;
+use function strpos;
+use function time;
+use function uniqid;
+
+use const PHP_URL_QUERY;
 
 class AbstractProviderTest extends TestCase
 {
-    protected function getMockProvider()
+    protected function getMockProvider(): MockProvider
     {
         return new MockProvider([
             'clientId' => 'mock_client_id',
@@ -38,64 +54,67 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
     }
 
-    public function testGetOptionProvider()
+    public function testGetOptionProvider(): void
     {
         $this->assertInstanceOf(
             PostAuthOptionProvider::class,
-            $this->getMockProvider()->getOptionProvider()
+            $this->getMockProvider()->getOptionProvider(),
         );
     }
 
-    public function testInvalidGrantString()
+    public function testInvalidGrantString(): void
     {
         $this->expectException(InvalidGrantException::class);
         $this->getMockProvider()->getAccessToken('invalid_grant', ['invalid_parameter' => 'none']);
     }
 
-    public function testInvalidGrantObject()
+    public function testInvalidGrantObject(): void
     {
         $this->expectException(InvalidGrantException::class);
-        $grant = new \stdClass();
+        $grant = new stdClass();
         $this->getMockProvider()->getAccessToken($grant, ['invalid_parameter' => 'none']);
     }
 
-    public function testMissingRequestFactory()
+    public function testMissingRequestFactory(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No request factory set');
-        $provider = new Fake();
+
+        new Fake();
     }
 
-    public function testMissingStreamFactory()
+    public function testMissingStreamFactory(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('No stream factory set');
-        $provider = new Fake(
-            [],
-            [
-                'requestFactory' => new HttpFactory()
-            ]
-        );
-    }
 
-    public function testMissingHttpClient()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('No http client set');
-        $provider = new Fake(
+        new Fake(
             [],
             [
                 'requestFactory' => new HttpFactory(),
-                'streamFactory' => new HttpFactory()
-            ]
+            ],
         );
     }
 
-    public function testAuthorizationUrlStateParam()
+    public function testMissingHttpClient(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('No http client set');
+
+        new Fake(
+            [],
+            [
+                'requestFactory' => new HttpFactory(),
+                'streamFactory' => new HttpFactory(),
+            ],
+        );
+    }
+
+    public function testAuthorizationUrlStateParam(): void
     {
         $authUrl = $this->getMockProvider()->getAuthorizationUrl([
             'state' => 'XXX',
@@ -107,10 +126,10 @@ class AbstractProviderTest extends TestCase
     /**
      * Tests https://github.com/thephpleague/oauth2-client/pull/485
      */
-    public function testCustomAuthorizationUrlOptions()
+    public function testCustomAuthorizationUrlOptions(): void
     {
         $url = $this->getMockProvider()->getAuthorizationUrl([
-            'foo' => 'BAR'
+            'foo' => 'BAR',
         ]);
         $query = parse_url($url, PHP_URL_QUERY);
         $this->assertNotEmpty($query);
@@ -123,18 +142,18 @@ class AbstractProviderTest extends TestCase
     /**
      * Tests https://github.com/thephpleague/oauth2-client/issues/134
      */
-    public function testConstructorSetsProperties()
+    public function testConstructorSetsProperties(): void
     {
         $options = [
             'clientId' => '1234',
             'clientSecret' => '4567',
-            'redirectUri' => 'http://example.org/redirect'
+            'redirectUri' => 'http://example.org/redirect',
         ];
 
         $mockProvider = new MockProvider($options, [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $this->assertSame($options['clientId'], $mockProvider->getClientId());
@@ -142,7 +161,7 @@ class AbstractProviderTest extends TestCase
         $this->assertSame($options['redirectUri'], $mockProvider->getRedirectUri());
     }
 
-    public function testConstructorSetsGrantFactory()
+    public function testConstructorSetsGrantFactory(): void
     {
         $mockAdapter = Mockery::mock(GrantFactory::class);
 
@@ -150,48 +169,48 @@ class AbstractProviderTest extends TestCase
             'grantFactory' => $mockAdapter,
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
         $this->assertSame($mockAdapter, $mockProvider->getGrantFactory());
     }
 
-    public function testConstructorSetsHttpAdapter()
+    public function testConstructorSetsHttpAdapter(): void
     {
         $mockAdapter = Mockery::mock(ClientInterface::class);
 
         $mockProvider = new MockProvider([], [
             'httpClient' => $mockAdapter,
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
         $this->assertSame($mockAdapter, $mockProvider->getHttpClient());
     }
 
-    public function testConstructorSetsRequestFactory()
+    public function testConstructorSetsRequestFactory(): void
     {
         $mockAdapter = Mockery::mock(RequestFactoryInterface::class);
 
         $mockProvider = new MockProvider([], [
             'httpClient' => new Client(),
             'requestFactory' => $mockAdapter,
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
         $this->assertSame($mockAdapter, $mockProvider->getRequestFactory());
     }
 
-    public function testConstructorSetsStreamFactory()
+    public function testConstructorSetsStreamFactory(): void
     {
         $mockAdapter = Mockery::mock(StreamFactoryInterface::class);
 
         $mockProvider = new MockProvider([], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => $mockAdapter
+            'streamFactory' => $mockAdapter,
         ]);
         $this->assertSame($mockAdapter, $mockProvider->getStreamFactory());
     }
 
-    public function testSetRedirectHandler()
+    public function testSetRedirectHandler(): void
     {
         $testFunction = false;
         $state = false;
@@ -207,11 +226,8 @@ class AbstractProviderTest extends TestCase
         $this->assertNotFalse($state);
     }
 
-    /**
-     * @dataProvider userPropertyProvider
-     */
     #[DataProvider('userPropertyProvider')]
-    public function testGetUserProperties($name = null, $email = null, $id = null)
+    public function testGetUserProperties(?string $name = null, ?string $email = null, ?int $id = null): void
     {
         $provider = new MockProvider([
             'clientId' => 'mock_client_id',
@@ -220,7 +236,7 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
@@ -246,7 +262,6 @@ class AbstractProviderTest extends TestCase
             ->with('content-type')
             ->andReturn(['application/json']);
 
-
         $client = Mockery::spy(ClientInterface::class, [
             'sendRequest' => $response,
         ]);
@@ -265,14 +280,12 @@ class AbstractProviderTest extends TestCase
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(function ($request) use ($url) {
-                return $request->getMethod() === 'GET'
+            ->withArgs(fn ($request) => $request->getMethod() === 'GET'
                     && $request->hasHeader('Authorization')
-                    && (string) $request->getUri() === $url;
-            });
+                    && (string) $request->getUri() === $url);
     }
 
-    public function testGetUserPropertiesThrowsExceptionWhenNonJsonResponseIsReceived()
+    public function testGetUserPropertiesThrowsExceptionWhenNonJsonResponseIsReceived(): void
     {
         $provider = new MockProvider([
             'clientId' => 'mock_client_id',
@@ -281,7 +294,7 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
@@ -307,18 +320,21 @@ class AbstractProviderTest extends TestCase
 
         $this->expectException(UnexpectedValueException::class);
 
-        $user = $provider->getResourceOwner($token);
+        $provider->getResourceOwner($token);
     }
 
-    public static function userPropertyProvider()
+    /**
+     * @return array<string, array{0: string, 1: string, 2: int}>
+     */
+    public static function userPropertyProvider(): array
     {
         return [
-            'full response'  => ['test', 'test@example.com', 1],
-            'no response'    => [],
+            'full response' => ['test', 'test@example.com', 1],
+            'no response' => [],
         ];
     }
 
-    public function testGetHeaders()
+    public function testGetHeaders(): void
     {
         $provider = $this->getMockProvider();
 
@@ -330,7 +346,7 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals(['Authorization' => 'Bearer xyz'], $provider->getHeaders($token));
     }
 
-    public function testScopesOverloadedDuringAuthorize()
+    public function testScopesOverloadedDuringAuthorize(): void
     {
         $provider = $this->getMockProvider();
 
@@ -349,7 +365,7 @@ class AbstractProviderTest extends TestCase
         $this->assertSame('foo,bar', $qs['scope']);
     }
 
-    public function testAuthorizationStateIsRandom()
+    public function testAuthorizationStateIsRandom(): void
     {
         $last = null;
         $provider = $this->getMockProvider();
@@ -360,14 +376,14 @@ class AbstractProviderTest extends TestCase
 
             parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
-            $this->assertTrue(1 === preg_match('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']));
+            $this->assertTrue(preg_match('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']) === 1);
             $this->assertNotSame($qs['state'], $last);
 
             $last = $qs['state'];
         }
     }
 
-    public function testSetGetPkceCode()
+    public function testSetGetPkceCode(): void
     {
         $pkceCode = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 
@@ -376,11 +392,8 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($pkceCode, $provider->getPkceCode());
     }
 
-    /**
-     * @dataProvider pkceMethodProvider
-     */
     #[DataProvider('pkceMethodProvider')]
-    public function testPkceMethod($pkceMethod, $pkceCode, $expectedChallenge)
+    public function testPkceMethod(string $pkceMethod, string $pkceCode, string $expectedChallenge): void
     {
         $provider = $this->getMockProvider();
         $provider->setPkceMethod($pkceMethod);
@@ -398,12 +411,12 @@ class AbstractProviderTest extends TestCase
         // Simulate re-initialization of provider after authorization request
         $provider = $this->getMockProvider();
 
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+        $rawResponse = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
         $stream = Mockery::mock(StreamInterface::class);
         $stream
             ->shouldReceive('__toString')
             ->once()
-            ->andReturn(json_encode($raw_response));
+            ->andReturn(json_encode($rawResponse));
 
         $response = Mockery::mock(ResponseInterface::class);
         $response
@@ -430,12 +443,16 @@ class AbstractProviderTest extends TestCase
             ->shouldHaveReceived('sendRequest')
             ->once()
             ->withArgs(function ($request) use ($pkceCode) {
-                parse_str((string)$request->getBody(), $body);
+                parse_str((string) $request->getBody(), $body);
+
                 return $body['code_verifier'] === $pkceCode;
             });
     }
 
-    public static function pkceMethodProvider()
+    /**
+     * @return array<list<string>>
+     */
+    public static function pkceMethodProvider(): array
     {
         return [
             [
@@ -451,7 +468,7 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
-    public function testInvalidPkceMethod()
+    public function testInvalidPkceMethod(): void
     {
         $provider = $this->getMockProvider();
         $provider->setPkceMethod('non-existing');
@@ -460,7 +477,7 @@ class AbstractProviderTest extends TestCase
         $provider->getAuthorizationUrl();
     }
 
-    public function testPkceCodeIsRandom()
+    public function testPkceCodeIsRandom(): void
     {
         $last = null;
         $provider = $this->getMockProvider();
@@ -471,20 +488,20 @@ class AbstractProviderTest extends TestCase
             $url = $provider->getAuthorizationUrl();
 
             parse_str(parse_url($url, PHP_URL_QUERY), $qs);
-            $this->assertTrue(1 === preg_match('/^[a-zA-Z0-9-_]{43}$/', $qs['code_challenge']));
+            $this->assertTrue(preg_match('/^[a-zA-Z0-9-_]{43}$/', $qs['code_challenge']) === 1);
             $this->assertNotSame($qs['code_challenge'], $last);
             $last = $qs['code_challenge'];
         }
     }
 
-    public function testPkceMethodIsDisabledByDefault()
+    public function testPkceMethodIsDisabledByDefault(): void
     {
         $provider = $this->getAbstractProviderMock();
         $pkceMethod = $provider->getPkceMethod();
         $this->assertNull($pkceMethod);
     }
 
-    public function testErrorResponsesCanBeCustomizedAtTheProvider()
+    public function testErrorResponsesCanBeCustomizedAtTheProvider(): void
     {
         $provider = new MockProvider([
             'clientId' => 'mock_client_id',
@@ -493,10 +510,10 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
-        $error = ["error" => "Foo error", "code" => 1337];
+        $error = ['error' => 'Foo error', 'code' => 1337];
         $errorJson = json_encode($error);
 
         $stream = Mockery::mock(StreamInterface::class);
@@ -544,13 +561,11 @@ class AbstractProviderTest extends TestCase
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(function ($request) use ($method, $url) {
-                return $request->getMethod() === $method
-                    && (string) $request->getUri() === $url;
-            });
+            ->withArgs(fn ($request) => $request->getMethod() === $method
+                    && (string) $request->getUri() === $url);
     }
 
-    public function testClientErrorTriggersProviderException()
+    public function testClientErrorTriggersProviderException(): void
     {
         $this->expectException(IdentityProviderException::class);
         $provider = new MockProvider([
@@ -560,7 +575,7 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $stream = Mockery::mock(StreamInterface::class, [
@@ -587,12 +602,12 @@ class AbstractProviderTest extends TestCase
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    public function testGetResponse()
+    public function testGetResponse(): void
     {
         $provider = new MockProvider([], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $request = Mockery::mock(RequestInterface::class);
@@ -610,12 +625,12 @@ class AbstractProviderTest extends TestCase
         $this->assertSame($output, $response);
     }
 
-    public function testAuthenticatedRequestAndResponse()
+    public function testAuthenticatedRequestAndResponse(): void
     {
         $provider = new MockProvider([], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $token = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
@@ -651,7 +666,10 @@ class AbstractProviderTest extends TestCase
         $this->assertContains('Bearer abc', $header);
     }
 
-    public static function getAccessTokenMethodProvider()
+    /**
+     * @return array<list<string>>
+     */
+    public static function getAccessTokenMethodProvider(): array
     {
         return [
             ['GET'],
@@ -659,11 +677,8 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getAccessTokenMethodProvider
-     */
     #[DataProvider('getAccessTokenMethodProvider')]
-    public function testGetAccessToken($method)
+    public function testGetAccessToken(string $method): void
     {
         $provider = new MockProvider([
             'clientId' => 'mock_client_id',
@@ -672,12 +687,12 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $provider->setAccessTokenMethod($method);
 
-        $raw_response = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+        $rawResponse = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
 
         $grant = Mockery::mock(AbstractGrant::class);
         $grant
@@ -685,7 +700,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code', 'scope' => 'test']
+                ['code' => 'mock_authorization_code', 'scope' => 'test'],
             )
             ->andReturn([]);
 
@@ -693,7 +708,7 @@ class AbstractProviderTest extends TestCase
         $stream
             ->shouldReceive('__toString')
             ->once()
-            ->andReturn(json_encode($raw_response));
+            ->andReturn(json_encode($rawResponse));
 
         $response = Mockery::mock(ResponseInterface::class);
         $response
@@ -715,20 +730,18 @@ class AbstractProviderTest extends TestCase
 
         $this->assertInstanceOf(AccessTokenInterface::class, $token);
 
-        $this->assertSame($raw_response['resource_owner_id'], $token->getResourceOwnerId());
-        $this->assertSame($raw_response['access_token'], $token->getToken());
-        $this->assertSame($raw_response['expires'], $token->getExpires());
+        $this->assertSame($rawResponse['resource_owner_id'], $token->getResourceOwnerId());
+        $this->assertSame($rawResponse['access_token'], $token->getToken());
+        $this->assertSame($rawResponse['expires'], $token->getExpires());
 
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(function ($request) use ($provider) {
-                return $request->getMethod() === $provider->getAccessTokenMethod()
-                    && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]);
-            });
+            ->withArgs(fn ($request) => $request->getMethod() === $provider->getAccessTokenMethod()
+                    && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]));
     }
 
-    public function testGetAccessTokenWithNonJsonResponse()
+    public function testGetAccessTokenWithNonJsonResponse(): void
     {
         $provider = $this->getMockProvider();
 
@@ -756,41 +769,39 @@ class AbstractProviderTest extends TestCase
         $provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
     }
 
-    private function getMethod($class, $name)
+    private function getMethod(string $name): ReflectionMethod
     {
-        $class = new ReflectionClass($class);
-        $method = $class->getMethod($name);
+        $class = new ReflectionClass(AbstractProvider::class);
 
-        $method->setAccessible(true);
-        return $method;
+        return $class->getMethod($name);
     }
 
-    public static function parseResponseProvider()
+    /**
+     * @return array<array{body: string, type: string, parsed: mixed, statusCode?: int}>
+     */
+    public static function parseResponseProvider(): array
     {
         return [
             [
-                'body'    => '{"a": 1}',
-                'type'    => 'application/json',
-                'parsed'  => ['a' => 1]
+                'body' => '{"a": 1}',
+                'type' => 'application/json',
+                'parsed' => ['a' => 1],
             ],
             [
-                'body'    => 'string',
-                'type'    => 'unknown',
-                'parsed'  => 'string'
+                'body' => 'string',
+                'type' => 'unknown',
+                'parsed' => 'string',
             ],
             [
-                'body'    => 'a=1&b=2',
-                'type'    => 'application/x-www-form-urlencoded',
-                'parsed'  => ['a' => 1, 'b' => 2]
+                'body' => 'a=1&b=2',
+                'type' => 'application/x-www-form-urlencoded',
+                'parsed' => ['a' => 1, 'b' => 2],
             ],
         ];
     }
 
-    /**
-     * @dataProvider parseResponseProvider
-     */
     #[DataProvider('parseResponseProvider')]
-    public function testParseResponse($body, $type, $parsed, $statusCode = 200)
+    public function testParseResponse(string $body, string $type, mixed $parsed, int $statusCode = 200): void
     {
         $stream = Mockery::mock(StreamInterface::class, [
             '__toString' => $body,
@@ -805,25 +816,28 @@ class AbstractProviderTest extends TestCase
             ->with('content-type')
             ->andReturn([$type]);
 
-        $method = $this->getMethod(AbstractProvider::class, 'parseResponse');
+        $method = $this->getMethod('parseResponse');
         $result = $method->invoke($this->getMockProvider(), $response);
 
         $this->assertEquals($parsed, $result);
     }
 
-    public function testParseResponseJsonFailure()
+    public function testParseResponseJsonFailure(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('{a: 1}', 'application/json', null);
     }
 
-    public function testParseResponseNonJsonFailure()
+    public function testParseResponseNonJsonFailure(): void
     {
         $this->expectException(UnexpectedValueException::class);
         $this->testParseResponse('<xml></xml>', 'application/xml', null, 500);
     }
 
-    public static function getAppendQueryProvider()
+    /**
+     * @return array<list<string>>
+     */
+    public static function getAppendQueryProvider(): array
     {
         return [
             ['test.com/?a=1', 'test.com/', '?a=1'],
@@ -839,22 +853,19 @@ class AbstractProviderTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getAppendQueryProvider
-     */
     #[DataProvider('getAppendQueryProvider')]
-    public function testAppendQuery($expected, $url, $query)
+    public function testAppendQuery(string $expected, string $url, string $query): void
     {
-        $method = $this->getMethod(AbstractProvider::class, 'appendQuery');
+        $method = $this->getMethod('appendQuery');
         $this->assertEquals($expected, $method->invoke($this->getMockProvider(), $url, $query));
     }
 
-    protected function getAbstractProviderMock()
+    protected function getAbstractProviderMock(): AbstractProvider & MockInterface
     {
         return Mockery::mock(AbstractProvider::class)->makePartial();
     }
 
-    public function testDefaultAccessTokenMethod()
+    public function testDefaultAccessTokenMethod(): void
     {
         $provider = $this->getAbstractProviderMock();
 
@@ -864,7 +875,7 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($expectedMethod, $method);
     }
 
-    public function testDefaultPrepareAccessTokenResponse()
+    public function testDefaultPrepareAccessTokenResponse(): void
     {
         $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
 
@@ -875,34 +886,34 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($result['user_id'], $newResult['resource_owner_id']);
     }
 
-    public function testGuardedProperties()
+    public function testGuardedProperties(): void
     {
         $options = [
             'clientId' => 'mock_client_id',
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
             'skipMeDuringMassAssignment' => 'bar',
-            'guarded' => 'foo'
+            'guarded' => 'foo',
         ];
 
         $provider = new Fake\ProviderWithGuardedProperties($options, [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
         $this->assertNotEquals(
             $options['skipMeDuringMassAssignment'],
-            $provider->getSkipMeDuringMassAssignment()
+            $provider->getSkipMeDuringMassAssignment(),
         );
 
         $this->assertNotEquals(
             $options['guarded'],
-            $provider->getGuarded()
+            $provider->getGuarded(),
         );
     }
 
-    public function testPrepareAccessTokenResponseWithDotNotation()
+    public function testPrepareAccessTokenResponseWithDotNotation(): void
     {
         $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
         $provider->shouldAllowMockingProtectedMethods();
@@ -917,13 +928,13 @@ class AbstractProviderTest extends TestCase
         $this->assertEquals($result['user']['id'], $newResult['resource_owner_id']);
     }
 
-    public function testPrepareAccessTokenResponseWithInvalidKeyType()
+    public function testPrepareAccessTokenResponseWithInvalidKeyType(): void
     {
         $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
         $provider->shouldAllowMockingProtectedMethods();
         $provider
             ->shouldReceive('getAccessTokenResourceOwnerId')
-            ->andReturn(new \stdClass());
+            ->andReturn(new stdClass());
 
         $result = ['user_id' => uniqid()];
         $newResult = $provider->prepareAccessTokenResponse($result);
@@ -931,7 +942,7 @@ class AbstractProviderTest extends TestCase
         $this->assertFalse(isset($newResult['resource_owner_id']));
     }
 
-    public function testPrepareAccessTokenResponseWithInvalidKeyPath()
+    public function testPrepareAccessTokenResponseWithInvalidKeyPath(): void
     {
         $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
         $provider->shouldAllowMockingProtectedMethods();
@@ -945,7 +956,7 @@ class AbstractProviderTest extends TestCase
         $this->assertFalse(isset($newResult['resource_owner_id']));
     }
 
-    public function testDefaultAuthorizationHeaders()
+    public function testDefaultAuthorizationHeaders(): void
     {
         $provider = $this->getAbstractProviderMock();
 
@@ -960,7 +971,7 @@ class AbstractProviderTest extends TestCase
      *
      * @link https://github.com/thephpleague/oauth2-client/issues/752
      */
-    public function testExtendedProviderDoesNotErrorWhenUsingAccessTokenAsTheTypeHint()
+    public function testExtendedProviderDoesNotErrorWhenUsingAccessTokenAsTheTypeHint(): void
     {
         $token = new AccessToken([
             'access_token' => 'mock_access_token',
@@ -976,12 +987,11 @@ class AbstractProviderTest extends TestCase
         ], [
             'httpClient' => new Client(),
             'requestFactory' => new HttpFactory(),
-            'streamFactory' => new HttpFactory()
+            'streamFactory' => new HttpFactory(),
         ]);
 
-        $reflectedProvider = new \ReflectionObject($provider);
+        $reflectedProvider = new ReflectionObject($provider);
         $getTokenId = $reflectedProvider->getMethod('getTokenId');
-        $getTokenId->setAccessible(true);
 
         $url = $provider->getResourceOwnerDetailsUrl($token);
         $tokenId = $getTokenId->invoke($provider, $token);

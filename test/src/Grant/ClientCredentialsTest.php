@@ -1,27 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Test\Grant;
 
+use Closure;
 use League\OAuth2\Client\Grant\ClientCredentials;
 
 class ClientCredentialsTest extends GrantTestCase
 {
-    public static function providerGetAccessToken()
+    /**
+     * @inheritDoc
+     */
+    public static function providerGetAccessToken(): array
     {
         return [
             ['client_credentials'],
         ];
     }
 
-    protected function getParamExpectation()
+    protected function getParamExpectation(): Closure
     {
-        return function ($body) {
-            return !empty($body['grant_type'])
+        return fn ($body) => isset($body['grant_type'])
                 && $body['grant_type'] === 'client_credentials';
-        };
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $grant = new ClientCredentials();
         $this->assertEquals('client_credentials', (string) $grant);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of the league/oauth2-client library
  *
@@ -12,6 +13,8 @@
  * @link https://github.com/thephpleague/oauth2-client GitHub
  */
 
+declare(strict_types=1);
+
 namespace League\OAuth2\Client\Provider;
 
 /**
@@ -20,20 +23,16 @@ namespace League\OAuth2\Client\Provider;
 class GenericResourceOwner implements ResourceOwnerInterface
 {
     /**
-     * @var array
+     * @var mixed[]
      */
-    protected $response;
+    protected array $response;
+
+    protected string $resourceOwnerId;
 
     /**
-     * @var string
+     * @param mixed[] $response
      */
-    protected $resourceOwnerId;
-
-    /**
-     * @param array $response
-     * @param string $resourceOwnerId
-     */
-    public function __construct(array $response, $resourceOwnerId)
+    public function __construct(array $response, string $resourceOwnerId)
     {
         $this->response = $response;
         $this->resourceOwnerId = $resourceOwnerId;
@@ -52,7 +51,7 @@ class GenericResourceOwner implements ResourceOwnerInterface
     /**
      * Returns the raw resource owner response.
      *
-     * @return array
+     * @return mixed[]
      */
     public function toArray()
     {
