@@ -5,5 +5,4 @@ composer.phar
 testing/
 nbproject/private/
 test/log
-build
 /.phpunit.result.cache

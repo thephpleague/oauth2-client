@@ -1,0 +1,8 @@
+*
+!.gitignore
+!coverage
+!coverage/.keep
+!logs
+!logs/.keep
+!phpunit
+!phpunit/.keep
