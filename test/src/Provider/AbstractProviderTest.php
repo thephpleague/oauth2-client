@@ -673,8 +673,7 @@ class AbstractProviderTest extends TestCase
         $result = $provider->getParsedResponse($request);
 
         $this->assertSame(['example' => 'response'], $result);
-
-        $this->assertInstanceOf(RequestInterface::class, $request);
+        $this->assertSame('GET', $request->getMethod());
 
         // Authorization header should contain the token
         $header = $request->getHeader('Authorization');
@@ -948,22 +947,6 @@ class AbstractProviderTest extends TestCase
 
         $this->assertArrayHasKey('resource_owner_id', $newResult);
         $this->assertEquals($result['user']['id'], $newResult['resource_owner_id']);
-    }
-
-    public function testPrepareAccessTokenResponseWithInvalidKeyType(): void
-    {
-        $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
-        $provider->shouldAllowMockingProtectedMethods();
-        $provider
-            ->shouldReceive('getAccessTokenResourceOwnerId')
-            ->andReturn(new stdClass());
-
-        $result = ['user_id' => uniqid()];
-
-        /** @phpstan-ignore method.protected */
-        $newResult = $provider->prepareAccessTokenResponse($result);
-
-        $this->assertFalse(isset($newResult['resource_owner_id']));
     }
 
     public function testPrepareAccessTokenResponseWithInvalidKeyPath(): void

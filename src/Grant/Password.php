@@ -24,10 +24,7 @@ namespace League\OAuth2\Client\Grant;
  */
 class Password extends AbstractGrant
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getName()
+    protected function getName(): string
     {
         return 'password';
     }
@@ -35,7 +32,7 @@ class Password extends AbstractGrant
     /**
      * @inheritdoc
      */
-    protected function getRequiredRequestParameters()
+    protected function getRequiredRequestParameters(): array
     {
         return [
             'username',

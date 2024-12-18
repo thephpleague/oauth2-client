@@ -21,8 +21,6 @@ interface ResourceOwnerAccessTokenInterface extends AccessTokenInterface
 {
     /**
      * Returns the resource owner identifier, if defined.
-     *
-     * @return int | string | null
      */
-    public function getResourceOwnerId();
+    public function getResourceOwnerId(): int | string | null;
 }

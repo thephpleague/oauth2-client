@@ -10,7 +10,6 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-use function is_array;
 use function json_decode;
 use function json_encode;
 use function strtotime;
@@ -290,7 +289,6 @@ class AccessTokenTest extends TestCase
 
         $values = $token->getValues();
 
-        $this->assertTrue(is_array($values));
         $this->assertArrayHasKey('custom_thing', $values);
         $this->assertSame($options['custom_thing'], $values['custom_thing']);
 

@@ -23,10 +23,7 @@ class User implements ResourceOwnerInterface
         $this->response = $response;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getId()
+    public function getId(): mixed
     {
         return $this->response['id'] ?? null;
     }

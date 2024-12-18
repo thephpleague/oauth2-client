@@ -31,9 +31,9 @@ trait BearerAuthorizationTrait
      *
      * @param AccessTokenInterface | string | null $token Either a string or an access token instance
      *
-     * @return array<string, mixed>
+     * @return array<string, string>
      */
-    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null)
+    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null): array
     {
         return ['Authorization' => 'Bearer ' . $token];
     }

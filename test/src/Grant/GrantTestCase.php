@@ -8,7 +8,6 @@ use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\HttpFactory;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
-use League\OAuth2\Client\Token\AccessTokenInterface;
 use Mockery;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -103,6 +102,6 @@ abstract class GrantTestCase extends TestCase
         $provider->setHttpClient($client);
         $token = $provider->getAccessToken($grant, $params);
 
-        $this->assertInstanceOf(AccessTokenInterface::class, $token);
+        $this->assertSame('mock_access_token', $token->getToken());
     }
 }

@@ -171,7 +171,7 @@ abstract class AbstractProvider
      *
      * @return list<string> The options to pass to the HttpClient constructor
      */
-    protected function getAllowedClientOptions(array $options)
+    protected function getAllowedClientOptions(array $options): array
     {
         $clientOptions = ['timeout', 'proxy'];
 
@@ -185,10 +185,8 @@ abstract class AbstractProvider
 
     /**
      * Sets the grant factory instance.
-     *
-     * @return self
      */
-    public function setGrantFactory(GrantFactory $factory)
+    public function setGrantFactory(GrantFactory $factory): static
     {
         $this->grantFactory = $factory;
 
@@ -197,20 +195,16 @@ abstract class AbstractProvider
 
     /**
      * Returns the current grant factory instance.
-     *
-     * @return GrantFactory
      */
-    public function getGrantFactory()
+    public function getGrantFactory(): GrantFactory
     {
         return $this->grantFactory;
     }
 
     /**
      * Sets the request factory instance.
-     *
-     * @return self
      */
-    public function setRequestFactory(RequestFactoryInterface $factory)
+    public function setRequestFactory(RequestFactoryInterface $factory): static
     {
         $this->requestFactory = $factory;
 
@@ -219,20 +213,16 @@ abstract class AbstractProvider
 
     /**
      * Returns the request factory instance.
-     *
-     * @return RequestFactoryInterface
      */
-    public function getRequestFactory()
+    public function getRequestFactory(): RequestFactoryInterface
     {
         return $this->requestFactory;
     }
 
     /**
      * Sets the stream factory instance.
-     *
-     * @return self
      */
-    public function setStreamFactory(StreamFactoryInterface $factory)
+    public function setStreamFactory(StreamFactoryInterface $factory): static
     {
         $this->streamFactory = $factory;
 
@@ -241,20 +231,16 @@ abstract class AbstractProvider
 
     /**
      * Returns the stream factory instance.
-     *
-     * @return StreamFactoryInterface
      */
-    public function getStreamFactory()
+    public function getStreamFactory(): StreamFactoryInterface
     {
         return $this->streamFactory;
     }
 
     /**
      * Sets the HTTP client instance.
-     *
-     * @return self
      */
-    public function setHttpClient(ClientInterface $client)
+    public function setHttpClient(ClientInterface $client): static
     {
         $this->httpClient = $client;
 
@@ -263,20 +249,16 @@ abstract class AbstractProvider
 
     /**
      * Returns the HTTP client instance.
-     *
-     * @return ClientInterface
      */
-    public function getHttpClient()
+    public function getHttpClient(): ClientInterface
     {
         return $this->httpClient;
     }
 
     /**
      * Sets the option provider instance.
-     *
-     * @return self
      */
-    public function setOptionProvider(OptionProviderInterface $provider)
+    public function setOptionProvider(OptionProviderInterface $provider): static
     {
         $this->optionProvider = $provider;
 
@@ -285,10 +267,8 @@ abstract class AbstractProvider
 
     /**
      * Returns the option provider instance.
-     *
-     * @return OptionProviderInterface
      */
-    public function getOptionProvider()
+    public function getOptionProvider(): OptionProviderInterface
     {
         return $this->optionProvider;
     }
@@ -297,10 +277,8 @@ abstract class AbstractProvider
      * Returns the current value of the state parameter.
      *
      * This can be accessed by the redirect handler during authorization.
-     *
-     * @return string
      */
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
@@ -309,10 +287,8 @@ abstract class AbstractProvider
      * Set the value of the pkceCode parameter.
      *
      * When using PKCE this should be set before requesting an access token.
-     *
-     * @return self
      */
-    public function setPkceCode(string $pkceCode)
+    public function setPkceCode(string $pkceCode): static
     {
         $this->pkceCode = $pkceCode;
 
@@ -323,10 +299,8 @@ abstract class AbstractProvider
      * Returns the current value of the pkceCode parameter.
      *
      * This can be accessed by the redirect handler during authorization.
-     *
-     * @return string | null
      */
-    public function getPkceCode()
+    public function getPkceCode(): ?string
     {
         return $this->pkceCode;
     }
@@ -335,10 +309,8 @@ abstract class AbstractProvider
      * Returns the base URL for authorizing a client.
      *
      * Eg. https://oauth.service.com/authorize
-     *
-     * @return string
      */
-    abstract public function getBaseAuthorizationUrl();
+    abstract public function getBaseAuthorizationUrl(): string;
 
     /**
      * Returns the base URL for requesting an access token.
@@ -346,27 +318,21 @@ abstract class AbstractProvider
      * Eg. https://oauth.service.com/token
      *
      * @param array<string, mixed> $params
-     *
-     * @return string
      */
-    abstract public function getBaseAccessTokenUrl(array $params);
+    abstract public function getBaseAccessTokenUrl(array $params): string;
 
     /**
      * Returns the URL for requesting the resource owner's details.
-     *
-     * @return string
      */
-    abstract public function getResourceOwnerDetailsUrl(AccessToken $token);
+    abstract public function getResourceOwnerDetailsUrl(AccessToken $token): string;
 
     /**
      * Returns a new random string to use as the state parameter in an
      * authorization flow.
      *
      * @param int<1, max> $length Length of the random string to be generated.
-     *
-     * @return string
      */
-    protected function getRandomState(int $length = 32)
+    protected function getRandomState(int $length = 32): string
     {
         // Converting bytes to hex will always double length. Hence, we can reduce
         // the amount of bytes by half to produce the correct length.
@@ -382,9 +348,8 @@ abstract class AbstractProvider
      * Must be between 43 and 128 characters long.
      *
      * @param int<1, max> $length Length of the random string to be generated.
-     * @return string
      */
-    protected function getRandomPkceCode(int $length = 64)
+    protected function getRandomPkceCode(int $length = 64): string
     {
         assert($length >= 1);
 
@@ -399,7 +364,7 @@ abstract class AbstractProvider
      *
      * @return list<string>
      */
-    abstract protected function getDefaultScopes();
+    abstract protected function getDefaultScopes(): array;
 
     /**
      * Returns the string that should be used to separate scopes when building
@@ -407,15 +372,12 @@ abstract class AbstractProvider
      *
      * @return string Scope separator, defaults to ','
      */
-    protected function getScopeSeparator()
+    protected function getScopeSeparator(): string
     {
         return ',';
     }
 
-    /**
-     * @return string | null
-     */
-    protected function getPkceMethod()
+    protected function getPkceMethod(): ?string
     {
         return null;
     }
@@ -429,7 +391,7 @@ abstract class AbstractProvider
      *
      * @throws InvalidArgumentException
      */
-    protected function getAuthorizationParameters(array $options)
+    protected function getAuthorizationParameters(array $options): array
     {
         $options += [
             'response_type' => 'code',
@@ -491,7 +453,7 @@ abstract class AbstractProvider
      *
      * @return string Query string
      */
-    protected function getAuthorizationQuery(array $params)
+    protected function getAuthorizationQuery(array $params): string
     {
         return $this->buildQueryString($params);
     }
@@ -505,7 +467,7 @@ abstract class AbstractProvider
      *
      * @throws InvalidArgumentException
      */
-    public function getAuthorizationUrl(array $options = [])
+    public function getAuthorizationUrl(array $options = []): string
     {
         $base = $this->getBaseAuthorizationUrl();
         $params = $this->getAuthorizationParameters($options);
@@ -544,9 +506,10 @@ abstract class AbstractProvider
      *
      * @param  string $url The URL to append the query to
      * @param  string $query The HTTP query string
+     *
      * @return string The resulting URL
      */
-    protected function appendQuery(string $url, string $query)
+    protected function appendQuery(string $url, string $query): string
     {
         $query = trim($query, '?&');
 
@@ -564,7 +527,7 @@ abstract class AbstractProvider
      *
      * @return string HTTP method
      */
-    protected function getAccessTokenMethod()
+    protected function getAccessTokenMethod(): string
     {
         return self::METHOD_POST;
     }
@@ -574,7 +537,7 @@ abstract class AbstractProvider
      *
      * @return string | null Resource owner identifier key
      */
-    protected function getAccessTokenResourceOwnerId()
+    protected function getAccessTokenResourceOwnerId(): ?string
     {
         /** @var string | null */
         return static::ACCESS_TOKEN_RESOURCE_OWNER_ID;
@@ -587,7 +550,7 @@ abstract class AbstractProvider
      *
      * @return string Query string
      */
-    protected function getAccessTokenQuery(array $params)
+    protected function getAccessTokenQuery(array $params): string
     {
         return $this->buildQueryString($params);
     }
@@ -595,10 +558,8 @@ abstract class AbstractProvider
     /**
      * Checks that a provided grant is valid, or attempts to produce one if the
      * provided grant is a string.
-     *
-     * @return AbstractGrant
      */
-    protected function verifyGrant(mixed $grant)
+    protected function verifyGrant(mixed $grant): AbstractGrant
     {
         if (is_string($grant)) {
             return $this->grantFactory->getGrant($grant);
@@ -613,10 +574,8 @@ abstract class AbstractProvider
      * Returns the full URL to use when requesting an access token.
      *
      * @param array<string, mixed> $params Query parameters
-     *
-     * @return string
      */
-    protected function getAccessTokenUrl(array $params)
+    protected function getAccessTokenUrl(array $params): string
     {
         $url = $this->getBaseAccessTokenUrl($params);
 
@@ -637,10 +596,8 @@ abstract class AbstractProvider
      *     version?: string,
      *     body?: string,
      * } $params Any of "headers", "body", and "version".
-     *
-     * @return RequestInterface
      */
-    protected function getAccessTokenRequest(array $params)
+    protected function getAccessTokenRequest(array $params): RequestInterface
     {
         $method = $this->getAccessTokenMethod();
         $url = $this->getAccessTokenUrl($params);
@@ -662,13 +619,11 @@ abstract class AbstractProvider
      *
      * @param array<string, mixed> $options
      *
-     * @return AccessTokenInterface
-     *
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
      */
-    public function getAccessToken(mixed $grant, array $options = [])
+    public function getAccessToken(mixed $grant, array $options = []): AccessTokenInterface
     {
         $grant = $this->verifyGrant($grant);
 
@@ -701,15 +656,7 @@ abstract class AbstractProvider
         $params = $grant->prepareRequestParameters($params, $options);
 
         $request = $this->getAccessTokenRequest($params);
-
-        /** @var array<string, mixed> $response */
         $response = $this->getParsedResponse($request);
-        if (is_array($response) === false) {
-            throw new UnexpectedValueException(
-                'Invalid response received from Authorization Server. Expected JSON.',
-            );
-        }
-
         $prepared = $this->prepareAccessTokenResponse($response);
 
         return $this->createAccessToken($prepared, $grant);
@@ -723,10 +670,8 @@ abstract class AbstractProvider
      *     version?: string,
      *     body?: string,
      * } $options Any of "headers", "body", and "version".
-     *
-     * @return RequestInterface
      */
-    public function getRequest(string $method, string $url, array $options = [])
+    public function getRequest(string $method, string $url, array $options = []): RequestInterface
     {
         return $this->createRequest($method, $url, null, $options);
     }
@@ -739,15 +684,13 @@ abstract class AbstractProvider
      *     version?: string,
      *     body?: string,
      * } $options Any of "headers", "body", and "version".
-     *
-     * @return RequestInterface
      */
     public function getAuthenticatedRequest(
         string $method,
         string $url,
         AccessTokenInterface | string | null $token,
         array $options = [],
-    ) {
+    ): RequestInterface {
         return $this->createRequest($method, $url, $token, $options);
     }
 
@@ -759,15 +702,13 @@ abstract class AbstractProvider
      *     version?: string,
      *     body?: string,
      * } $options
-     *
-     * @return RequestInterface
      */
     protected function createRequest(
         string $method,
         string $url,
         AccessTokenInterface | string | null $token,
         array $options,
-    ) {
+    ): RequestInterface {
         $defaults = [
             'headers' => $this->getHeaders($token),
         ];
@@ -803,11 +744,9 @@ abstract class AbstractProvider
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @return ResponseInterface
-     *
      * @throws ClientExceptionInterface
      */
-    public function getResponse(RequestInterface $request)
+    public function getResponse(RequestInterface $request): ResponseInterface
     {
         return $this->getHttpClient()->sendRequest($request);
     }
@@ -815,13 +754,13 @@ abstract class AbstractProvider
     /**
      * Sends a request and returns the parsed response.
      *
-     * @return mixed
+     * @return array<string, mixed>
      *
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
      */
-    public function getParsedResponse(RequestInterface $request)
+    public function getParsedResponse(RequestInterface $request): array
     {
         try {
             $response = $this->getResponse($request);
@@ -831,6 +770,12 @@ abstract class AbstractProvider
 
         /** @var array<string, mixed> $parsed */
         $parsed = $this->parseResponse($response);
+
+        if (is_array($parsed) === false) {
+            throw new UnexpectedValueException(
+                'Invalid response received from Authorization Server. Expected JSON.',
+            );
+        }
 
         $this->checkResponse($response, $parsed);
 
@@ -846,7 +791,7 @@ abstract class AbstractProvider
      *
      * @throws UnexpectedValueException if the content could not be parsed
      */
-    protected function parseJson(string $content)
+    protected function parseJson(string $content): array
     {
         $content = json_decode($content, true);
 
@@ -866,7 +811,7 @@ abstract class AbstractProvider
      *
      * @return string Semi-colon separated join of content-type headers.
      */
-    protected function getContentType(ResponseInterface $response)
+    protected function getContentType(ResponseInterface $response): string
     {
         return implode(';', $response->getHeader('content-type'));
     }
@@ -874,11 +819,11 @@ abstract class AbstractProvider
     /**
      * Parses the response according to its content-type header.
      *
-     * @return mixed
+     * @return array<string, mixed> | string
      *
      * @throws UnexpectedValueException
      */
-    protected function parseResponse(ResponseInterface $response)
+    protected function parseResponse(ResponseInterface $response): array | string
     {
         $content = (string) $response->getBody();
         $type = $this->getContentType($response);
@@ -886,6 +831,7 @@ abstract class AbstractProvider
         if (strpos($type, 'urlencoded') !== false) {
             parse_str($content, $parsed);
 
+            /** @var array<string, string> */
             return $parsed;
         }
 
@@ -916,11 +862,9 @@ abstract class AbstractProvider
      *
      * @param mixed[] | string $data Parsed response data
      *
-     * @return void
-     *
      * @throws IdentityProviderException
      */
-    abstract protected function checkResponse(ResponseInterface $response, array | string $data);
+    abstract protected function checkResponse(ResponseInterface $response, array | string $data): void;
 
     /**
      * Prepares an parsed access token response for a grant.
@@ -932,7 +876,7 @@ abstract class AbstractProvider
      *
      * @return array<string, mixed>
      */
-    protected function prepareAccessTokenResponse(array $result)
+    protected function prepareAccessTokenResponse(array $result): array
     {
         if ($this->getAccessTokenResourceOwnerId() !== null) {
             $result['resource_owner_id'] = $this->getValueByKey(
@@ -951,10 +895,8 @@ abstract class AbstractProvider
      * additional context.
      *
      * @param array<string, mixed> $response
-     *
-     * @return AccessTokenInterface
      */
-    protected function createAccessToken(array $response, AbstractGrant $grant)
+    protected function createAccessToken(array $response, AbstractGrant $grant): AccessTokenInterface
     {
         return new AccessToken($response);
     }
@@ -964,21 +906,17 @@ abstract class AbstractProvider
      * details request.
      *
      * @param array<string, mixed> $response
-     *
-     * @return ResourceOwnerInterface
      */
-    abstract protected function createResourceOwner(array $response, AccessToken $token);
+    abstract protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface;
 
     /**
      * Requests and returns the resource owner of given access token.
-     *
-     * @return ResourceOwnerInterface
      *
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
      */
-    public function getResourceOwner(AccessToken $token)
+    public function getResourceOwner(AccessToken $token): ResourceOwnerInterface
     {
         $response = $this->fetchResourceOwnerDetails($token);
 
@@ -994,22 +932,12 @@ abstract class AbstractProvider
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
      */
-    protected function fetchResourceOwnerDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token): array
     {
         $url = $this->getResourceOwnerDetailsUrl($token);
-
         $request = $this->getAuthenticatedRequest(self::METHOD_GET, $url, $token);
 
-        $response = $this->getParsedResponse($request);
-
-        if (is_array($response) === false) {
-            throw new UnexpectedValueException(
-                'Invalid response received from Authorization Server. Expected JSON.',
-            );
-        }
-
-        /** @var array<string, mixed> */
-        return $response;
+        return $this->getParsedResponse($request);
     }
 
     /**
@@ -1017,9 +945,9 @@ abstract class AbstractProvider
      *
      * Typically this is used to set 'Accept' or 'Content-Type' headers.
      *
-     * @return array<string, mixed>
+     * @return array<string, string | string[]>
      */
-    protected function getDefaultHeaders()
+    protected function getDefaultHeaders(): array
     {
         return [];
     }
@@ -1035,9 +963,9 @@ abstract class AbstractProvider
      *
      * @param AccessTokenInterface | string | null $token Either a string or an access token instance
      *
-     * @return array<string, mixed>
+     * @return array<string, string | string[]>
      */
-    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null)
+    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null): array
     {
         return [];
     }
@@ -1049,9 +977,9 @@ abstract class AbstractProvider
      *
      * @param AccessTokenInterface | string | null $token object or string
      *
-     * @return array<string, mixed>
+     * @return array<string, string | string[]>
      */
-    public function getHeaders(AccessTokenInterface | string | null $token = null)
+    public function getHeaders(AccessTokenInterface | string | null $token = null): array
     {
         if ($token) {
             return array_merge(

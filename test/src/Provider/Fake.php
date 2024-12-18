@@ -6,6 +6,7 @@ namespace League\OAuth2\Client\Test\Provider;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
@@ -37,10 +38,7 @@ class Fake extends AbstractProvider
         return $this->redirectUri;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getBaseAuthorizationUrl()
+    public function getBaseAuthorizationUrl(): string
     {
         return 'http://example.com/oauth/authorize';
     }
@@ -48,15 +46,12 @@ class Fake extends AbstractProvider
     /**
      * @inheritDoc
      */
-    public function getBaseAccessTokenUrl(array $params)
+    public function getBaseAccessTokenUrl(array $params): string
     {
         return 'http://example.com/oauth/token';
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getResourceOwnerDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
         return 'http://example.com/oauth/user';
     }
@@ -64,7 +59,7 @@ class Fake extends AbstractProvider
     /**
      * @inheritDoc
      */
-    protected function getDefaultScopes()
+    protected function getDefaultScopes(): array
     {
         return ['test'];
     }
@@ -74,10 +69,7 @@ class Fake extends AbstractProvider
         $this->accessTokenMethod = $method;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getAccessTokenMethod()
+    public function getAccessTokenMethod(): string
     {
         return $this->accessTokenMethod;
     }
@@ -87,10 +79,7 @@ class Fake extends AbstractProvider
         $this->pkceMethod = $method;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getPkceMethod()
+    public function getPkceMethod(): ?string
     {
         return $this->pkceMethod;
     }
@@ -100,28 +89,20 @@ class Fake extends AbstractProvider
         return $this->fixedPkceCode = $code;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getRandomPkceCode($length = 64)
+    protected function getRandomPkceCode(int $length = 64): string
     {
         return $this->fixedPkceCode ?: parent::getRandomPkceCode($length);
     }
 
     /**
-     * @param array<string, mixed> $response
-     *
      * @inheritDoc
      */
-    protected function createResourceOwner(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface
     {
         return new Fake\User($response);
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function checkResponse(ResponseInterface $response, $data)
+    protected function checkResponse(ResponseInterface $response, array | string $data): void
     {
         if (isset($data['error'])) {
             assert(is_string($data['error']));

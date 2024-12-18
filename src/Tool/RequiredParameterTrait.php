@@ -31,11 +31,9 @@ trait RequiredParameterTrait
      *
      * @param array<string, mixed> $params
      *
-     * @return void
-     *
      * @throws BadMethodCallException
      */
-    private function checkRequiredParameter(string $name, array $params)
+    private function checkRequiredParameter(string $name, array $params): void
     {
         if (!isset($params[$name])) {
             throw new BadMethodCallException(sprintf(
@@ -51,11 +49,9 @@ trait RequiredParameterTrait
      * @param list<string> $names
      * @param array<string, mixed> $params
      *
-     * @return void
-     *
      * @throws BadMethodCallException
      */
-    private function checkRequiredParameters(array $names, array $params)
+    private function checkRequiredParameters(array $names, array $params): void
     {
         foreach ($names as $name) {
             $this->checkRequiredParameter($name, $params);

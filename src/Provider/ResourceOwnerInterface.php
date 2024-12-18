@@ -25,15 +25,13 @@ interface ResourceOwnerInterface
 {
     /**
      * Returns the identifier of the authorized resource owner.
-     *
-     * @return mixed
      */
-    public function getId();
+    public function getId(): mixed;
 
     /**
      * Return all of the owner details available as an array.
      *
      * @return mixed[]
      */
-    public function toArray();
+    public function toArray(): array;
 }

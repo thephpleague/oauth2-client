@@ -18,6 +18,8 @@ class GrantFactoryTest extends TestCase
     {
         $factory = new GrantFactory();
         $grant = $factory->getGrant($name);
+
+        /** @phpstan-ignore method.alreadyNarrowedType */
         $this->assertInstanceOf(AbstractGrant::class, $grant);
     }
 
@@ -71,6 +73,7 @@ class GrantFactoryTest extends TestCase
         $factory = new GrantFactory();
         $grant = $factory->getGrant('password');
 
+        /** @phpstan-ignore method.alreadyNarrowedType */
         $this->assertTrue($factory->isGrant($grant));
 
         /** @phpstan-ignore method.impossibleType */
@@ -79,11 +82,18 @@ class GrantFactoryTest extends TestCase
 
     public function testCheckGrant(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $factory = new GrantFactory();
         $grant = $factory->getGrant('password');
-        $factory->checkGrant($grant);
+
+        $e = null;
+        try {
+            /** @phpstan-ignore method.alreadyNarrowedType */
+            $factory->checkGrant($grant);
+        } catch (InvalidGrantException $e) {
+            // Check that we don't have an exception.
+        }
+
+        $this->assertNull($e);
     }
 
     public function testCheckGrantInvalidFails(): void

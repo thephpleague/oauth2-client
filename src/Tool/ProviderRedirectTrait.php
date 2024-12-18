@@ -39,12 +39,10 @@ trait ProviderRedirectTrait
      * Retrieves a response for a given request and retrieves subsequent
      * responses, with authorization headers, if a redirect is detected.
      *
-     * @return ResponseInterface | null
-     *
      * @throws ClientExceptionInterface
      * @throws RuntimeException
      */
-    protected function followRequestRedirects(RequestInterface $request)
+    protected function followRequestRedirects(RequestInterface $request): ?ResponseInterface
     {
         $response = null;
         $attempts = 0;
@@ -67,27 +65,21 @@ trait ProviderRedirectTrait
 
     /**
      * Returns the HTTP client instance.
-     *
-     * @return ClientInterface
      */
-    abstract public function getHttpClient();
+    abstract public function getHttpClient(): ClientInterface;
 
     /**
      * Retrieves current redirect limit.
-     *
-     * @return int
      */
-    public function getRedirectLimit()
+    public function getRedirectLimit(): int
     {
         return $this->redirectLimit;
     }
 
     /**
      * Determines if a given response is a redirect.
-     *
-     * @return bool
      */
-    protected function isRedirect(ResponseInterface $response)
+    protected function isRedirect(ResponseInterface $response): bool
     {
         $statusCode = $response->getStatusCode();
 
@@ -100,11 +92,9 @@ trait ProviderRedirectTrait
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @return ResponseInterface | null
-     *
      * @throws ClientExceptionInterface
      */
-    public function getResponse(RequestInterface $request)
+    public function getResponse(RequestInterface $request): ?ResponseInterface
     {
         try {
             $response = $this->followRequestRedirects($request);
@@ -118,11 +108,9 @@ trait ProviderRedirectTrait
     /**
      * Updates the redirect limit.
      *
-     * @return self
-     *
      * @throws InvalidArgumentException
      */
-    public function setRedirectLimit(int $limit)
+    public function setRedirectLimit(int $limit): static
     {
         if ($limit < 1) {
             throw new InvalidArgumentException('redirectLimit must be greater than or equal to one.');

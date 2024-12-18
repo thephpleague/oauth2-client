@@ -39,7 +39,7 @@ class Generic extends GenericProvider
     /**
      * @inheritDoc
      */
-    protected function fetchResourceOwnerDetails(AccessToken $token)
+    protected function fetchResourceOwnerDetails(AccessToken $token): array
     {
         return [
             'mock_response_uid' => 1,

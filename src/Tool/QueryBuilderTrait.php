@@ -30,10 +30,8 @@ trait QueryBuilderTrait
      * Build a query string from an array.
      *
      * @param array<string, mixed> $params
-     *
-     * @return string
      */
-    protected function buildQueryString(array $params)
+    protected function buildQueryString(array $params): string
     {
         return http_build_query($params, '', '&', PHP_QUERY_RFC3986);
     }

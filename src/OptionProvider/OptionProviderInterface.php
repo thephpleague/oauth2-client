@@ -29,5 +29,5 @@ interface OptionProviderInterface
      *
      * @return array<string, mixed>
      */
-    public function getAccessTokenOptions(string $method, array $params);
+    public function getAccessTokenOptions(string $method, array $params): array;
 }

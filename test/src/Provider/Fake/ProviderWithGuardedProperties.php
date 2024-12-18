@@ -23,7 +23,7 @@ class ProviderWithGuardedProperties extends MockProvider
     /**
      * @inheritDoc
      */
-    public function getGuarded()
+    public function getGuarded(): array
     {
         return $this->guarded;
     }

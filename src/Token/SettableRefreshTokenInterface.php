@@ -21,8 +21,6 @@ interface SettableRefreshTokenInterface
 {
     /**
      * Sets or replaces the refresh token with the provided refresh token.
-     *
-     * @return void
      */
-    public function setRefreshToken(string $refreshToken);
+    public function setRefreshToken(string $refreshToken): void;
 }

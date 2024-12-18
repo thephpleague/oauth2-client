@@ -18,31 +18,24 @@ declare(strict_types=1);
 namespace League\OAuth2\Client\Token;
 
 use JsonSerializable;
-use ReturnTypeWillChange;
 use RuntimeException;
 
 interface AccessTokenInterface extends JsonSerializable
 {
     /**
      * Returns the access token string of this instance.
-     *
-     * @return string
      */
-    public function getToken();
+    public function getToken(): string;
 
     /**
      * Returns the refresh token, if defined.
-     *
-     * @return string | null
      */
-    public function getRefreshToken();
+    public function getRefreshToken(): ?string;
 
     /**
      * Returns the expiration timestamp in seconds, if defined.
-     *
-     * @return int | null
      */
-    public function getExpires();
+    public function getExpires(): ?int;
 
     /**
      * Checks if this token has expired.
@@ -51,21 +44,19 @@ interface AccessTokenInterface extends JsonSerializable
      *
      * @throws RuntimeException if 'expires' is not set on the token.
      */
-    public function hasExpired();
+    public function hasExpired(): bool;
 
     /**
      * Returns additional vendor values stored in the token.
      *
      * @return array<string, mixed>
      */
-    public function getValues();
+    public function getValues(): array;
 
     /**
      * Returns a string representation of the access token
-     *
-     * @return string
      */
-    public function __toString();
+    public function __toString(): string;
 
     /**
      * Returns an array of parameters to serialize when this is serialized with
@@ -73,6 +64,5 @@ interface AccessTokenInterface extends JsonSerializable
      *
      * @return array<string, mixed>
      */
-    #[ReturnTypeWillChange]
-    public function jsonSerialize();
+    public function jsonSerialize(): array;
 }

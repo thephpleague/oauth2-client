@@ -38,10 +38,8 @@ class IdentityProviderException extends Exception
 
     /**
      * Returns the exception's response body.
-     *
-     * @return mixed
      */
-    public function getResponseBody()
+    public function getResponseBody(): mixed
     {
         return $this->response;
     }

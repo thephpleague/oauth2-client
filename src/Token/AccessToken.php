@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
-use ReturnTypeWillChange;
 use RuntimeException;
 
 use function array_diff_key;
@@ -52,30 +51,23 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
      * Set the time now. This should only be used for testing purposes.
      *
      * @param int $timeNow the time in seconds since epoch
-     *
-     * @return void
      */
-    public static function setTimeNow(int $timeNow)
+    public static function setTimeNow(int $timeNow): void
     {
         self::$timeNow = $timeNow;
     }
 
     /**
      * Reset the time now if it was set for test purposes.
-     *
-     * @return void
      */
-    public static function resetTimeNow()
+    public static function resetTimeNow(): void
     {
         self::$timeNow = null;
     }
 
-    /**
-     * @return int
-     */
-    public function getTimeNow()
+    public function getTimeNow(): int
     {
-        return self::$timeNow ? self::$timeNow : time();
+        return self::$timeNow ?? time();
     }
 
     /**
@@ -139,10 +131,8 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
 
     /**
      * Check if a value is an expiration timestamp or second value.
-     *
-     * @return bool
      */
-    protected function isExpirationTimestamp(int $value)
+    protected function isExpirationTimestamp(int $value): bool
     {
         // If the given value is larger than the original OAuth 2 draft date,
         // assume that it is meant to be a (possible expired) timestamp.
@@ -151,50 +141,32 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
         return $value > $oauth2InceptionDate;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getToken()
+    public function getToken(): string
     {
         return $this->accessToken;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getRefreshToken()
+    public function getRefreshToken(): ?string
     {
         return $this->refreshToken;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setRefreshToken(string $refreshToken)
+    public function setRefreshToken(string $refreshToken): void
     {
         $this->refreshToken = $refreshToken;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getExpires()
+    public function getExpires(): ?int
     {
         return $this->expires;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getResourceOwnerId()
+    public function getResourceOwnerId(): int | string | null
     {
         return $this->resourceOwnerId;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function hasExpired()
+    public function hasExpired(): bool
     {
         $expires = $this->getExpires();
 
@@ -208,24 +180,20 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     /**
      * @inheritdoc
      */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return (string) $this->getToken();
+        return $this->getToken();
     }
 
     /**
      * @inheritdoc
      */
-    #[ReturnTypeWillChange]
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         $parameters = $this->values;
 

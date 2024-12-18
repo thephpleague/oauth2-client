@@ -40,10 +40,8 @@ class GenericResourceOwner implements ResourceOwnerInterface
 
     /**
      * Returns the identifier of the authorized resource owner.
-     *
-     * @return mixed
      */
-    public function getId()
+    public function getId(): mixed
     {
         return $this->response[$this->resourceOwnerId] ?? null;
     }
@@ -53,7 +51,7 @@ class GenericResourceOwner implements ResourceOwnerInterface
      *
      * @return mixed[]
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->response;
     }

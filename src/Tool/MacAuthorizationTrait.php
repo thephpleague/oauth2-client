@@ -33,33 +33,28 @@ trait MacAuthorizationTrait
 {
     /**
      * Returns the id of this token for MAC generation.
-     *
-     * @return string
      */
-    abstract protected function getTokenId(AccessTokenInterface | string | null $token);
+    abstract protected function getTokenId(AccessTokenInterface | string | null $token): string;
 
     /**
      * Returns the MAC signature for the current request.
-     *
-     * @return string
      */
-    abstract protected function getMacSignature(string $id, int $ts, string $nonce);
+    abstract protected function getMacSignature(string $id, int $ts, string $nonce): string;
 
     /**
      * Returns a new random string to use as the state parameter in an
      * authorization flow.
      *
-     * @param  int $length Length of the random string to be generated.
-     * @return string
+     * @param int<1, max> $length Length of the random string to be generated.
      */
-    abstract protected function getRandomState(int $length = 32);
+    abstract protected function getRandomState(int $length = 32): string;
 
     /**
      * Returns the authorization headers for the 'mac' grant.
      *
      * @param AccessTokenInterface | string | null $token Either a string or an access token instance
      *
-     * @return array<string, mixed>
+     * @return array<string, string>
      *
      * @codeCoverageIgnore
      *
@@ -68,7 +63,7 @@ trait MacAuthorizationTrait
      *       complete the implementation, please create a pull request for
      *       https://github.com/thephpleague/oauth2-client
      */
-    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null)
+    protected function getAuthorizationHeaders(AccessTokenInterface | string | null $token = null): array
     {
         if ($token === null) {
             return [];

@@ -101,7 +101,7 @@ class GenericProvider extends AbstractProvider
      *
      * @return list<string>
      */
-    protected function getConfigurableOptions()
+    protected function getConfigurableOptions(): array
     {
         return array_merge($this->getRequiredOptions(), [
             'accessTokenMethod',
@@ -120,7 +120,7 @@ class GenericProvider extends AbstractProvider
      *
      * @return list<string>
      */
-    protected function getRequiredOptions()
+    protected function getRequiredOptions(): array
     {
         return [
             'urlAuthorize',
@@ -134,11 +134,9 @@ class GenericProvider extends AbstractProvider
      *
      * @param array<string, mixed> $options
      *
-     * @return void
-     *
      * @throws InvalidArgumentException
      */
-    private function assertRequiredOptions(array $options)
+    private function assertRequiredOptions(array $options): void
     {
         $missing = array_diff_key(array_flip($this->getRequiredOptions()), $options);
 
@@ -149,10 +147,7 @@ class GenericProvider extends AbstractProvider
         }
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getBaseAuthorizationUrl()
+    public function getBaseAuthorizationUrl(): string
     {
         return $this->urlAuthorize;
     }
@@ -160,15 +155,12 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    public function getBaseAccessTokenUrl(array $params)
+    public function getBaseAccessTokenUrl(array $params): string
     {
         return $this->urlAccessToken;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getResourceOwnerDetailsUrl(AccessToken $token)
+    public function getResourceOwnerDetailsUrl(AccessToken $token): string
     {
         return $this->urlResourceOwnerDetails;
     }
@@ -176,47 +168,32 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    public function getDefaultScopes()
+    public function getDefaultScopes(): array
     {
         return $this->scopes ?? [];
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getAccessTokenMethod()
+    protected function getAccessTokenMethod(): string
     {
         return $this->accessTokenMethod ?: parent::getAccessTokenMethod();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getAccessTokenResourceOwnerId()
+    protected function getAccessTokenResourceOwnerId(): ?string
     {
         return $this->accessTokenResourceOwnerId ?: parent::getAccessTokenResourceOwnerId();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getScopeSeparator()
+    protected function getScopeSeparator(): string
     {
         return $this->scopeSeparator ?: parent::getScopeSeparator();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function getPkceMethod()
+    protected function getPkceMethod(): ?string
     {
         return $this->pkceMethod ?: parent::getPkceMethod();
     }
 
-    /**
-     * @inheritdoc
-     */
-    protected function checkResponse(ResponseInterface $response, $data)
+    protected function checkResponse(ResponseInterface $response, array | string $data): void
     {
         if (isset($data[$this->responseError])) {
             $error = $data[$this->responseError];
@@ -238,7 +215,7 @@ class GenericProvider extends AbstractProvider
     /**
      * @inheritdoc
      */
-    protected function createResourceOwner(array $response, AccessToken $token)
+    protected function createResourceOwner(array $response, AccessToken $token): ResourceOwnerInterface
     {
         return new GenericResourceOwner($response, $this->responseResourceOwnerId);
     }

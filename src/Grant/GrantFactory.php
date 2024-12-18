@@ -41,10 +41,8 @@ class GrantFactory
 
     /**
      * Defines a grant singleton in the registry.
-     *
-     * @return self
      */
-    public function setGrant(string $name, AbstractGrant $grant)
+    public function setGrant(string $name, AbstractGrant $grant): static
     {
         $this->registry[$name] = $grant;
 
@@ -55,10 +53,8 @@ class GrantFactory
      * Returns a grant singleton by name.
      *
      * If the grant has not be registered, a default grant will be loaded.
-     *
-     * @return AbstractGrant
      */
-    public function getGrant(string $name)
+    public function getGrant(string $name): AbstractGrant
     {
         if (!isset($this->registry[$name])) {
             $this->registerDefaultGrant($name);
@@ -70,10 +66,8 @@ class GrantFactory
 
     /**
      * Registers a default grant singleton by name.
-     *
-     * @return self
      */
-    protected function registerDefaultGrant(string $name)
+    protected function registerDefaultGrant(string $name): static
     {
         // PascalCase the grant. E.g: 'authorization_code' becomes 'AuthorizationCode'
         $class = str_replace(' ', '', ucwords(str_replace(['-', '_'], ' ', $name)));
@@ -87,11 +81,9 @@ class GrantFactory
     /**
      * Determines if a variable is a valid grant.
      *
-     * @return bool
-     *
      * @phpstan-assert-if-true class-string<AbstractGrant> | AbstractGrant $class
      */
-    public function isGrant(mixed $class)
+    public function isGrant(mixed $class): bool
     {
         if (!is_string($class) && !is_object($class)) {
             return false;
@@ -103,22 +95,18 @@ class GrantFactory
     /**
      * Checks if a variable is a valid grant.
      *
-     * @return void
-     *
      * @throws InvalidGrantException
      *
      * @phpstan-assert class-string<AbstractGrant> | AbstractGrant $class
      */
-    public function checkGrant(mixed $class)
+    public function checkGrant(mixed $class): void
     {
         if (!$this->isGrant($class)) {
-            if (is_object($class)) {
-                $type = $class::class;
-            } elseif (is_scalar($class)) {
-                $type = $class;
-            } else {
-                $type = gettype($class);
-            }
+            $type = match (true) {
+                is_object($class) => $class::class,
+                is_scalar($class) => $class,
+                default => gettype($class),
+            };
 
             throw new InvalidGrantException(sprintf('Grant "%s" must extend AbstractGrant', $type));
         }

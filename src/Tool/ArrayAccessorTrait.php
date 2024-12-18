@@ -33,10 +33,8 @@ trait ArrayAccessorTrait
      * Returns a value by key using dot notation.
      *
      * @param array<string, mixed> $data
-     *
-     * @return mixed
      */
-    private function getValueByKey(array $data, mixed $key, mixed $default = null)
+    private function getValueByKey(array $data, mixed $key, mixed $default = null): mixed
     {
         if (!is_string($key) || !count($data)) {
             return $default;

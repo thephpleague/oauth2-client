@@ -24,10 +24,7 @@ namespace League\OAuth2\Client\Grant;
  */
 class RefreshToken extends AbstractGrant
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getName()
+    protected function getName(): string
     {
         return 'refresh_token';
     }
@@ -35,7 +32,7 @@ class RefreshToken extends AbstractGrant
     /**
      * @inheritdoc
      */
-    protected function getRequiredRequestParameters()
+    protected function getRequiredRequestParameters(): array
     {
         return [
             'refresh_token',

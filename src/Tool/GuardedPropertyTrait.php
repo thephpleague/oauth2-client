@@ -57,17 +57,15 @@ trait GuardedPropertyTrait
      *
      * @return list<string>
      */
-    public function getGuarded()
+    public function getGuarded(): array
     {
         return $this->guarded;
     }
 
     /**
      * Determines if the given property is guarded.
-     *
-     * @return bool
      */
-    public function isGuarded(string $property)
+    public function isGuarded(string $property): bool
     {
         return in_array($property, $this->getGuarded());
     }

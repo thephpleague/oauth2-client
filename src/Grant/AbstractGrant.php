@@ -40,25 +40,21 @@ abstract class AbstractGrant
     /**
      * Returns the name of this grant, eg. 'grant_name', which is used as the
      * grant type when encoding URL query parameters.
-     *
-     * @return string
      */
-    abstract protected function getName();
+    abstract protected function getName(): string;
 
     /**
      * Returns a list of all required request parameters.
      *
      * @return list<string>
      */
-    abstract protected function getRequiredRequestParameters();
+    abstract protected function getRequiredRequestParameters(): array;
 
     /**
      * Returns this grant's name as its string representation. This allows for
      * string interpolation when building URL query parameters.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
@@ -72,7 +68,7 @@ abstract class AbstractGrant
      *
      * @return array<string, mixed>
      */
-    public function prepareRequestParameters(array $defaults, array $options)
+    public function prepareRequestParameters(array $defaults, array $options): array
     {
         $defaults['grant_type'] = $this->getName();
 
