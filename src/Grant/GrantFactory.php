@@ -19,7 +19,10 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 
+use function gettype;
 use function is_object;
+use function is_scalar;
+use function is_string;
 use function is_subclass_of;
 use function sprintf;
 use function str_replace;
@@ -83,9 +86,15 @@ class GrantFactory
      * Determines if a variable is a valid grant.
      *
      * @return bool
+     *
+     * @phpstan-assert-if-true class-string<AbstractGrant> | AbstractGrant $class
      */
     public function isGrant(mixed $class)
     {
+        if (!is_string($class) && !is_object($class)) {
+            return false;
+        }
+
         return is_subclass_of($class, AbstractGrant::class);
     }
 
@@ -95,14 +104,21 @@ class GrantFactory
      * @return void
      *
      * @throws InvalidGrantException
+     *
+     * @phpstan-assert class-string<AbstractGrant> | AbstractGrant $class
      */
     public function checkGrant(mixed $class)
     {
         if (!$this->isGrant($class)) {
-            throw new InvalidGrantException(sprintf(
-                'Grant "%s" must extend AbstractGrant',
-                is_object($class) ? $class::class : $class,
-            ));
+            if (is_object($class)) {
+                $type = $class::class;
+            } elseif (is_scalar($class)) {
+                $type = $class;
+            } else {
+                $type = gettype($class);
+            }
+
+            throw new InvalidGrantException(sprintf('Grant "%s" must extend AbstractGrant', $type));
         }
     }
 }

@@ -22,7 +22,7 @@ class RefreshTokenTest extends GrantTestCase
 
     protected function getParamExpectation(): Closure
     {
-        return fn ($body) => isset($body['grant_type'])
+        return fn (array $body) => isset($body['grant_type'])
                 && $body['grant_type'] === 'refresh_token';
     }
 

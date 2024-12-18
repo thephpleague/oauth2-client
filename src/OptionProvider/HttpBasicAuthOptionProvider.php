@@ -20,6 +20,7 @@ namespace League\OAuth2\Client\OptionProvider;
 use InvalidArgumentException;
 
 use function base64_encode;
+use function is_string;
 use function sprintf;
 
 /**
@@ -30,12 +31,18 @@ use function sprintf;
 class HttpBasicAuthOptionProvider extends PostAuthOptionProvider
 {
     /**
+     * @return array{headers: array{content-type: string, Authorization: string}, body?: string}
+     *
      * @inheritdoc
      */
-    public function getAccessTokenOptions($method, array $params)
+    public function getAccessTokenOptions(string $method, array $params): array
     {
         if (!isset($params['client_id']) || !isset($params['client_secret'])) {
             throw new InvalidArgumentException('clientId and clientSecret are required for http basic auth');
+        }
+
+        if (!is_string($params['client_id']) || !is_string($params['client_secret'])) {
+            throw new InvalidArgumentException('clientId and clientSecret must be string values');
         }
 
         $encodedCredentials = base64_encode(sprintf('%s:%s', $params['client_id'], $params['client_secret']));

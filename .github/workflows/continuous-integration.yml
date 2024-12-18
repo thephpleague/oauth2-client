@@ -27,20 +27,14 @@ jobs:
 
   lint:
     name: "Lint"
-    needs: ["coding-standards", "coverage"]
     runs-on: "ubuntu-latest"
-    strategy:
-      fail-fast: true
-      matrix:
-        php-version: [ '8.1', '8.2', '8.3', '8.4' ]
     steps:
       - uses: "actions/checkout@v4"
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "${{ matrix.php-version }}"
+          php-version: "latest"
           coverage: "none"
-          ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
-          tools: "composer:v2"
+          tools: "composer"
       - uses: "ramsey/composer-install@v3"
       - name: "Lint the PHP source code"
         run: "./vendor/bin/parallel-lint src test"
@@ -60,19 +54,33 @@ jobs:
       - name: "Check coding standards"
         run: "./vendor/bin/phpcs"
 
-  coverage:
-    name: "Coverage"
+  static-analysis:
+    name: "Static Analysis"
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v4"
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "latest"
-          coverage: "pcov"
+          coverage: "none"
+          ini-values: "memory_limit=-1"
+          tools: "composer"
+      - uses: "ramsey/composer-install@v3"
+      - name: "Analyze code for errors"
+        run: "./vendor/bin/phpstan"
+
+  coverage:
+    name: "Coverage"
+    needs: ["coding-standards", "lint", "static-analysis"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v4"
+      - uses: "shivammathur/setup-php@v2"
+        with:
+          php-version: "latest"
+          coverage: "xdebug"
           ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer"
-      - name: "Prepare for tests"
-        run: "mkdir -p build/logs"
       - uses: "ramsey/composer-install@v3"
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml --coverage-text"
@@ -81,7 +89,7 @@ jobs:
 
   unit-tests:
     name: "Unit Tests"
-    needs: ["lint"]
+    needs: ["coverage"]
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: true
@@ -95,8 +103,6 @@ jobs:
           coverage: "none"
           ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer"
-      - name: "Prepare for tests"
-        run: "mkdir -p build/logs"
       - uses: "ramsey/composer-install@v3"
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always --no-coverage"

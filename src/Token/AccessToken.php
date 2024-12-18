@@ -18,11 +18,15 @@ declare(strict_types=1);
 namespace League\OAuth2\Client\Token;
 
 use InvalidArgumentException;
+use ReturnTypeWillChange;
 use RuntimeException;
 
 use function array_diff_key;
 use function array_flip;
+use function is_int;
 use function is_numeric;
+use function is_scalar;
+use function is_string;
 use function time;
 
 /**
@@ -83,17 +87,20 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
      */
     public function __construct(array $options = [])
     {
-        if (!isset($options['access_token'])) {
+        if (!isset($options['access_token']) || !is_string($options['access_token'])) {
             throw new InvalidArgumentException('Required option not passed: "access_token"');
         }
 
         $this->accessToken = $options['access_token'];
 
-        if (isset($options['resource_owner_id'])) {
+        if (
+            isset($options['resource_owner_id'])
+            && (is_string($options['resource_owner_id']) || is_int($options['resource_owner_id']))
+        ) {
             $this->resourceOwnerId = $options['resource_owner_id'];
         }
 
-        if (isset($options['refresh_token'])) {
+        if (isset($options['refresh_token']) && is_string($options['refresh_token'])) {
             $this->refreshToken = $options['refresh_token'];
         }
 
@@ -105,11 +112,11 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
                 throw new InvalidArgumentException('expires_in value must be an integer');
             }
 
-            $this->expires = $options['expires_in'] !== 0 ? $this->getTimeNow() + $options['expires_in'] : 0;
+            $this->expires = $options['expires_in'] !== 0 ? $this->getTimeNow() + (int) $options['expires_in'] : 0;
         } elseif (isset($options['expires'])) {
             // Some providers supply the seconds until expiration rather than
             // the exact timestamp. Take a best guess at which we received.
-            $expires = (int) $options['expires'];
+            $expires = is_scalar($options['expires']) ? (int) $options['expires'] : 0;
 
             if (!$this->isExpirationTimestamp($expires)) {
                 $expires += $this->getTimeNow();
@@ -163,7 +170,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     /**
      * @inheritdoc
      */
-    public function setRefreshToken($refreshToken)
+    public function setRefreshToken(string $refreshToken)
     {
         $this->refreshToken = $refreshToken;
     }
@@ -217,6 +224,7 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     /**
      * @inheritdoc
      */
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $parameters = $this->values;

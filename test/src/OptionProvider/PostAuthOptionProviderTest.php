@@ -24,6 +24,6 @@ class PostAuthOptionProviderTest extends TestCase
         ]);
 
         $this->assertArrayHasKey('headers', $options);
-        $this->assertEquals('client_id=test&client_secret=test', $options['body']);
+        $this->assertEquals('client_id=test&client_secret=test', $options['body'] ?? null);
     }
 }

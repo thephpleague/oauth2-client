@@ -18,10 +18,15 @@ declare(strict_types=1);
 namespace League\OAuth2\Client\Provider;
 
 use InvalidArgumentException;
+use League\OAuth2\Client\Grant\GrantFactory;
+use League\OAuth2\Client\OptionProvider\OptionProviderInterface;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 use function array_diff_key;
 use function array_flip;
@@ -50,6 +55,7 @@ class GenericProvider extends AbstractProvider
 
     /**
      * @var list<string> | null
+     * @phpstan-ignore property.unusedType
      */
     private ?array $scopes = null;
 
@@ -57,11 +63,21 @@ class GenericProvider extends AbstractProvider
     private string $responseError = 'error';
     private string $responseCode;
     private string $responseResourceOwnerId = 'id';
+
+    /**
+     * @phpstan-ignore property.unusedType
+     */
     private ?string $pkceMethod = null;
 
     /**
      * @param array<string, mixed> $options
-     * @param array<string, mixed> $collaborators
+     * @param array{
+     *     grantFactory?: GrantFactory,
+     *     requestFactory?: RequestFactoryInterface,
+     *     streamFactory?: StreamFactoryInterface,
+     *     httpClient?: ClientInterface,
+     *     optionProvider?: OptionProviderInterface,
+     * } $collaborators
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
@@ -162,7 +178,7 @@ class GenericProvider extends AbstractProvider
      */
     public function getDefaultScopes()
     {
-        return $this->scopes;
+        return $this->scopes ?? [];
     }
 
     /**
@@ -207,7 +223,10 @@ class GenericProvider extends AbstractProvider
             if (!is_string($error)) {
                 $error = var_export($error, true);
             }
+
+            /** @var int | string $code */
             $code = isset($this->responseCode) && isset($data[$this->responseCode]) ? $data[$this->responseCode] : 0;
+
             if (!is_int($code)) {
                 $code = intval($code);
             }

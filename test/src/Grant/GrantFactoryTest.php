@@ -72,6 +72,8 @@ class GrantFactoryTest extends TestCase
         $grant = $factory->getGrant('password');
 
         $this->assertTrue($factory->isGrant($grant));
+
+        /** @phpstan-ignore method.impossibleType */
         $this->assertFalse($factory->isGrant('stdClass'));
     }
 
@@ -89,6 +91,8 @@ class GrantFactoryTest extends TestCase
         $this->expectException(InvalidGrantException::class);
 
         $factory = new GrantFactory();
+
+        /** @phpstan-ignore method.impossibleType */
         $factory->checkGrant('stdClass');
     }
 }

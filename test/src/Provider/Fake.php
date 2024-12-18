@@ -10,6 +10,10 @@ use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\BearerAuthorizationTrait;
 use Psr\Http\Message\ResponseInterface;
 
+use function assert;
+use function is_int;
+use function is_string;
+
 class Fake extends AbstractProvider
 {
     use BearerAuthorizationTrait;
@@ -105,6 +109,8 @@ class Fake extends AbstractProvider
     }
 
     /**
+     * @param array{id?: mixed, email?: string, name?: string} $response
+     *
      * @inheritDoc
      */
     protected function createResourceOwner(array $response, AccessToken $token)
@@ -118,6 +124,9 @@ class Fake extends AbstractProvider
     protected function checkResponse(ResponseInterface $response, $data)
     {
         if (isset($data['error'])) {
+            assert(is_string($data['error']));
+            assert(is_int($data['code']));
+
             throw new IdentityProviderException($data['error'], $data['code'], $data);
         }
     }

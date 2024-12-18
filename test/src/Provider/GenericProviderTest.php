@@ -163,7 +163,7 @@ class GenericProviderTest extends TestCase
      * @param array<string, mixed> $extraOptions Any extra options to configure the generic provider with.
      */
     #[DataProvider('checkResponseThrowsExceptionProvider')]
-    public function testCheckResponseThrowsException(array $error, array $extraOptions = [])
+    public function testCheckResponseThrowsException(array $error, array $extraOptions = []): void
     {
         $response = Mockery::mock(ResponseInterface::class);
 

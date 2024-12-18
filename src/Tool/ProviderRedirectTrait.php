@@ -24,6 +24,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 
 trait ProviderRedirectTrait
 {
@@ -36,10 +37,10 @@ trait ProviderRedirectTrait
      * Retrieves a response for a given request and retrieves subsequent
      * responses, with authorization headers, if a redirect is detected.
      *
-     * @return ResponseInterface
+     * @return ResponseInterface | null
      *
-     * @throws BadResponseException
      * @throws ClientExceptionInterface
+     * @throws RuntimeException
      */
     protected function followRequestRedirects(RequestInterface $request)
     {
@@ -48,9 +49,7 @@ trait ProviderRedirectTrait
 
         while ($attempts < $this->redirectLimit) {
             $attempts++;
-            $response = $this->getHttpClient()->send($request, [
-                'allow_redirects' => false,
-            ]);
+            $response = $this->getHttpClient()->sendRequest($request);
 
             if ($this->isRedirect($response)) {
                 $redirectUrl = new Uri($response->getHeader('Location')[0]);
@@ -98,7 +97,7 @@ trait ProviderRedirectTrait
      * WARNING: This method does not attempt to catch exceptions caused by HTTP
      * errors! It is recommended to wrap this method in a try/catch block.
      *
-     * @return ResponseInterface
+     * @return ResponseInterface | null
      *
      * @throws ClientExceptionInterface
      */

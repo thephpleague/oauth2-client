@@ -18,7 +18,6 @@ declare(strict_types=1);
 namespace League\OAuth2\Client\Tool;
 
 use BadMethodCallException;
-use InvalidArgumentException;
 
 use function sprintf;
 
@@ -54,7 +53,7 @@ trait RequiredParameterTrait
      *
      * @return void
      *
-     * @throws InvalidArgumentException
+     * @throws BadMethodCallException
      */
     private function checkRequiredParameters(array $names, array $params)
     {

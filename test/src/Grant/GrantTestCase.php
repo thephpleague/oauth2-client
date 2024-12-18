@@ -14,6 +14,7 @@ use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -87,7 +88,7 @@ abstract class GrantTestCase extends TestCase
         $client
             ->shouldReceive('sendRequest')
             ->once()
-            ->withArgs(function ($request) {
+            ->withArgs(function (RequestInterface $request) {
                 parse_str((string) $request->getBody(), $body);
 
                 return call_user_func($this->getParamExpectation(), $body);

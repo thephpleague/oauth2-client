@@ -16,8 +16,9 @@ use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Test\Provider\Fake as MockProvider;
 use League\OAuth2\Client\Token\AccessToken;
-use League\OAuth2\Client\Token\AccessTokenInterface;
+use League\OAuth2\Client\Token\ResourceOwnerAccessTokenInterface;
 use Mockery;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -45,6 +46,8 @@ use const PHP_URL_QUERY;
 
 class AbstractProviderTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     protected function getMockProvider(): MockProvider
     {
         return new MockProvider([
@@ -215,7 +218,7 @@ class AbstractProviderTest extends TestCase
         $testFunction = false;
         $state = false;
 
-        $callback = function ($url, $provider) use (&$testFunction, &$state) {
+        $callback = function (string $url, AbstractProvider $provider) use (&$testFunction, &$state) {
             $testFunction = $url;
             $state = $provider->getState();
         };
@@ -267,6 +270,8 @@ class AbstractProviderTest extends TestCase
         ]);
 
         $provider->setHttpClient($client);
+
+        /** @var MockProvider\User $user */
         $user = $provider->getResourceOwner($token);
         $url = $provider->getResourceOwnerDetailsUrl($token);
 
@@ -280,7 +285,7 @@ class AbstractProviderTest extends TestCase
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(fn ($request) => $request->getMethod() === 'GET'
+            ->withArgs(fn (RequestInterface $request) => $request->getMethod() === 'GET'
                     && $request->hasHeader('Authorization')
                     && (string) $request->getUri() === $url);
     }
@@ -324,7 +329,7 @@ class AbstractProviderTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string, 1: string, 2: int}>
+     * @return array<string, array{0?: string, 1?: string, 2?: int}>
      */
     public static function userPropertyProvider(): array
     {
@@ -352,14 +357,14 @@ class AbstractProviderTest extends TestCase
 
         $url = $provider->getAuthorizationUrl();
 
-        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $qs);
 
         $this->assertArrayHasKey('scope', $qs);
         $this->assertSame('test', $qs['scope']);
 
         $url = $provider->getAuthorizationUrl(['scope' => ['foo', 'bar']]);
 
-        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $qs);
 
         $this->assertArrayHasKey('scope', $qs);
         $this->assertSame('foo,bar', $qs['scope']);
@@ -374,8 +379,8 @@ class AbstractProviderTest extends TestCase
             // Repeat the test multiple times to verify state changes
             $url = $provider->getAuthorizationUrl();
 
-            parse_str(parse_url($url, PHP_URL_QUERY), $qs);
-
+            parse_str((string) parse_url($url, PHP_URL_QUERY), $qs);
+            $this->assertIsString($qs['state'] ?? null);
             $this->assertTrue(preg_match('/^[a-zA-Z0-9\/+]{32}$/', $qs['state']) === 1);
             $this->assertNotSame($qs['state'], $last);
 
@@ -402,7 +407,7 @@ class AbstractProviderTest extends TestCase
         $url = $provider->getAuthorizationUrl();
         $this->assertSame($pkceCode, $provider->getPkceCode());
 
-        parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+        parse_str((string) parse_url($url, PHP_URL_QUERY), $qs);
         $this->assertArrayHasKey('code_challenge', $qs);
         $this->assertArrayHasKey('code_challenge_method', $qs);
         $this->assertSame($pkceMethod, $qs['code_challenge_method']);
@@ -442,7 +447,7 @@ class AbstractProviderTest extends TestCase
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(function ($request) use ($pkceCode) {
+            ->withArgs(function (RequestInterface $request) use ($pkceCode) {
                 parse_str((string) $request->getBody(), $body);
 
                 return $body['code_verifier'] === $pkceCode;
@@ -487,7 +492,8 @@ class AbstractProviderTest extends TestCase
             // Repeat the test multiple times to verify code_challenge changes
             $url = $provider->getAuthorizationUrl();
 
-            parse_str(parse_url($url, PHP_URL_QUERY), $qs);
+            parse_str((string) parse_url($url, PHP_URL_QUERY), $qs);
+            $this->assertIsString($qs['code_challenge'] ?? null);
             $this->assertTrue(preg_match('/^[a-zA-Z0-9-_]{43}$/', $qs['code_challenge']) === 1);
             $this->assertNotSame($qs['code_challenge'], $last);
             $last = $qs['code_challenge'];
@@ -497,6 +503,8 @@ class AbstractProviderTest extends TestCase
     public function testPkceMethodIsDisabledByDefault(): void
     {
         $provider = $this->getAbstractProviderMock();
+        $provider->shouldAllowMockingProtectedMethods();
+        /** @phpstan-ignore method.protected */
         $pkceMethod = $provider->getPkceMethod();
         $this->assertNull($pkceMethod);
     }
@@ -561,7 +569,7 @@ class AbstractProviderTest extends TestCase
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(fn ($request) => $request->getMethod() === $method
+            ->withArgs(fn (RequestInterface $request) => $request->getMethod() === $method
                     && (string) $request->getUri() === $url);
     }
 
@@ -728,7 +736,7 @@ class AbstractProviderTest extends TestCase
         $provider->setHttpClient($client);
         $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
 
-        $this->assertInstanceOf(AccessTokenInterface::class, $token);
+        $this->assertInstanceOf(ResourceOwnerAccessTokenInterface::class, $token);
 
         $this->assertSame($rawResponse['resource_owner_id'], $token->getResourceOwnerId());
         $this->assertSame($rawResponse['access_token'], $token->getToken());
@@ -737,7 +745,7 @@ class AbstractProviderTest extends TestCase
         $client
             ->shouldHaveReceived('sendRequest')
             ->once()
-            ->withArgs(fn ($request) => $request->getMethod() === $provider->getAccessTokenMethod()
+            ->withArgs(fn (RequestInterface $request) => $request->getMethod() === $provider->getAccessTokenMethod()
                     && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]));
     }
 
@@ -868,7 +876,9 @@ class AbstractProviderTest extends TestCase
     public function testDefaultAccessTokenMethod(): void
     {
         $provider = $this->getAbstractProviderMock();
+        $provider->shouldAllowMockingProtectedMethods();
 
+        /** @phpstan-ignore method.protected */
         $method = $provider->getAccessTokenMethod();
 
         $expectedMethod = 'POST';
@@ -878,8 +888,11 @@ class AbstractProviderTest extends TestCase
     public function testDefaultPrepareAccessTokenResponse(): void
     {
         $provider = Mockery::mock(Fake\ProviderWithAccessTokenResourceOwnerId::class)->makePartial();
+        $provider->shouldAllowMockingProtectedMethods();
 
         $result = ['user_id' => uniqid()];
+
+        /** @phpstan-ignore method.protected */
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertArrayHasKey('resource_owner_id', $newResult);
@@ -922,6 +935,8 @@ class AbstractProviderTest extends TestCase
             ->andReturn('user.id');
 
         $result = ['user' => ['id' => uniqid()]];
+
+        /** @phpstan-ignore method.protected */
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertArrayHasKey('resource_owner_id', $newResult);
@@ -937,6 +952,8 @@ class AbstractProviderTest extends TestCase
             ->andReturn(new stdClass());
 
         $result = ['user_id' => uniqid()];
+
+        /** @phpstan-ignore method.protected */
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertFalse(isset($newResult['resource_owner_id']));
@@ -951,6 +968,8 @@ class AbstractProviderTest extends TestCase
             ->andReturn('user.name');
 
         $result = ['user' => ['id' => uniqid()]];
+
+        /** @phpstan-ignore method.protected */
         $newResult = $provider->prepareAccessTokenResponse($result);
 
         $this->assertFalse(isset($newResult['resource_owner_id']));
@@ -959,7 +978,9 @@ class AbstractProviderTest extends TestCase
     public function testDefaultAuthorizationHeaders(): void
     {
         $provider = $this->getAbstractProviderMock();
+        $provider->shouldAllowMockingProtectedMethods();
 
+        /** @phpstan-ignore method.protected */
         $headers = $provider->getAuthorizationHeaders();
 
         $this->assertEquals([], $headers);

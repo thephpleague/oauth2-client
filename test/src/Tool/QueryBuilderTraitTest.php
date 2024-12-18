@@ -13,7 +13,7 @@ class QueryBuilderTraitTest extends TestCase
 {
     use QueryBuilderTrait;
 
-    public function testBuildQueryString()
+    public function testBuildQueryString(): void
     {
         ini_set('arg_separator.output', '&amp;');
 

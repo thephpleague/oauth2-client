@@ -271,7 +271,7 @@ class AccessTokenTest extends TestCase
         $token = $this->getAccessToken($options);
         $jsonToken = json_encode($token);
 
-        $this->assertEquals($options, json_decode($jsonToken, true));
+        $this->assertEquals($options, json_decode((string) $jsonToken, true));
 
         self::tearDownForBackwardsCompatibility();
     }

@@ -38,7 +38,7 @@ trait ArrayAccessorTrait
      */
     private function getValueByKey(array $data, mixed $key, mixed $default = null)
     {
-        if (!is_string($key) || !isset($key) || !count($data)) {
+        if (!is_string($key) || !count($data)) {
             return $default;
         }
 

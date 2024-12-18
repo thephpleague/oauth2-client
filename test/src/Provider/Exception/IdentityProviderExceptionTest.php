@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class IdentityProviderExceptionTest extends TestCase
 {
-    public function testIdentityProviderException()
+    public function testIdentityProviderException(): void
     {
         $result = [
             'error' => 'message',

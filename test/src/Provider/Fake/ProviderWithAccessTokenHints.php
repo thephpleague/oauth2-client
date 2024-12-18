@@ -7,6 +7,7 @@ namespace League\OAuth2\Client\Test\Provider\Fake;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\GenericResourceOwner;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use League\OAuth2\Client\Tool\MacAuthorizationTrait;
 
 class ProviderWithAccessTokenHints extends GenericProvider
@@ -26,7 +27,7 @@ class ProviderWithAccessTokenHints extends GenericProvider
      */
     protected function createResourceOwner(array $response, AccessToken $token)
     {
-        return new GenericResourceOwner($response, $token->getResourceOwnerId());
+        return new GenericResourceOwner($response, (string) $token->getResourceOwnerId());
     }
 
     /**
@@ -45,18 +46,12 @@ class ProviderWithAccessTokenHints extends GenericProvider
         return [];
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getTokenId(AccessToken $token)
+    protected function getTokenId(AccessTokenInterface | string | null $token): string
     {
         return 'fake_token_id';
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function getMacSignature($id, $ts, $nonce)
+    protected function getMacSignature(string $id, int $ts, string $nonce): string
     {
         return 'fake_mac_signature';
     }

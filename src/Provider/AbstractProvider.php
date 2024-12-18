@@ -39,11 +39,13 @@ use UnexpectedValueException;
 
 use function array_merge;
 use function array_merge_recursive;
+use function assert;
 use function base64_encode;
 use function bin2hex;
 use function hash;
 use function header;
 use function implode;
+use function intdiv;
 use function is_array;
 use function is_string;
 use function json_decode;
@@ -118,10 +120,15 @@ abstract class AbstractProvider
      * @param array<string, mixed> $options An array of options to set on this
      *     provider. Options include `clientId`, `clientSecret`, `redirectUri`,
      *     and `state`. Individual providers may introduce more options, as needed.
-     * @param array<string, mixed> $collaborators An array of collaborators that
-     *     may be used to override this provider's default behavior. Collaborators
-     *     include `grantFactory`, `requestFactory`, and `httpClient`. Individual
-     *     providers may introduce more collaborators, as needed.
+     * @param array{
+     *     grantFactory?: GrantFactory,
+     *     requestFactory?: RequestFactoryInterface,
+     *     streamFactory?: StreamFactoryInterface,
+     *     httpClient?: ClientInterface,
+     *     optionProvider?: OptionProviderInterface,
+     * } $collaborators An array of collaborators that may be used to override
+     *     this provider's default behavior. Individual providers may introduce
+     *     more collaborators, as needed.
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
@@ -355,7 +362,7 @@ abstract class AbstractProvider
      * Returns a new random string to use as the state parameter in an
      * authorization flow.
      *
-     * @param  int $length Length of the random string to be generated.
+     * @param int<1, max> $length Length of the random string to be generated.
      *
      * @return string
      */
@@ -363,7 +370,10 @@ abstract class AbstractProvider
     {
         // Converting bytes to hex will always double length. Hence, we can reduce
         // the amount of bytes by half to produce the correct length.
-        return bin2hex(random_bytes($length / 2));
+        $length = intdiv($length, 2);
+        assert($length >= 1);
+
+        return bin2hex(random_bytes($length));
     }
 
     /**
@@ -371,20 +381,14 @@ abstract class AbstractProvider
      * hashed as code_challenge parameters in an authorization flow.
      * Must be between 43 and 128 characters long.
      *
-     * @param  int $length Length of the random string to be generated.
+     * @param int<1, max> $length Length of the random string to be generated.
      * @return string
      */
     protected function getRandomPkceCode(int $length = 64)
     {
-        return substr(
-            strtr(
-                base64_encode(random_bytes($length)),
-                '+/',
-                '-_',
-            ),
-            0,
-            $length,
-        );
+        assert($length >= 1);
+
+        return substr(strtr(base64_encode(random_bytes($length)), '+/', '-_'), 0, $length);
     }
 
     /**
@@ -446,6 +450,7 @@ abstract class AbstractProvider
         }
 
         // Store the state as it may need to be accessed later on.
+        assert(is_string($options['state']));
         $this->state = $options['state'];
 
         $pkceMethod = $this->getPkceMethod();
@@ -570,6 +575,7 @@ abstract class AbstractProvider
      */
     protected function getAccessTokenResourceOwnerId()
     {
+        /** @var string | null */
         return static::ACCESS_TOKEN_RESOURCE_OWNER_ID;
     }
 
@@ -625,7 +631,11 @@ abstract class AbstractProvider
     /**
      * Returns a prepared request for requesting an access token.
      *
-     * @param array<string, mixed> $params Query string parameters
+     * @param array{
+     *     headers?: array<string, string>,
+     *     version?: string,
+     *     body?: string,
+     * } $params Any of "headers", "body", and "version".
      *
      * @return RequestInterface
      */
@@ -633,6 +643,14 @@ abstract class AbstractProvider
     {
         $method = $this->getAccessTokenMethod();
         $url = $this->getAccessTokenUrl($params);
+
+        /**
+         * @var array{
+         *     headers?: array<string, string>,
+         *     version?: string,
+         *     body?: string,
+         * } $options
+         */
         $options = $this->optionProvider->getAccessTokenOptions($this->getAccessTokenMethod(), $params);
 
         return $this->getRequest($method, $url, $options);
@@ -672,14 +690,25 @@ abstract class AbstractProvider
             $params['code_verifier'] = $this->pkceCode;
         }
 
+        /**
+         * @var array{
+         *     headers?: array<string, string>,
+         *     version?: string,
+         *     body?: string,
+         * } $params
+         */
         $params = $grant->prepareRequestParameters($params, $options);
+
         $request = $this->getAccessTokenRequest($params);
+
+        /** @var array<string, mixed> $response */
         $response = $this->getParsedResponse($request);
         if (is_array($response) === false) {
             throw new UnexpectedValueException(
                 'Invalid response received from Authorization Server. Expected JSON.',
             );
         }
+
         $prepared = $this->prepareAccessTokenResponse($response);
 
         return $this->createAccessToken($prepared, $grant);
@@ -688,7 +717,11 @@ abstract class AbstractProvider
     /**
      * Returns a PSR-7 request instance that is not authenticated.
      *
-     * @param array<string, mixed> $options
+     * @param array{
+     *     headers?: array<string, string>,
+     *     version?: string,
+     *     body?: string,
+     * } $options Any of "headers", "body", and "version".
      *
      * @return RequestInterface
      */
@@ -700,7 +733,11 @@ abstract class AbstractProvider
     /**
      * Returns an authenticated PSR-7 request instance.
      *
-     * @param array<string, mixed> $options Any of "headers", "body", and "protocolVersion".
+     * @param array{
+     *     headers?: array<string, string>,
+     *     version?: string,
+     *     body?: string,
+     * } $options Any of "headers", "body", and "version".
      *
      * @return RequestInterface
      */
@@ -716,7 +753,11 @@ abstract class AbstractProvider
     /**
      * Creates a PSR-7 request instance.
      *
-     * @param array<string, mixed> $options
+     * @param array{
+     *     headers?: array<string, string>,
+     *     version?: string,
+     *     body?: string,
+     * } $options
      *
      * @return RequestInterface
      */
@@ -730,6 +771,13 @@ abstract class AbstractProvider
             'headers' => $this->getHeaders($token),
         ];
 
+        /**
+         * @var array{
+         *     headers: array<string, string>,
+         *     version?: string,
+         *     body?: string,
+         * } $options
+         */
         $options = array_merge_recursive($defaults, $options);
         $requestFactory = $this->getRequestFactory();
         $streamFactory = $this->getStreamFactory();
@@ -780,6 +828,7 @@ abstract class AbstractProvider
             $response = $e->getResponse();
         }
 
+        /** @var array<string, mixed> $parsed */
         $parsed = $this->parseResponse($response);
 
         $this->checkResponse($response, $parsed);
@@ -807,6 +856,7 @@ abstract class AbstractProvider
             ));
         }
 
+        /** @var array<string, mixed> */
         return $content;
     }
 
@@ -937,7 +987,7 @@ abstract class AbstractProvider
     /**
      * Requests resource owner details.
      *
-     * @return mixed
+     * @return array<string, mixed>
      *
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
@@ -957,6 +1007,7 @@ abstract class AbstractProvider
             );
         }
 
+        /** @var array<string, mixed> */
         return $response;
     }
 
@@ -981,7 +1032,7 @@ abstract class AbstractProvider
      * No default is provided, providers must overload this method to activate
      * authorization headers.
      *
-     * @param mixed $token Either a string or an access token instance
+     * @param AccessTokenInterface | string | null $token Either a string or an access token instance
      *
      * @return array<string, mixed>
      */
@@ -995,11 +1046,11 @@ abstract class AbstractProvider
      *
      * The request will be authenticated if an access token is provided.
      *
-     * @param mixed $token object or string
+     * @param AccessTokenInterface | string | null $token object or string
      *
      * @return array<string, mixed>
      */
-    public function getHeaders(mixed $token = null)
+    public function getHeaders(AccessTokenInterface | string | null $token = null)
     {
         if ($token) {
             return array_merge(

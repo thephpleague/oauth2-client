@@ -28,9 +28,11 @@ class PostAuthOptionProvider implements OptionProviderInterface
     use QueryBuilderTrait;
 
     /**
+     * @return array{headers: array{content-type: string}, body?: string}
+     *
      * @inheritdoc
      */
-    public function getAccessTokenOptions($method, array $params)
+    public function getAccessTokenOptions(string $method, array $params): array
     {
         $options = ['headers' => ['content-type' => 'application/x-www-form-urlencoded']];
 

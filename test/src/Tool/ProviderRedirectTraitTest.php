@@ -89,7 +89,7 @@ class ProviderRedirectTraitTest extends TestCase
 
         $client = Mockery::mock(ClientInterface::class);
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->times($redirectLimit)
             ->andReturn($response);
 
@@ -119,7 +119,7 @@ class ProviderRedirectTraitTest extends TestCase
 
         $client = Mockery::mock(ClientInterface::class);
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->once()
             ->andReturn($response);
 
@@ -146,7 +146,7 @@ class ProviderRedirectTraitTest extends TestCase
 
         $client = Mockery::mock(ClientInterface::class);
         $client
-            ->shouldReceive('send')
+            ->shouldReceive('sendRequest')
             ->andThrow($exception);
 
         $this->setHttpClient($client);

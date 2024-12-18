@@ -9,12 +9,12 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 class User implements ResourceOwnerInterface
 {
     /**
-     * @var array<array-key, mixed>
+     * @var array{id?: mixed, email?: string, name?: string}
      */
     protected array $response;
 
     /**
-     * @param array<array-key, mixed> $response
+     * @param array{id?: mixed, email?: string, name?: string} $response
      */
     public function __construct(array $response)
     {
@@ -26,23 +26,23 @@ class User implements ResourceOwnerInterface
      */
     public function getId()
     {
-        return $this->response['id'];
+        return $this->response['id'] ?? null;
     }
 
     public function getUserEmail(): ?string
     {
-        return $this->response['email'];
+        return $this->response['email'] ?? null;
     }
 
     public function getUserScreenName(): ?string
     {
-        return $this->response['name'];
+        return $this->response['name'] ?? null;
     }
 
     /**
      * @inheritDoc
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->response;
     }

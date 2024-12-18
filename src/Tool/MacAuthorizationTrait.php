@@ -17,7 +17,6 @@ declare(strict_types=1);
 
 namespace League\OAuth2\Client\Tool;
 
-use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
 use function compact;
@@ -37,7 +36,7 @@ trait MacAuthorizationTrait
      *
      * @return string
      */
-    abstract protected function getTokenId(AccessToken $token);
+    abstract protected function getTokenId(AccessTokenInterface | string | null $token);
 
     /**
      * Returns the MAC signature for the current request.
