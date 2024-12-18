@@ -422,6 +422,8 @@ abstract class AbstractProvider
      * @param array<string, mixed> $options
      *
      * @return array<string, mixed> Authorization parameters
+     *
+     * @throws InvalidArgumentException
      */
     protected function getAuthorizationParameters(array $options)
     {
@@ -495,6 +497,8 @@ abstract class AbstractProvider
      * @param array<string, mixed> $options
      *
      * @return string Authorization URL
+     *
+     * @throws InvalidArgumentException
      */
     public function getAuthorizationUrl(array $options = [])
     {
@@ -511,6 +515,8 @@ abstract class AbstractProvider
      * @param array<string, mixed> $options
      *
      * @return mixed
+     *
+     * @throws InvalidArgumentException
      */
     public function authorize(
         array $options = [],
@@ -641,6 +647,7 @@ abstract class AbstractProvider
      *
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
+     * @throws UnexpectedValueException
      */
     public function getAccessToken(mixed $grant, array $options = [])
     {
@@ -763,6 +770,7 @@ abstract class AbstractProvider
      *
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
+     * @throws UnexpectedValueException
      */
     public function getParsedResponse(RequestInterface $request)
     {
