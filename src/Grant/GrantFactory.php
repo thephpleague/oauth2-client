@@ -19,6 +19,7 @@ namespace League\OAuth2\Client\Grant;
 
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 
+use function assert;
 use function gettype;
 use function is_object;
 use function is_scalar;
@@ -61,6 +62,7 @@ class GrantFactory
     {
         if (!isset($this->registry[$name])) {
             $this->registerDefaultGrant($name);
+            assert(isset($this->registry[$name]));
         }
 
         return $this->registry[$name];

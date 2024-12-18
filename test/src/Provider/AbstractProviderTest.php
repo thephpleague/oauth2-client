@@ -31,6 +31,7 @@ use Psr\Http\Message\StreamInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionObject;
+use RuntimeException;
 use UnexpectedValueException;
 use stdClass;
 
@@ -221,9 +222,15 @@ class AbstractProviderTest extends TestCase
         $callback = function (string $url, AbstractProvider $provider) use (&$testFunction, &$state) {
             $testFunction = $url;
             $state = $provider->getState();
+
+            throw new RuntimeException('Prevent test from exiting');
         };
 
-        $this->getMockProvider()->authorize([], $callback);
+        try {
+            $this->getMockProvider()->authorize([], $callback);
+        } catch (RuntimeException) {
+            // We throw the exception from the callback to prevent the script from exiting.
+        }
 
         $this->assertNotFalse($testFunction);
         $this->assertNotFalse($state);
@@ -450,7 +457,7 @@ class AbstractProviderTest extends TestCase
             ->withArgs(function (RequestInterface $request) use ($pkceCode) {
                 parse_str((string) $request->getBody(), $body);
 
-                return $body['code_verifier'] === $pkceCode;
+                return ($body['code_verifier'] ?? null) === $pkceCode;
             });
     }
 

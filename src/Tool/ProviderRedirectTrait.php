@@ -26,6 +26,8 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 
+use function assert;
+
 trait ProviderRedirectTrait
 {
     /**
@@ -52,6 +54,7 @@ trait ProviderRedirectTrait
             $response = $this->getHttpClient()->sendRequest($request);
 
             if ($this->isRedirect($response)) {
+                assert(isset($response->getHeader('Location')[0]));
                 $redirectUrl = new Uri($response->getHeader('Location')[0]);
                 $request = $request->withUri($redirectUrl);
             } else {

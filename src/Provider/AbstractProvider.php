@@ -431,6 +431,11 @@ abstract class AbstractProvider
      */
     protected function getAuthorizationParameters(array $options)
     {
+        $options += [
+            'response_type' => 'code',
+            'approval_prompt' => 'auto',
+        ];
+
         if (!isset($options['state'])) {
             $options['state'] = $this->getRandomState();
         }
@@ -438,11 +443,6 @@ abstract class AbstractProvider
         if (!isset($options['scope'])) {
             $options['scope'] = $this->getDefaultScopes();
         }
-
-        $options += [
-            'response_type' => 'code',
-            'approval_prompt' => 'auto',
-        ];
 
         if (is_array($options['scope'])) {
             $separator = $this->getScopeSeparator();
@@ -518,22 +518,23 @@ abstract class AbstractProvider
      * Redirects the client for authorization.
      *
      * @param array<string, mixed> $options
-     *
-     * @return mixed
+     * @param callable(string, static): never | null $redirectHandler The callable should set up redirection, according
+     *     to the application's needs and then exit, flushing the headers, etc. to the client. The expectation is that
+     *     it _never_ returns.
      *
      * @throws InvalidArgumentException
      */
     public function authorize(
         array $options = [],
         ?callable $redirectHandler = null,
-    ) {
+    ): never {
         $url = $this->getAuthorizationUrl($options);
         if ($redirectHandler) {
-            return $redirectHandler($url, $this);
-        }
-
+            $redirectHandler($url, $this);
         // @codeCoverageIgnoreStart
-        header('Location: ' . $url);
+        } else {
+            header('Location: ' . $url);
+        }
         exit;
         // @codeCoverageIgnoreEnd
     }

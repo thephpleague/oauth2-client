@@ -1,6 +1,28 @@
 parameters:
     level: max
-    treatPhpDocTypesAsCertain: false
+    tmpDir: build/phpstan
     paths:
         - src
         - test
+
+    checkBenevolentUnionTypes: true
+    checkDynamicProperties: true
+    checkExplicitMixedMissingReturn: true
+    checkMissingCallableSignature: true
+    checkFunctionNameCase: true
+    checkImplicitMixed: true
+    checkInternalClassCaseSensitivity: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    #checkUninitializedProperties: true
+    polluteScopeWithAlwaysIterableForeach: false
+    polluteScopeWithBlock: false
+    polluteScopeWithLoopInitialAssignments: false
+    reportAlwaysTrueInLastCondition: true
+    reportAnyTypeWideningInVarTag: true
+    reportMaybesInMethodSignatures: true
+    reportMaybesInPropertyPhpDocTypes: true
+    reportPossiblyNonexistentConstantArrayOffset: true
+    reportPossiblyNonexistentGeneralArrayOffset: true
+    reportStaticMethodSignatures: true
+    reportWrongPhpDocTypeInVarTag: true
+    treatPhpDocTypesAsCertain: false

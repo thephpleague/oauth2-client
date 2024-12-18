@@ -38,10 +38,8 @@ trait GuardedPropertyTrait
      * skipping over any properties that are defined in the guarded array.
      *
      * @param array<string, mixed> $options
-     *
-     * @return mixed
      */
-    protected function fillProperties(array $options = [])
+    protected function fillProperties(array $options = []): void
     {
         if (isset($options['guarded'])) {
             unset($options['guarded']);

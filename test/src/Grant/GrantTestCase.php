@@ -50,6 +50,8 @@ abstract class GrantTestCase extends TestCase
 
     /**
      * Callback to test access token request parameters.
+     *
+     * @return Closure(array<string, mixed>): bool
      */
     abstract protected function getParamExpectation(): Closure;
 
@@ -91,7 +93,10 @@ abstract class GrantTestCase extends TestCase
             ->withArgs(function (RequestInterface $request) {
                 parse_str((string) $request->getBody(), $body);
 
-                return call_user_func($this->getParamExpectation(), $body);
+                /** @var array<string, string> $bodyTyped */
+                $bodyTyped = $body;
+
+                return call_user_func($this->getParamExpectation(), $bodyTyped);
             })
             ->andReturn($response);
 

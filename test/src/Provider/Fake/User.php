@@ -6,15 +6,17 @@ namespace League\OAuth2\Client\Test\Provider\Fake;
 
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 
+use function is_string;
+
 class User implements ResourceOwnerInterface
 {
     /**
-     * @var array{id?: mixed, email?: string, name?: string}
+     * @var array<string, mixed>
      */
     protected array $response;
 
     /**
-     * @param array{id?: mixed, email?: string, name?: string} $response
+     * @param array<string, mixed> $response
      */
     public function __construct(array $response)
     {
@@ -31,12 +33,20 @@ class User implements ResourceOwnerInterface
 
     public function getUserEmail(): ?string
     {
-        return $this->response['email'] ?? null;
+        if (isset($this->response['email']) && is_string($this->response['email'])) {
+            return $this->response['email'];
+        }
+
+        return null;
     }
 
     public function getUserScreenName(): ?string
     {
-        return $this->response['name'] ?? null;
+        if (isset($this->response['name']) && is_string($this->response['name'])) {
+            return $this->response['name'];
+        }
+
+        return null;
     }
 
     /**

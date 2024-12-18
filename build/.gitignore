@@ -4,5 +4,7 @@
 !coverage/.keep
 !logs
 !logs/.keep
+!phpstan/
+!phpstan/.keep
 !phpunit
 !phpunit/.keep

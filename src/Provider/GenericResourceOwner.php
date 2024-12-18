@@ -45,7 +45,7 @@ class GenericResourceOwner implements ResourceOwnerInterface
      */
     public function getId()
     {
-        return $this->response[$this->resourceOwnerId];
+        return $this->response[$this->resourceOwnerId] ?? null;
     }
 
     /**

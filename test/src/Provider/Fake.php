@@ -109,7 +109,7 @@ class Fake extends AbstractProvider
     }
 
     /**
-     * @param array{id?: mixed, email?: string, name?: string} $response
+     * @param array<string, mixed> $response
      *
      * @inheritDoc
      */
@@ -125,7 +125,7 @@ class Fake extends AbstractProvider
     {
         if (isset($data['error'])) {
             assert(is_string($data['error']));
-            assert(is_int($data['code']));
+            assert(isset($data['code']) && is_int($data['code']));
 
             throw new IdentityProviderException($data['error'], $data['code'], $data);
         }
