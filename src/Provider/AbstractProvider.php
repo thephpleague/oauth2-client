@@ -54,8 +54,7 @@ use function json_last_error_msg;
 use function parse_str;
 use function random_bytes;
 use function sprintf;
-use function strpos;
-use function strstr;
+use function str_contains;
 use function strtr;
 use function substr;
 use function trim;
@@ -514,7 +513,7 @@ abstract class AbstractProvider
         $query = trim($query, '?&');
 
         if ($query) {
-            $glue = strstr($url, '?') === false ? '?' : '&';
+            $glue = !str_contains($url, '?') ? '?' : '&';
 
             return $url . $glue . $query;
         }
@@ -828,7 +827,7 @@ abstract class AbstractProvider
         $content = (string) $response->getBody();
         $type = $this->getContentType($response);
 
-        if (strpos($type, 'urlencoded') !== false) {
+        if (str_contains($type, 'urlencoded')) {
             parse_str($content, $parsed);
 
             /** @var array<string, string> */
@@ -841,7 +840,7 @@ abstract class AbstractProvider
         try {
             return $this->parseJson($content);
         } catch (UnexpectedValueException $e) {
-            if (strpos($type, 'json') !== false) {
+            if (str_contains($type, 'json')) {
                 throw $e;
             }
 

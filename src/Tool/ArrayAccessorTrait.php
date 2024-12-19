@@ -22,7 +22,7 @@ use function count;
 use function explode;
 use function is_array;
 use function is_string;
-use function strpos;
+use function str_contains;
 
 /**
  * Provides generic array navigation tools.
@@ -40,7 +40,7 @@ trait ArrayAccessorTrait
             return $default;
         }
 
-        if (strpos($key, '.') !== false) {
+        if (str_contains($key, '.')) {
             $keys = explode('.', $key);
 
             foreach ($keys as $innerKey) {

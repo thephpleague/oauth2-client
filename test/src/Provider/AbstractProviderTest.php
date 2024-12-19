@@ -39,7 +39,7 @@ use function json_encode;
 use function parse_str;
 use function parse_url;
 use function preg_match;
-use function strpos;
+use function str_contains;
 use function time;
 use function uniqid;
 
@@ -124,7 +124,7 @@ class AbstractProviderTest extends TestCase
             'state' => 'XXX',
         ]);
 
-        $this->assertTrue(strpos($authUrl, 'state=XXX') !== false);
+        $this->assertTrue(str_contains($authUrl, 'state=XXX'));
     }
 
     /**
