@@ -697,7 +697,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code', 'scope' => 'test']
+                ['code' => 'mock_authorization_code', 'scope' => 'foo,bar']
             )
             ->andReturn([]);
 
@@ -723,7 +723,7 @@ class AbstractProviderTest extends TestCase
         ]);
 
         $provider->setHttpClient($client);
-        $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code', 'scope' => 'test']);
+        $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code', 'scope' => ['foo', 'bar']]);
 
         $this->assertInstanceOf(AccessTokenInterface::class, $token);
 
