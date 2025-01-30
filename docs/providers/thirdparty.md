@@ -53,6 +53,7 @@ Gateway | Composer Package | Maintainer
 [Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
 [Drupal](https://github.com/chrishemmings/oauth2-drupal) | chrishemmings/oauth2-drupal | [Chris Hemmings](https://github.com/chrishemmings)
+[Ebay](https://github.com/Gugiman/oauth2-ebay) | gugiman/oauth2-ebay | [Dennis Steffen](https://github.com/gugiman)
 [Ecwid](https://github.com/mugnate/oauth2-ecwid) | mugnate/oauth2-ecwid | [Nikolay Votintsev](https://github.com/votintsev)
 [Edenred](https://github.com/jzecca/oauth2-edenred) | jzecca/oauth2-edenred | [Jérôme Zecca](https://github.com/jzecca)
 [Elance](https://github.com/stevenmaguire/oauth2-elance) | stevenmaguire/oauth2-elance | [Steven Maguire](https://github.com/stevenmaguire)
