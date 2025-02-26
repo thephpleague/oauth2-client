@@ -17,6 +17,7 @@ namespace League\OAuth2\Client\Provider;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
@@ -619,6 +620,7 @@ abstract class AbstractProvider
      * @return AccessTokenInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     public function getAccessToken($grant, array $options = [])
     {
@@ -713,6 +715,7 @@ abstract class AbstractProvider
      *
      * @param  RequestInterface $request
      * @return ResponseInterface
+     * @throws GuzzleException
      */
     public function getResponse(RequestInterface $request)
     {
@@ -726,6 +729,7 @@ abstract class AbstractProvider
      * @return mixed
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     public function getParsedResponse(RequestInterface $request)
     {
@@ -875,6 +879,7 @@ abstract class AbstractProvider
      * @return ResourceOwnerInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     public function getResourceOwner(AccessToken $token)
     {
@@ -890,6 +895,7 @@ abstract class AbstractProvider
      * @return mixed
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     protected function fetchResourceOwnerDetails(AccessToken $token)
     {
