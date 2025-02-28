@@ -714,7 +714,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code', 'scope' => 'test'],
+                ['code' => 'mock_authorization_code'],
             )
             ->andReturn([]);
 
@@ -741,6 +741,61 @@ class AbstractProviderTest extends TestCase
 
         $provider->setHttpClient($client);
         $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code']);
+
+        $this->assertInstanceOf(ResourceOwnerAccessTokenInterface::class, $token);
+
+        $this->assertSame($rawResponse['resource_owner_id'], $token->getResourceOwnerId());
+        $this->assertSame($rawResponse['access_token'], $token->getToken());
+        $this->assertSame($rawResponse['expires'], $token->getExpires());
+
+        $client
+            ->shouldHaveReceived('sendRequest')
+            ->once()
+            ->withArgs(fn (RequestInterface $request) => $request->getMethod() === $provider->getAccessTokenMethod()
+                    && (string) $request->getUri() === $provider->getBaseAccessTokenUrl([]));
+    }
+
+    #[DataProvider('getAccessTokenMethodProvider')]
+    public function testGetAccessTokenWithScope(string $method): void
+    {
+        $provider = $this->getMockProvider();
+        $provider->setAccessTokenMethod($method);
+
+        $rawResponse = ['access_token' => 'okay', 'expires' => time() + 3600, 'resource_owner_id' => 3];
+
+        $grant = Mockery::mock(AbstractGrant::class);
+        $grant
+            ->shouldReceive('prepareRequestParameters')
+            ->once()
+            ->with(
+                ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
+                ['code' => 'mock_authorization_code', 'scope' => 'foo,bar'],
+            )
+            ->andReturn([]);
+
+        $stream = Mockery::mock(StreamInterface::class);
+        $stream
+            ->shouldReceive('__toString')
+            ->once()
+            ->andReturn(json_encode($rawResponse));
+
+        $response = Mockery::mock(ResponseInterface::class);
+        $response
+            ->shouldReceive('getBody')
+            ->once()
+            ->andReturn($stream);
+        $response
+            ->shouldReceive('getHeader')
+            ->once()
+            ->with('content-type')
+            ->andReturn(['application/json']);
+
+        $client = Mockery::spy(ClientInterface::class, [
+            'sendRequest' => $response,
+        ]);
+
+        $provider->setHttpClient($client);
+        $token = $provider->getAccessToken($grant, ['code' => 'mock_authorization_code', 'scope' => ['foo', 'bar']]);
 
         $this->assertInstanceOf(ResourceOwnerAccessTokenInterface::class, $token);
 

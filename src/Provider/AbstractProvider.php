@@ -18,6 +18,7 @@ declare(strict_types=1);
 namespace League\OAuth2\Client\Provider;
 
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
@@ -621,16 +622,13 @@ abstract class AbstractProvider
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     public function getAccessToken(mixed $grant, array $options = []): AccessTokenInterface
     {
         $grant = $this->verifyGrant($grant);
 
-        if (!isset($options['scope'])) {
-            $options['scope'] = $this->getDefaultScopes();
-        }
-
-        if (is_array($options['scope'])) {
+        if (isset($options['scope']) && is_array($options['scope'])) {
             $separator = $this->getScopeSeparator();
             $options['scope'] = implode($separator, $options['scope']);
         }
@@ -758,6 +756,7 @@ abstract class AbstractProvider
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     public function getParsedResponse(RequestInterface $request): array
     {
@@ -914,6 +913,7 @@ abstract class AbstractProvider
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     public function getResourceOwner(AccessToken $token): ResourceOwnerInterface
     {
@@ -930,6 +930,7 @@ abstract class AbstractProvider
      * @throws ClientExceptionInterface
      * @throws IdentityProviderException
      * @throws UnexpectedValueException
+     * @throws GuzzleException
      */
     protected function fetchResourceOwnerDetails(AccessToken $token): array
     {

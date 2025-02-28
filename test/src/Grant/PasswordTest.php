@@ -25,8 +25,7 @@ class PasswordTest extends GrantTestCase
         return fn (array $body) => isset($body['grant_type'])
                 && $body['grant_type'] === 'password'
                 && isset($body['username'])
-                && isset($body['password'])
-                && isset($body['scope']);
+                && isset($body['password']);
     }
 
     public function testToString(): void

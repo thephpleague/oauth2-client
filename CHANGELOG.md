@@ -1,5 +1,12 @@
 # OAuth 2.0 Client Changelog
 
+## 2.8.1
+
+_Released: 2025-02-26_
+
+* Only provide scopes in access token when set in options [#1053](https://github.com/thephpleague/oauth2-client/pull/1053)
+* Add missing `@throws` annotations for Guzzle exceptions [#1055](https://github.com/thephpleague/oauth2-client/pull/1055)
+
 ## 2.8.0
 
 _Released: 2024-12-11_
