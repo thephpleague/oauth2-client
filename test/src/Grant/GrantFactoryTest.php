@@ -6,6 +6,7 @@ use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\Exception\InvalidGrantException;
 use League\OAuth2\Client\Test\Grant\Fake as MockGrant;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class GrantFactoryTest extends TestCase
@@ -13,6 +14,7 @@ class GrantFactoryTest extends TestCase
     /**
      * @dataProvider providerGetGrantDefaults
      */
+    #[DataProvider('providerGetGrantDefaults')]
     public function testGetGrantDefaults($name)
     {
         $factory = new GrantFactory();
@@ -20,7 +22,7 @@ class GrantFactoryTest extends TestCase
         $this->assertInstanceOf(AbstractGrant::class, $grant);
     }
 
-    public function providerGetGrantDefaults()
+    public static function providerGetGrantDefaults()
     {
         return [
             'authorization_code' => ['authorization_code'],

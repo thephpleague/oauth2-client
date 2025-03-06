@@ -5,6 +5,7 @@ namespace League\OAuth2\Client\Test\Grant;
 use GuzzleHttp\ClientInterface;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -32,7 +33,7 @@ abstract class GrantTestCase extends TestCase
      *
      * @return array
      */
-    abstract public function providerGetAccessToken();
+    abstract public static function providerGetAccessToken();
 
     /**
      * Callback to test access token request parameters.
@@ -44,6 +45,7 @@ abstract class GrantTestCase extends TestCase
     /**
      * @dataProvider providerGetAccessToken
      */
+    #[DataProvider('providerGetAccessToken')]
     public function testGetAccessToken($grant, array $params = [])
     {
         $provider = $this->getMockProvider();
@@ -65,7 +67,7 @@ abstract class GrantTestCase extends TestCase
             ->shouldReceive('getHeader')
             ->once()
             ->with('content-type')
-            ->andReturn('application/json');
+            ->andReturn(['application/json']);
 
         /** @var ClientInterface & MockInterface $client */
         $client = Mockery::spy(ClientInterface::class)->makePartial();

@@ -123,6 +123,23 @@ class AccessTokenTest extends TestCase
         self::tearDownForBackwardsCompatibility();
     }
 
+    public function testSetRefreshToken()
+    {
+        $refreshToken = 'refresh_token';
+
+        $options = [
+            'access_token' => 'access_token',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $token->setRefreshToken($refreshToken);
+
+        $this->assertEquals($refreshToken, $token->getRefreshToken());
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
     public function testHasNotExpiredWhenPropertySetInFuture()
     {
         $options = [
@@ -161,6 +178,22 @@ class AccessTokenTest extends TestCase
         self::tearDownForBackwardsCompatibility();
     }
 
+    public function testHasExpiredWhenTimeNowIsInFuture()
+    {
+        $options = [
+            'access_token' => 'mock_access_token',
+            'expires' => time(),
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $token->setTimeNow(time() + 60);
+
+        $this->assertTrue($token->hasExpired());
+
+        self::tearDownForBackwardsCompatibility();
+    }
+
     public function testCannotReportExpiredWhenNoExpirationSet()
     {
         $options = [
@@ -189,6 +222,32 @@ class AccessTokenTest extends TestCase
         self::tearDownForBackwardsCompatibility();
     }
 
+    public function testInvalidExpiresWhenExpiresDoesNotCastToInteger()
+    {
+        $options = [
+            'access_token' => 'access_token',
+            'expires' => 'TEXT',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $this->assertSame($token->getTimeNow(), $token->getExpires());
+    }
+
+    public function testInvalidExpiresWhenExpiresCastsToInteger()
+    {
+        $options = [
+            'access_token' => 'access_token',
+            'expires' => '3TEXT',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $this->assertSame($token->getTimeNow() + 3, $token->getExpires());
+        $this->assertFalse($token->hasExpired());
+
+        self::tearDownForBackwardsCompatibility();
+    }
 
     public function testJsonSerializable()
     {

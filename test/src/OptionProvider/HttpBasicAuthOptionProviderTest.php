@@ -4,19 +4,21 @@ namespace League\OAuth2\Client\Test\OptionProvider;
 
 use InvalidArgumentException;
 use League\OAuth2\Client\OptionProvider\HttpBasicAuthOptionProvider;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use League\OAuth2\Client\Provider\AbstractProvider;
 
-/**
- * @coversDefaultClass \League\OAuth2\Client\OptionProvider\HttpBasicAuthOptionProvider
- */
+#[CoversClass(HttpBasicAuthOptionProvider::class)]
+#[CoversMethod(HttpBasicAuthOptionProvider::class, 'getAccessTokenOptions')]
 class HttpBasicAuthOptionProviderTest extends TestCase
 {
     /**
      * data provider for testGetAccessTokenOptionsException
      * @return array
      */
-    public function providerTestGetAccessTokenOptionsException()
+    public static function providerTestGetAccessTokenOptionsException()
     {
         return [
             [['client_id' => 'test']],
@@ -25,10 +27,11 @@ class HttpBasicAuthOptionProviderTest extends TestCase
     }
 
     /**
-     * @covers ::getAccessTokenOptions
-     * @dataProvider providerTestGetAccessTokenOptionsException
      * @param array $params
+     *
+     * @dataProvider providerTestGetAccessTokenOptionsException
      */
+    #[DataProvider('providerTestGetAccessTokenOptionsException')]
     public function testGetAccessTokenOptionsException($params)
     {
         $this->expectException(InvalidArgumentException::class);
@@ -37,9 +40,6 @@ class HttpBasicAuthOptionProviderTest extends TestCase
         $provider->getAccessTokenOptions(AbstractProvider::METHOD_POST, $params);
     }
 
-    /**
-     * @covers ::getAccessTokenOptions
-     */
     public function testGetAccessTokenOptions()
     {
         $provider = new HttpBasicAuthOptionProvider();

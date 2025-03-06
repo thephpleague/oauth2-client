@@ -16,6 +16,7 @@ The following example uses the out-of-the-box `GenericProvider` provided by this
 
 The *authorization code* grant type is the most common grant type used when authenticating users with a third-party service. This grant type utilizes a *client* (this library), a *service provider* (the server), and a *resource owner* (the account with credentials to a protected—or owned—resource) to request access to resources owned by the user. This is often referred to as _3-legged OAuth_, since there are three parties involved.
 
+<a name="authorization-code-grant-example"></a>
 ```php
 $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'clientId'                => 'XXXXXX',    // The client ID assigned to you by the provider
@@ -25,6 +26,9 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'urlAccessToken'          => 'https://service.example.com/token',
     'urlResourceOwnerDetails' => 'https://service.example.com/resource'
 ]);
+
+// A session is required to store some session data for later usage
+session_start();
 
 // If we don't have an authorization code then get one
 if (!isset($_GET['code'])) {
@@ -37,12 +41,16 @@ if (!isset($_GET['code'])) {
     // Get the state generated for you and store it to the session.
     $_SESSION['oauth2state'] = $provider->getState();
 
+    // Optional, only required when PKCE is enabled.
+    // Get the PKCE code generated for you and store it to the session.
+    $_SESSION['oauth2pkceCode'] = $provider->getPkceCode();
+
     // Redirect the user to the authorization URL.
     header('Location: ' . $authorizationUrl);
     exit;
 
 // Check given state against previously stored one to mitigate CSRF attack
-} elseif (empty($_GET['state']) || (isset($_SESSION['oauth2state']) && $_GET['state'] !== $_SESSION['oauth2state'])) {
+} elseif (empty($_GET['state']) || empty($_SESSION['oauth2state']) || $_GET['state'] !== $_SESSION['oauth2state']) {
 
     if (isset($_SESSION['oauth2state'])) {
         unset($_SESSION['oauth2state']);
@@ -53,18 +61,22 @@ if (!isset($_GET['code'])) {
 } else {
 
     try {
+    
+        // Optional, only required when PKCE is enabled.
+        // Restore the PKCE code stored in the session.
+        $provider->setPkceCode($_SESSION['oauth2pkceCode']);
 
         // Try to get an access token using the authorization code grant.
-        $accessToken = $provider->getAccessToken('authorization_code', [
+        $tokens = $provider->getAccessToken('authorization_code', [
             'code' => $_GET['code']
         ]);
 
         // We have an access token, which we may use in authenticated
         // requests against the service provider's API.
-        echo 'Access Token: ' . $accessToken->getToken() . "<br>";
-        echo 'Refresh Token: ' . $accessToken->getRefreshToken() . "<br>";
-        echo 'Expired in: ' . $accessToken->getExpires() . "<br>";
-        echo 'Already expired? ' . ($accessToken->hasExpired() ? 'expired' : 'not expired') . "<br>";
+        echo 'Access Token: ' . $tokens->getToken() . "<br>";
+        echo 'Refresh Token: ' . $tokens->getRefreshToken() . "<br>";
+        echo 'Expired in: ' . $tokens->getExpires() . "<br>";
+        echo 'Already expired? ' . ($tokens->hasExpired() ? 'expired' : 'not expired') . "<br>";
 
         // Using the access token, we may look up details about the
         // resource owner.
@@ -90,6 +102,31 @@ if (!isset($_GET['code'])) {
 
 }
 ```
+### Authorization Code Grant with PKCE
+
+To enable PKCE (Proof Key for Code Exchange) you can set the `pkceMethod` option for the provider.  
+Supported methods are:
+- `S256` Recommended method. The code challenge will be hashed with sha256.
+- `plain` **NOT** recommended. The code challenge will be sent as plain text. Only use this if no other option is possible.
+
+You can configure the PKCE method as follows:
+```php
+$provider = new \League\OAuth2\Client\Provider\GenericProvider([
+    // ...
+    // other options
+    // ...
+    'pkceMethod' => \League\OAuth2\Client\Provider\GenericProvider::PKCE_METHOD_S256
+]);
+```
+The PKCE code needs to be used between requests and therefore be saved and restored, usually via the session.
+In the [example](#authorization-code-grant-example) above this is done as follows:
+```php
+// Store the PKCE code after the `getAuthorizationUrl()` call.
+$_SESSION['oauth2pkceCode'] = $provider->getPkceCode();
+// ...
+// Restore the PKCE code before the `getAccessToken()` call. 
+$provider->setPkceCode($_SESSION['oauth2pkceCode']);
+```
 
 Refreshing a Token
 ------------------
@@ -107,13 +144,16 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
 ]);
 
 $existingAccessToken = getAccessTokenFromYourDataStore();
+$existingRefreshToken = getRefreshTokenFromYourDataStore();
 
 if ($existingAccessToken->hasExpired()) {
-    $newAccessToken = $provider->getAccessToken('refresh_token', [
-        'refresh_token' => $existingAccessToken->getRefreshToken()
+    $tokens = $provider->getAccessToken('refresh_token', [
+        'refresh_token' => $existingRefreshToken
     ]);
 
-    // Purge old access token and store new access token to your data store.
+    // Purge old tokens and store new ones to your data store.
+    saveNewAccessTokenToYourDataStore($tokens->getToken());
+    saveNewRefreshTokenToYourDataStore($tokens->getRefreshToken());
 }
 ```
 
