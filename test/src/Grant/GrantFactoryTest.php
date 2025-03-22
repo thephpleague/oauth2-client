@@ -11,6 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 class GrantFactoryTest extends TestCase
 {
+    /**
+     * @dataProvider providerGetGrantDefaults
+     */
     #[DataProvider('providerGetGrantDefaults')]
     public function testGetGrantDefaults($name)
     {

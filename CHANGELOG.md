@@ -1,8 +1,33 @@
 # OAuth 2.0 Client Changelog
 
-## x.x.x
+## 2.8.1
 
+_Released: 2025-02-26_
+
+* Only provide scopes in access token when set in options [#1053](https://github.com/thephpleague/oauth2-client/pull/1053)
+* Add missing `@throws` annotations for Guzzle exceptions [#1055](https://github.com/thephpleague/oauth2-client/pull/1055)
+
+## 2.8.0
+
+_Released: 2024-12-11_
+
+* This version is certified for PHP 8.3 and PHP 8.4! 🎉
+* Fix cases where `expires` is not a number [#929](https://github.com/thephpleague/oauth2-client/pull/929)
+* Add `SettableRefreshTokenInterface` to support setting the refresh token
+  [#994](https://github.com/thephpleague/oauth2-client/pull/994)
+* Set minimum version of Guzzle to 6.5.8 and 7.4.5, due to security vulnerabilities
+  reported in earlier versions [#1022](https://github.com/thephpleague/oauth2-client/issues/1022)
+* Fix parameter docblock type hint for `AbstractProvider::prepareAccessTokenResponse()`
+  [#1025](https://github.com/thephpleague/oauth2-client/pull/1025)
+  * Take note, this might affect static analysis reports for downstream providers
 * Send scopes with access token request [#1029](https://github.com/thephpleague/oauth2-client/issues/1029)
+  [#1030](https://github.com/thephpleague/oauth2-client/pull/1030)
+* Explicitly mark nullable parameter [#1034](https://github.com/thephpleague/oauth2-client/pull/1034)
+  [#1039](https://github.com/thephpleague/oauth2-client/pull/1039)
+  * This change requires PHP 7.1 as the minimum version for this library
+* Plus a number of test and documentation improvements; see the
+  [commit log](https://github.com/thephpleague/oauth2-client/compare/2.7.0...2.8.0)
+  for more details
 
 ## 2.7.0
 

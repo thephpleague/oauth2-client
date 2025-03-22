@@ -143,6 +143,8 @@ class GenericProviderTest extends TestCase
     /**
      * @param array $error The error response to parse
      * @param array $extraOptions Any extra options to configure the generic provider with.
+     *
+     * @dataProvider checkResponseThrowsExceptionProvider
      */
     #[DataProvider('checkResponseThrowsExceptionProvider')]
     public function testCheckResponseThrowsException(array $error, array $extraOptions = [])

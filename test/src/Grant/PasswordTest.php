@@ -20,8 +20,7 @@ class PasswordTest extends GrantTestCase
             return !empty($body['grant_type'])
                 && $body['grant_type'] === 'password'
                 && !empty($body['username'])
-                && !empty($body['password'])
-                && !empty($body['scope']);
+                && !empty($body['password']);
         };
     }
 

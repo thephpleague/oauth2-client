@@ -28,6 +28,8 @@ class HttpBasicAuthOptionProviderTest extends TestCase
 
     /**
      * @param array $params
+     *
+     * @dataProvider providerTestGetAccessTokenOptionsException
      */
     #[DataProvider('providerTestGetAccessTokenOptionsException')]
     public function testGetAccessTokenOptionsException($params)

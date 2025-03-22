@@ -42,6 +42,9 @@ abstract class GrantTestCase extends TestCase
      */
     abstract protected function getParamExpectation();
 
+    /**
+     * @dataProvider providerGetAccessToken
+     */
     #[DataProvider('providerGetAccessToken')]
     public function testGetAccessToken($grant, array $params = [])
     {
