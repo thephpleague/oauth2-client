@@ -235,7 +235,7 @@ GEM
     minitest (5.25.4)
     net-http (0.6.0)
       uri
-    nokogiri (1.18.3)
+    nokogiri (1.18.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     octokit (4.25.1)
@@ -269,7 +269,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (1.8.0)
-    uri (1.0.2)
+    uri (1.0.3)
     webrick (1.9.1)
 
 PLATFORMS
