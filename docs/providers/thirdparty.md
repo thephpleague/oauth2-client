@@ -49,6 +49,7 @@ Gateway | Composer Package | Maintainer
 [Disqus](https://github.com/antalaron/oauth2-disqus) | antalaron/oauth2-disqus | [Antal Áron](https://github.com/antalaron)
 [Docusign](https://github.com/AlaaSarhan/oauth2-docusign) | sarhan/oauth2-docusign | [Alaa Sarhan](https://github.com/AlaaSarhan)
 [Dokeop](https://github.com/dokeop/oauth2-dokeop) | dokeop/oauth2-dokeop | [Dokeop](https://github.com/dokeop)
+[Domo](https://github.com/compwright/oauth2-domo) | oauth2-domo | [Jonathon Hill](https://github.com/compwright)
 [DonationAlerts](https://github.com/mish-ka-mishka/oauth2-donationalerts) | mkaverin/oauth2-donationalerts | [Michael Kaverin](https://github.com/mish-ka-mishka)
 [Dribbble](https://github.com/crewlabs/oauth2-dribbble) | crewlabs/oauth2-dribbble | [Crew Labs](https://crew.co/labs)
 [Dropbox](https://github.com/stevenmaguire/oauth2-dropbox) | stevenmaguire/oauth2-dropbox | [Steven Maguire](https://github.com/stevenmaguire)
