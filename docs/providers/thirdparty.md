@@ -32,6 +32,7 @@ Gateway | Composer Package | Maintainer
 [Box](https://github.com/stevenmaguire/oauth2-box) | stevenmaguire/oauth2-box | [Steven Maguire](https://github.com/stevenmaguire)
 [Buddy](https://github.com/buddy-works/oauth2-client) | buddy-works/oauth2-client | [Arkadiusz Kondas](https://github.com/akondas)
 [Buffer](https://github.com/tgallice/oauth2-buffer) | tgallice/oauth2-buffer | [Thomas Gallice](https://github.com/tgallice)
+[CentralAuth](https://github.com/CentralAuth/CentralAuth-PHP-library) | centralauth/oauth2-centralauth | [CentralAuth](https://github.com/CentralAuth)
 [ColorMeShop](https://github.com/pepabo/oauth2-colormeshop) | pepabo/oauth2-colormeshop | [GMO Pepabo, Inc.](https://github.com/pepabo)
 [Canvas LMS](https://github.com/smtech/oauth2-canvaslms) | smtech/oauth2-canvaslms | [Seth Battis](https://github.com/battis)
 [concrete5](https://github.com/concrete5/oauth2-concrete5) | concrete5/oauth2-concrete5 | [Andrew Embler](https://github.com/aembler)
