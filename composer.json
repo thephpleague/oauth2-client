@@ -6,7 +6,7 @@
         "sort-packages": true
     },
     "require": {
-        "php": "^7.1 || >=8.0.0 <8.5.0",
+        "php": "^7.1 || >=8.0.0 <8.6.0",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^6.5.8 || ^7.4.5"
     },
