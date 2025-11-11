@@ -97,6 +97,7 @@ Gateway | Composer Package | Maintainer
 [Meetup](https://packagist.org/packages/wittestier/oauth2-meetup) | wittestier/oauth2-meetup | [WitteStier](https://gitlab.com/WitteStier)
 [MercadoLibre](https://github.com/docta/oauth2-mercadolibre) | docta/oauth2-mercadolibre | [Lucas Banegas](https://github.com/lucascono)
 [Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
+[Microsoft ADFS Provider](https://github.com/b3-it/oauth2-adfs) | b3-it/oauth2-adfs | [B3-IT](https://github.com/b3-it)
 [MYOB](https://github.com/globalvisionmedia/oauth2-myob) | globalvisionmedia/oauth2-myob | [Peter Hawkins](https://www.globalvision.com.au)
 [Mollie](https://github.com/mollie/oauth2-mollie-php) | mollie/oauth2-mollie-php | [Mollie](https://github.com/mollie)
 [Monizze](https://github.com/jzecca/oauth2-monizze) | jzecca/oauth2-monizze | [Jérôme Zecca](https://github.com/jzecca)
