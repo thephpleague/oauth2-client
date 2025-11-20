@@ -313,7 +313,7 @@ class AbstractProviderTest extends TestCase
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
         $this->assertArrayHasKey('scope', $qs);
-        $this->assertSame('foo,bar', $qs['scope']);
+        $this->assertSame('foo bar', $qs['scope']);
     }
 
     public function testAuthorizationStateIsRandom()
