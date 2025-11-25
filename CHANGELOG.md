@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 2.9.0
+
+_Released: 2025-11-25_
+
+* Add support for PHP 8.5 [#1081](https://github.com/thephpleague/oauth2-client/pull/1081)
+
 ## 2.8.1
 
 _Released: 2025-02-26_
