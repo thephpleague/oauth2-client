@@ -14,15 +14,6 @@ on:
     tags:
       - "*"
 
-# Cancels all previous workflow runs for the same branch that have not yet completed.
-concurrency:
-  # The concurrency group contains the workflow name and the branch name.
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  COMPOSER_ROOT_VERSION: "1.99.99"
-
 jobs:
 
   lint:
@@ -76,14 +67,20 @@ jobs:
       - uses: "ramsey/composer-install@v3"
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml --coverage-text"
-      - name: "Publish coverage report to Codecov"
+      - name: "Upload coverage reports to Codecov"
         uses: "codecov/codecov-action@v5"
         with:
+         token: ${{ secrets.CODECOV_TOKEN }}
+         slug: ${{ github.repository }}
+
+      - name: "Upload test results to Codecov"
+        uses: "codecov/test-results-action@v1"
+        with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          slug: ${{ github.repository }}
 
   unit-tests:
     name: "Unit Tests"
-    needs: ["lint"]
     runs-on: "ubuntu-latest"
     strategy:
       fail-fast: true
@@ -97,6 +94,10 @@ jobs:
           coverage: "none"
           ini-values: "memory_limit=-1, zend.assertions=1, error_reporting=-1, display_errors=On"
           tools: "composer"
+      - uses: "actions/cache@v4"
+        with:
+          path: "vendor"
+          key: "${{ matrix.os }}-${{ matrix.php }}-${{ matrix.laravel }}-vendor-${{ hashFiles('**/composer.lock') }}"
       - name: "Prepare for tests"
         run: "mkdir -p build/logs"
       - uses: "ramsey/composer-install@v3"
