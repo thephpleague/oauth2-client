@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 2.10.0
+
+_Released: 2026-01-28_
+
+* Drop support for Guzzle 6 to resolve version conflicts [#904](https://github.com/thephpleague/oauth2-client/issues/904)
+
 ## 2.9.0
 
 _Released: 2025-11-25_
