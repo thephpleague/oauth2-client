@@ -313,7 +313,7 @@ class AbstractProviderTest extends TestCase
         parse_str(parse_url($url, PHP_URL_QUERY), $qs);
 
         $this->assertArrayHasKey('scope', $qs);
-        $this->assertSame('foo,bar', $qs['scope']);
+        $this->assertSame('foo bar', $qs['scope']);
     }
 
     public function testAuthorizationStateIsRandom()
@@ -697,7 +697,7 @@ class AbstractProviderTest extends TestCase
             ->once()
             ->with(
                 ['client_id' => 'mock_client_id', 'client_secret' => 'mock_secret', 'redirect_uri' => 'none'],
-                ['code' => 'mock_authorization_code', 'scope' => 'foo,bar']
+                ['code' => 'mock_authorization_code', 'scope' => 'foo bar']
             )
             ->andReturn([]);
 
