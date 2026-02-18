@@ -161,6 +161,7 @@ Gateway | Composer Package | Maintainer
 [Withings](https://github.com/waytohealth/oauth2-withings) | waytohealth/oauth2-withings | [Way to Health](https://github.com/waytohealth)
 [WordPress](https://github.com/krombox/oauth2-wordpress) | krombox/oauth2-wordpress | [Roman Kapustian](https://github.com/krombox)
 [Wrike](https://github.com/michaelKaefer/oauth2-wrike) | michaelkaefer/oauth2-wrike | [Michael Käfer](https://github.com/michaelKaefer)
+[X (formerly Twitter)](https://github.com/aporat/oauth2-xtwitter) | aporat/oauth2-xtwitter | [aporat](https://github.com/aporat)
 [Yahoo](https://packagist.org/packages/hayageek/oauth2-yahoo) | hayageek/oauth2-yahoo | [Ravishanker Kusuma](https://github.com/hayageek)
 [Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
 [Yelp](https://github.com/stevenmaguire/oauth2-yelp) | stevenmaguire/oauth2-yelp | [Steven Maguire](https://github.com/stevenmaguire)
