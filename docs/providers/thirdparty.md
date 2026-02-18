@@ -23,6 +23,7 @@ Gateway | Composer Package | Maintainer
 [Apereo CAS](https://github.com/ajtak/oauth2-apereo-cas) | ajtak/oauth2-apereo-cas | [Jakub Fridrich](https://github.com/Ajtak)
 [Apple](https://github.com/patrickbussmann/oauth2-apple) | patrickbussmann/oauth2-apple | [Patrick Bußmann](https://github.com/patrickbussmann)
 [Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Nicolas Eeckeloo](https://github.com/neeckeloo)
+[Authentik](https://gitlab.com/chez14/oauth2-authentik) | chez14/oauth2-authentik | [chez14](https://gitlab.com/chez14)
 [Azure Active Directory](https://github.com/thenetworg/oauth2-azure) | thenetworg/oauth2-azure | [Jan Hajek](https://github.com/hajekj)
 [BASE](https://github.com/w-takumi/oauth2-base) | shippinno/oauth-base | [SHIPPInno Corp.](https://www.shippinno.co.jp/)
 [Basecamp](https://github.com/stevenmaguire/oauth2-basecamp) | stevenmaguire/oauth2-basecamp | [Steven Maguire](https://github.com/stevenmaguire)
