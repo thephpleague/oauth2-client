@@ -153,7 +153,7 @@ Gateway | Composer Package | Maintainer
 [Untappd](https://github.com/shadowhand/oauth2-untappd) | shadowhand/oauth2-untappd | [Woody Gilk](https://github.com/shadowhand)
 [Vend](https://github.com/wheniwork/oauth2-vend) | wheniwork/oauth2-vend | [When I Work](https://github.com/wheniwork)
 [Vimeo](https://github.com/saf33r/oauth2-vimeo) | saf33r/oauth2-vimeo | [Safeer Ahmed](https://github.com/saf33r)
-[Vkontakte](https://github.com/j4k/oauth2-vkontakte) | j4k/oauth2-vkontakte | [Jack W](https://github.com/j4k)
+[VKontakte](https://github.com/yasinovsky/oauth2-vkontakte) | yasinovsky/oauth2-vkontakte | [Victor Yasinovsky](https://github.com/yasinovsky)
 [Wechat](https://github.com/oakhope/oauth2-wechat) | oakhope/oauth2-wechat | [Benji Wang](https://github.com/oakhope)
 [WeCounsel](https://github.com/stevenmaguire/oauth2-wecounsel) | stevenmaguire/oauth2-wecounsel | [Steven Maguire](https://github.com/stevenmaguire)
 [Webflow](https://github.com/koalatiapp/oauth2-webflow) | koalati/oauth2-webflow | [Koalati](https://github.com/koalatiapp)
