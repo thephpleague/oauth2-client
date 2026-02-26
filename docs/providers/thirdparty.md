@@ -96,7 +96,7 @@ Gateway | Composer Package | Maintainer
 [MDirector](https://github.com/antevenio/oauth2-mdirector) | antevenio/oauth2-mdirector | [Iván Mota](https://github.com/pinfake)
 [Meetup](https://packagist.org/packages/wittestier/oauth2-meetup) | wittestier/oauth2-meetup | [WitteStier](https://gitlab.com/WitteStier)
 [MercadoLibre](https://github.com/docta/oauth2-mercadolibre) | docta/oauth2-mercadolibre | [Lucas Banegas](https://github.com/lucascono)
-[Microsoft](https://github.com/stevenmaguire/oauth2-microsoft) | stevenmaguire/oauth2-microsoft | [Steven Maguire](https://github.com/stevenmaguire)
+[Microsoft](https://github.com/tunterreitmeier/oauth2-microsoft) | untt/oauth2-microsoft | [Thomas Unterreitmeier](https://github.com/tunterreitmeier)
 [MYOB](https://github.com/globalvisionmedia/oauth2-myob) | globalvisionmedia/oauth2-myob | [Peter Hawkins](https://www.globalvision.com.au)
 [Mollie](https://github.com/mollie/oauth2-mollie-php) | mollie/oauth2-mollie-php | [Mollie](https://github.com/mollie)
 [Monizze](https://github.com/jzecca/oauth2-monizze) | jzecca/oauth2-monizze | [Jérôme Zecca](https://github.com/jzecca)
