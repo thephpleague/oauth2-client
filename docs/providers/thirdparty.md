@@ -21,7 +21,7 @@ Gateway | Composer Package | Maintainer
 [Amazon](https://github.com/michaelKaefer/oauth2-amazon/) | michaelkaefer/oauth2-amazon | [Michael Käfer](https://github.com/michaelKaefer)
 [Amazon Cognito](https://github.com/CakeDC/oauth2-cognito/) | cakedc/oauth2-cognito | [Cake Development Corporation](https://github.com/CakeDC)
 [Apereo CAS](https://github.com/ajtak/oauth2-apereo-cas) | ajtak/oauth2-apereo-cas | [Jakub Fridrich](https://github.com/Ajtak)
-[Apple](https://github.com/patrickbussmann/oauth2-apple) | patrickbussmann/oauth2-apple | [Patrick Bußmann](https://github.com/patrickbussmann)
+[Apple](https://github.com/code-rhapsodie/oauth2-apple) | code-rhapsodie/oauth2-apple | [Code Rhapsodie](https://github.com/code-rhapsodie)
 [Auth0](https://github.com/RiskioFr/oauth2-auth0) | riskio/oauth2-auth0 | [Nicolas Eeckeloo](https://github.com/neeckeloo)
 [Azure Active Directory](https://github.com/thenetworg/oauth2-azure) | thenetworg/oauth2-azure | [Jan Hajek](https://github.com/hajekj)
 [BASE](https://github.com/w-takumi/oauth2-base) | shippinno/oauth-base | [SHIPPInno Corp.](https://www.shippinno.co.jp/)
