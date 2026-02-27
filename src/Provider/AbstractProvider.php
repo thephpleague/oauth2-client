@@ -615,7 +615,7 @@ abstract class AbstractProvider
     /**
      * Requests an access token using a specified grant and option set.
      *
-     * @param  mixed                $grant
+     * @param  AbstractGrant|string $grant
      * @param  array<string, mixed> $options
      * @return AccessTokenInterface
      * @throws IdentityProviderException
