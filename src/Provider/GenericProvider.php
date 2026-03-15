@@ -55,7 +55,6 @@ class GenericProvider extends AbstractProvider
 
     /**
      * @var list<string> | null
-     * @phpstan-ignore property.unusedType
      */
     private ?array $scopes = null;
 
@@ -64,9 +63,6 @@ class GenericProvider extends AbstractProvider
     private string $responseCode;
     private string $responseResourceOwnerId = 'id';
 
-    /**
-     * @phpstan-ignore property.unusedType
-     */
     private ?string $pkceMethod = null;
 
     /**
