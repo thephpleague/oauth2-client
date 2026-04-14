@@ -77,7 +77,7 @@ jobs:
       - name: "Run unit tests"
         run: "./vendor/bin/phpunit --colors=always --coverage-clover build/logs/clover.xml --coverage-text"
       - name: "Publish coverage report to Codecov"
-        uses: "codecov/codecov-action@v5"
+        uses: "codecov/codecov-action@v6"
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
