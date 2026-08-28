@@ -50,15 +50,15 @@ class GenericProvider extends AbstractProvider
     private string $urlAuthorize;
     private string $urlAccessToken;
     private string $urlResourceOwnerDetails;
-    private string $accessTokenMethod;
-    private string $accessTokenResourceOwnerId;
+    private ?string $accessTokenMethod = null;
+    private ?string $accessTokenResourceOwnerId = null;
 
     /**
      * @var list<string> | null
      */
     private ?array $scopes = null;
 
-    private string $scopeSeparator;
+    private ?string $scopeSeparator = null;
     private string $responseError = 'error';
     private string $responseCode;
     private string $responseResourceOwnerId = 'id';

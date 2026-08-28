@@ -107,6 +107,30 @@ class GenericProviderTest extends TestCase
         $this->assertEquals($options['pkceMethod'], $getPkceMethod->invoke($provider));
     }
 
+    public function testOptionalConfigurationUsesDefaults(): void
+    {
+        $provider = new GenericProvider([
+            'urlAuthorize' => 'http://example.com/authorize',
+            'urlAccessToken' => 'http://example.com/token',
+            'urlResourceOwnerDetails' => 'http://example.com/user',
+        ], [
+            'httpClient' => new Client(),
+            'requestFactory' => new HttpFactory(),
+            'streamFactory' => new HttpFactory(),
+        ]);
+
+        $reflection = new ReflectionClass($provider::class);
+
+        $getAccessTokenMethod = $reflection->getMethod('getAccessTokenMethod');
+        $this->assertSame('POST', $getAccessTokenMethod->invoke($provider));
+
+        $getAccessTokenResourceOwnerId = $reflection->getMethod('getAccessTokenResourceOwnerId');
+        $this->assertNull($getAccessTokenResourceOwnerId->invoke($provider));
+
+        $getScopeSeparator = $reflection->getMethod('getScopeSeparator');
+        $this->assertSame(',', $getScopeSeparator->invoke($provider));
+    }
+
     public function testResourceOwnerDetails(): void
     {
         $token = new AccessToken(['access_token' => 'mock_token']);
