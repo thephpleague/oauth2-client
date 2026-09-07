@@ -108,6 +108,7 @@ Gateway | Composer Package | Maintainer
 [NIBE](https://github.com/olssonm/oauth2-nibe) | olssonm/oauth2-nibe | [Marcus Olsson](https://github.com/olssonm)
 [Odnoklassniki](https://packagist.org/packages/aego/oauth2-odnoklassniki) | aego/oauth2-odnoklassniki | [Alexey](https://github.com/rakeev)
 [Okta](https://packagist.org/packages/foxworth42/oauth2-okta) | foxworth42/oauth2-okta | [Ed Walker](https://github.com/foxworth42)
+[OnPay](https://github.com/tomsommer/oauth2-onpay) | tomsommer/oauth2-onpay | [Tom Sommer](https://github.com/tomsommer)
 [OpenStreetMap](https://packagist.org/packages/jbelien/oauth2-openstreetmap) | jbelien/oauth2-openstreetmap | [Jonathan Beliën](https://github.com/jbelien)
 [Optimizely](https://packagist.org/packages/widerfunnel/oauth2-optimizely) | widerfunnel/oauth2-optimizely | [WiderFunnel Labs](https://github.com/WiderFunnel-Labs)
 [PayPal](https://github.com/stevenmaguire/oauth2-paypal) | stevenmaguire/oauth2-paypal | [Steven Maguire](https://github.com/stevenmaguire)
