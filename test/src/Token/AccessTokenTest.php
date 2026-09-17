@@ -286,4 +286,21 @@ class AccessTokenTest extends TestCase
 
         self::tearDownForBackwardsCompatibility();
     }
+
+    public function testToArray()
+    {
+        $options = [
+            'access_token' => 'mock_access_token',
+            'refresh_token' => 'mock_refresh_token',
+            'expires' => time(),
+            'resource_owner_id' => 'mock_resource_owner_id',
+            'custom_thing' => 'i am a test!',
+        ];
+
+        $token = $this->getAccessToken($options);
+
+        $this->assertSame($token->toArray(), $token->jsonSerialize());
+
+        self::tearDownForBackwardsCompatibility();
+    }
 }
