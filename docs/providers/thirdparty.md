@@ -163,6 +163,7 @@ Gateway | Composer Package | Maintainer
 [Wrike](https://github.com/michaelKaefer/oauth2-wrike) | michaelkaefer/oauth2-wrike | [Michael Käfer](https://github.com/michaelKaefer)
 [Yahoo](https://packagist.org/packages/hayageek/oauth2-yahoo) | hayageek/oauth2-yahoo | [Ravishanker Kusuma](https://github.com/hayageek)
 [Yandex](https://packagist.org/packages/aego/oauth2-yandex) | aego/oauth2-yandex | [Alexey](https://github.com/rakeev)
+[Yandex](https://github.com/yaleksandr89/oauth2-yandex) | yaleksandr89/oauth2-yandex | [Aleksandr Yurchenko](https://github.com/yaleksandr89)
 [Yelp](https://github.com/stevenmaguire/oauth2-yelp) | stevenmaguire/oauth2-yelp | [Steven Maguire](https://github.com/stevenmaguire)
 [Zendesk](https://github.com/stevenmaguire/oauth2-zendesk) | stevenmaguire/oauth2-zendesk | [Steven Maguire](https://github.com/stevenmaguire)
 [ZenPayroll](https://packagist.org/packages/wheniwork/oauth2-zenpayroll) | wheniwork/oauth2-zenpayroll | [Woody Gilk](https://github.com/shadowhand)
