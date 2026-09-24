@@ -80,7 +80,7 @@ if (!isset($_GET['code'])) {
 
         // Using the access token, we may look up details about the
         // resource owner.
-        $resourceOwner = $provider->getResourceOwner($accessToken);
+        $resourceOwner = $provider->getResourceOwner($tokens);
 
         var_export($resourceOwner->toArray());
 
@@ -90,7 +90,7 @@ if (!isset($_GET['code'])) {
         $request = $provider->getAuthenticatedRequest(
             'GET',
             'https://service.example.com/resource',
-            $accessToken
+            $tokens->getToken()
         );
 
     } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
