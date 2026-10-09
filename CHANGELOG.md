@@ -1,5 +1,12 @@
 # OAuth 2.0 Client Changelog
 
+## Unreleased
+
+- Add support for PSR-18 HTTP clients through `setPsrHttpClient()` / `getPsrHttpClient()` and the `psrHttpClient` collaborator
+- Add optional PSR-17 factories to `RequestFactory`
+- Deprecate `setHttpClient()`, `getHttpClient()` and `getAllowedClientOptions()`: Guzzle will become optional in 3.0, see the [migration guide](https://oauth2-client.thephpleague.com/migration-3.0/)
+- Require `psr/http-client`, `psr/http-factory` and `psr/http-message`
+
 ## 2.9.1
 
 _Released: 2026-09-16_

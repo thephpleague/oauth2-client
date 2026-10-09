@@ -19,6 +19,7 @@ use GuzzleHttp\ClientInterface as HttpClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface as PsrClientInterface;
 use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Grant\GrantFactory;
 use League\OAuth2\Client\OptionProvider\OptionProviderInterface;
@@ -114,6 +115,11 @@ abstract class AbstractProvider
     protected $httpClient;
 
     /**
+     * @var PsrClientInterface|null
+     */
+    protected $psrHttpClient;
+
+    /**
      * @var OptionProviderInterface
      */
     protected $optionProvider;
@@ -126,7 +132,8 @@ abstract class AbstractProvider
      *     Individual providers may introduce more options, as needed.
      * @param array $collaborators An array of collaborators that may be used to
      *     override this provider's default behavior. Collaborators include
-     *     `grantFactory`, `requestFactory`, and `httpClient`.
+     *     `grantFactory`, `requestFactory`, `httpClient` and `psrHttpClient`.
+     *     When `psrHttpClient` (any PSR-18 client) is given, it is used instead of Guzzle.
      *     Individual providers may introduce more collaborators, as needed.
      */
     public function __construct(array $options = [], array $collaborators = [])
@@ -145,6 +152,10 @@ abstract class AbstractProvider
         }
         $this->setRequestFactory($collaborators['requestFactory']);
 
+        if (!empty($collaborators['psrHttpClient'])) {
+            $this->setPsrHttpClient($collaborators['psrHttpClient']);
+        }
+
         if (empty($collaborators['httpClient'])) {
             $client_options = $this->getAllowedClientOptions($options);
 
@@ -162,6 +173,9 @@ abstract class AbstractProvider
 
     /**
      * Returns the list of options that can be passed to the HttpClient
+     *
+     * @deprecated Only applies to the default Guzzle client, which is removed
+     *     in 3.0. Configure your PSR-18 client directly instead.
      *
      * @param array $options An array of options to set on this provider.
      *     Options include `clientId`, `clientSecret`, `redirectUri`, and `state`.
@@ -227,7 +241,36 @@ abstract class AbstractProvider
     }
 
     /**
+     * Sets a PSR-18 HTTP client, which takes precedence over the Guzzle client.
+     *
+     * Timeouts, proxy and TLS settings must be configured on the given client,
+     * and it must not follow redirects automatically when used with
+     * `ProviderRedirectTrait`.
+     *
+     * @param  PsrClientInterface $client
+     * @return self
+     */
+    public function setPsrHttpClient(PsrClientInterface $client)
+    {
+        $this->psrHttpClient = $client;
+
+        return $this;
+    }
+
+    /**
+     * Returns the PSR-18 HTTP client, or null if none was set.
+     *
+     * @return PsrClientInterface|null
+     */
+    public function getPsrHttpClient()
+    {
+        return $this->psrHttpClient;
+    }
+
+    /**
      * Sets the HTTP client instance.
+     *
+     * @deprecated Use setPsrHttpClient(); Guzzle is no longer required in 3.0.
      *
      * @param  HttpClientInterface $client
      * @return self
@@ -241,6 +284,8 @@ abstract class AbstractProvider
 
     /**
      * Returns the HTTP client instance.
+     *
+     * @deprecated Use getPsrHttpClient(); in 3.0 this will return a PSR-18 client.
      *
      * @return HttpClientInterface
      */
@@ -711,10 +756,14 @@ abstract class AbstractProvider
      *
      * @param  RequestInterface $request
      * @return ResponseInterface
-     * @throws GuzzleException
+     * @throws GuzzleException|\Psr\Http\Client\ClientExceptionInterface
      */
     public function getResponse(RequestInterface $request)
     {
+        if ($this->psrHttpClient) {
+            return $this->psrHttpClient->sendRequest($request);
+        }
+
         return $this->getHttpClient()->send($request);
     }
 

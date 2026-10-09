@@ -45,6 +45,10 @@ To build your own provider client, please refer to "[Implementing a Provider Cli
 
 For usage and code examples, check out our [basic usage guide](https://oauth2-client.thephpleague.com/usage/).
 
+## HTTP client
+
+Guzzle is the default HTTP client, but any PSR-18 client can be used with `setPsrHttpClient()`. Guzzle will become optional in the next major version: see [Preparing for 3.0](https://oauth2-client.thephpleague.com/migration-3.0/).
+
 ## Contributing
 
 Please see [our contributing guidelines](https://github.com/thephpleague/oauth2-client/blob/master/CONTRIBUTING.md) for details.

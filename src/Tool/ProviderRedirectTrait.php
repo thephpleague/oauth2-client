@@ -5,8 +5,10 @@ namespace League\OAuth2\Client\Tool;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Uri;
 use InvalidArgumentException;
+use Psr\Http\Client\ClientInterface as PsrClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 trait ProviderRedirectTrait
 {
@@ -32,12 +34,10 @@ trait ProviderRedirectTrait
 
         while ($attempts < $this->redirectLimit) {
             $attempts++;
-            $response = $this->getHttpClient()->send($request, [
-                'allow_redirects' => false
-            ]);
+            $response = $this->sendWithoutFollowingRedirects($request);
 
             if ($this->isRedirect($response)) {
-                $redirectUrl = new Uri($response->getHeader('Location')[0]);
+                $redirectUrl = $this->createRedirectUri($response->getHeader('Location')[0]);
                 $request = $request->withUri($redirectUrl);
             } else {
                 break;
@@ -48,7 +48,46 @@ trait ProviderRedirectTrait
     }
 
     /**
+     * Sends a request without letting the HTTP client follow redirects.
+     *
+     * A PSR-18 client (see `setPsrHttpClient()`) must be configured not to
+     * follow redirects itself, as PSR-18 has no per-request option for it.
+     *
+     * @param  RequestInterface $request
+     * @return ResponseInterface
+     */
+    protected function sendWithoutFollowingRedirects(RequestInterface $request)
+    {
+        $psrClient = method_exists($this, 'getPsrHttpClient') ? $this->getPsrHttpClient() : null;
+
+        if ($psrClient instanceof PsrClientInterface) {
+            return $psrClient->sendRequest($request);
+        }
+
+        return $this->getHttpClient()->send($request, [
+            'allow_redirects' => false
+        ]);
+    }
+
+    /**
+     * Builds the URI of a redirect target.
+     *
+     * @param  string $location
+     * @return UriInterface
+     */
+    protected function createRedirectUri($location)
+    {
+        if (method_exists($this, 'getRequestFactory')) {
+            return $this->getRequestFactory()->getUri($location);
+        }
+
+        return new Uri($location);
+    }
+
+    /**
      * Returns the HTTP client instance.
+     *
+     * @deprecated Will return a PSR-18 client in 3.0, see the migration guide.
      *
      * @return GuzzleHttp\ClientInterface
      */

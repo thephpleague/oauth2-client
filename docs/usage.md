@@ -248,3 +248,28 @@ $provider = new \League\OAuth2\Client\Provider\GenericProvider([
     'verify'                  => false
 ]);
 ```
+
+Using a PSR-18 HTTP client
+--------------------------
+
+Guzzle is the default HTTP client, but you can use any [PSR-18](https://www.php-fig.org/psr/psr-18/) client instead, for example `symfony/http-client` with its `Psr18Client`:
+
+```php
+$provider = new \League\OAuth2\Client\Provider\GenericProvider([
+    // ...
+], [
+    'psrHttpClient' => new \Symfony\Component\HttpClient\Psr18Client(),
+]);
+
+// or, on an existing provider
+$provider->setPsrHttpClient($psr18Client);
+```
+
+When a PSR-18 client is set, it is used for every request and Guzzle is not used to send anything. Keep in mind that:
+
+* Options such as `timeout`, `proxy` and `verify` only apply to the default Guzzle client. Configure them on your own client instead.
+* PSR-18 clients return 4xx and 5xx responses instead of throwing, which the library already handles. Network errors are thrown as `Psr\Http\Client\ClientExceptionInterface`.
+* Providers using `ProviderRedirectTrait` follow redirects themselves, so your client must not follow redirects automatically.
+* To build requests without Guzzle, pass PSR-17 factories to the request factory: `new RequestFactory($requestFactory, $streamFactory, $uriFactory)`, then give it to the provider as the `requestFactory` collaborator.
+
+See the [3.0 migration guide](/migration-3.0/) to prepare for Guzzle becoming optional.

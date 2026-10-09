@@ -1,6 +1,7 @@
 Getting Started:
     Introduction: '/'
     "Basic Usage": '/usage/'
+    "Preparing for 3.0": '/migration-3.0/'
 
 Providers:
     "Official Providers": '/providers/league/'
