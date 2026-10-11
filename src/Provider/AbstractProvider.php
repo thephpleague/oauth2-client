@@ -114,6 +114,11 @@ abstract class AbstractProvider
     protected $httpClient;
 
     /**
+     * @var array
+     */
+    private $httpClientOptions = [];
+
+    /**
      * @var OptionProviderInterface
      */
     protected $optionProvider;
@@ -148,11 +153,10 @@ abstract class AbstractProvider
         if (empty($collaborators['httpClient'])) {
             $client_options = $this->getAllowedClientOptions($options);
 
-            $collaborators['httpClient'] = new HttpClient(
-                array_intersect_key($options, array_flip($client_options))
-            );
+            $this->httpClientOptions = array_intersect_key($options, array_flip($client_options));
+        } else {
+            $this->setHttpClient($collaborators['httpClient']);
         }
-        $this->setHttpClient($collaborators['httpClient']);
 
         if (empty($collaborators['optionProvider'])) {
             $collaborators['optionProvider'] = new PostAuthOptionProvider();
@@ -246,6 +250,10 @@ abstract class AbstractProvider
      */
     public function getHttpClient()
     {
+        if ($this->httpClient === null) {
+            $this->httpClient = new HttpClient($this->httpClientOptions);
+        }
+
         return $this->httpClient;
     }
 
