@@ -139,6 +139,7 @@ Gateway | Composer Package | Maintainer
 [Square](https://packagist.org/packages/wheniwork/oauth2-square) | wheniwork/oauth2-square | [Woody Gilk](https://github.com/shadowhand)
 [StackExchange](https://packagist.org/packages/alexmasterov/oauth2-stackexchange) | alexmasterov/oauth2-stackexchange | [Alex Masterov](https://github.com/AlexMasterov)
 [SuperJob](https://packagist.org/packages/alexmasterov/oauth2-superjob) | alexmasterov/oauth2-superjob | [Alex Masterov](https://github.com/AlexMasterov)
+[Telegram](https://github.com/maks-oleksyuk/oauth2-telegram) | oleksyuk/oauth2-telegram | [Maks Oleksyuk](https://github.com/maks-oleksyuk)
 [TikTok](https://github.com/bastiaandewaele/oauth2-tiktok) | bastiaandewaele/oauth2-tiktok | [Bastiaan Dewaele](https://github.com/bastiaandewaele)
 [ThirtySevenSignals](https://github.com/nilesuan/oauth2-thirtysevensignals) | nilesuan/oauth2-thirtysevensignals | [Nile Suan](https://github.com/nilesuan)
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
