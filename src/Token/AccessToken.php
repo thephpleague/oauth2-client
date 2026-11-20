@@ -22,7 +22,11 @@ use RuntimeException;
  *
  * @link http://tools.ietf.org/html/rfc6749#section-1.4 Access Token (RFC 6749, §1.4)
  */
-class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInterface, SettableRefreshTokenInterface
+class AccessToken implements 
+    AccessTokenInterface,
+    ArrayableAccessTokenInterface,
+    ResourceOwnerAccessTokenInterface,
+    SettableRefreshTokenInterface
 {
     /**
      * @var string
@@ -222,11 +226,11 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
     {
         return (string) $this->getToken();
     }
-
+    
     /**
      * @inheritdoc
      */
-    public function jsonSerialize()
+    public function toArray()
     {
         $parameters = $this->values;
 
@@ -247,5 +251,13 @@ class AccessToken implements AccessTokenInterface, ResourceOwnerAccessTokenInter
         }
 
         return $parameters;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }
