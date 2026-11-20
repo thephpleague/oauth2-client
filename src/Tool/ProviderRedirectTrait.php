@@ -4,6 +4,8 @@ namespace League\OAuth2\Client\Tool;
 
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\Psr7\UriComparator;
+use GuzzleHttp\Psr7\UriResolver;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -21,6 +23,13 @@ trait ProviderRedirectTrait
      * Retrieves a response for a given request and retrieves subsequent
      * responses, with authorization headers, if a redirect is detected.
      *
+     * Redirects are only followed when they stay on the same origin (scheme,
+     * host and port) as the request. The request is replayed as-is, including
+     * its headers and body, which may carry client credentials, authorization
+     * codes or access tokens, so it must never be sent to another origin.
+     * When a cross-origin redirect is encountered, the redirect response is
+     * returned unchanged.
+     *
      * @param  RequestInterface $request
      * @return ResponseInterface
      * @throws BadResponseException
@@ -36,12 +45,21 @@ trait ProviderRedirectTrait
                 'allow_redirects' => false
             ]);
 
-            if ($this->isRedirect($response)) {
-                $redirectUrl = new Uri($response->getHeader('Location')[0]);
-                $request = $request->withUri($redirectUrl);
-            } else {
+            if (!$this->isRedirect($response)) {
                 break;
             }
+
+            $originalUri = $request->getUri();
+            $redirectUri = UriResolver::resolve(
+                $originalUri,
+                new Uri($response->getHeader('Location')[0])
+            );
+
+            if (UriComparator::isCrossOrigin($originalUri, $redirectUri)) {
+                break;
+            }
+
+            $request = $request->withUri($redirectUri);
         }
 
         return $response;
