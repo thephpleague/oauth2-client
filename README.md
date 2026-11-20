@@ -24,16 +24,11 @@ This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. I
 
 We support the following versions of PHP:
 
-* PHP 8.5
-* PHP 8.4
-* PHP 8.3
-* PHP 8.2
-* PHP 8.1
-* PHP 8.0
-* PHP 7.4
-* PHP 7.3
-* PHP 7.2
-* PHP 7.1
+- PHP 8.6
+- PHP 8.5
+- PHP 8.4
+- PHP 8.3
+- PHP 8.2
 
 ## Provider Clients
 
@@ -52,7 +47,6 @@ Please see [our contributing guidelines](https://github.com/thephpleague/oauth2-
 ## License
 
 The MIT License (MIT). Please see [LICENSE](https://github.com/thephpleague/oauth2-client/blob/master/LICENSE) for more information.
-
 
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
