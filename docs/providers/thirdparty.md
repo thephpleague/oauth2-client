@@ -144,7 +144,7 @@ Gateway | Composer Package | Maintainer
 [Trakt.tv](https://github.com/Bogstag/oauth2-trakt) | bogstag/oauth2-trakt | [Krister Bogstag](https://github.com/Bogstag/)
 [Trovo](https://github.com/artandor/oauth2-trovo) | artandor/oauth2-trovo | [Nicolas Mylle](https://github.com/artandor/)
 [Trustpilot](https://github.com/dmt-software/oauth2-trustpilot) | dmt-software/oauth2-trustpilot | [DMT software](https://github.com/dmt-software/)
-[Twinfield](https://github.com/php-twinfield/twinfield) | php-twinfield/twinfield | [Mollie B.V.](https://github.com/mollie)
+[Twinfield](https://github.com/solvebeam/twinfield-oauth2-php) | solvebeam/oauth2-twinfield | [SolveBeam](https://github.com/solvebeam)
 [Twitch.tv](https://github.com/tpavlek/oauth2-twitch) | depotwarehouse/oauth2-twitch | [Troy Pavlek](https://github.com/tpavlek)
 [Twitch.tv (New API Helix)](https://github.com/vertisan/oauth2-twitch-helix) | vertisan/oauth2-twitch-helix | [Paweł Farys](https://github.com/vertisan)
 [Twitter](https://github.com/smolblog/oauth2-twitter) | smolblog/oauth2-twitter | [Evan Hildreth](https://github.com/oddevan)
