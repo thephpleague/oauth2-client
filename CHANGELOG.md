@@ -1,5 +1,11 @@
 # OAuth 2.0 Client Changelog
 
+## 2.10.0
+
+_Released: 2026-11-20_
+
+- Add PHP 8.6 support and drop EOL versions of PHP [#XXX]
+
 ## 2.9.1
 
 _Released: 2026-09-16_
