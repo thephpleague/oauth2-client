@@ -14,7 +14,7 @@
   "require-dev": {
     "mockery/mockery": "^1.6.15",
     "php-parallel-lint/php-parallel-lint": "^1.4.0",
-    "phpunit/phpunit": "^12.5.45",
+    "phpunit/phpunit": "^11.5.58",
     "squizlabs/php_codesniffer": "^4.0.4"
   },
   "keywords": [
