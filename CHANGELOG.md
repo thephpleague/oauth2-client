@@ -4,7 +4,7 @@
 
 _Released: 2026-11-20_
 
-- Add PHP 8.6 support and drop EOL versions of PHP [#XXX]
+- Add PHP 8.6 support and drop EOL versions of PHP https://github.com/thephpleague/oauth2-client/pull/1128
 
 ## 2.9.1
 
